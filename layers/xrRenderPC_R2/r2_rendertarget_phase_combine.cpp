@@ -66,6 +66,10 @@ void CRenderTarget::phase_combine()
 			sundir.set(L_dir.x, L_dir.y, L_dir.z, 0);
 		}
 
+		//----------------------
+		// Start precombine stage
+		//----------------------
+
 		// Fill VB
 		float _w = float(Device.dwWidth);
 		float _h = float(Device.dwHeight);
@@ -93,12 +97,47 @@ void CRenderTarget::phase_combine()
 		_RELEASE(e1);
 
 		// Draw
+		RCache.set_Element(s_combine->E[0]);
+
+		RCache.set_Geometry(g_combine_VP);
+
+		RCache.set_c("L_ambient", ambclr);
+
+		RCache.set_c("Ldynamic_color", sunclr);
+		RCache.set_c("Ldynamic_dir", sundir);
+
+		RCache.set_c("env_color", envclr);
+		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+
+		//----------------------
+		// Start combine stage
+		//----------------------
+
+		// Fill vertex buffer
+		pv = (Fvector4*)RCache.Vertex.Lock(4, g_combine_VP->vb_stride, Offset);
+		pv->set(hclip(EPS, _w), hclip(_h + EPS, _h), p0.x, p1.y);
+		pv++;
+		pv->set(hclip(EPS, _w), hclip(EPS, _h), p0.x, p0.y);
+		pv++;
+		pv->set(hclip(_w + EPS, _w), hclip(_h + EPS, _h), p1.x, p1.y);
+		pv++;
+		pv->set(hclip(_w + EPS, _w), hclip(EPS, _h), p1.x, p0.y);
+		pv++;
+		RCache.Vertex.Unlock(4, g_combine_VP->vb_stride);
+
+		// Setup textures
+		t_envmap_0->surface_set(e0);
+		_RELEASE(e0);
+		t_envmap_1->surface_set(e1);
+		_RELEASE(e1);
+
+		// Draw
 #ifndef MASTER_GOLD
-		if(ps_r2_debug_render)
-			RCache.set_Element(s_combine->E[1]);
+		if (ps_r2_debug_render)
+			RCache.set_Element(s_combine->E[2]);
 		else
 #endif
-			RCache.set_Element(s_combine->E[0]);
+			RCache.set_Element(s_combine->E[1]);
 
 		RCache.set_Geometry(g_combine_VP);
 
