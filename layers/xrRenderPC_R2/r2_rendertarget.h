@@ -33,6 +33,7 @@ class CRenderTarget : public IRender_Target
 	IBlender* b_barrel_blur;
 	IBlender* b_motion_blur;
 	IBlender* b_frame_overlay;
+	IBlender* b_reflections;
 
 #ifdef DEBUG
 	struct dbg_line_t
@@ -71,6 +72,8 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_LUM_pool[4];	// 1xfp32,1x1,		exp-result -> scaler
 	ref_texture t_LUM_src;	// source
 	ref_texture t_LUM_dest; // destination & usage for current frame
+
+	ref_rt rt_Reflections;
 
 	// ao
 	ref_rt rt_ao_base;
@@ -156,6 +159,7 @@ class CRenderTarget : public IRender_Target
 	ref_shader s_contrast_adaptive_sharpening;
 	ref_shader s_antialiasing;
 	ref_shader s_barrel_blur;
+	ref_shader s_reflections;
 	ref_shader s_dof;
 	ref_shader s_distortion;
 	ref_shader s_motion_blur;
@@ -243,6 +247,8 @@ class CRenderTarget : public IRender_Target
 
 	void phase_combine();
 	void phase_combine_volumetric();
+
+	void calc_screen_space_reflections();
 
 	void phase_contrast_adaptive_sharpening();
 

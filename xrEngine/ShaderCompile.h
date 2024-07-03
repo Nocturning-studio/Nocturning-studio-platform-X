@@ -161,7 +161,7 @@ T* CResourceManager::CreateShader(const char* _name, CShaderMacros& _macros)
 	sprintf_s(c_entry, sizeof c_entry, "main");
 	sprintf_s(c_target, sizeof c_target, "%s_%u_%u", ext, HW.Caps.raster_major, HW.Caps.raster_minor);
 
-#ifndef MASTER_GOLD
+#ifdef DEBUG_SHADER_COMPILATION
 	Msg("* Compiling shader: target=%s, source=%s.%s", c_target, _name, ext);
 #endif
 
@@ -195,7 +195,7 @@ HRESULT CResourceManager::CompileShader(
 	sprintf_s(cache_dest, sizeof cache_dest, "shaders_cache\\%s%s.%s\\%s", ::Render->getShaderPath(), name, ext, macros.get_name().c_str());
 	FS.update_path(cache_dest, "$app_data_root$", cache_dest);
 
-#ifndef MASTER_GOLD
+#ifdef DEBUG_SHADER_COMPILATION
 	Msg("*   cache: %s.%s", cache_dest, ext);
 #endif
 

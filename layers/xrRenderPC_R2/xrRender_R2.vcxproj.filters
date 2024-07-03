@@ -139,6 +139,9 @@
     <Filter Include="Rendertargets\Render stages\Ambient occlusion">
       <UniqueIdentifier>{6f5146c0-4c67-421d-a6d2-292967c3c6ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Blenders\Reflections stage">
+      <UniqueIdentifier>{0eabc662-fedc-47ea-81e4-6a7d7d882387}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl_intersect.h">
@@ -347,6 +350,9 @@
     </ClInclude>
     <ClInclude Include="Blender_ambient_occlusion.h">
       <Filter>Blenders\Postprocess stage\Ambient occlusion</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_reflections.h">
+      <Filter>Blenders\Reflections stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -688,6 +694,12 @@
     </ClCompile>
     <ClCompile Include="r2_rendertarget_phase_ao.cpp">
       <Filter>Rendertargets\Render stages\Ambient occlusion</Filter>
+    </ClCompile>
+    <ClCompile Include="r2_rendertarget_phase_ssr.cpp">
+      <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_reflections.cpp">
+      <Filter>Blenders\Reflections stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

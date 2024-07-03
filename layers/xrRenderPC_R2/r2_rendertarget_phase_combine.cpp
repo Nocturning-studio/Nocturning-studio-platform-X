@@ -109,9 +109,18 @@ void CRenderTarget::phase_combine()
 		RCache.set_c("env_color", envclr);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
+		//Effects, needs for precombined scene
+		calc_screen_space_reflections();
+
 		//----------------------
 		// Start combine stage
 		//----------------------
+
+		u_setrt(rt_Generic_0, 0, 0, rt_ZB->pRT);
+
+		RCache.set_CullMode(CULL_CCW);
+		RCache.set_Stencil(FALSE);
+		RCache.set_ColorWriteEnable();
 
 		// Fill vertex buffer
 		pv = (Fvector4*)RCache.Vertex.Lock(4, g_combine_VP->vb_stride, Offset);
@@ -124,12 +133,6 @@ void CRenderTarget::phase_combine()
 		pv->set(hclip(_w + EPS, _w), hclip(EPS, _h), p1.x, p0.y);
 		pv++;
 		RCache.Vertex.Unlock(4, g_combine_VP->vb_stride);
-
-		// Setup textures
-		t_envmap_0->surface_set(e0);
-		_RELEASE(e0);
-		t_envmap_1->surface_set(e1);
-		_RELEASE(e1);
 
 		// Draw
 #ifndef MASTER_GOLD
@@ -181,12 +184,14 @@ void CRenderTarget::phase_combine()
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
 
 	// Distortion filter
-	phase_create_distortion_mask();
+	{
+		phase_create_distortion_mask();
 
-	if (g_pGamePersistent)
-		g_pGamePersistent->OnRenderPPUI_PP();
+		if (g_pGamePersistent)
+			g_pGamePersistent->OnRenderPPUI_PP();
 
-	phase_distortion();
+		phase_distortion();
+	}
 
 	if (!_menu_pp)
 	{

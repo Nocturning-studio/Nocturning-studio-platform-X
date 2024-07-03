@@ -9,6 +9,7 @@
 #include "blender_contrast_adaptive_sharpening.h"
 #include "blender_distortion.h"
 #include "blender_depth_of_field.h"
+#include "blender_reflections.h"
 #include "blender_motion_blur.h"
 #include "blender_frame_overlay.h"
 #include "blender_light_direct_cascade.h"
@@ -241,6 +242,7 @@ CRenderTarget::CRenderTarget()
 	b_distortion = xr_new<CBlender_distortion>();
 	b_motion_blur = xr_new<CBlender_motion_blur>();
 	b_frame_overlay = xr_new<CBlender_frame_overlay>();
+	b_reflections = xr_new<CBlender_reflections>();
 
 	// SCREENSHOT
 	{
@@ -273,6 +275,8 @@ CRenderTarget::CRenderTarget()
 		rt_Generic_0.create(r2_RT_generic0, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 		rt_Motion_Blur_Saved_Frame.create(r2_RT_mblur_saved_frame, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	}
+
+	rt_Reflections.create(r2_RT_reflections, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 
 	// OCCLUSION
 	s_occq.create(b_occq, "r2\\occq");
@@ -513,6 +517,8 @@ CRenderTarget::CRenderTarget()
 
 	s_dof.create(b_dof, "r2\\dof");
 
+	s_reflections.create(b_reflections, "r2\\reflections");
+
 	s_distortion.create(b_distortion, "r2\\distortion");
 
 	s_motion_blur.create(b_motion_blur, "r2\\motion_blur");
@@ -576,6 +582,7 @@ CRenderTarget::~CRenderTarget()
 	xr_delete(b_frame_overlay);
 	xr_delete(b_motion_blur);
 	xr_delete(b_dof);
+	xr_delete(b_reflections);
 	xr_delete(b_barrel_blur);
 	xr_delete(b_distortion);
 	xr_delete(b_antialiasing);

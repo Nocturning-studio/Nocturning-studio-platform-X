@@ -27,6 +27,8 @@
 // Motion blur previous frame
 #define r2_RT_mblur_saved_frame "$user$mblur_saved_frame"
 
+#define r2_RT_reflections "$user$reflections"
+
 #define r2_RT_bloom1 "$user$bloom1"
 #define r2_RT_bloom2 "$user$bloom2"
 
