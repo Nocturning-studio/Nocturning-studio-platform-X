@@ -599,11 +599,22 @@ void CRender::rmNormal()
 //////////////////////////////////////////////////////////////////////
 CRender::CRender() : m_bFirstFrameAfterReset(false)
 {
+#pragma todo("Deathman to ALL: –ешить проблему перезагрузки библиотеки компил€тора при компил€ции шейдеров")
+	LPCSTR CompilerName = "D3DCompiler_43.dll";
+	Msg("Loading d3d compiler DLL: %s", CompilerName);
+	hCompiler = LoadLibrary(CompilerName);
+	R_ASSERT(hCompiler, "! Failed to load d3d compiler library. Try to update DXSDK");
+
 	init_cacades();
 }
 
 CRender::~CRender()
 {
+	if (hCompiler)
+	{
+		FreeLibrary(hCompiler);
+		hCompiler = 0;
+	}
 }
 
 #include "..\xrEngine\GameFont.h"

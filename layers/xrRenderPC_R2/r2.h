@@ -308,6 +308,8 @@ class CRender : public R_dsgraph_structure
 	virtual ~CRender();
 
 	CShaderMacros FetchShaderMacros();
+
+	HMODULE hCompiler;
   private:
 	FS_FileSet m_file_set;
 };
