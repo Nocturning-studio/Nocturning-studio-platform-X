@@ -148,7 +148,7 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 			m_shadow.mul(xf_project, xf_invview);
 
 			// tsm-bias
-			if ((SE_SUN_FAR == sub_phase))
+			//if ((SE_SUN_FAR == sub_phase))
 			{
 				Fvector bias;
 				bias.mul(L_dir, ps_r2_sun_tsm_bias);
@@ -239,7 +239,7 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 
 		// Pass view vector projected in shadow space to far pixel shader
 		// Needed for shadow fading.
-		if (sub_phase == SE_SUN_FAR)
+		if (0)//sub_phase == SE_SUN_FAR)
 		{
 			Fvector3 view_viewspace;
 			view_viewspace.set(0, 0, 1);
