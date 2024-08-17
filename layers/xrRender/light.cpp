@@ -29,13 +29,26 @@ light::light(void) : ISpatial(g_SpatialSpace)
 #endif
 }
 
+void light::TryToDeactivateLight()
+{
+	try
+	{
+		set_active(false);
+	}
+	catch (...)
+	{
+		Msg("! Failed to deactivate light!");
+	}
+}
+
 light::~light()
 {
 #if RENDER == R_R2
 	for (int f = 0; f < 6; f++)
 		xr_delete(omnipart[f]);
 #endif
-	set_active(false);
+
+	TryToDeactivateLight();
 
 	// remove from Lights_LastFrame
 #if RENDER == R_R2

@@ -123,5 +123,6 @@ class light : public IRender_Light, public ISpatial
 	float get_LOD();
 
 	light();
+	void TryToDeactivateLight();
 	virtual ~light();
 };
