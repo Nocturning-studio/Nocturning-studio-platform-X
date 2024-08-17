@@ -252,6 +252,8 @@ void CDemoRecord::MakeLevelMapProcess()
 
 void CDemoRecord::MakeCubeMapFace(Fvector& D, Fvector& N)
 {
+	Console->Execute("r_disable_postprocess on");
+
 	string32 buf;
 	switch (m_Stage)
 	{
@@ -279,6 +281,8 @@ void CDemoRecord::MakeCubeMapFace(Fvector& D, Fvector& N)
 		break;
 	}
 	m_Stage++;
+
+	Console->Execute("r_disable_postprocess off");
 }
 
 void CDemoRecord::SwitchShowInputInfo()

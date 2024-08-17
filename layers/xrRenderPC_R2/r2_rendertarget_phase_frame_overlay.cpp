@@ -14,14 +14,10 @@ void CRenderTarget::draw_overlays()
 	if (ps_r2_overlay_flags.test(R2FLAG_PHOTO_GRID))
 		GridEnabled = 1;
 
-#ifndef DEMO_BUILD
 	if (ps_r2_overlay_flags.test(R2FLAG_CINEMA_BORDERS))
-#endif
 		CinemaBordersEnabled = 1;
 
-#ifndef DEMO_BUILD
 	if (ps_r2_overlay_flags.test(R2FLAG_WATERMARK))
-#endif
 		WatermarkEnabled = 1;
 
 	u_setrt(rt_Generic_0, NULL, NULL, NULL);

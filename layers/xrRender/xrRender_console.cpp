@@ -181,6 +181,7 @@ float ps_r2_dof_kernel_size = 5.0f;
 float ps_r2_ls_depth_scale = 1.00001f;
 float ps_r2_ls_depth_bias = -0.0001f;
 float ps_r2_ls_squality = 1.0f;
+float ps_r2_tsm_bias = -0.05f;
 
 float ps_r2_sun_tsm_bias = -0.05f;
 float ps_r2_sun_near = 12.f;
@@ -788,8 +789,6 @@ void xrRender_initconsole()
 	CMD2(CCC_R2GM, "r2_global_material", &ps_r2_gmaterial);
 #endif
 
-	CMD4(CCC_Float, "r2_ls_squality", &ps_r2_ls_squality, .5f, 1.f);
-
 	CMD3(CCC_Mask, "r2_zfill", &ps_r2_ls_flags, R2FLAG_ZFILL);
 	CMD4(CCC_Float, "r2_zfill_depth", &ps_r2_zfill, .001f, .5f);
 
@@ -799,8 +798,13 @@ void xrRender_initconsole()
 
 	CMD4(CCC_Float, "r2_ls_depth_scale", &ps_r2_ls_depth_scale, 0.5, 1.5);
 	CMD4(CCC_Float, "r2_ls_depth_bias", &ps_r2_ls_depth_bias, -0.5, +0.5);
+	CMD4(CCC_Float, "r2_ls_squality", &ps_r2_ls_squality, .5f, 1.f);
+	CMD4(CCC_Float, "r2_tsm_bias", &ps_r2_sun_tsm_bias, -0.5, +0.5);
+
+	CMD3(CCC_Mask, "r_disable_postprocess", &ps_render_flags, RFLAG_DISABLE_POSTPROCESS);
 
 	// !!! —“–Œ√Œ ¬Õ»«” œŒ—À≈ ¬—≈’ Œœ÷»… !!!
+#pragma todo("¡Ûı")
 	CMD3(CCC_ConditionsToken, "r1_aa_type", &ps_r1_aa, r1_aa_token);
 	CMD3(CCC_ConditionsToken, "r1_aa_transluency", &ps_r1_aa_transluency, r1_aa_transluency_token);
 }

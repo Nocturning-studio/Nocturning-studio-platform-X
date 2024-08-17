@@ -112,6 +112,7 @@ class ENGINE_API CRenderDevice
 	Fvector vCameraRight;
 	Fmatrix mView;
 	Fmatrix mProject;
+	Fmatrix mProject_hud;
 	Fmatrix mFullTransform;
 	Fmatrix mInvFullTransform;
 	float fFOV;

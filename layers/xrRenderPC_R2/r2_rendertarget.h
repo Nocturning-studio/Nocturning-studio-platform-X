@@ -66,6 +66,9 @@ class CRenderTarget : public IRender_Target
 
 	ref_rt rt_Bloom_1; // 32bit, dim/4	(r,g,b,?)
 	ref_rt rt_Bloom_2; // 32bit, dim/4	(r,g,b,?)
+	ref_rt rt_LUM_512;
+	ref_rt rt_LUM_256;
+	ref_rt rt_LUM_128;
 	ref_rt rt_LUM_64;  // 64bit, 64x64,	log-average in all components
 	ref_rt rt_LUM_8;   // 64bit, 8x8,		log-average in all components
 
@@ -91,8 +94,8 @@ class CRenderTarget : public IRender_Target
 	IDirect3DSurface9* rt_smap_ZB; //
 
 	// Textures
-	IDirect3DVolumeTexture9* t_material_surf;
-	ref_texture t_material;
+	//IDirect3DVolumeTexture9* t_material_surf;
+	//ref_texture t_material;
 
 	IDirect3DTexture9* t_noise_surf[TEX_jitter_count];
 	ref_texture t_noise[TEX_jitter_count];

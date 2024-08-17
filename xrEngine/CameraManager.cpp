@@ -308,6 +308,7 @@ void CCameraManager::Update(const Fvector& P, const Fvector& D, const Fvector& N
 	UpdateDeffered();
 }
 
+ENGINE_API extern float psHUD_FOV;
 void CCameraManager::ApplyDevice(float _viewport_near)
 {
 	// Device params
@@ -322,6 +323,7 @@ void CCameraManager::ApplyDevice(float _viewport_near)
 	Device.fFOV = fFov;
 	Device.fASPECT = fAspect;
 	Device.mProject.build_projection(deg2rad(fFov /**fAspect*/), fAspect, _viewport_near, fFar);
+	Device.mProject_hud.build_projection(deg2rad(psHUD_FOV /**fAspect*/), fAspect, _viewport_near, fFar);
 
 	if (g_pGamePersistent && g_pGamePersistent->m_pMainMenu->IsActive())
 		ResetPP();

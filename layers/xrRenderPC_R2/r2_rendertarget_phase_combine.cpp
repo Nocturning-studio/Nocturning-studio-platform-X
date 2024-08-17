@@ -42,14 +42,14 @@ void CRenderTarget::phase_combine()
 		// Compute params
 		CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
 		const float minamb = 0.001f;
-		Fvector4 ambclr = {_max(envdesc->ambient.x * 2, minamb), _max(envdesc->ambient.y * 2, minamb),
-						   _max(envdesc->ambient.z * 2, minamb), 0};
-		ambclr.mul(ps_r2_sun_lumscale_amb);
-		Fvector4 envclr = {envdesc->hemi_color.x * 2 + EPS, envdesc->hemi_color.y * 2 + EPS,
-						   envdesc->hemi_color.z * 2 + EPS, envdesc->weight};
-		envclr.x *= 2 * ps_r2_sun_lumscale_hemi;
-		envclr.y *= 2 * ps_r2_sun_lumscale_hemi;
-		envclr.z *= 2 * ps_r2_sun_lumscale_hemi;
+		Fvector4 ambclr = {_max(envdesc->ambient.x, minamb), _max(envdesc->ambient.y, minamb),
+						   _max(envdesc->ambient.z, minamb), 0};
+		//ambclr.mul(ps_r2_sun_lumscale_amb);
+		Fvector4 envclr = {envdesc->hemi_color.x, envdesc->hemi_color.y,
+						   envdesc->hemi_color.z, envdesc->weight};
+		//envclr.x *= 2 * ps_r2_sun_lumscale_hemi;
+		//envclr.y *= 2 * ps_r2_sun_lumscale_hemi;
+		//envclr.z *= 2 * ps_r2_sun_lumscale_hemi;
 		Fvector4 sunclr, sundir;
 
 		// sun-params
@@ -101,12 +101,12 @@ void CRenderTarget::phase_combine()
 
 		RCache.set_Geometry(g_combine_VP);
 
-		RCache.set_c("L_ambient", ambclr);
+		//RCache.set_c("L_ambient", ambclr);
 
 		RCache.set_c("Ldynamic_color", sunclr);
 		RCache.set_c("Ldynamic_dir", sundir);
 
-		RCache.set_c("env_color", envclr);
+		//RCache.set_c("env_color", envclr);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
 		//Effects, needs for precombined scene
@@ -135,12 +135,7 @@ void CRenderTarget::phase_combine()
 		RCache.Vertex.Unlock(4, g_combine_VP->vb_stride);
 
 		// Draw
-#ifndef MASTER_GOLD
-		if (ps_r2_debug_render)
-			RCache.set_Element(s_combine->E[2]);
-		else
-#endif
-			RCache.set_Element(s_combine->E[1]);
+		RCache.set_Element(s_combine->E[1]);
 
 		RCache.set_Geometry(g_combine_VP);
 
@@ -195,7 +190,7 @@ void CRenderTarget::phase_combine()
 
 	if (!_menu_pp)
 	{
-		if (ps_r2_debug_render == 0)
+		if (!ps_render_flags.test(RFLAG_DISABLE_POSTPROCESS) && (ps_r2_debug_render == 0))
 		{
 			if (ps_r2_postprocess_flags.test(R2FLAG_CONTRAST_ADAPTIVE_SHARPENING))
 				phase_contrast_adaptive_sharpening();

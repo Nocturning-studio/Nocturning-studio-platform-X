@@ -63,6 +63,7 @@ CEnvDescriptor::CEnvDescriptor(shared_str const& identifier) : m_identifier(iden
 	{                                                                                                                  \
 		Msg("! Invalid '%s' in env-section '%s'", #C, m_identifier.c_str());                                           \
 	}
+
 void CEnvDescriptor::load(CEnvironment& environment, CInifile& config)
 {
 	Ivector3 tm = {0, 0, 0};
@@ -81,11 +82,9 @@ void CEnvDescriptor::load(CEnvironment& environment, CInifile& config)
 	float multiplier = 0, save = 0;
 	sscanf(cldclr, "%f,%f,%f,%f,%f", &clouds_color.x, &clouds_color.y, &clouds_color.z, &clouds_color.w, &multiplier);
 	save = clouds_color.w;
-	clouds_color.mul(.5f * multiplier);
 	clouds_color.w = save;
 
 	sky_color = config.r_fvector3(m_identifier.c_str(), "sky_color");
-	sky_color.mul(.5f);
 
 	if (config.line_exist(m_identifier.c_str(), "sky_rotation"))
 		sky_rotation = deg2rad(config.r_float(m_identifier.c_str(), "sky_rotation"));
@@ -124,17 +123,13 @@ void CEnvDescriptor::load(CEnvironment& environment, CInifile& config)
 	hemi_color = config.r_fvector4(m_identifier.c_str(), "hemisphere_color");
 	sun_color = config.r_fvector3(m_identifier.c_str(), "sun_color");
 
-	sun_dir.setHP(deg2rad(config.r_float(m_identifier.c_str(), "sun_altitude")),
-				  deg2rad(config.r_float(m_identifier.c_str(), "sun_longitude")));
-
-	if (!_valid(sun_dir) || !(sun_dir.y < 0))
-		Msg("Invalid sun direction settings while loading");
-
 	lens_flare_id = environment.eff_LensFlare->AppendDef(environment, environment.m_suns_config,
 														 config.r_string(m_identifier.c_str(), "sun"));
+
 	tb_id = environment.eff_Thunderbolt->AppendDef(environment, environment.m_thunderbolt_collections_config,
 												   environment.m_thunderbolts_config,
 												   config.r_string(m_identifier.c_str(), "thunderbolt_collection"));
+
 	bolt_period = (tb_id.size()) ? config.r_float(m_identifier.c_str(), "thunderbolt_period") : 0.f;
 	bolt_duration = (tb_id.size()) ? config.r_float(m_identifier.c_str(), "thunderbolt_duration") : 0.f;
 	env_ambient = config.line_exist(m_identifier.c_str(), "ambient")

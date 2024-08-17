@@ -53,6 +53,8 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 
 		C.r_Sampler_clf("s_reflections", r2_RT_reflections);
 
+		C.r_Sampler_clf("s_autoexposure", r2_RT_autoexposure_cur);
+
 		jitter(C);
 		C.r_End();
 		break;

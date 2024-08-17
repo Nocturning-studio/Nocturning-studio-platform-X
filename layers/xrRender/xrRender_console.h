@@ -68,7 +68,8 @@ enum
 	RFLAG_EXP_MT_CALC = (1 << 1),
 	RFLAG_EXP_HW_OCC = (1 << 2),
 	RFLAG_SEPIA = (1 << 3),
-	RFLAG_CHROMATIC_ABBERATION = (1 << 4)
+	RFLAG_CHROMATIC_ABBERATION = (1 << 4),
+	RFLAG_DISABLE_POSTPROCESS = (1 << 5)
 };
 
 /*-------------------------------------------------------------------------------*/
@@ -134,6 +135,7 @@ extern ECORE_API u32 ps_r2_dof_quality;
 extern ECORE_API float ps_r2_ls_depth_scale; // 1.0f
 extern ECORE_API float ps_r2_ls_depth_bias;	 // -0.0001f
 extern ECORE_API float ps_r2_ls_squality;	 // 1.0f
+extern ECORE_API float ps_r2_tsm_bias;
 
 extern ECORE_API float ps_r2_sun_near; // 10.0f
 extern ECORE_API float ps_r2_sun_far;

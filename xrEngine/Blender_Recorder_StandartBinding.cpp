@@ -305,6 +305,18 @@ static class cl_pos_decompress_params : public R_constant_setup
 	}
 } binder_pos_decompress_params;
 
+extern ENGINE_API float psHUD_FOV;
+static class cl_pos_decompress_params_hud : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		float VertTan = -1.0f * tanf(deg2rad(psHUD_FOV / 2.0f));
+		float HorzTan = -VertTan / Device.fASPECT;
+
+		RCache.set_c(C, HorzTan, VertTan, (2.0f * HorzTan) / Device.dwWidth, (2.0f * VertTan) / Device.dwHeight);
+	}
+} binder_pos_decompress_params_hud;
+
 static class cl_sepia_params : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -448,6 +460,7 @@ class cl_amb_color : public R_constant_setup
 	}
 };
 static cl_amb_color binder_amb_color;
+
 class cl_hemi_color : public R_constant_setup
 {
 	u32 marker;
@@ -536,6 +549,7 @@ void CBlender_Compile::SetMapping()
 	r_Constant("far_plane", &binder_far_plane);
 
 	r_Constant("pos_decompression_params", &binder_pos_decompress_params);
+	r_Constant("pos_decompression_params_hud", &binder_pos_decompress_params_hud);
 
 	// env-params
 	r_Constant("env_color", &binder_env_color);

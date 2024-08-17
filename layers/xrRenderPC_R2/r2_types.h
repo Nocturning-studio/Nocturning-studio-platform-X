@@ -36,6 +36,9 @@
 #define r2_RT_ao "$user$ao"
 
 // Autoexposure
+#define r2_RT_autoexposure_t512 "$user$lum_t512"
+#define r2_RT_autoexposure_t256 "$user$lum_t256"
+#define r2_RT_autoexposure_t128 "$user$lum_t128"
 #define r2_RT_autoexposure_t64 "$user$lum_t64"
 #define r2_RT_autoexposure_t8 "$user$lum_t8"
 #define r2_RT_autoexposure_src "$user$autoexposure_src" // --- prev-frame-result
@@ -46,7 +49,7 @@
 #define r2_RT_smap_surf "$user$smap_surf"	// --- directional
 #define r2_RT_smap_depth "$user$smap_depth" // ---directional
 
-#define r2_material "$user$material" // ---
+//#define r2_material "$user$material" // ---
 
 #define r2_jitter "$user$jitter_"
 
@@ -60,8 +63,8 @@ const u32 SMAP_adapt_min = 32;
 const u32 SMAP_adapt_optimal = 768;
 const u32 SMAP_adapt_max = 1536;
 
-const u32 TEX_material_LdotN = 128; // diffuse,		X, almost linear = small res
-const u32 TEX_material_LdotH = 256; // specular,	Y
+//const u32 TEX_material_LdotN = 128; // diffuse,		X, almost linear = small res
+//const u32 TEX_material_LdotH = 256; // specular,	Y
 const u32 TEX_jitter = 64;
 const u32 TEX_jitter_count = 4;
 

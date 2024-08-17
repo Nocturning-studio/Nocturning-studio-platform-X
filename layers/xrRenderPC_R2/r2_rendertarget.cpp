@@ -246,10 +246,10 @@ CRenderTarget::CRenderTarget()
 
 	// SCREENSHOT
 	{
-		D3DFORMAT format = psDeviceFlags.test(rsFullscreen) ? D3DFMT_A8R8G8B8 : HW.Caps.fTarget;
+		D3DFORMAT format = psDeviceFlags.test(rsFullscreen) ? D3DFMT_A16B16G16R16 : HW.Caps.fTarget;
 		R_CHK(HW.pDevice->CreateOffscreenPlainSurface(dwWidth, dwHeight, format, D3DPOOL_SYSTEMMEM,
 													  &surf_screenshot_normal, NULL));
-		R_CHK(HW.pDevice->CreateTexture(128, 128, 1, NULL, D3DFMT_DXT1, D3DPOOL_SYSTEMMEM, &tex_screenshot_gamesave,
+		R_CHK(HW.pDevice->CreateTexture(128, 128, 1, NULL, D3DFMT_DXT5, D3DPOOL_SYSTEMMEM, &tex_screenshot_gamesave,
 										NULL));
 		R_CHK(tex_screenshot_gamesave->GetSurfaceLevel(0, &surf_screenshot_gamesave));
 	}
@@ -258,23 +258,20 @@ CRenderTarget::CRenderTarget()
 
 	// G-Buffer
 	{
-		rt_GBuffer_1.create(r2_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+		rt_GBuffer_1.create(r2_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 		rt_GBuffer_2.create(r2_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
-		rt_GBuffer_3.create(r2_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+		rt_GBuffer_3.create(r2_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	}
 
-	//	NORMAL
-	{
-		rt_Diffuse_Accumulator.create(r2_RT_Diffuse_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
-		rt_Specular_Accumulator.create(r2_RT_Specular_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	rt_Diffuse_Accumulator.create(r2_RT_Diffuse_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	rt_Specular_Accumulator.create(r2_RT_Specular_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
-		rt_Distortion_Mask.create(r2_RT_distortion_mask, dwWidth, dwHeight, D3DFMT_G16R16);
+	rt_Distortion_Mask.create(r2_RT_distortion_mask, dwWidth, dwHeight, D3DFMT_G16R16);
 
-		rt_Generic_2.create(r2_RT_generic2, dwWidth, dwHeight, D3DFMT_R8G8B8);
+	rt_Generic_2.create(r2_RT_generic2, dwWidth, dwHeight, D3DFMT_R8G8B8);
 
-		rt_Generic_0.create(r2_RT_generic0, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
-		rt_Motion_Blur_Saved_Frame.create(r2_RT_mblur_saved_frame, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
-	}
+	rt_Generic_0.create(r2_RT_generic0, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	rt_Motion_Blur_Saved_Frame.create(r2_RT_mblur_saved_frame, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
 	rt_Reflections.create(r2_RT_reflections, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 
@@ -285,7 +282,7 @@ CRenderTarget::CRenderTarget()
 
 	u32 size = RImplementation.o.smapsize;
 	rt_smap_depth.create(r2_RT_smap_depth, size, size, D3DFMT_D24X8);
-	rt_smap_surf.create(r2_RT_smap_surf, size, size, D3DFMT_R5G6B5);
+	rt_smap_surf.create(r2_RT_smap_surf, size, size, (D3DFORMAT)MAKEFOURCC('N', 'U', 'L', 'L'));
 	rt_smap_ZB = NULL;
 	s_accum_mask.create(b_accum_mask, "r2\\accum_mask");
 	s_accum_direct_cascade.create(b_accum_direct_cascade, "r2\\accum_direct_cascade");
@@ -353,6 +350,9 @@ CRenderTarget::CRenderTarget()
 
 	// autoexposure
 	{
+		rt_LUM_512.create(r2_RT_autoexposure_t512, 512, 512, D3DFMT_A8R8G8B8);
+		rt_LUM_256.create(r2_RT_autoexposure_t256, 256, 256, D3DFMT_A8R8G8B8);
+		rt_LUM_128.create(r2_RT_autoexposure_t128, 128, 128, D3DFMT_A8R8G8B8);
 		rt_LUM_64.create(r2_RT_autoexposure_t64, 64, 64, D3DFMT_A8R8G8B8);
 		rt_LUM_8.create(r2_RT_autoexposure_t8, 8, 8, D3DFMT_A8R8G8B8);
 		s_autoexposure.create(b_autoexposure, "r2\\autoexposure");
@@ -404,6 +404,7 @@ CRenderTarget::CRenderTarget()
 
 	// Build textures
 	{
+		/*
 		// Build material(s)
 		{
 			// Surface
@@ -472,6 +473,7 @@ CRenderTarget::CRenderTarget()
 			// R_CHK	(D3DXSaveTextureToFile	("x:\\r2_material.dds",D3DXIFF_DDS,t_material_surf,0));
 			// #endif
 		}
+		*/
 
 		// Build noise table
 		if (1)
@@ -538,12 +540,12 @@ CRenderTarget::CRenderTarget()
 CRenderTarget::~CRenderTarget()
 {
 	// Textures
-	t_material->surface_set(NULL);
+	//t_material->surface_set(NULL);
 
 #ifdef DEBUG
-	_SHOW_REF("t_material_surf", t_material_surf);
+	//_SHOW_REF("t_material_surf", t_material_surf);
 #endif // DEBUG
-	_RELEASE(t_material_surf);
+	//_RELEASE(t_material_surf);
 
 	t_LUM_src->surface_set(NULL);
 	t_LUM_dest->surface_set(NULL);
