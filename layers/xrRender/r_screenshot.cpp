@@ -92,7 +92,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 
 		ID3DXBuffer* saved = 0;
 
-#ifndef DEMO_BUILD
+#ifndef MASTER_GOLD
 		bool UsePngFormat = strstr(Core.Params, "-screenshot_format_png");
 #else
 		bool UsePngFormat = true;
@@ -167,7 +167,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		// begin
 		if (id == 0)
 		{
-			HW.pDevice->CreateCubeTexture(face_size, 1, NULL, D3DFMT_DXT5, D3DPOOL_SYSTEMMEM, &cubemap, NULL);
+			HW.pDevice->CreateCubeTexture(face_size, 1, NULL, D3DFMT_A16B16G16R16F, D3DPOOL_SYSTEMMEM, &cubemap, NULL);
 		}
 
 		D3DCUBEMAP_FACES face = (D3DCUBEMAP_FACES)id;
@@ -182,7 +182,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 			ID3DXBuffer* saved = 0;
 			D3DXSaveTextureToFileInMemory(&saved, D3DXIFF_DDS, cubemap, NULL);
 
-			IWriter* fs = FS.w_open("$screenshots$", file_name);
+			IWriter* fs = FS.w_open("$cubemaps$", file_name);
 			R_ASSERT(fs);
 
 			fs->w(saved->GetBufferPointer(), saved->GetBufferSize());
