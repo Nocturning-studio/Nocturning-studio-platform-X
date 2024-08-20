@@ -24,22 +24,41 @@ void R_occlusion::occq_create(u32 limit)
 	}
 	std::reverse(pool.begin(), pool.end());
 }
+
 void R_occlusion::occq_destroy()
 {
 	while (!used.empty())
 	{
-		_RELEASE(used.back().Q);
-		used.pop_back();
+		try
+		{
+			_RELEASE(used.back().Q);
+			used.pop_back();
+		}
+		catch (...)
+		{
+			Msg("! Failed to release OCCq `used`");
+			FlushLog();
+		}
 	}
+
 	while (!pool.empty())
 	{
-		_RELEASE(pool.back().Q);
-		pool.pop_back();
+		try
+		{
+			_RELEASE(pool.back().Q);
+			pool.pop_back();
+		}
+		catch (...)
+		{
+			Msg("! Failed to release OCCq `pool`");
+			FlushLog();
+		}
 	}
 	used.clear();
 	pool.clear();
 	fids.clear();
 }
+
 u32 R_occlusion::occq_begin(u32& ID)
 {
 	if (!enabled)
