@@ -37,7 +37,7 @@ D3DFORMAT trans_ssaa_fmt = (D3DFORMAT)MAKEFOURCC('S', 'S', 'A', 'A');
 D3DFORMAT trans_atoc_fmt = (D3DFORMAT)MAKEFOURCC('A', 'T', 'O', 'C');
 xr_token r1_aa_transluency_token[] = {
 	{"st_opt_disabled", 0}, 
-	{"st_opt_ssaa", trans_ssaa_fmt}, // хватит комментировать этот режим, он мне нужен
+	{"st_opt_ssaa", trans_ssaa_fmt},
 	{"st_opt_atoc", trans_atoc_fmt},
 	{0, 0},
 };
@@ -81,12 +81,20 @@ xr_token debug_render_token[] = {{"disabled", 0},
 								 {"gbuffer_albedo", 1},
 								 {"gbuffer_position", 2},
 								 {"gbuffer_normal", 3},
-								 {"gbuffer_glossiness", 4},
-								 {"gbuffer_lightmap_ao", 5},
-								 {"gbuffer_baked_ao", 6},
-								 {"accumulator_diffuse", 7},
-								 {"accumulator_specular", 8},
-								 {"real_time_ao", 9},
+								 {"gbuffer_roughness", 4},
+								 {"gbuffer_matallness", 5},
+								 {"gbuffer_subsurface", 6},
+								 {"gbuffer_emissive", 7},
+								 {"gbuffer_lightmap_ao", 8},
+								 {"gbuffer_baked_ao", 9},
+								 {"direct_light", 10},
+								 {"direct_light_diffuse", 11},
+								 {"direct_light_specular", 12},
+								 {"indirect_light", 13},
+								 {"indirect_light_diffuse", 14},
+								 {"indirect_light_specular", 15},
+								 {"subsurface_scattering", 16},
+								 {"real_time_ao", 17},
 								 {0, 0}};
 
 u32 ps_r2_rt_format = 1;
