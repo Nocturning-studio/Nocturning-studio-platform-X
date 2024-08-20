@@ -158,7 +158,7 @@ void generate_shader_name(CBlender_Compile& C, bool bIsHightQualityGeometry, LPC
 		bUseCustomMetallness = true;
 	C.sh_macro(bUseCustomMetallness, "USE_CUSTOM_METALLNESS", "1");
 
-	// Get metallness texture
+	// Get subsurface power texture
 	string_path CustomSubsurfaceTexture;
 	bool bUseCustomSubsurface = false;
 	strcpy_s(CustomSubsurfaceTexture, sizeof(CustomSubsurfaceTexture), AlbedoTexture);
@@ -166,6 +166,24 @@ void generate_shader_name(CBlender_Compile& C, bool bIsHightQualityGeometry, LPC
 	if (FS.exist(Dummy, "$game_textures$", CustomSubsurfaceTexture, ".dds"))
 		bUseCustomSubsurface = true;
 	C.sh_macro(bUseCustomSubsurface, "USE_CUSTOM_SUBSURFACE", "1");
+
+	// Get emissive power texture
+	string_path CustomEmissiveTexture;
+	bool bUseCustomEmissive = false;
+	strcpy_s(CustomEmissiveTexture, sizeof(CustomEmissiveTexture), AlbedoTexture);
+	strconcat(sizeof(CustomEmissiveTexture), CustomEmissiveTexture, CustomEmissiveTexture, "_emissive");
+	if (FS.exist(Dummy, "$game_textures$", CustomEmissiveTexture, ".dds"))
+		bUseCustomEmissive = true;
+	C.sh_macro(bUseCustomEmissive, "USE_CUSTOM_EMISSIVE", "1");
+
+	// Get displacement texture
+	string_path CustomDisplacementTexture;
+	bool bUseCustomDisplacement = false;
+	strcpy_s(CustomDisplacementTexture, sizeof(CustomDisplacementTexture), AlbedoTexture);
+	strconcat(sizeof(CustomDisplacementTexture), CustomDisplacementTexture, CustomDisplacementTexture, "_displacement");
+	if (FS.exist(Dummy, "$game_textures$", CustomDisplacementTexture, ".dds"))
+		bUseCustomDisplacement = true;
+	C.sh_macro(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
 
 	C.sh_macro(bUseBump, "USE_BUMP", "1");
 
@@ -224,6 +242,18 @@ void generate_shader_name(CBlender_Compile& C, bool bIsHightQualityGeometry, LPC
 	if (bUseCustomSubsurface)
 	{
 		C.r_Sampler("s_custom_subsurface", CustomSubsurfaceTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
+					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+	}
+
+	if (bUseCustomEmissive)
+	{
+		C.r_Sampler("s_custom_emissive", CustomEmissiveTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
+					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+	}
+
+	if (bUseCustomDisplacement)
+	{
+		C.r_Sampler("s_custom_displacement", CustomDisplacementTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
 					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 	}
 
