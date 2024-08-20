@@ -75,7 +75,7 @@ void compute_build_id()
 		break;
 	}
 
-	build_id = (years - start_year) * 365 + (days - start_day);
+	build_id = (years - start_year) * 365 + days - start_day;
 
 	for (int i = 0; i < months; ++i)
 		build_id += days_in_month[i];
@@ -91,8 +91,6 @@ struct _SoundProcessor : public pureFrame
 {
 	virtual void OnFrame()
 	{
-		// Msg							("------------- sound: %d
-		// [%3.2f,%3.2f,%3.2f]",u32(Device.dwFrame),VPUSH(Device.vCameraPosition));
 		Device.Statistic->Sound.Begin();
 		::Sound->update(Device.vCameraPosition, Device.vCameraDirection, Device.vCameraTop);
 		Device.Statistic->Sound.End();
@@ -119,7 +117,6 @@ void InitEngine()
 	while (!g_bIntroFinished)
 		Sleep(100);
 	Device.Initialize();
-	CheckCopyProtection();
 }
 
 void InitSettings()
@@ -135,26 +132,32 @@ void InitSettings()
 	CHECK_OR_EXIT(!pGameIni->sections().empty(),
 				  make_string("Cannot find file %s.\nReinstalling application may fix this problem.", fname));
 }
+
 void InitConsole()
 {
+	Msg("Initializing Console...");
+
 #ifdef DEDICATED_SERVER
-	{
 		Console = xr_new<CTextConsole>();
-	}
 #else
-	//	else
-	{
 		Console = xr_new<CConsole>();
-	}
 #endif
+
 	Console->Initialize();
 
-	strcpy_s(Console->ConfigFile, "user.ltx");
 	if (strstr(Core.Params, "-ltx "))
 	{
 		string64 c_name;
 		(void)sscanf(strstr(Core.Params, "-ltx ") + 5, "%[^ ] ", c_name);
 		strcpy_s(Console->ConfigFile, c_name);
+		Msg("Execute custom game settings file: %s", c_name);
+	}
+	else
+	{
+		strcpy_s(Console->ConfigFile, sizeof(Console->ConfigFile), "user_");
+		strconcat(sizeof(Console->ConfigFile), Console->ConfigFile, Console->ConfigFile, Core.UserName);
+		strconcat(sizeof(Console->ConfigFile), Console->ConfigFile, Console->ConfigFile, "_game_settings.ltx");
+		Msg("Execute game settings file: %s", Console->ConfigFile);
 	}
 }
 
@@ -166,16 +169,18 @@ void InitInput()
 
 	pInput = xr_new<CInput>(bCaptureInput);
 }
+
 void destroyInput()
 {
 	xr_delete(pInput);
 }
+
 void InitSound()
 {
+	Msg("Initializing Sound...");
 	CSound_manager_interface::_create(u64(Device.m_hWnd));
-	//	Msg				("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-	//	ref_sound*	x	=
 }
+
 void destroySound()
 {
 	CSound_manager_interface::_destroy();
@@ -271,7 +276,6 @@ void Startup()
 	logoWindow = NULL;
 
 	// Main cycle
-	CheckCopyProtection();
 	Memory.mem_usage();
 	Device.Run();
 
@@ -965,14 +969,11 @@ void CApplication::LoadBegin()
 #endif
 		phase_timer.Start();
 		load_stage = 0;
-
-		CheckCopyProtection();
 	}
 }
 
 void CApplication::LoadEnd()
 {
-
 	ll_dwReference--;
 	if (0 == ll_dwReference)
 	{
@@ -1009,7 +1010,6 @@ void CApplication::LoadDraw()
 		load_draw_internal();
 
 	Device.End();
-	CheckCopyProtection();
 }
 
 void CApplication::LoadTitleInt(LPCSTR str)
@@ -1108,8 +1108,6 @@ void CApplication::Level_Set(u32 L)
 		hLevelLogo.create("font", temp);
 	else
 		hLevelLogo.create("font", "intro\\intro_no_start_picture");
-
-	CheckCopyProtection();
 }
 
 int CApplication::Level_ID(LPCSTR name)
@@ -1157,6 +1155,7 @@ void FreeLauncher()
 
 int doLauncher()
 {
+#pragma todo("Deathman to Deathman: Починить лаунчер и режим бенчмарка")ж
 	/*
 		execUserScript();
 		InitLauncher();
@@ -1209,14 +1208,6 @@ void doBenchmark(LPCSTR name)
 		}
 
 		Engine.External.Initialize();
-
-		strcpy_s(Console->ConfigFile, "user.ltx");
-		if (strstr(Core.Params, "-ltx "))
-		{
-			string64 c_name;
-			sscanf(strstr(Core.Params, "-ltx ") + 5, "%[^ ] ", c_name);
-			strcpy_s(Console->ConfigFile, c_name);
-		}
 
 		Startup();
 	}
