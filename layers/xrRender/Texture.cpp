@@ -279,6 +279,8 @@ IDirect3DBaseTexture9* CRender::texture_load(LPCSTR fRName, u32& ret_msize)
 		goto _DDS;
 	if (FS.exist(fn, "$game_textures$", fname, ".dds"))
 		goto _DDS;
+	if (FS.exist(fn, "$game_textures$", fname, ".hdr"))
+		goto _DDS;
 
 #ifdef _EDITOR
 	ELog.Msg(mtError, "Can't find texture '%s'", fname);
