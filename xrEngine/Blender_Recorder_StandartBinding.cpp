@@ -317,6 +317,14 @@ static class cl_pos_decompress_params_hud : public R_constant_setup
 	}
 } binder_pos_decompress_params_hud;
 
+static class cl_fov : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, Device.fFOV, 0, 0, 0);
+	}
+} binder_fov;
+
 static class cl_sepia_params : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -550,6 +558,9 @@ void CBlender_Compile::SetMapping()
 
 	r_Constant("pos_decompression_params", &binder_pos_decompress_params);
 	r_Constant("pos_decompression_params_hud", &binder_pos_decompress_params_hud);
+
+	r_Constant("fov", &binder_fov);
+	
 
 	// env-params
 	r_Constant("env_color", &binder_env_color);

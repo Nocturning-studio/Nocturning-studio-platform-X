@@ -54,8 +54,7 @@ Flags32 ps_r2_ls_flags = {};
 // R2a/R2/R2.5 specific tokens
 /*-------------------------------------------------------------------------------*/
 u32 ps_r2_ao_quality = 2;
-xr_token ao_quality_token[] = {
-	{"st_opt_low", 1}, {"st_opt_high", 2}, {0, 0}};
+xr_token ao_quality_token[] = {{"st_opt_low", 1}, {"st_opt_medium", 2}, {"st_opt_high", 3}, {0, 0}};
 
 u32 ps_r2_bloom_quality = 2;
 xr_token bloom_quality_token[] = {
