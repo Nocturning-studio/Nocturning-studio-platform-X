@@ -9,8 +9,8 @@
 #define r2_RT_GBuffer_3 "$user$gbuffer_3"
 
 // Light Accumulating
-#define r2_RT_Diffuse_Accumulator "$user$accumulator_diffuse"
-#define r2_RT_Specular_Accumulator "$user$accumulator_specular"
+#define r2_RT_Light_Accumulator "$user$accumulator"
+//#define r2_RT_Specular_Accumulator "$user$accumulator_specular"
 
 // Environment
 #define r2_T_envs0 "$user$env_s0"

@@ -284,9 +284,8 @@ void CRender::create()
 
 	// rmNormal					();
 	marker = 0;
-	ZeroMemory(q_sync_point, sizeof(q_sync_point));
-	for (u32 i = 0; i < HW.Caps.iGPUNum; ++i)
-		R_CHK(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[i]));
+	R_CHK(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[0]));
+	R_CHK(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[1]));
 
 	xrRender_apply_tf();
 	::PortalTraverser.initialize();
@@ -295,8 +294,8 @@ void CRender::create()
 void CRender::destroy()
 {
 	::PortalTraverser.destroy();
-	for (u32 i = 0; i < HW.Caps.iGPUNum; ++i)
-		_RELEASE(q_sync_point[i]);
+	_RELEASE(q_sync_point[1]);
+	_RELEASE(q_sync_point[0]);
 	HWOCC.occq_destroy();
 	xr_delete(Models);
 	xr_delete(Target);
@@ -329,14 +328,14 @@ void CRender::reset_begin()
 
 	xr_delete(Target);
 	HWOCC.occq_destroy();
-	for (u32 i = 0; i < HW.Caps.iGPUNum; ++i)
-		_RELEASE(q_sync_point[i]);
+	_RELEASE(q_sync_point[1]);
+	_RELEASE(q_sync_point[0]);
 }
 
 void CRender::reset_end()
 {
-	for (u32 i = 0; i < HW.Caps.iGPUNum; ++i)
-		R_CHK(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[i]));
+	R_CHK(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[0]));
+	R_CHK(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[1]));
 	HWOCC.occq_create(occq_size);
 
 	update_options();
