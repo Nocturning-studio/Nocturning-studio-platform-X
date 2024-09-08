@@ -504,6 +504,16 @@ static class cl_v2w final : public R_constant_setup
 	}
 } binder_v2w;
 
+static class cl_invP final : public R_constant_setup
+{
+	void setup(R_constant* C) override
+	{
+		Fmatrix m_invP;
+		m_invP.invert(Device.mProject);
+		RCache.set_c(C, m_invP);
+	}
+} binder_invP;
+
 // Standart constant-binding
 void CBlender_Compile::SetMapping()
 {
@@ -512,6 +522,7 @@ void CBlender_Compile::SetMapping()
 	r_Constant("m_invW", &binder_invw);
 	r_Constant("m_V", &binder_v);
 	r_Constant("m_P", &binder_p);
+	r_Constant("m_invP", &binder_invP);
 	r_Constant("m_WV", &binder_wv);
 	r_Constant("m_VP", &binder_vp);
 	r_Constant("m_WVP", &binder_wvp);
