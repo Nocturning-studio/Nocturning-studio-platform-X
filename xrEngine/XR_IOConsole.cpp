@@ -48,6 +48,22 @@ text_editor::line_edit_control& CConsole::ec()
 	return m_editor->control();
 }
 
+class ConsoleInput : public text_editor::line_editor
+{
+  public:
+	ConsoleInput(u32 strBufferSize) : text_editor::line_editor(strBufferSize)
+	{
+	}
+
+	void IR_OnMouseWheel(int direction) override
+	{
+		if (direction < 0)
+			Console->Next_log();
+		else
+			Console->Prev_log();
+	}
+};
+
 u32 CConsole::get_mark_color(Console_mark type)
 {
 	u32 color = default_font_color;
@@ -126,7 +142,7 @@ bool CConsole::is_mark(Console_mark type)
 
 CConsole::CConsole() : m_hShader_back(nullptr), m_hGeom_con(nullptr)
 {
-	m_editor = xr_new<text_editor::line_editor>((u32)CONSOLE_BUF_SIZE);
+	m_editor = xr_new<ConsoleInput>(CONSOLE_BUF_SIZE);
 	m_cmd_history_max = cmd_history_max;
 	m_disable_tips = false;
 	Register_callbacks();
