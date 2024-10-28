@@ -1236,6 +1236,14 @@ void CActor::renderable_Render()
 	inherited::renderable_Render();
 	if (!HUDview())
 	{
+		if ((cam_active==eacFirstEye &&									// first eye cam
+		::Render->get_render_type() == IRender_interface::RENDER_R2 &&	// R2
+		::Render->active_phase() ==	1)									// shadow map rendering on R2
+		||
+		!(IsFocused() &&
+		(cam_active==eacFirstEye) &&
+		((!m_holder) || (m_holder && m_holder->allowWeapon() && m_holder->HUDView()))))
+
 		CInventoryOwner::renderable_Render();
 	}
 }

@@ -419,6 +419,11 @@ class CActor : public CEntityAlive,
 	{
 		return cameras[eacFirstEye];
 	}
+	// KD: need to know which cam active outside actor methods
+	IC EActorCameras active_cam()
+	{
+		return cam_active;
+	}
 
   protected:
 	void cam_Set(EActorCameras style);

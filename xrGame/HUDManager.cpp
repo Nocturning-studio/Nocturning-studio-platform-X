@@ -212,6 +212,24 @@ void CHUDManager::Render_Last()
 	O->OnHUDDraw(this);
 	::Render->set_HUD(FALSE);
 }
+
+void CHUDManager::Render_Actor_Shadow() // added by KD
+{
+	if (0 == pUI)
+		return;
+	CObject* O = g_pGameLevel->CurrentViewEntity();
+	if (0 == O)
+		return;
+	CActor* A = smart_cast<CActor*>(O);
+	if (!A)
+		return;
+	if (A->active_cam() != eacFirstEye)
+		return; // KD: we need to render actor shadow only in first eye cam mode because
+				// in other modes actor model already in scene graph and renders well
+	::Render->set_Object(O->H_Root());
+	O->renderable_Render();
+}
+
 extern void draw_wnds_rects();
 extern ENGINE_API BOOL bShowPauseString;
 // отрисовка элементов интерфейса

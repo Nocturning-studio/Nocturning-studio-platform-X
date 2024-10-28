@@ -270,6 +270,9 @@ class ENGINE_API IRender_interface
 	virtual void rmNormal() = 0;
 	virtual u32 memory_usage() = 0;
 
+	// KD: need to know, what R2 phase is active now
+	virtual u32 active_phase() = 0;
+
 	// Constructor/destructor
 	virtual ~IRender_interface();
 };
