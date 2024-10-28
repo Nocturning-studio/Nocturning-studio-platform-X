@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "UIInventoryWnd.h"
 #include "UISleepWnd.h"
 #include "../level.h"
@@ -280,14 +280,29 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 
 	EListType t_new = GetType(new_owner);
 	EListType t_old = GetType(old_owner);
-	if (t_new == t_old)
+
+	// Real Wolf.
+	if (t_new == t_old && t_new != iwSlot)
 		return true;
 
 	switch (t_new)
 	{
 	case iwSlot: {
-		if (GetSlotList(CurrentIItem()->GetSlot()) == new_owner)
+		uint32 slot = CurrentIItem()->GetSlot();
+
+		if (GetSlotList(slot) == new_owner && t_new != t_old)
 			ToSlot(itm, true);
+
+		else if (new_owner == m_pUIPistolList && slot == RIFLE_SLOT)
+		{
+			CurrentIItem()->SetSlot(PISTOL_SLOT);
+			ToSlot(itm, true);
+		}
+		else if (new_owner == m_pUIAutomaticList && slot == PISTOL_SLOT)
+		{
+			CurrentIItem()->SetSlot(RIFLE_SLOT);
+			ToSlot(itm, true);
+		}
 	}
 	break;
 	case iwBag: {

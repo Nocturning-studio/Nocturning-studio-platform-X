@@ -272,6 +272,15 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate)
 		return false;
 	}
 
+	for (int i = 0; i < m_slots.size(); i++)
+		if (m_slots[i].m_pIItem == pIItem)
+		{
+			if (i == m_iActiveSlot)
+				Activate(NO_ACTIVE_SLOT);
+			m_slots[i].m_pIItem = NULL;
+			break;
+		}
+
 	m_slots[pIItem->GetSlot()].m_pIItem = pIItem;
 
 	// удалить из рюкзака или пояса

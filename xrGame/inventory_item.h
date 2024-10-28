@@ -245,6 +245,11 @@ class CInventoryItem : public CAttachableItem,
 		return false;
 	};
 
+	void SetSlot(u32 slot)
+	{
+		m_slot = slot;
+	};
+
   protected:
 	u32 m_slot;
 	u32 m_cost;
