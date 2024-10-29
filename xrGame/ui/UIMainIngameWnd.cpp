@@ -331,13 +331,21 @@ void CUIMainIngameWnd::SetAmmoIcon(const shared_str& sect_name)
 	float h = INV_GRID_HEIGHT * 0.9f; // 1 cell
 
 	float x = UIWeaponIcon_rect.x1;
-	if (iGridWidth < 2)
-		x += (UIWeaponIcon_rect.width() - w) / 2.0f;
+	float posx_16 = 8.0f;
+	float posx = 10.0f;
 
-	UIWeaponIcon.SetWndPos(x, UIWeaponIcon_rect.y1);
+	if (iGridWidth == iGridHeight == 1)
+	{
+		posx_16 = 28.0f;
+		posx = 30.0f;
+	}
+	UIWeaponIcon.SetWndPos(x + UI()->is_16_9_mode() ? posx_16 : posx, UIWeaponIcon_rect.y1);
 
-	UIWeaponIcon.SetWidth(w);
-	UIWeaponIcon.SetHeight(h);
+	if (UI()->is_16_9_mode())
+		UIWeaponIcon.SetWidth(w * UI()->get_current_kx() * 1.05f);
+	else
+		UIWeaponIcon.SetWidth(w);
+	UIWeaponIcon.SetHeight(h * 0.9f);
 };
 
 void CUIMainIngameWnd::Update()
