@@ -148,9 +148,9 @@ void CCustomOutfit::OnMoveToSlot()
 	}
 };
 
-void CCustomOutfit::OnMoveToRuck()
+void CCustomOutfit::OnMoveToRuck(EItemPlace prev)
 {
-	if (m_pCurrentInventory)
+	if (m_pCurrentInventory && prev == eItemPlaceSlot)
 	{
 		CActor* pActor = smart_cast<CActor*>(m_pCurrentInventory->GetOwner());
 		if (pActor)

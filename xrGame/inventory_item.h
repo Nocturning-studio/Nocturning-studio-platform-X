@@ -182,7 +182,7 @@ class CInventoryItem : public CAttachableItem,
 
 	virtual void OnMoveToSlot(){};
 	virtual void OnMoveToBelt(){};
-	virtual void OnMoveToRuck(){};
+	virtual void OnMoveToRuck(EItemPlace prev){};
 
 	int GetGridWidth() const;
 	int GetGridHeight() const;
