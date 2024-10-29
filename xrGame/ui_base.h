@@ -116,6 +116,7 @@ class ui_core : public CDeviceResetNotifier
 
 	virtual void OnDeviceReset();
 	static bool is_16_9_mode();
+	float get_current_kx();
 	shared_str get_xml_name(LPCSTR fn);
 };
 
