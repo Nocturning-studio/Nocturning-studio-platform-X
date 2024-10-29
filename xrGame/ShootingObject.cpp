@@ -113,6 +113,8 @@ void CShootingObject::LoadFireParams(LPCSTR section, LPCSTR prefix)
 	fvHitPower[egdMaster] =
 		(float)atof(_GetItem(*s_sHitPower, 0, buffer)); // первый параметр - это хит для уровня игры мастер
 
+	#pragma todo("Deathman to ALL: пофиксить то что первый параметр хита задается для мастера, не легенды")
+	fvHitPower[egdLegend] = fvHitPower[egdMaster] * 2.0f;
 	fvHitPower[egdVeteran] = fvHitPower[egdMaster]; // изначально параметры для других уровней
 	fvHitPower[egdStalker] = fvHitPower[egdMaster]; // сложности
 	fvHitPower[egdNovice] = fvHitPower[egdMaster];	// такие же

@@ -6,10 +6,9 @@
 
 using namespace luabind;
 
-ESingleGameDifficulty g_SingleGameDifficulty = egdMaster;
+ESingleGameDifficulty g_SingleGameDifficulty = egdNovice;
 
-xr_token difficulty_type_token[] = {
-	{"gd_novice", egdNovice}, {"gd_stalker", egdStalker}, {"gd_veteran", egdVeteran}, {"gd_master", egdMaster}, {0, 0}};
+xr_token difficulty_type_token[] = {{"gd_novice", egdNovice}, {"gd_stalker", egdStalker}, {"gd_veteran", egdVeteran}, {"gd_master", egdMaster}, {"gd_legend", egdLegend}, {0, 0}};
 
 game_cl_Single::game_cl_Single()
 {

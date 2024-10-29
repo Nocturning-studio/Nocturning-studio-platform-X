@@ -1120,6 +1120,7 @@ void CActor::shedule_Update(u32 DT)
 		{
 			if (!m_HeavyBreathSnd._feedback())
 			{
+				Device.time_factor(0.25f);
 				m_HeavyBreathSnd.play_at_pos(this, Fvector().set(0, ACTOR_HEIGHT, 0), sm_Looped | sm_2D);
 			}
 			else
@@ -1129,6 +1130,7 @@ void CActor::shedule_Update(u32 DT)
 		}
 		else if (m_HeavyBreathSnd._feedback())
 		{
+			Device.time_factor(1.0f);
 			m_HeavyBreathSnd.stop();
 		}
 
@@ -1729,7 +1731,7 @@ bool CActor::can_attach(const CInventoryItem* inventory_item) const
 void CActor::OnDifficultyChanged()
 {
 	// immunities
-	VERIFY(g_SingleGameDifficulty >= egdNovice && g_SingleGameDifficulty <= egdMaster);
+	VERIFY(g_SingleGameDifficulty >= egdNovice && g_SingleGameDifficulty <= egdLegend);
 	LPCSTR diff_name = get_token_name(difficulty_type_token, g_SingleGameDifficulty);
 	string128 tmp;
 	strconcat(sizeof(tmp), tmp, "actor_immunities_", diff_name);
