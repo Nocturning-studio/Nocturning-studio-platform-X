@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include "UIDialogWnd.h"
 #include "UIEditBox.h"
@@ -46,6 +46,20 @@ class CUICarBodyWnd : public CUIDialogWnd
 	void UpdateLists_delayed();
 
   protected:
+	enum eCarBodySndAction
+	{
+		eCarBodySndOpen = 0,
+		eCarBodySndClose,
+		eCarBodyItemToRuck,
+		eCarBodyProperties,
+		eCarBodyDropItem,
+		eCarBodyDetachAddon,
+		eCarBodyItemUse,
+		eCarBodySndMax
+	};
+
+	ref_sound sounds[eCarBodySndMax];
+	void PlaySnd(eCarBodySndAction a);
 	CInventoryOwner* m_pOurObject;
 
 	CInventoryOwner* m_pOthersObject;
@@ -64,7 +78,7 @@ class CUICarBodyWnd : public CUIDialogWnd
 	CUIStatic* m_pUIOurBagWnd;
 	CUIStatic* m_pUIOthersBagWnd;
 
-	// информация о персонажах
+	//ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГї Г® ГЇГҐГ°Г±Г®Г­Г Г¦Г Гµ
 	CUIStatic* m_pUIOurIcon;
 	CUIStatic* m_pUIOthersIcon;
 	CUICharacterInfo* m_pUICharacterInfoLeft;
@@ -86,7 +100,7 @@ class CUICarBodyWnd : public CUIDialogWnd
 	CUICellItem* CurrentItem();
 	PIItem CurrentIItem();
 
-	// Взять все
+	// Г‚Г§ГїГІГј ГўГ±ГҐ
 	void TakeAll();
 
 	bool xr_stdcall OnItemDrop(CUICellItem* itm);
@@ -97,4 +111,9 @@ class CUICarBodyWnd : public CUIDialogWnd
 
 	bool TransferItem(PIItem itm, CInventoryOwner* owner_from, CInventoryOwner* owner_to, bool b_check);
 	void BindDragDropListEnents(CUIDragDropListEx* lst);
+
+	void ColorizeItem(CUICellItem* itm);
+
+	void DetachAddon(const char* addon_name);
+	void move_item(u16 from_id, u16 to_id, u16 what_id);
 };
