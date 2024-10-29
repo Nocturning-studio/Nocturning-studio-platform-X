@@ -168,7 +168,7 @@ void CBlender_Compile::r_Sampler_tex(LPCSTR name, LPCSTR texture)
 }
 void CBlender_Compile::r_Sampler_gaussian(LPCSTR name, LPCSTR texture)
 {
-	r_Sampler(name, texture, false, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_GAUSSIANQUAD);
+	r_Sampler(name, texture, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_GAUSSIANQUAD);
 }
 void CBlender_Compile::r_End()
 {
