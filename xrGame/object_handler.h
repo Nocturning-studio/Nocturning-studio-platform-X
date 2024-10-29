@@ -63,7 +63,7 @@ class CObjectHandler : public CInventoryOwner
 	virtual BOOL net_Spawn(CSE_Abstract* DC);
 	virtual void update();
 	virtual void OnItemTake(CInventoryItem* inventory_item);
-	virtual void OnItemDrop(CInventoryItem* inventory_item);
+	virtual void OnItemDrop(CInventoryItem* inventory_item, bool just_before_destroy);
 	virtual void attach(CInventoryItem* inventory_item);
 	virtual void detach(CInventoryItem* inventory_item);
 	CInventoryItem* best_weapon() const;

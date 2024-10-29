@@ -1492,9 +1492,9 @@ void CActor::OnItemTake(CInventoryItem* inventory_item)
 		return;
 }
 
-void CActor::OnItemDrop(CInventoryItem* inventory_item)
+void CActor::OnItemDrop(CInventoryItem* inventory_item, bool just_before_destroy)
 {
-	CInventoryOwner::OnItemDrop(inventory_item);
+	CInventoryOwner::OnItemDrop(inventory_item, just_before_destroy);
 
 	CArtefact* artefact = smart_cast<CArtefact*>(inventory_item);
 	if (artefact && artefact->m_eItemPlace == eItemPlaceBelt)

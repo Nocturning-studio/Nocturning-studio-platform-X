@@ -379,7 +379,8 @@ class CGameObject : public CObject, public CUsableScriptObject, public CScriptBi
 	{
 		return false;
 	}
-
+	// [12.11.07] Alexander Maniluk: added this method for moving object
+	virtual void MoveTo(Fvector const& position){};
   public:
 	typedef CScriptCallbackEx<void> CScriptCallbackExVoid;
 

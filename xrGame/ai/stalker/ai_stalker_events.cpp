@@ -15,6 +15,7 @@
 #include "../../../xrNetServer/net_utils.h"
 #include "../../level.h"
 #include "../../ai_monster_space.h"
+#include "../../CharacterPhysicsSupport.h"
 
 using namespace StalkerSpace;
 using namespace MonsterSpace;
@@ -78,17 +79,30 @@ void CAI_Stalker::OnEvent(NET_Packet& P, u16 type)
 			break;
 
 		bool just_before_destroy = !P.r_eof() && P.r_u8();
-		O->SetTmpPreDestroy(just_before_destroy);
+		bool dont_create_shell = (type == GE_TRADE_SELL) || just_before_destroy;
 
-		if (inventory().DropItem(smart_cast<CGameObject*>(O)) && !O->getDestroy())
-		{
-			O->H_SetParent(0, just_before_destroy);
-			feel_touch_deny(O, 2000);
-		}
+		O->SetTmpPreDestroy(just_before_destroy);
+		on_ownership_reject(O, dont_create_shell);
 
 		break;
 	}
 	}
+}
+
+void CAI_Stalker::on_ownership_reject(CObject* O, bool just_before_destroy)
+{
+	m_pPhysics_support->in_UpdateCL();
+	CKinematics* const kinematics = smart_cast<CKinematics*>(Visual());
+	kinematics->CalculateBones_Invalidate();
+	kinematics->CalculateBones(true);
+	CGameObject* const game_object = smart_cast<CGameObject*>(O);
+	VERIFY(game_object);
+
+	if (!inventory().DropItem(game_object, just_before_destroy, just_before_destroy))
+		return;
+	if (O->getDestroy())
+		return;
+	feel_touch_deny(O, 2000);
 }
 
 void CAI_Stalker::feel_touch_new(CObject* O)

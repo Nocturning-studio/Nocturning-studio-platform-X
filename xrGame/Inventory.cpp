@@ -186,7 +186,7 @@ void CInventory::Take(CGameObject* pObj, bool bNotActivate, bool strict_placemen
 	VERIFY(pIItem->m_eItemPlace != eItemPlaceUndefined);
 }
 
-bool CInventory::DropItem(CGameObject* pObj)
+bool CInventory::DropItem(CGameObject* pObj, bool just_before_destroy, bool dont_create_shell)
 {
 	CInventoryItem* pIItem = smart_cast<CInventoryItem*>(pObj);
 	VERIFY(pIItem);
@@ -223,7 +223,26 @@ bool CInventory::DropItem(CGameObject* pObj)
 	case eItemPlaceSlot: {
 		R_ASSERT(InSlot(pIItem));
 		if (m_iActiveSlot == pIItem->GetSlot())
-			Activate(NO_ACTIVE_SLOT);
+		{
+			CActor* pActor = smart_cast<CActor*>(m_pOwner);
+			if (!pActor || pActor->g_Alive())
+			{
+				if (just_before_destroy)
+				{
+#ifdef DEBUG
+					Msg("---DropItem activating slot [-1], forced, Frame[%d]", Device.dwFrame);
+#endif // #ifdef DEBUG
+					Activate(NO_ACTIVE_SLOT, eGeneral, true);
+				}
+				else
+				{
+#ifdef DEBUG
+					Msg("---DropItem activating slot [-1], Frame[%d]", Device.dwFrame);
+#endif // #ifdef DEBUG
+					Activate(NO_ACTIVE_SLOT);
+				}
+			}
+		}
 
 		m_slots[pIItem->GetSlot()].m_pIItem = NULL;
 		pIItem->object().processing_deactivate();
@@ -241,11 +260,12 @@ bool CInventory::DropItem(CGameObject* pObj)
 
 	pIItem->m_pCurrentInventory = NULL;
 
-	m_pOwner->OnItemDrop(smart_cast<CInventoryItem*>(pObj));
+	m_pOwner->OnItemDrop(smart_cast<CInventoryItem*>(pObj), just_before_destroy);
 
 	CalcTotalWeight();
 	InvalidateState();
 	m_drop_last_frame = true;
+	pObj->H_SetParent(0, dont_create_shell);
 	return true;
 }
 

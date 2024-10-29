@@ -92,25 +92,67 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 	case GE_TRADE_SELL:
 	case GE_OWNERSHIP_REJECT: {
 		P.r_u16(id);
-		CObject* O = Level().Objects.net_Find(id);
-		if (!O)
+		CObject* Obj = Level().Objects.net_Find(id);
+		//			R_ASSERT2( Obj, make_string("GE_OWNERSHIP_REJECT: Object not found, id = %d", id).c_str() );
+		VERIFY2(Obj, make_string("GE_OWNERSHIP_REJECT: Object not found, id = %d", id).c_str());
+		if (!Obj)
 		{
-			Msg("! Error: No object to reject/sell [%d]", id);
+			Msg("! GE_OWNERSHIP_REJECT: Object not found, id = %d", id);
 			break;
 		}
 		bool just_before_destroy = !P.r_eof() && P.r_u8();
-		O->SetTmpPreDestroy(just_before_destroy);
-		if (inventory().DropItem(smart_cast<CGameObject*>(O)) && !O->getDestroy())
+		bool dont_create_shell = (type == GE_TRADE_SELL) || just_before_destroy;
+		Obj->SetTmpPreDestroy(just_before_destroy);
+		CGameObject* GO = smart_cast<CGameObject*>(Obj);
+#ifdef MP_LOGGING
+		string64 act;
+		xr_strcpy(act, (type == GE_TRADE_SELL) ? "sells" : "rejects");
+		Msg("--- Actor [%d][%s]  %s  [%d][%s]", ID(), Name(), act, GO->ID(), GO->cNameSect().c_str());
+#endif // MP_LOGGING
+		VERIFY(GO->H_Parent());
+		if (!GO->H_Parent())
 		{
-			O->H_SetParent(0, just_before_destroy);
-			//.				feel_touch_deny(O,2000);
-			Level().m_feel_deny.feel_touch_deny(O, 1000);
+			Msg("! ERROR: Actor [%d][%s] tries to reject item [%d][%s] that has no parent", ID(), Name(), GO->ID(),
+				GO->cNameSect().c_str());
+			break;
 		}
 
-		SelectBestWeapon(O);
+		VERIFY2(GO->H_Parent()->ID() == ID(), make_string("actor [%d][%s] tries to drop not own object [%d][%s]", ID(),
+														  Name(), GO->ID(), GO->cNameSect().c_str())
+												  .c_str());
+		if (GO->H_Parent()->ID() != ID())
+		{
+			CActor* real_parent = smart_cast<CActor*>(GO->H_Parent());
+			Msg("! ERROR: Actor [%d][%s] tries to drop not own item [%d][%s], his parent is [%d][%s]", ID(), Name(),
+				GO->ID(), GO->cNameSect().c_str(), real_parent->ID(), real_parent->Name());
+			break;
+		}
 
-		if (Level().CurrentViewEntity() == this && HUD().GetUI() && HUD().GetUI()->UIGame())
-			HUD().GetUI()->UIGame()->ReInitShownUI();
+		if (!Obj->getDestroy() && inventory().DropItem(GO, just_before_destroy, dont_create_shell))
+		{
+			// O->H_SetParent(0,just_before_destroy);//moved to DropItem
+			// feel_touch_deny(O,2000);
+			Level().m_feel_deny.feel_touch_deny(Obj, 1000);
+
+			// [12.11.07] Alexander Maniluk: extended GE_OWNERSHIP_REJECT packet for drop item to selected position
+			Fvector dropPosition;
+			if (!P.r_eof())
+			{
+				P.r_vec3(dropPosition);
+				GO->MoveTo(dropPosition);
+				// Other variant :)
+				/*NET_Packet MovePacket;
+				MovePacket.w_begin(M_MOVE_ARTEFACTS);
+				MovePacket.w_u8(1);
+				MovePacket.w_u16(id);
+				MovePacket.w_vec3(dropPosition);
+				u_EventSend(MovePacket);*/
+			}
+			if (!just_before_destroy)
+				SelectBestWeapon(Obj);
+			if (Level().CurrentViewEntity() == this && HUD().GetUI() && HUD().GetUI()->UIGame())
+				HUD().GetUI()->UIGame()->ReInitShownUI();
+		}
 	}
 	break;
 	case GE_INV_ACTION: {
