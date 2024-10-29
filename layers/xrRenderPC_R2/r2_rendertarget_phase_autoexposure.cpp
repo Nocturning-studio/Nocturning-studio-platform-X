@@ -261,7 +261,7 @@ void CRenderTarget::phase_autoexposure()
 	}
 
 	// 222: Perform LUM-SAT, pass 2, 8x8 => 1x1
-	u32 gpu_id = Device.dwFrame % HW.Caps.iGPUNum;
+	u32 gpu_id = Device.dwFrame % 2;
 	u_setrt(rt_LUM_pool[gpu_id * 2 + 1], NULL, NULL, NULL);
 	{
 		// Build filter-kernel
@@ -311,48 +311,4 @@ void CRenderTarget::phase_autoexposure()
 
 	// Cleanup states
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
-
-	/*
-	{
-		u_setrt(rt_Generic_0, NULL, NULL, NULL);
-
-		RCache.set_CullMode(CULL_NONE);
-		RCache.set_Stencil(FALSE);
-
-		// Constants
-		u32 Offset = 0;
-		u32 C = color_rgba(0, 0, 0, 255);
-
-		float w = float(Device.dwWidth);
-		float h = float(Device.dwHeight);
-
-		float d_Z = EPS_S;
-		float d_W = 1.f;
-
-		Fvector2 p0, p1;
-		p0.set(0.5f / w, 0.5f / h);
-		p1.set((w + 0.5f) / w, (h + 0.5f) / h);
-
-		// Fill vertex buffer
-		FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
-		pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
-		pv++;
-		pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
-		pv++;
-		pv->set(w, h, d_Z, d_W, C, p1.x, p1.y);
-		pv++;
-		pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
-		pv++;
-		RCache.Vertex.Unlock(4, g_combine->vb_stride);
-
-		// Set pass
-		RCache.set_Element(s_autoexposure->E[3]);
-
-		// Set geometry
-		RCache.set_Geometry(g_combine);
-
-		// Draw
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
-	}
-	*/
 }

@@ -5,6 +5,7 @@
 #include "blender_ambient_occlusion.h"
 #include "blender_bloom_build.h"
 #include "blender_antialiasing.h"
+#include "blender_fog_scattering.h"
 #include "blender_combine.h"
 #include "blender_contrast_adaptive_sharpening.h"
 #include "blender_distortion.h"
@@ -237,6 +238,7 @@ CRenderTarget::CRenderTarget()
 	b_combine = xr_new<CBlender_combine>();
 	b_contrast_adaptive_sharpening = xr_new<CBlender_contrast_adaptive_sharpening>();
 	b_antialiasing = xr_new<CBlender_antialiasing>();
+	b_fog_scattering = xr_new<CBlender_fog_scattering>();
 	b_barrel_blur = xr_new<CBlender_barrel_blur>();
 	b_dof = xr_new<CBlender_depth_of_field>();
 	b_distortion = xr_new<CBlender_distortion>();
@@ -271,6 +273,8 @@ CRenderTarget::CRenderTarget()
 	rt_Generic_2.create(r2_RT_generic2, dwWidth, dwHeight, D3DFMT_R8G8B8);
 
 	rt_Generic_0.create(r2_RT_generic0, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	rt_Generic_1.create(r2_RT_generic1, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+
 	rt_Motion_Blur_Saved_Frame.create(r2_RT_mblur_saved_frame, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
 	rt_Reflections.create(r2_RT_reflections, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
@@ -305,12 +309,6 @@ CRenderTarget::CRenderTarget()
 	}
 
 	// BLOOM
-	D3DFORMAT fmt;
-	if (ps_r2_rt_format == 1 || ps_r2_bloom_quality <= 2)
-		fmt = D3DFMT_A8R8G8B8;
-	else
-		fmt = D3DFMT_A2R10G10B10;
-
 	float BloomResolutionMultiplier = 0.0f;
 
 	switch (ps_r2_bloom_quality)
@@ -319,13 +317,13 @@ CRenderTarget::CRenderTarget()
 		BloomResolutionMultiplier = 0.2f;
 		break;
 	case 2:
-		BloomResolutionMultiplier = 0.25f;
-		break;
-	case 3:
 		BloomResolutionMultiplier = 0.3f;
 		break;
+	case 3:
+		BloomResolutionMultiplier = 0.5f;
+		break;
 	case 4:
-		BloomResolutionMultiplier = 0.35f;
+		BloomResolutionMultiplier = 1.0f;
 		break;
 	}
 
@@ -335,8 +333,10 @@ CRenderTarget::CRenderTarget()
 	u32 fvf_filter = (u32)D3DFVF_XYZRHW | D3DFVF_TEX8 | D3DFVF_TEXCOORDSIZE4(0) | D3DFVF_TEXCOORDSIZE4(1) |
 					 D3DFVF_TEXCOORDSIZE4(2) | D3DFVF_TEXCOORDSIZE4(3) | D3DFVF_TEXCOORDSIZE4(4) |
 					 D3DFVF_TEXCOORDSIZE4(5) | D3DFVF_TEXCOORDSIZE4(6) | D3DFVF_TEXCOORDSIZE4(7);
-	rt_Bloom_1.create(r2_RT_bloom1, w, h, fmt);
-	rt_Bloom_2.create(r2_RT_bloom2, w, h, fmt);
+	rt_Bloom_1.create(r2_RT_bloom1, w, h, D3DFMT_A16B16G16R16F);
+	rt_Bloom_2.create(r2_RT_bloom2, w, h, D3DFMT_A16B16G16R16F);
+	rt_Bloom_Blades_1.create(r2_RT_bloom_blades1, w, h, D3DFMT_A16B16G16R16F);
+	rt_Bloom_Blades_2.create(r2_RT_bloom_blades2, w, h, D3DFMT_A16B16G16R16F);
 	g_bloom_build.create(fvf_build, RCache.Vertex.Buffer(), RCache.QuadIB);
 	g_bloom_filter.create(fvf_filter, RCache.Vertex.Buffer(), RCache.QuadIB);
 	s_bloom.create(b_bloom, "r2\\bloom");
@@ -350,11 +350,11 @@ CRenderTarget::CRenderTarget()
 
 	// autoexposure
 	{
-		rt_LUM_512.create(r2_RT_autoexposure_t512, 512, 512, D3DFMT_A8R8G8B8);
-		rt_LUM_256.create(r2_RT_autoexposure_t256, 256, 256, D3DFMT_A8R8G8B8);
-		rt_LUM_128.create(r2_RT_autoexposure_t128, 128, 128, D3DFMT_A8R8G8B8);
-		rt_LUM_64.create(r2_RT_autoexposure_t64, 64, 64, D3DFMT_A8R8G8B8);
-		rt_LUM_8.create(r2_RT_autoexposure_t8, 8, 8, D3DFMT_A8R8G8B8);
+		rt_LUM_512.create(r2_RT_autoexposure_t512, 512, 512, D3DFMT_A16B16G16R16F);
+		rt_LUM_256.create(r2_RT_autoexposure_t256, 256, 256, D3DFMT_A16B16G16R16F);
+		rt_LUM_128.create(r2_RT_autoexposure_t128, 128, 128, D3DFMT_A16B16G16R16F);
+		rt_LUM_64.create(r2_RT_autoexposure_t64, 64, 64, D3DFMT_A16B16G16R16F);
+		rt_LUM_8.create(r2_RT_autoexposure_t8, 8, 8, D3DFMT_A16B16G16R16F);
 		s_autoexposure.create(b_autoexposure, "r2\\autoexposure");
 		f_autoexposure_adapt = 0.5f;
 
@@ -362,7 +362,7 @@ CRenderTarget::CRenderTarget()
 		t_LUM_dest.create(r2_RT_autoexposure_cur);
 
 		// create pool
-		for (u32 it = 0; it < HW.Caps.iGPUNum * 2; it++)
+		for (u32 it = 0; it < 4; it++)
 		{
 			string256 name;
 			sprintf(name, "%s_%d", r2_RT_autoexposure_pool, it);
@@ -526,6 +526,8 @@ CRenderTarget::CRenderTarget()
 	s_motion_blur.create(b_motion_blur, "r2\\motion_blur");
 
 	s_frame_overlay.create(b_frame_overlay, "r2\\frame_overlay");
+
+	s_fog_scattering.create(b_fog_scattering, "r2\\fog_scattering");
 
 	// PP
 	s_postprocess.create("postprocess");

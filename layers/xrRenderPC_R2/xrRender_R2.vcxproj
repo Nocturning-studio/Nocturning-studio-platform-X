@@ -1206,6 +1206,7 @@
     <ClInclude Include="blender_deffer_model.h" />
     <ClInclude Include="Blender_depth_of_field.h" />
     <ClInclude Include="Blender_distortion.h" />
+    <ClInclude Include="blender_fog_scattering.h" />
     <ClInclude Include="Blender_frame_overlay.h" />
     <ClInclude Include="blender_light_direct_cascade.h" />
     <ClInclude Include="blender_light_mask.h" />
@@ -1345,6 +1346,7 @@
     <ClCompile Include="blender_deffer_model.cpp" />
     <ClCompile Include="Blender_depth_of_field.cpp" />
     <ClCompile Include="Blender_distortion.cpp" />
+    <ClCompile Include="blender_fog_scattering.cpp" />
     <ClCompile Include="Blender_frame_overlay.cpp" />
     <ClCompile Include="blender_light_direct_cascade.cpp" />
     <ClCompile Include="blender_light_mask.cpp" />
@@ -1390,6 +1392,7 @@
     <ClCompile Include="r2_rendertarget_draw_volume.cpp" />
     <ClCompile Include="r2_rendertarget_enable_scissor.cpp" />
     <ClCompile Include="r2_rendertarget_phase_distortion.cpp" />
+    <ClCompile Include="r2_rendertarget_phase_fog_scattering.cpp" />
     <ClCompile Include="r2_rendertarget_phase_motion_blur.cpp" />
     <ClCompile Include="r2_rendertarget_phase_accumulator.cpp" />
     <ClCompile Include="r2_rendertarget_phase_ao.cpp" />

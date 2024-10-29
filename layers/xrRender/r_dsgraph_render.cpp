@@ -4,6 +4,7 @@
 #include "..\xrEngine\irenderable.h"
 #include "..\xrEngine\igame_persistent.h"
 #include "..\xrEngine\environment.h"
+#include "..\xrEngine\customhud.h"
 
 using namespace R_dsgraph;
 
@@ -598,6 +599,11 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 			}
 		}
 	}
+
+#if RENDER == R_R2
+	if (g_pGameLevel && (phase == RImplementation.PHASE_SMAP))
+		g_pGameLevel->pHUD->Render_Actor_Shadow(); // ACtor Shadow
+#endif
 
 	// Restore
 	ViewBase = ViewSave;

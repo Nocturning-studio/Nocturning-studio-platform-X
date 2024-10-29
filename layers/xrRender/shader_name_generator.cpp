@@ -215,7 +215,7 @@ void generate_shader_name(CBlender_Compile& C, bool bIsHightQualityGeometry, LPC
 	strconcat(sizeof(NewVertexShaderName), NewVertexShaderName, "gbuffer_stage_", VertexShaderName);
 	C.r_Pass(NewVertexShaderName, NewPixelShaderName, FALSE);
 
-	C.r_Sampler("s_base", AlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_POINT, D3DTEXF_ANISOTROPIC);
+	C.r_Sampler("s_base", AlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 	
 	if (bUseBakedAO)
 	{
@@ -229,32 +229,27 @@ void generate_shader_name(CBlender_Compile& C, bool bIsHightQualityGeometry, LPC
 
 	if (bUseCustomRoughness)
 	{
-		C.r_Sampler("s_custom_roughness", CustomRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_roughness", CustomRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 	}
 
 	if (bUseCustomMetallness)
 	{
-		C.r_Sampler("s_custom_metallness", CustomMetallnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_metallness", CustomMetallnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 	}
 
 	if (bUseCustomSubsurface)
 	{
-		C.r_Sampler("s_custom_subsurface", CustomSubsurfaceTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_subsurface", CustomSubsurfaceTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 	}
 
 	if (bUseCustomEmissive)
 	{
-		C.r_Sampler("s_custom_emissive", CustomEmissiveTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_emissive", CustomEmissiveTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 	}
 
 	if (bUseCustomDisplacement)
 	{
-		C.r_Sampler("s_custom_displacement", CustomDisplacementTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_displacement", CustomDisplacementTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 	}
 
 	if (bUseBump)
@@ -278,8 +273,8 @@ void generate_shader_name(CBlender_Compile& C, bool bIsHightQualityGeometry, LPC
 
 	if (bUseLightMap)
 	{
-		C.r_Sampler("s_hemi", HemisphereLightMapTexture, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_NONE, D3DTEXF_LINEAR);
-		C.r_Sampler("s_lmap", LightMapTexture, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_NONE, D3DTEXF_LINEAR);
+		C.r_Sampler("s_hemi", HemisphereLightMapTexture, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_LINEAR, D3DTEXF_GAUSSIANQUAD);
+		C.r_Sampler("s_lmap", LightMapTexture, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_LINEAR, D3DTEXF_GAUSSIANQUAD);
 	}
 
 	jitter(C);

@@ -168,12 +168,10 @@ float ps_r2_autoexposure_adaptation = 1.f;
 float ps_r2_autoexposure_low_lum = 0.0001f;
 float ps_r2_autoexposure_amount = 0.25f;
 
-float ps_r2_bloom_kernel_g = 4.5f;
-float ps_r2_bloom_kernel_b = 1.0f;
-float ps_r2_bloom_speed = 0.01f;
-float ps_r2_bloom_kernel_scale = 2.0f;
 float ps_r2_bloom_threshold = 0.9f;
-float ps_r2_bloom_factor = 0.05f;
+float ps_r2_bloom_brightness = 0.05f;
+float ps_r2_bloom_blades_threshold = 0.9f;
+float ps_r2_bloom_blades_brightness = 0.05f;
 
 float ps_r2_fxaa_subpix = 0.6f;
 float ps_r2_fxaa_edge_treshold = 0.063f;
@@ -716,12 +714,10 @@ void xrRender_initconsole()
 
 	CMD3(CCC_Mask, "r2_bloom", &ps_r2_postprocess_flags, R2FLAG_BLOOM);
 	CMD3(CCC_Token, "r2_bloom_quality", &ps_r2_bloom_quality, bloom_quality_token);
-	CMD4(CCC_Float, "r2_bloom_kernel_scale", &ps_r2_bloom_kernel_scale, 0.5f, 2.0f);
-	CMD4(CCC_Float, "r2_bloom_kernel_g", &ps_r2_bloom_kernel_g, 1.0f, 7.0f);
-	CMD4(CCC_Float, "r2_bloom_kernel_b", &ps_r2_bloom_kernel_b, 0.01f, 1.0f);
 	CMD4(CCC_Float, "r2_bloom_threshold", &ps_r2_bloom_threshold, 0.0f, 1.0f);
-	CMD4(CCC_Float, "r2_bloom_speed", &ps_r2_bloom_speed, 0.0f, 100.0f);
-	CMD4(CCC_Float, "r2_bloom_factor", &ps_r2_bloom_factor, 0.0f, 1.0f);
+	CMD4(CCC_Float, "r2_bloom_brightness", &ps_r2_bloom_brightness, 0.0f, 10.0f);
+	CMD4(CCC_Float, "r2_bloom_blades_threshold", &ps_r2_bloom_blades_threshold, 0.0f, 1.0f);
+	CMD4(CCC_Float, "r2_bloom_blades_brightness", &ps_r2_bloom_blades_brightness, 0.0f, 10.0f);
 
 	CMD3(CCC_Mask, "r2_mblur_enabled", &ps_r2_postprocess_flags, R2FLAG_MBLUR);
 	CMD4(CCC_Float, "r2_mblur_power", &ps_r2_mblur, 0.0f, 1.0f);

@@ -20,6 +20,7 @@
 
 // Output textures
 #define r2_RT_generic0 "$user$generic0"
+#define r2_RT_generic1 "$user$generic1"
 #define r2_RT_generic2 "$user$generic2"	//	Igor: for volumetric lights
 
 #define r2_RT_distortion_mask "$user$distortion"
@@ -31,6 +32,8 @@
 
 #define r2_RT_bloom1 "$user$bloom1"
 #define r2_RT_bloom2 "$user$bloom2"
+#define r2_RT_bloom_blades1 "$user$bloom_blades1"
+#define r2_RT_bloom_blades2 "$user$bloom_blades2"
 
 // Ambient occlusion
 #define r2_RT_ao "$user$ao"

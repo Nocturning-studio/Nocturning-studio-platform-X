@@ -27,6 +27,9 @@ void CBlender_contrast_adaptive_sharpening::Compile(CBlender_Compile& C)
 	case 0:
 		C.r_Pass("null", "postprocess_stage_contrast_adaptive_sharpening", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r2_RT_generic0);
+		C.r_Sampler_clf("s_autoexposure", r2_RT_autoexposure_cur);
+		C.r_Sampler_clf("s_bloom", r2_RT_bloom1);
+		C.r_Sampler_clf("s_bloom_blades", r2_RT_bloom_blades1);
 		jitter(C);
 		C.r_End();
 	}

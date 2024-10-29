@@ -12,44 +12,43 @@ void CRenderTarget::phase_combine()
 	Fvector2 p0, p1;
 
 	//*** exposure-pipeline
-	u32 gpu_id = Device.dwFrame % HW.Caps.iGPUNum;
+	u32 gpu_id = Device.dwFrame % 2;
 	{
 		t_LUM_src->surface_set(rt_LUM_pool[gpu_id * 2 + 0]->pSurface);
 		t_LUM_dest->surface_set(rt_LUM_pool[gpu_id * 2 + 1]->pSurface);
 	}
 
 	// low/hi RTs
-	u_setrt(rt_Generic_0, 0, 0, rt_ZB->pRT);
+	u_setrt(rt_Generic_0, rt_Generic_1, 0, rt_ZB->pRT);
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
-
-	// draw skybox
-	RCache.set_ColorWriteEnable();
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
-	g_pGamePersistent->Environment().RenderSky();
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
-
-	RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
-	if (RImplementation.o.nvstencil)
-	{
-		u_stencil_optimize(FALSE);
-		RCache.set_ColorWriteEnable();
-	}
 
 	// Draw full-screen quad textured with our scene image
 	if (!_menu_pp)
 	{
+		// draw skybox
+		RCache.set_ColorWriteEnable();
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
+		g_pGamePersistent->Environment().RenderSky();
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
+
+		RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
+		if (RImplementation.o.nvstencil)
+		{
+			u_stencil_optimize(FALSE);
+			RCache.set_ColorWriteEnable();
+		}
+
 		// Compute params
 		CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
 		const float minamb = 0.001f;
 		Fvector4 ambclr = {_max(envdesc->ambient.x, minamb), _max(envdesc->ambient.y, minamb),
 						   _max(envdesc->ambient.z, minamb), 0};
-		//ambclr.mul(ps_r2_sun_lumscale_amb);
-		Fvector4 envclr = {envdesc->hemi_color.x, envdesc->hemi_color.y,
-						   envdesc->hemi_color.z, envdesc->weight};
-		//envclr.x *= 2 * ps_r2_sun_lumscale_hemi;
-		//envclr.y *= 2 * ps_r2_sun_lumscale_hemi;
-		//envclr.z *= 2 * ps_r2_sun_lumscale_hemi;
+		// ambclr.mul(ps_r2_sun_lumscale_amb);
+		Fvector4 envclr = {envdesc->hemi_color.x, envdesc->hemi_color.y, envdesc->hemi_color.z, envdesc->weight};
+		// envclr.x *= 2 * ps_r2_sun_lumscale_hemi;
+		// envclr.y *= 2 * ps_r2_sun_lumscale_hemi;
+		// envclr.z *= 2 * ps_r2_sun_lumscale_hemi;
 		Fvector4 sunclr, sundir;
 
 		// sun-params
@@ -115,7 +114,7 @@ void CRenderTarget::phase_combine()
 
 	// Forward rendering
 #ifndef MASTER_GOLD
-	if(ps_r2_debug_render == 0)
+	if (ps_r2_debug_render == 0)
 #endif
 	{
 		u_setrt(rt_Generic_0, rt_GBuffer_2, 0, rt_ZB->pRT); // LDR RT
@@ -123,7 +122,8 @@ void CRenderTarget::phase_combine()
 		RCache.set_CullMode(CULL_CCW);
 		RCache.set_Stencil(FALSE);
 		RCache.set_ColorWriteEnable();
-		g_pGamePersistent->Environment().RenderClouds();
+		if (g_pGamePersistent)
+			g_pGamePersistent->Environment().RenderClouds();
 		RImplementation.render_forward();
 
 		if (g_pGamePersistent)
@@ -134,6 +134,10 @@ void CRenderTarget::phase_combine()
 	//	combine light volume here
 	if (m_bHasActiveVolumetric)
 		phase_combine_volumetric();
+
+	#pragma todo("Deathman to All: Реализовать через текстуру в низком разрешении")
+	//if (g_pGamePersistent && (g_pGamePersistent->Environment().CurrentEnv->fog_density > 0.5f))
+		//phase_fog_scattering();
 
 	// Perform blooming filter and distortion if needed
 	RCache.set_Stencil(FALSE);
@@ -154,6 +158,15 @@ void CRenderTarget::phase_combine()
 	{
 		if (!ps_render_flags.test(RFLAG_DISABLE_POSTPROCESS) && (ps_r2_debug_render == 0))
 		{
+			if (ps_r2_postprocess_flags.test(R2FLAG_ANTI_ALIASING))
+				phase_antialiasing();
+
+			if (ps_r2_postprocess_flags.test(R2FLAG_BLOOM))
+				phase_bloom();
+
+			if (ps_r2_postprocess_flags.test(R2FLAG_AUTOEXPOSURE))
+				phase_autoexposure();
+
 			if (ps_r2_postprocess_flags.test(R2FLAG_CONTRAST_ADAPTIVE_SHARPENING))
 				phase_contrast_adaptive_sharpening();
 
@@ -163,17 +176,8 @@ void CRenderTarget::phase_combine()
 			if (ps_r2_postprocess_flags.test(R2FLAG_DOF))
 				phase_depth_of_field();
 
-			if (ps_r2_postprocess_flags.test(R2FLAG_ANTI_ALIASING))
-				phase_antialiasing();
-
-			if (ps_r2_postprocess_flags.test(R2FLAG_BLOOM))
-				phase_bloom();
-
 			if (ps_r2_postprocess_flags.test(R2FLAG_BARREL_BLUR))
 				phase_barrel_blur();
-
-			if (ps_r2_postprocess_flags.test(R2FLAG_AUTOEXPOSURE))
-				phase_autoexposure();
 
 			if (ps_render_flags.test(RFLAG_LENS_FLARES))
 				g_pGamePersistent->Environment().RenderFlares();

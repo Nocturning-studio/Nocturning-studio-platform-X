@@ -29,6 +29,7 @@ class CRenderTarget : public IRender_Target
 	IBlender* b_combine;
 	IBlender* b_contrast_adaptive_sharpening;
 	IBlender* b_antialiasing;
+	IBlender* b_fog_scattering;
 	IBlender* b_dof;
 	IBlender* b_barrel_blur;
 	IBlender* b_motion_blur;
@@ -59,6 +60,7 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_Specular_Accumulator;
 
 	ref_rt rt_Generic_0; // 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
+	ref_rt rt_Generic_1;
 	//	Igor: for volumetric lights
 	ref_rt rt_Generic_2; // 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 
@@ -66,6 +68,8 @@ class CRenderTarget : public IRender_Target
 
 	ref_rt rt_Bloom_1; // 32bit, dim/4	(r,g,b,?)
 	ref_rt rt_Bloom_2; // 32bit, dim/4	(r,g,b,?)
+	ref_rt rt_Bloom_Blades_1;
+	ref_rt rt_Bloom_Blades_2;
 	ref_rt rt_LUM_512;
 	ref_rt rt_LUM_256;
 	ref_rt rt_LUM_128;
@@ -168,6 +172,7 @@ class CRenderTarget : public IRender_Target
 	ref_shader s_motion_blur;
 	ref_shader s_frame_overlay;
 	ref_shader s_tonemapping;
+	ref_shader s_fog_scattering;
 
   public:
 	ref_shader s_postprocess;
@@ -271,6 +276,8 @@ class CRenderTarget : public IRender_Target
 	void motion_blur_phase_save_frame();
 	void motion_blur_phase_combine();
 	void phase_motion_blur();
+
+	void phase_fog_scattering();
 
 	void phase_pp();
 
