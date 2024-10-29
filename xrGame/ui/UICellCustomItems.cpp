@@ -27,8 +27,13 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	CUIInventoryCellItem* ci = smart_cast<CUIInventoryCellItem*>(itm);
 	if (!itm)
 		return false;
-	return (fsimilar(object()->GetCondition(), ci->object()->GetCondition(), 0.01f) &&
-			(object()->object().cNameSect() == ci->object()->object().cNameSect()));
+	if (object()->object().cNameSect() != ci->object()->object().cNameSect())
+		return false;
+	if (!fsimilar(object()->GetCondition(), ci->object()->GetCondition(), 0.01f))
+		return false;
+	if (object()->m_eItemPlace != ci->object()->m_eItemPlace)
+		return false;
+	return true;
 }
 
 CUIAmmoCellItem::CUIAmmoCellItem(CWeaponAmmo* itm) : inherited(itm)
@@ -43,8 +48,10 @@ bool CUIAmmoCellItem::EqualTo(CUICellItem* itm)
 	CUIAmmoCellItem* ci = smart_cast<CUIAmmoCellItem*>(itm);
 	if (!ci)
 		return false;
+	if (object()->cNameSect() != ci->object()->cNameSect())
+		return false;
 
-	return ((object()->cNameSect() == ci->object()->cNameSect()));
+	return true;
 }
 
 void CUIAmmoCellItem::Update()
@@ -117,6 +124,7 @@ void CUIWeaponCellItem::CreateIcon(eAddonType t)
 	m_addons[t]->SetAutoDelete(true);
 	AttachChild(m_addons[t]);
 	m_addons[t]->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+	m_addons[t]->SetColor(GetColor());
 }
 
 void CUIWeaponCellItem::DestroyIcon(eAddonType t)
@@ -270,10 +278,10 @@ bool CUIWeaponCellItem::EqualTo(CUICellItem* itm)
 	if (!ci)
 		return false;
 
-	bool b_addons = ((object()->GetAddonsState() == ci->object()->GetAddonsState()));
-	bool b_place = ((object()->m_eItemPlace == ci->object()->m_eItemPlace));
+	if (object()->GetAddonsState() != ci->object()->GetAddonsState())
+		return false;
 
-	return b_addons && b_place;
+	return true;
 }
 
 CBuyItemCustomDrawCell::CBuyItemCustomDrawCell(LPCSTR str, CGameFont* pFont)
