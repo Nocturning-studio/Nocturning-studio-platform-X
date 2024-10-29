@@ -31,6 +31,8 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 		return false;
 	if (!fsimilar(object()->GetCondition(), ci->object()->GetCondition(), 0.01f))
 		return false;
+	if (object()->cast_missile() && ci->object()->cast_missile())
+		return true;
 	if (object()->m_eItemPlace != ci->object()->m_eItemPlace)
 		return false;
 	return true;
