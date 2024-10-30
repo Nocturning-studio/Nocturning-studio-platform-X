@@ -1120,7 +1120,6 @@ void CActor::shedule_Update(u32 DT)
 		{
 			if (!m_HeavyBreathSnd._feedback())
 			{
-				Device.time_factor(0.25f);
 				m_HeavyBreathSnd.play_at_pos(this, Fvector().set(0, ACTOR_HEIGHT, 0), sm_Looped | sm_2D);
 			}
 			else
@@ -1130,7 +1129,6 @@ void CActor::shedule_Update(u32 DT)
 		}
 		else if (m_HeavyBreathSnd._feedback())
 		{
-			Device.time_factor(1.0f);
 			m_HeavyBreathSnd.stop();
 		}
 
