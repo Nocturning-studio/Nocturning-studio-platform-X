@@ -845,9 +845,8 @@ void CUIBuyWnd::ActivatePropertiesBox()
 				m_propertiesBox.AddItem("st_detach_gl", GetRifle(), INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
 			else if (m_list[MP_SLOT_RIFLE]->IsOwner(CurrentItem()))
 			{
-
 				if (m_bag.CanBuy(*pWeapon->GetGrenadeLauncherName()))
-					m_propertiesBox.AddItem("st_attach_gl_to_rifle", CurrentItem(),
+					m_propertiesBox.AddItem("st_attach_gl_to_slot2", CurrentItem(),
 											INVENTORY_ATTACH_GRENADE_LAUNCHER_ADDON);
 			}
 		}
@@ -861,10 +860,10 @@ void CUIBuyWnd::ActivatePropertiesBox()
 				if (m_bag.CanBuy(*pWeapon->GetScopeName()))
 				{
 					if (m_list[MP_SLOT_PISTOL]->IsOwner(CurrentItem()))
-						m_propertiesBox.AddItem("st_attach_scope_to_pistol", CurrentItem(),
+						m_propertiesBox.AddItem("st_attach_scope_to_slot1", CurrentItem(),
 												INVENTORY_DETACH_SCOPE_ADDON);
 					else if (m_list[MP_SLOT_RIFLE]->IsOwner(CurrentItem()))
-						m_propertiesBox.AddItem("st_attach_scope_to_rifle", CurrentItem(),
+						m_propertiesBox.AddItem("st_attach_scope_to_slot2", CurrentItem(),
 												INVENTORY_ATTACH_SCOPE_ADDON);
 				}
 			}
@@ -879,10 +878,10 @@ void CUIBuyWnd::ActivatePropertiesBox()
 				if (m_bag.CanBuy(*pWeapon->GetSilencerName()))
 				{
 					if (m_list[MP_SLOT_PISTOL]->IsOwner(CurrentItem()))
-						m_propertiesBox.AddItem("st_attach_silencer_to_pistol", CurrentItem(),
+						m_propertiesBox.AddItem("st_attach_silencer_to_slot1", CurrentItem(),
 												INVENTORY_DETACH_SILENCER_ADDON);
 					else if (m_list[MP_SLOT_RIFLE]->IsOwner(CurrentItem()))
-						m_propertiesBox.AddItem("st_attach_silencer_to_rifle", CurrentItem(),
+						m_propertiesBox.AddItem("st_attach_silencer_to_slot2", CurrentItem(),
 												INVENTORY_ATTACH_SILENCER_ADDON);
 				}
 			}
@@ -896,14 +895,14 @@ void CUIBuyWnd::ActivatePropertiesBox()
 			pIItem = (CInventoryItem*)((m_list[MP_SLOT_PISTOL]->GetItemIdx(0))->m_pData);
 
 			if (pIItem->CanAttach(pScope))
-				m_propertiesBox.AddItem("st_attach_scope_to_pistol", (void*)pIItem, INVENTORY_ATTACH_ADDON);
+				m_propertiesBox.AddItem("st_attach_scope_to_slot1", (void*)pIItem, INVENTORY_ATTACH_ADDON);
 		}
 		if (m_list[MP_SLOT_RIFLE]->ItemsCount())
 		{
 			pIItem = (CInventoryItem*)((m_list[MP_SLOT_RIFLE]->GetItemIdx(0))->m_pData);
 
 			if (pIItem->CanAttach(pScope))
-				m_propertiesBox.AddItem("st_attach_scope_to_rifle", (void*)pIItem, INVENTORY_ATTACH_ADDON);
+				m_propertiesBox.AddItem("st_attach_scope_to_slot2", (void*)pIItem, INVENTORY_ATTACH_ADDON);
 		}
 	}
 	else if (pSilencer)
@@ -914,7 +913,7 @@ void CUIBuyWnd::ActivatePropertiesBox()
 			pIItem = (CInventoryItem*)((m_list[MP_SLOT_PISTOL]->GetItemIdx(0))->m_pData);
 
 			if (pIItem->CanAttach(pSilencer))
-				m_propertiesBox.AddItem("st_attach_silencer_to_pistol", (void*)pIItem, INVENTORY_ATTACH_ADDON);
+				m_propertiesBox.AddItem("st_attach_silencer_to_slot1", (void*)pIItem, INVENTORY_ATTACH_ADDON);
 		}
 
 		if (m_list[MP_SLOT_RIFLE]->ItemsCount())
@@ -922,18 +921,25 @@ void CUIBuyWnd::ActivatePropertiesBox()
 			pIItem = (CInventoryItem*)((m_list[MP_SLOT_RIFLE]->GetItemIdx(0))->m_pData);
 
 			if (pIItem->CanAttach(pSilencer))
-				m_propertiesBox.AddItem("st_attach_silencer_to_rifle", (void*)pIItem, INVENTORY_ATTACH_ADDON);
+				m_propertiesBox.AddItem("st_attach_silencer_to_slot2", (void*)pIItem, INVENTORY_ATTACH_ADDON);
 		}
 	}
 	else if (pGrenadeLauncher)
 	{
 		CInventoryItem* pIItem = NULL;
+		if (m_list[MP_SLOT_PISTOL]->ItemsCount())
+		{
+			pIItem = (CInventoryItem*)((m_list[MP_SLOT_PISTOL]->GetItemIdx(0))->m_pData);
+
+			if (pIItem->CanAttach(pGrenadeLauncher))
+				m_propertiesBox.AddItem("st_attach_gl_to_slot1", (void*)pIItem, INVENTORY_ATTACH_ADDON);
+		}
 		if (m_list[MP_SLOT_RIFLE]->ItemsCount())
 		{
 			pIItem = (CInventoryItem*)((m_list[MP_SLOT_RIFLE]->GetItemIdx(0))->m_pData);
 
 			if (pIItem->CanAttach(pGrenadeLauncher))
-				m_propertiesBox.AddItem("st_attach_gl_to_rifle", (void*)pIItem, INVENTORY_ATTACH_ADDON);
+				m_propertiesBox.AddItem("st_attach_gl_to_slot2", (void*)pIItem, INVENTORY_ATTACH_ADDON);
 		}
 	}
 	else if (pOutfit)
