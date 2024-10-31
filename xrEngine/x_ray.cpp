@@ -259,10 +259,13 @@ void Startup()
 		if (pStartup)
 			Console->Execute(pStartup + 1);
 	}
+	if (strstr(Core.Params, "-load_last_save"))
 	{
-		LPCSTR pStartup = strstr(Core.Params, "-load_last_save");
-		if (pStartup)
 			Console->Execute("load_last_save");
+	}
+	if (strstr(Core.Params, "-load_last_quick_save"))
+	{
+		Console->Execute("load_last_quick_save");
 	}
 
 	// Initialize APP

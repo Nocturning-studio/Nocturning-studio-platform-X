@@ -628,6 +628,37 @@ class CCC_LoadLastSave : public IConsole_Command
 	}
 };
 
+class CCC_LoadLastQuickSave : public IConsole_Command
+{
+  public:
+	CCC_LoadLastQuickSave(LPCSTR N) : IConsole_Command(N)
+	{
+		bEmptyArgsHandled = true;
+	}
+
+	virtual void Execute(LPCSTR args)
+	{
+		string_path saved_game, command;
+		strconcat(sizeof(saved_game), saved_game, Core.UserName, "_", "quicksave");
+
+		if (!CSavedGameWrapper::valid_saved_game(saved_game))
+		{
+			Msg("! cannot load last quick saved game since it hasn't been specified");
+			return;
+		}
+
+		if (ai().get_alife())
+		{
+			strconcat(sizeof(command), command, "load ", saved_game);
+			Console->Execute(command);
+			return;
+		}
+
+		strconcat(sizeof(command), command, "start server(", saved_game, "/single/alife/load)");
+		Console->Execute(command);
+	}
+};
+
 class CCC_FlushLog : public IConsole_Command
 {
   public:
@@ -1679,6 +1710,7 @@ void CCC_RegisterCommands()
 	CMD1(CCC_ALifeSave, "save");			  // save game
 	CMD1(CCC_ALifeLoadFrom, "load");		  // load game from ...
 	CMD1(CCC_LoadLastSave, "load_last_save"); // load last saved game from ...
+	CMD1(CCC_LoadLastQuickSave, "load_last_quick_save"); // load last quick saved game
 
 	CMD1(CCC_FlushLog, "flush"); // flush log
 	CMD1(CCC_ClearLog, "clear_log");

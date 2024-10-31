@@ -196,24 +196,47 @@ void CLevel::IR_OnKeyboardPress(int key)
 		FS.get_path("$game_scripts$")->m_Flags.set(FS_Path::flNeedRescan, TRUE);
 		FS.rescan_pathes();
 #endif // DEBUG
-		string_path saved_game, command;
-		strconcat(sizeof(saved_game), saved_game, Core.UserName, "_", "quicksave");
-		if (!CSavedGameWrapper::valid_saved_game(saved_game))
-			return;
-
-		strconcat(sizeof(command), command, "load ", saved_game);
-		Console->Execute(command);
+		Console->Execute("load_last_quick_save");
 		return;
 	}
 
 #ifndef MASTER_GOLD
 	switch (key)
 	{
-	case DIK_NUMPAD5: {
+	case DIK_NUMPAD5: 
+	{
 		Console->Hide();
 		Console->Execute("demo_record 1");
 	}
 	break;
+	case DIK_DIVIDE:
+		if (OnServer())
+		{
+			if (GameID() == GAME_SINGLE)
+			{
+				Server->game->SetGameTimeFactor(g_fTimeFactor);
+			}
+			else
+			{
+				Server->game->SetEnvironmentGameTimeFactor(g_fTimeFactor);
+				Server->game->SetGameTimeFactor(g_fTimeFactor);
+			};
+		}
+		break;
+	case DIK_MULTIPLY:
+		if (OnServer())
+		{
+			float NewTimeFactor = 1000.f;
+			if (GameID() == GAME_SINGLE)
+			{
+				Server->game->SetGameTimeFactor(NewTimeFactor);
+			}
+			else
+			{
+				Server->game->SetEnvironmentGameTimeFactor(NewTimeFactor);
+			};
+		}
+		break;
 #endif // MASTER_GOLD
 #ifdef DEBUG
 	case DIK_RETURN:
@@ -311,34 +334,6 @@ void CLevel::IR_OnKeyboardPress(int key)
 		break;
 	}
 		/**/
-
-	case DIK_DIVIDE:
-		if (OnServer())
-		{
-			//			float NewTimeFactor				= pSettings->r_float("alife","time_factor");
-
-			if (GameID() == GAME_SINGLE)
-				Server->game->SetGameTimeFactor(g_fTimeFactor);
-			else
-			{
-				Server->game->SetEnvironmentGameTimeFactor(g_fTimeFactor);
-				Server->game->SetGameTimeFactor(g_fTimeFactor);
-			};
-		}
-		break;
-	case DIK_MULTIPLY:
-		if (OnServer())
-		{
-			float NewTimeFactor = 1000.f;
-			if (GameID() == GAME_SINGLE)
-				Server->game->SetGameTimeFactor(NewTimeFactor);
-			else
-			{
-				Server->game->SetEnvironmentGameTimeFactor(NewTimeFactor);
-				//				Server->game->SetGameTimeFactor(NewTimeFactor);
-			};
-		}
-		break;
 #endif
 #ifdef DEBUG
 	case DIK_F9: {
