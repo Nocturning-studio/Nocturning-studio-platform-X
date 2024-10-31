@@ -259,6 +259,11 @@ void Startup()
 		if (pStartup)
 			Console->Execute(pStartup + 1);
 	}
+	{
+		LPCSTR pStartup = strstr(Core.Params, "-load_last_save");
+		if (pStartup)
+			Console->Execute("load_last_save");
+	}
 
 	// Initialize APP
 	// #ifndef DEDICATED_SERVER
