@@ -10,7 +10,8 @@
 #include "game_base_space.h"
 #include "level.h"
 #include "ParticlesObject.h"
-#include "actor.h"
+#include "Actor.h"
+#include "ActorEffector.h"
 #include "game_base_space.h"
 #include "weaponhud.h"
 #include "stalker_animation_data_storage.h"
@@ -540,7 +541,7 @@ void CGamePersistent::OnFrame()
 					else
 						C = Actor()->Holder()->Camera();
 
-					Actor()->Cameras().Update(C);
+					Actor()->Cameras().UpdateFromCamera(C);
 					Actor()->Cameras().ApplyDevice(VIEWPORT_NEAR);
 				}
 			}

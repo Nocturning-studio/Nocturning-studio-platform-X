@@ -367,7 +367,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector& vControlAccel, float& Ju
 					float factor = cam_eff_factor / max_scale;
 					e->SetFactor(factor);
 					e->SetType(eCEActorMoving);
-					// e->SetHudAffect(false);
+					e->SetHudAffect(false);
 					e->SetCyclic(false);
 					e->Start(anm_name);
 					control_entity->Cameras().AddCamEffector(e);

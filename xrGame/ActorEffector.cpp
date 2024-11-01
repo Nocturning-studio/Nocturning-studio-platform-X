@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 
 #include "ActorEffector.h"
 #include "PostprocessAnimator.h"
@@ -146,9 +146,9 @@ BOOL CAnimatorCamEffector::Valid()
 	return inherited::Valid();
 }
 
-BOOL CAnimatorCamEffector::Process(Fvector& p, Fvector& d, Fvector& n, float& fFov, float& fFar, float& fAspect)
+BOOL CAnimatorCamEffector::ProcessCam(SCamEffectorInfo& info)
 {
-	if (!inherited::Process(p, d, n, fFov, fFar, fAspect))
+	if (!inherited::ProcessCam(info))
 		return FALSE;
 
 	const Fmatrix& m = m_objectAnimator->XFORM();
@@ -158,29 +158,29 @@ BOOL CAnimatorCamEffector::Process(Fvector& p, Fvector& d, Fvector& n, float& fF
 	{
 		Fmatrix Mdef;
 		Mdef.identity();
-		Mdef.j = n;
-		Mdef.k = d;
-		Mdef.i.crossproduct(n, d);
-		Mdef.c = p;
+		Mdef.j = info.n;
+		Mdef.k = info.d;
+		Mdef.i.crossproduct(info.n, info.d);
+		Mdef.c = info.p;
 
 		Fmatrix mr;
 		mr.mul(Mdef, m);
-		d = mr.k;
-		n = mr.j;
-		p = mr.c;
+		info.d = mr.k;
+		info.n = mr.j;
+		info.p = mr.c;
 	}
 	else
 	{
-		d = m.k;
-		n = m.j;
-		p = m.c;
+		info.d = m.k;
+		info.n = m.j;
+		info.p = m.c;
 	};
 	return TRUE;
 }
 
-BOOL CAnimatorCamLerpEffector::Process(Fvector& p, Fvector& d, Fvector& n, float& fFov, float& fFar, float& fAspect)
+BOOL CAnimatorCamLerpEffector::ProcessCam(SCamEffectorInfo& info)
 {
-	if (!inherited::inherited::Process(p, d, n, fFov, fFar, fAspect))
+	if (!inherited::inherited::ProcessCam(info))
 		return FALSE;
 
 	const Fmatrix& m = m_objectAnimator->XFORM();
@@ -188,10 +188,10 @@ BOOL CAnimatorCamLerpEffector::Process(Fvector& p, Fvector& d, Fvector& n, float
 
 	Fmatrix Mdef;
 	Mdef.identity();
-	Mdef.j = n;
-	Mdef.k = d;
-	Mdef.i.crossproduct(n, d);
-	Mdef.c = p;
+	Mdef.j = info.n;
+	Mdef.k = info.d;
+	Mdef.i.crossproduct(info.n, info.d);
+	Mdef.c = info.p;
 
 	Fmatrix mr;
 	mr.mul(Mdef, m);
@@ -208,11 +208,11 @@ BOOL CAnimatorCamLerpEffector::Process(Fvector& p, Fvector& d, Fvector& n, float
 
 	Fmatrix res;
 	res.rotation(q_res);
-	res.c.lerp(p, mr.c, t);
+	res.c.lerp(info.p, mr.c, t);
 
-	d = res.k;
-	n = res.j;
-	p = res.c;
+	info.d = res.k;
+	info.n = res.j;
+	info.p = res.c;
 
 	return TRUE;
 }
@@ -332,14 +332,14 @@ CControllerPsyHitCamEffector::CControllerPsyHitCamEffector(ECamEffectorType type
 const float _base_fov = 170.f;
 const float _max_fov_add = 160.f;
 
-BOOL CControllerPsyHitCamEffector::Process(Fvector& p, Fvector& d, Fvector& n, float& fFov, float& fFar, float& fAspect)
+BOOL CControllerPsyHitCamEffector::ProcessCam(SCamEffectorInfo& info)
 {
 	Fmatrix Mdef;
 	Mdef.identity();
-	Mdef.j.set(n);
+	Mdef.j.set(info.n);
 	Mdef.k.set(m_direction);
-	Mdef.i.crossproduct(n, m_direction);
-	Mdef.c.set(p);
+	Mdef.i.crossproduct(info.n, m_direction);
+	Mdef.c.set(info.p);
 
 	//////////////////////////////////////////////////////////////////////////
 
@@ -367,13 +367,13 @@ BOOL CControllerPsyHitCamEffector::Process(Fvector& p, Fvector& d, Fvector& n, f
 	float cur_dist = m_distance * perc_past;
 
 	Mdef.c.mad(m_position_source, m_direction, cur_dist);
-	fFov = _base_fov - _max_fov_add * perc_past;
+	info.fFov = _base_fov - _max_fov_add * perc_past;
 
 	m_time_current += Device.fTimeDelta;
 
 	//////////////////////////////////////////////////////////////////////////
 
-	// Óñòàíîâèòü óãëû ñìåùåíèÿ
+	// Ã“Ã±Ã²Ã Ã­Ã®Ã¢Ã¨Ã²Ã¼ Ã³Ã£Ã«Ã» Ã±Ã¬Ã¥Ã¹Ã¥Ã­Ã¨Ã¿
 	Fmatrix R;
 	if (m_time_current > m_time_total)
 		R.identity();
@@ -383,9 +383,64 @@ BOOL CControllerPsyHitCamEffector::Process(Fvector& p, Fvector& d, Fvector& n, f
 	Fmatrix mR;
 	mR.mul(Mdef, R);
 
-	d.set(mR.k);
-	n.set(mR.j);
-	p.set(mR.c);
+	info.d.set(mR.k);
+	info.n.set(mR.j);
+	info.p.set(mR.c);
 
 	return TRUE;
+}
+bool similar_cam_info(const SCamEffectorInfo& c1, const SCamEffectorInfo& c2)
+{
+	return (c1.p.similar(c2.p, EPS_L) && c1.d.similar(c2.d, EPS_L) && c1.n.similar(c2.n, EPS_L) &&
+			c1.r.similar(c2.r, EPS_L));
+}
+void CActorCameraManager::UpdateCamEffectors()
+{
+	m_cam_info_hud = m_cam_info;
+	inherited::UpdateCamEffectors();
+
+	m_cam_info_hud.d.normalize();
+	m_cam_info_hud.n.normalize();
+	m_cam_info_hud.r.crossproduct(m_cam_info_hud.n, m_cam_info_hud.d);
+	m_cam_info_hud.n.crossproduct(m_cam_info_hud.d, m_cam_info_hud.r);
+}
+
+void cam_effector_sub(const SCamEffectorInfo& c1, const SCamEffectorInfo& c2, SCamEffectorInfo& dest)
+{
+	dest.p.sub(c1.p, c2.p);
+	dest.d.sub(c1.d, c2.d);
+	dest.n.sub(c1.n, c2.n);
+	dest.r.sub(c1.r, c2.r);
+}
+
+void cam_effector_add(const SCamEffectorInfo& diff, SCamEffectorInfo& dest)
+{
+	dest.p.add(diff.p);
+	dest.d.add(diff.d);
+	dest.n.add(diff.n);
+	dest.r.add(diff.r);
+}
+
+bool CActorCameraManager::ProcessCameraEffector(CEffectorCam* eff)
+{
+	SCamEffectorInfo prev = m_cam_info;
+
+	bool res = inherited::ProcessCameraEffector(eff);
+	if (res)
+	{
+		if (eff->GetHudAffect())
+		{
+			SCamEffectorInfo affected = m_cam_info;
+			SCamEffectorInfo diff;
+
+			cam_effector_sub(affected, prev, diff);
+
+			cam_effector_add(diff, m_cam_info_hud); // m_cam_info_hud += difference
+		}
+
+		m_cam_info_hud.fFov = m_cam_info.fFov;
+		m_cam_info_hud.fFar = m_cam_info.fFar;
+		m_cam_info_hud.fAspect = m_cam_info.fAspect;
+	}
+	return res;
 }

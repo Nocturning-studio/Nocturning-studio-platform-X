@@ -1,30 +1,40 @@
 #pragma once
-
 #include "CameraDefs.h"
 
-class ENGINE_API CEffectorCam
+class ENGINE_API CEffectorCam : public SBaseEffector
 {
   protected:
 	ECamEffectorType eType;
 
 	friend class CCameraManager;
 	float fLifeTime;
+	bool bHudAffect;
 
   public:
 	CEffectorCam(ECamEffectorType type, float tm)
 	{
 		eType = type;
 		fLifeTime = tm;
+		bHudAffect = true;
 	};
 	CEffectorCam()
 	{
 		eType = (ECamEffectorType)0;
 		fLifeTime = 0.0f;
+		bHudAffect = true;
 	};
 	virtual ~CEffectorCam(){};
 	void SetType(ECamEffectorType type)
 	{
 		eType = type;
+	}
+	void SetHudAffect(bool val)
+	{
+		bHudAffect = val;
+	}
+	bool GetHudAffect()
+	{
+		return bHudAffect;
 	}
 	IC ECamEffectorType GetType()
 	{
@@ -34,20 +44,21 @@ class ENGINE_API CEffectorCam
 	{
 		return fLifeTime > 0.0f;
 	}
-	IC virtual BOOL Overlapped()
-	{
-		return FALSE;
-	}
 
-	virtual BOOL Process(Fvector& p, Fvector& d, Fvector& n, float& fFov, float& fFar, float& fAspect)
+	virtual BOOL ProcessCam(SCamEffectorInfo& info)
 	{
 		fLifeTime -= Device.fTimeDelta;
 		return Valid();
 	};
+	;
 
-	virtual void ProcessIfInvalid(Fvector& p, Fvector& d, Fvector& n, float& fFov, float& fFar, float& fAspect){};
+	virtual void ProcessIfInvalid(SCamEffectorInfo& info){};
 	virtual BOOL AllowProcessingIfInvalid()
 	{
 		return FALSE;
+	}
+	virtual bool AbsolutePositioning()
+	{
+		return false;
 	}
 };

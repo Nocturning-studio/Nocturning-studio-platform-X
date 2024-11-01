@@ -389,7 +389,7 @@ class CCC_DemoPlay : public IConsole_Command
 	};
 	virtual void Execute(LPCSTR args)
 	{
-#ifdef MASTER_GOLD
+#ifndef DEBUG
 		if (GameID() != GAME_SINGLE)
 		{
 			Msg("For this game type Demo Play is disabled.");

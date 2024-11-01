@@ -26,6 +26,7 @@ class CEncyclopediaRegistryWrapper;
 class CGameTaskRegistryWrapper;
 class CGameNewsRegistryWrapper;
 class CCharacterPhysicsSupport;
+class CActorCameraManager;
 // refs
 class ENGINE_API CCameraBase;
 class ENGINE_API CBoneInstance;
@@ -406,7 +407,7 @@ class CActor : public CEntityAlive,
 	// Cameras and effectors
 	//////////////////////////////////////////////////////////////////////////
   public:
-	CCameraManager& Cameras()
+	CActorCameraManager& Cameras()
 	{
 		VERIFY(m_pActorEffector);
 		return *m_pActorEffector;
@@ -449,7 +450,7 @@ class CActor : public CEntityAlive,
 	CSleepEffectorPP* m_pSleepEffectorPP;
 
 	// менеджер эффекторов, есть у каждого актрера
-	CCameraManager* m_pActorEffector;
+	CActorCameraManager* m_pActorEffector;
 	static float f_Ladder_cam_limit;
 	////////////////////////////////////////////
 	// для взаимодействия с другими персонажами

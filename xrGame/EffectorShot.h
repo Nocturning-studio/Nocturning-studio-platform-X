@@ -75,8 +75,7 @@ class CCameraShotEffector : public CWeaponShotEffector, public CEffectorCam
 						float angle_frac);
 	virtual ~CCameraShotEffector();
 
-	virtual BOOL Process(Fvector& delta_p, Fvector& delta_d, Fvector& delta_n, float& fFov, float& fFar,
-						 float& fAspect);
+	virtual BOOL ProcessCam(SCamEffectorInfo& info);
 
 	virtual void SetActor(CActor* pActor)
 	{

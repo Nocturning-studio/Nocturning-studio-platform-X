@@ -13,6 +13,12 @@
 class ENGINE_API CDemoRecord : public CEffectorCam, public IInputReceiver
 {
   private:
+	static struct force_position
+	{
+		bool set_position;
+		Fvector p;
+	} g_position;
+
 	int iCount;
 	IWriter* file;
 	Fvector m_HPB;
@@ -37,8 +43,8 @@ class ENGINE_API CDemoRecord : public CEffectorCam, public IInputReceiver
 
 	BOOL m_bMakeCubeMap;
 	BOOL m_bMakeScreenshot;
+	int m_iLMScreenshotFragment;
 	BOOL m_bMakeLevelMap;
-	BOOL m_bOverlapped;
 
 	float m_fSpeed0;
 	float m_fSpeed1;
@@ -76,11 +82,16 @@ class ENGINE_API CDemoRecord : public CEffectorCam, public IInputReceiver
 	virtual void IR_OnMouseHold(int btn);
 	virtual void IR_OnMouseWheel(int direction);
 
-	virtual BOOL Overlapped()
+	virtual BOOL ProcessCam(SCamEffectorInfo& info);
+	static void SetGlobalPosition(const Fvector& p)
 	{
-		return m_bOverlapped;
+		g_position.p.set(p), g_position.set_position = true;
 	}
-	virtual BOOL Process(Fvector& p, Fvector& d, Fvector& n, float& fFov, float& fFar, float& fAspect);
+	static void GetGlobalPosition(Fvector& p)
+	{
+		p.set(g_position.p);
+	}
+	BOOL m_b_redirect_input_to_level;
 };
 
 #endif // !defined(AFX_FDEMORECORD_H__D7638760_FB61_11D3_B4E3_4854E82A090D__INCLUDED_)

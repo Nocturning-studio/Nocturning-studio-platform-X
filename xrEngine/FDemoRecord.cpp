@@ -16,6 +16,7 @@
 #include "IGame_Persistent.h"
 
 CDemoRecord* xrDemoRecord = 0;
+CDemoRecord::force_position CDemoRecord::g_position = {false, {0, 0, 0}};
 //////////////////////////////////////////////////////////////////////
 #ifdef DEBUG
 #define DEBUG_DEMO_RECORD
@@ -30,6 +31,7 @@ CDemoRecord::CDemoRecord(const char* name, float life_time) : CEffectorCam(cefDe
 	file = FS.w_open(name);
 	if (file)
 	{
+		g_position.set_position = false;
 		IR_Capture(); // capture input
 		m_Camera.invert(Device.mView);
 
@@ -89,7 +91,6 @@ CDemoRecord::CDemoRecord(const char* name, float life_time) : CEffectorCam(cefDe
 	{
 		fLifeTime = -1;
 	}
-	m_bOverlapped = FALSE;
 }
 
 CDemoRecord::~CDemoRecord()
@@ -193,7 +194,6 @@ void CDemoRecord::MakeLevelMapProcess()
 		psDeviceFlags.set(rsFullscreen, s_dev_flags.test(rsFullscreen));
 		break;
 	case DEVICE_RESET_PRECACHE_FRAME_COUNT + 1: {
-		m_bOverlapped = TRUE;
 		s_hud_flag.assign(psHUD_Flags);
 		psHUD_Flags.assign(0);
 
@@ -223,7 +223,6 @@ void CDemoRecord::MakeLevelMapProcess()
 	}
 	break;
 	case DEVICE_RESET_PRECACHE_FRAME_COUNT + 2: {
-		m_bOverlapped = FALSE;
 		string_path tmp;
 		Fbox bb = g_pGameLevel->ObjectSpace.GetBoundingVolume();
 
@@ -353,7 +352,7 @@ void CDemoRecord::ShowInputInfo()
 #endif
 }
 
-BOOL CDemoRecord::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float& fFar, float& fAspect)
+BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 {
 	if (0 == file)
 		return TRUE;
@@ -362,10 +361,9 @@ BOOL CDemoRecord::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float
 	{
 		MakeScreenshotFace();
 		// update camera
-		N.set(m_Camera.j);
-		D.set(m_Camera.k);
-		P.set(m_Camera.c);
-		fFov = m_fFov;
+		info.n.set(m_Camera.j);
+		info.d.set(m_Camera.k);
+		info.p.set(m_Camera.c);
 	}
 	else if (m_bMakeLevelMap)
 	{
@@ -373,10 +371,10 @@ BOOL CDemoRecord::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float
 	}
 	else if (m_bMakeCubeMap)
 	{
-		fFov = 90.0f;
-		MakeCubeMapFace(D, N);
-		P.set(m_Camera.c);
-		fAspect = 1.f;
+		info.fFov = 90.0f;
+		MakeCubeMapFace(info.d, info.n);
+		info.p.set(m_Camera.c);
+		info.fAspect = 1.f;
 	}
 	else
 	{
@@ -409,6 +407,16 @@ BOOL CDemoRecord::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float
 		m_HPB.y -= m_vR.x;
 		m_HPB.z += m_vR.z;
 
+		if (g_position.set_position)
+		{
+			m_Position.set(g_position.p);
+			g_position.set_position = false;
+		}
+		else
+		{
+			g_position.p.set(m_Position);
+		}
+
 		// move
 		Fvector vmove;
 
@@ -431,16 +439,16 @@ BOOL CDemoRecord::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float
 		m_Camera.translate_over(m_Position);
 
 		// update camera
-		N.set(m_Camera.j);
-		D.set(m_Camera.k);
-		P.set(m_Camera.c);
+		info.n.set(m_Camera.j);
+		info.d.set(m_Camera.k);
+		info.p.set(m_Camera.c);
 
 		fLifeTime -= Device.fTimeDelta;
 
 		m_vT.set(0, 0, 0);
 		m_vR.set(0, 0, 0);
 
-		fFov = m_fFov;
+		info.fFov = m_fFov;
 	}
 	return TRUE;
 }

@@ -66,7 +66,7 @@ void CEffectorBobbing::SetState(u32 mstate, bool limping, bool ZoomMode)
 	m_bZoomMode = ZoomMode;
 }
 
-BOOL CEffectorBobbing::Process(Fvector& p, Fvector& d, Fvector& n, float& fFov, float& fFar, float& fAspect)
+BOOL CEffectorBobbing::ProcessCam(SCamEffectorInfo& info)
 {
 	fTime += Device.fTimeDelta;
 	if (dwMState & ACTOR_DEFS::mcAnyMove)
@@ -88,21 +88,21 @@ BOOL CEffectorBobbing::Process(Fvector& p, Fvector& d, Fvector& n, float& fFov, 
 	{
 		Fmatrix M;
 		M.identity();
-		M.j.set(n);
-		M.k.set(d);
-		M.i.crossproduct(n, d);
-		M.c.set(p);
+		M.j.set(info.n);
+		M.k.set(info.d);
+		M.i.crossproduct(info.n, info.d);
+		M.c.set(info.p);
 
 		if (ps_effectors_ls_flags.test(DYNAMIC_FOV_ENABLED))
 		{
 			if (dwMState & ACTOR_DEFS::mcSprint)
-				fFov *= SPRINT_FOV_MODIFIER_FACTOR;
+				info.fFov *= SPRINT_FOV_MODIFIER_FACTOR;
 			if (dwMState & ACTOR_DEFS::mcFwd)
-				fFov *= WALK_FOV_MODIFIER_FACTOR;
+				info.fFov *= WALK_FOV_MODIFIER_FACTOR;
 			if (dwMState & ACTOR_DEFS::mcBack)
-				fFov *= BACKWARD_WALK_FOV_MODIFIER_FACTOR;
+				info.fFov *= BACKWARD_WALK_FOV_MODIFIER_FACTOR;
 			if (dwMState & ACTOR_DEFS::mcCrouch)
-				fFov *= CROUCH_WALK_FOV_MODIFIER_FACTOR;
+				info.fFov *= CROUCH_WALK_FOV_MODIFIER_FACTOR;
 		}
 
 		// apply footstep bobbing effect
@@ -160,8 +160,8 @@ BOOL CEffectorBobbing::Process(Fvector& p, Fvector& d, Fvector& n, float& fFov, 
 		Fmatrix mR;
 		mR.mul(M, R);
 
-		d.set(mR.k);
-		n.set(mR.j);
+		info.d.set(mR.k);
+		info.n.set(mR.j);
 	}
 
 	return TRUE;

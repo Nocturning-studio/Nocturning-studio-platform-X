@@ -178,12 +178,14 @@ void spline1(float t, Fvector* p, Fvector* ret)
 	}
 }
 
-BOOL CDemoPlay::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float& fFar, float& fAspect)
+BOOL CDemoPlay::ProcessCam(SCamEffectorInfo& info)
 {
 	// skeep a few frames before counting
 	if (Device.dwPrecacheFrame)
 		return TRUE;
-	stat_Start();
+
+	if (!!stat_started == false)
+		stat_Start();
 
 	// Per-frame statistics
 	{
@@ -196,7 +198,7 @@ BOOL CDemoPlay::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float& 
 	{
 		Fvector R;
 		Fmatrix mRotate;
-		m_pMotion->_Evaluate(m_MParam->Frame(), P, R);
+		m_pMotion->_Evaluate(m_MParam->Frame(), info.p, R);
 		m_MParam->Update(Device.fTimeDelta, 1.f, true);
 		fLifeTime -= Device.fTimeDelta;
 		if (m_MParam->bWrapped)
@@ -205,8 +207,8 @@ BOOL CDemoPlay::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float& 
 			stat_Start();
 		}
 		mRotate.setXYZi(R.x, R.y, R.z);
-		D.set(mRotate.k);
-		N.set(mRotate.j);
+		info.d.set(mRotate.k);
+		info.n.set(mRotate.j);
 	}
 	else
 	{
@@ -270,9 +272,9 @@ BOOL CDemoPlay::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float& 
 
 		Fmatrix mInvCamera;
 		mInvCamera.invert(Device.mView);
-		N.set(mInvCamera._21, mInvCamera._22, mInvCamera._23);
-		D.set(mInvCamera._31, mInvCamera._32, mInvCamera._33);
-		P.set(mInvCamera._41, mInvCamera._42, mInvCamera._43);
+		info.n.set(mInvCamera._21, mInvCamera._22, mInvCamera._23);
+		info.d.set(mInvCamera._31, mInvCamera._32, mInvCamera._33);
+		info.p.set(mInvCamera._41, mInvCamera._42, mInvCamera._43);
 
 		fLifeTime -= Device.fTimeDelta;
 	}

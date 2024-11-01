@@ -44,6 +44,10 @@ class ENGINE_API CCameraBase
 	CCameraBase(CObject* p, u32 flags);
 	virtual ~CCameraBase();
 	virtual void Load(LPCSTR section);
+	CObject* GetParent() const
+	{
+		return parent;
+	}
 	void SetParent(CObject* p)
 	{
 		parent = p;

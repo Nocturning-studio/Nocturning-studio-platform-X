@@ -14,6 +14,7 @@
 #include "level.h"
 #include "inventory.h"
 #include "../xrEngine/CameraBase.h"
+#include "../xrEngine/xr_input.h"
 
 CHudItem::CHudItem(void)
 {
@@ -186,7 +187,7 @@ void CHudItem::UpdateHudPosition()
 		CActor* pActor = smart_cast<CActor*>(object().H_Parent());
 		if (pActor)
 		{
-			pActor->Cameras().camera_Matrix(trans);
+			pActor->Cameras().hud_camera_Matrix(trans);
 			UpdateHudInertion(trans);
 			UpdateHudAdditonal(trans);
 			m_pHUD->UpdatePosition(trans);
@@ -216,50 +217,50 @@ static const float TENDTO_SPEED = 5.f;
 
 void CHudItem::UpdateHudInertion(Fmatrix& hud_trans)
 {
-	if (m_pHUD) // && m_bInertionAllow && m_bInertionEnable)
+	// if (m_pHUD) // && m_bInertionAllow && m_bInertionEnable)
+	//{
+	Fmatrix xform;
+	Fvector& origin = hud_trans.c;
+	xform = hud_trans;
+
+	static Fvector m_last_dir = {0, 0, 0};
+
+	// calc difference
+	Fvector diff_dir;
+	diff_dir.sub(xform.k, m_last_dir);
+
+	// clamp by PI_DIV_2
+	Fvector last;
+	last.normalize_safe(m_last_dir);
+	float dot = last.dotproduct(xform.k);
+	if (dot < EPS)
 	{
-		Fmatrix xform;
-		Fvector& origin = hud_trans.c;
-		xform = hud_trans;
-
-		static Fvector m_last_dir = {0, 0, 0};
-
-		// calc difference
-		Fvector diff_dir;
+		Fvector v0;
+		v0.crossproduct(m_last_dir, xform.k);
+		m_last_dir.crossproduct(xform.k, v0);
 		diff_dir.sub(xform.k, m_last_dir);
-
-		// clamp by PI_DIV_2
-		Fvector last;
-		last.normalize_safe(m_last_dir);
-		float dot = last.dotproduct(xform.k);
-		if (dot < EPS)
-		{
-			Fvector v0;
-			v0.crossproduct(m_last_dir, xform.k);
-			m_last_dir.crossproduct(xform.k, v0);
-			diff_dir.sub(xform.k, m_last_dir);
-		}
-
-		// tend to forward
-		m_last_dir.mad(diff_dir, TENDTO_SPEED * Device.fTimeDelta);
-		origin.mad(diff_dir, ORIGIN_OFFSET);
-
-		// pitch compensation
-		float pitch = angle_normalize_signed(xform.k.getP());
-
-		if (Actor()->IsZoomAimingMode())
-		{
-			origin.mad(xform.k, -pitch * ZOOM_PITCH_OFFSET_D);
-			origin.mad(xform.i, -pitch * ZOOM_PITCH_OFFSET_R);
-			origin.mad(xform.j, -pitch * ZOOM_PITCH_OFFSET_N);
-		}
-		else
-		{
-			origin.mad(xform.k, -pitch * PITCH_OFFSET_D);
-			origin.mad(xform.i, -pitch * PITCH_OFFSET_R);
-			origin.mad(xform.j, -pitch * PITCH_OFFSET_N);
-		}
 	}
+
+	// tend to forward
+	m_last_dir.mad(diff_dir, TENDTO_SPEED * Device.fTimeDelta);
+	origin.mad(diff_dir, ORIGIN_OFFSET);
+
+	// pitch compensation
+	float pitch = angle_normalize_signed(xform.k.getP());
+
+	if (Actor()->IsZoomAimingMode())
+	{
+		origin.mad(xform.k, -pitch * ZOOM_PITCH_OFFSET_D);
+		origin.mad(xform.i, -pitch * ZOOM_PITCH_OFFSET_R);
+		origin.mad(xform.j, -pitch * ZOOM_PITCH_OFFSET_N);
+	}
+	else
+	{
+		origin.mad(xform.k, -pitch * PITCH_OFFSET_D);
+		origin.mad(xform.i, -pitch * PITCH_OFFSET_R);
+		origin.mad(xform.j, -pitch * PITCH_OFFSET_N);
+	}
+	//}
 }
 
 void CHudItem::UpdateCL()
