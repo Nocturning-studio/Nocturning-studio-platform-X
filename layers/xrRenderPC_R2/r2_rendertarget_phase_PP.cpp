@@ -106,6 +106,11 @@ struct TL_2c3uv
 	}
 };
 
+bool CRenderTarget::u_need_CM()
+{
+	return (param_color_map_influence > 0.001f);
+}
+
 void CRenderTarget::phase_pp()
 {
 	// combination/postprocess
@@ -142,6 +147,7 @@ void CRenderTarget::phase_pp()
 	RCache.Vertex.Unlock(4, g_postprocess.stride());
 
 	// Actual rendering
+	RCache.set_c("c_colormap", param_color_map_influence, param_color_map_interpolate, 0, 0);
 	RCache.set_c("c_brightness", color_get_R(p_brightness) / 255.f, color_get_G(p_brightness) / 255.f, color_get_B(p_brightness) / 255.f, 0);
 
 	RCache.set_Geometry(g_postprocess);

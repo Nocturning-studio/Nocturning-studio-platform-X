@@ -444,7 +444,9 @@ void CCameraManager::ApplyDevice(float _viewport_near)
 	Device.mProject.build_projection(deg2rad(m_cam_info.fFov), m_cam_info.fAspect, _viewport_near, m_cam_info.fFar);
 
 	if (g_pGamePersistent && g_pGamePersistent->m_pMainMenu->IsActive())
+	{
 		ResetPP();
+	}
 	else
 	{
 		pp_affected.validate("apply device");
@@ -464,6 +466,9 @@ void CCameraManager::ApplyDevice(float _viewport_near)
 		T->set_color_base(pp_affected.color_base);
 		T->set_color_gray(pp_affected.color_gray);
 		T->set_color_add(pp_affected.color_add);
+		T->set_cm_imfluence(pp_affected.cm_influence);
+		T->set_cm_interpolate(pp_affected.cm_interpolate);
+		T->set_cm_textures(pp_affected.cm_tex1, pp_affected.cm_tex2);
 	}
 }
 
@@ -480,6 +485,9 @@ void CCameraManager::ResetPP()
 	T->set_color_base(pp_identity.color_base);
 	T->set_color_gray(pp_identity.color_gray);
 	T->set_color_add(pp_identity.color_add);
+	T->set_cm_imfluence(0.0f);
+	T->set_cm_interpolate(1.0f);
+	T->set_cm_textures("", "");
 }
 
 void CCameraManager::Dump()

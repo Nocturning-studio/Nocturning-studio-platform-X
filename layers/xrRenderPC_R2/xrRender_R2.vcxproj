@@ -1217,6 +1217,7 @@
     <ClInclude Include="Blender_motion_blur.h" />
     <ClInclude Include="Blender_reflections.h" />
     <ClInclude Include="cl_intersect.h" />
+    <ClInclude Include="ColorMapManager.h" />
     <ClInclude Include="DetailFormat.h" />
     <ClInclude Include="doug_lea_memory_allocator.h" />
     <ClInclude Include="du_sphere_part.h" />
@@ -1356,6 +1357,7 @@
     <ClCompile Include="blender_autoexposure.cpp" />
     <ClCompile Include="Blender_motion_blur.cpp" />
     <ClCompile Include="Blender_reflections.cpp" />
+    <ClCompile Include="ColorMapManager.cpp" />
     <ClCompile Include="du_sphere_part.cpp" />
     <ClCompile Include="Light_Render_Direct.cpp" />
     <ClCompile Include="Light_Render_Direct_ComputeXFS.cpp" />

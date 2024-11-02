@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../xrRender/ColorMapManager.h"
+
 class light;
 
 #define DU_SPHERE_NUMVERTEX 92
@@ -196,6 +198,11 @@ class CRenderTarget : public IRender_Target
 	u32 param_color_gray;
 	u32 param_color_add;
 
+	//	Color mapping
+	float param_color_map_influence;
+	float param_color_map_interpolate;
+	ColorMapManager color_map_manager;
+
 	//	Igor: used for volumetric lights
 	bool m_bHasActiveVolumetric;
 
@@ -279,6 +286,8 @@ class CRenderTarget : public IRender_Target
 
 	void phase_fog_scattering();
 
+	bool u_need_CM();
+
 	void phase_pp();
 
 	virtual void set_blur(float f)
@@ -329,6 +338,19 @@ class CRenderTarget : public IRender_Target
 	virtual u32 get_height()
 	{
 		return dwHeight;
+	}
+
+	virtual void set_cm_imfluence(float f)
+	{
+		param_color_map_influence = f;
+	}
+	virtual void set_cm_interpolate(float f)
+	{
+		param_color_map_interpolate = f;
+	}
+	virtual void set_cm_textures(const shared_str& tex0, const shared_str& tex1)
+	{
+		color_map_manager.SetTextures(tex0, tex1);
 	}
 
 	//	Need to reset stencil only when marker overflows.

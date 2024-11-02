@@ -145,6 +145,9 @@
     <Filter Include="Blenders\Postprocess stage\Fog">
       <UniqueIdentifier>{68858db4-7579-4256-8d03-0924dafd205c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendertargets\Render stages\Postprocess stages\ColorMap">
+      <UniqueIdentifier>{62ec11ae-77b9-4c27-acbf-ebfd9b85f724}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl_intersect.h">
@@ -359,6 +362,9 @@
     </ClInclude>
     <ClInclude Include="blender_fog_scattering.h">
       <Filter>Blenders\Postprocess stage\Fog</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorMapManager.h">
+      <Filter>Rendertargets\Render stages\Postprocess stages\ColorMap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -712,6 +718,9 @@
     </ClCompile>
     <ClCompile Include="blender_fog_scattering.cpp">
       <Filter>Blenders\Postprocess stage\Fog</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorMapManager.cpp">
+      <Filter>Rendertargets\Render stages\Postprocess stages\ColorMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
