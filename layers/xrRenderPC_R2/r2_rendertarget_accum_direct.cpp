@@ -301,9 +301,19 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 		u_DBT_disable();
 
 		//	Igor: draw volumetric here
-		if ((ps_r2_sun_shafts > 0) && sub_phase == SE_SUN_FAR)
+		if ((ps_r2_sun_shafts > 0))
 			accum_direct_volumetric(sub_phase, Offset, m_shadow);
 	}
+}
+
+void CRenderTarget::SetActiveVolumetric(bool state)
+{
+	m_bHasActiveVolumetric = state;
+}
+
+bool CRenderTarget::GetActiveVolumetric()
+{
+	return m_bHasActiveVolumetric;
 }
 
 void CRenderTarget::accum_direct_volumetric(u32 sub_phase, const u32 Offset, const Fmatrix& mShadow)
@@ -312,6 +322,9 @@ void CRenderTarget::accum_direct_volumetric(u32 sub_phase, const u32 Offset, con
 		return;
 
 	if (!ps_r2_sun_shafts)
+		return;
+
+	if ((sub_phase == SE_SUN_NEAR) || (sub_phase == SE_SUN_FAR))
 		return;
 
 	{
@@ -386,20 +399,22 @@ void CRenderTarget::accum_direct_volumetric(u32 sub_phase, const u32 Offset, con
 		//		RCache.set_c				("m_sunmask",			m_clouds_shadow);
 
 		// nv-DBT
-		float zMin, zMax;
+		float zMin, zMax, CascadeID;
 		if (SE_SUN_NEAR == sub_phase)
 		{
 			zMin = 0;
 			zMax = ps_r2_sun_near;
+			CascadeID = 1.0f;
 		}
 		else
 		{
 			zMin = 0;
 			extern float ps_r2_sun_far;
 			zMax = ps_r2_sun_far;
+			CascadeID = 3.0f;
 		}
 
-		RCache.set_c("volume_range", zMin, zMax, 0, 0);
+		RCache.set_c("volume_range", zMin, zMax, CascadeID, 0);
 
 		Fvector center_pt;
 		center_pt.mad(Device.vCameraPosition, Device.vCameraDirection, zMin);

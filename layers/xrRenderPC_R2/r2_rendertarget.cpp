@@ -270,7 +270,7 @@ CRenderTarget::CRenderTarget()
 
 	rt_Distortion_Mask.create(r2_RT_distortion_mask, dwWidth, dwHeight, D3DFMT_G16R16);
 
-	rt_Generic_2.create(r2_RT_generic2, dwWidth, dwHeight, D3DFMT_R8G8B8);
+	rt_Generic_2.create(r2_RT_generic2, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
 	rt_Generic_0.create(r2_RT_generic0, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	rt_Generic_1.create(r2_RT_generic1, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);

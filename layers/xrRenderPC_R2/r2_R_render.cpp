@@ -250,6 +250,7 @@ void CRender::Render()
 
 		// flush
 		Target->clear_gbuffer();
+		Target->SetActiveVolumetric(false);
 		RCache.set_ColorWriteEnable(FALSE);
 		r_dsgraph_render_graph(0);
 		RCache.set_ColorWriteEnable();
@@ -257,6 +258,7 @@ void CRender::Render()
 	else
 	{
 		Target->clear_gbuffer();
+		Target->SetActiveVolumetric(false);
 	}
 
 	//*******

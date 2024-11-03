@@ -130,11 +130,6 @@ void CRenderTarget::phase_combine()
 			g_pGamePersistent->OnRenderPPUI_main(); // PP-UI
 	}
 
-	//	Igor: for volumetric lights
-	//	combine light volume here
-	if (m_bHasActiveVolumetric)
-		phase_combine_volumetric();
-
 	#pragma todo("Deathman to All: Реализовать через текстуру в низком разрешении")
 	//if (g_pGamePersistent && (g_pGamePersistent->Environment().CurrentEnv->fog_density > 0.5f))
 		//phase_fog_scattering();
