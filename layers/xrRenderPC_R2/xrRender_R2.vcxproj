@@ -1400,7 +1400,6 @@
     <ClCompile Include="r2_rendertarget_phase_ao.cpp" />
     <ClCompile Include="r2_rendertarget_phase_bloom.cpp" />
     <ClCompile Include="r2_rendertarget_phase_combine.cpp" />
-    <ClCompile Include="r2_rendertarget_phase_combine_volumetric_lights.cpp" />
     <ClCompile Include="r2_rendertarget_phase_depth_of_field.cpp" />
     <ClCompile Include="r2_rendertarget_phase_frame_overlay.cpp" />
     <ClCompile Include="r2_rendertarget_phase_autoexposure.cpp" />

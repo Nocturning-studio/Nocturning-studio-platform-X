@@ -270,8 +270,6 @@ CRenderTarget::CRenderTarget()
 
 	rt_Distortion_Mask.create(r2_RT_distortion_mask, dwWidth, dwHeight, D3DFMT_G16R16);
 
-	rt_Generic_2.create(r2_RT_generic2, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
-
 	rt_Generic_0.create(r2_RT_generic0, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	rt_Generic_1.create(r2_RT_generic1, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
@@ -290,7 +288,6 @@ CRenderTarget::CRenderTarget()
 	rt_smap_ZB = NULL;
 	s_accum_mask.create(b_accum_mask, "r2\\accum_mask");
 	s_accum_direct_cascade.create(b_accum_direct_cascade, "r2\\accum_direct_cascade");
-	s_accum_direct_volumetric_cascade.create("accumulating_light_stage_volumetric_sun_cascade");
 
 	// POINT
 	{
@@ -378,22 +375,10 @@ CRenderTarget::CRenderTarget()
 			{0, 0, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0}, // pos+uv
 			D3DDECL_END()};
 		s_combine.create(b_combine, "r2\\combine");
-		s_combine_volumetric.create("scene_combine_stage_pass_volumetric");
-		s_combine_dbg_0.create("effects\\screen_set", r2_RT_smap_surf);
-		s_combine_dbg_1.create("effects\\screen_set", r2_RT_autoexposure_t8);
 		g_combine_VP.create(dwDecl, RCache.Vertex.Buffer(), RCache.QuadIB);
 		g_combine.create(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
 		g_combine_2UV.create(FVF::F_TL2uv, RCache.Vertex.Buffer(), RCache.QuadIB);
 		g_combine_cuboid.create(FVF::F_L, RCache.Vertex.Buffer(), RCache.Index.Buffer());
-
-		u32 fvf_aa_blur = D3DFVF_XYZRHW | D3DFVF_TEX4 | D3DFVF_TEXCOORDSIZE2(0) | D3DFVF_TEXCOORDSIZE2(1) |
-						  D3DFVF_TEXCOORDSIZE2(2) | D3DFVF_TEXCOORDSIZE2(3);
-		g_aa_blur.create(fvf_aa_blur, RCache.Vertex.Buffer(), RCache.QuadIB);
-
-		u32 fvf_aa_AA = D3DFVF_XYZRHW | D3DFVF_TEX7 | D3DFVF_TEXCOORDSIZE2(0) | D3DFVF_TEXCOORDSIZE2(1) |
-						D3DFVF_TEXCOORDSIZE2(2) | D3DFVF_TEXCOORDSIZE2(3) | D3DFVF_TEXCOORDSIZE2(4) |
-						D3DFVF_TEXCOORDSIZE4(5) | D3DFVF_TEXCOORDSIZE4(6);
-		g_aa_AA.create(fvf_aa_AA, RCache.Vertex.Buffer(), RCache.QuadIB);
 
 		// Create simple screen quad geom for postprocess shaders
 		g_simple_quad.create(D3DFVF_XYZRHW | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.QuadIB);
@@ -474,7 +459,7 @@ CRenderTarget::CRenderTarget()
 			// #endif
 		}
 		*/
-
+		/*
 		// Build noise table
 		if (1)
 		{
@@ -510,6 +495,7 @@ CRenderTarget::CRenderTarget()
 				R_CHK(t_noise_surf[it]->UnlockRect(0));
 			}
 		}
+		*/
 	}
 	s_contrast_adaptive_sharpening.create(b_contrast_adaptive_sharpening, "r2\\contrast_adaptive_sharpening");
 
@@ -567,6 +553,7 @@ CRenderTarget::~CRenderTarget()
 	_RELEASE(surf_screenshot_gamesave);
 	_RELEASE(tex_screenshot_gamesave);
 
+	/*
 	// Jitter
 	for (int it = 0; it < TEX_jitter_count; it++)
 	{
@@ -576,6 +563,7 @@ CRenderTarget::~CRenderTarget()
 #endif // DEBUG
 		_RELEASE(t_noise_surf[it]);
 	}
+	*/
 
 	//
 	accum_spot_geom_destroy();
@@ -644,18 +632,3 @@ void CRenderTarget::increment_light_marker()
 		reset_light_marker(true);
 }
 
-bool CRenderTarget::need_to_render_sunshafts()
-{
-	if (!ps_r2_sun_shafts)
-		return false;
-
-	{
-		CEnvDescriptor* E = g_pGamePersistent->Environment().CurrentEnv;
-		float fValue = E->m_fSunShaftsIntensity;
-		//	TODO: add multiplication by sun color here
-		if (fValue < 0.0001)
-			return false;
-	}
-
-	return true;
-}

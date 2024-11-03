@@ -674,9 +674,6 @@
     <ClCompile Include="r2_rendertarget_phase_wallmarks.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
-    <ClCompile Include="r2_rendertarget_phase_combine_volumetric_lights.cpp">
-      <Filter>Rendertargets\Render stages\Scene combine stage</Filter>
-    </ClCompile>
     <ClCompile Include="r2_rendertarget_phase_distortion.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>

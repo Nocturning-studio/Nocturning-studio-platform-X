@@ -27,7 +27,6 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_Sampler("env_s1", r2_T_envs1, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR);
 		C.r_Sampler("sky_s0", r2_T_sky0, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR);
 		C.r_Sampler("sky_s1", r2_T_sky1, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR);
-		C.r_Sampler_rtf("s_vollight", r2_RT_generic2);
 
 		C.r_Sampler_clf("s_brdf_lut", "vfx\\vfx_brdf_lut");
 
@@ -43,7 +42,6 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_Sampler("env_s1", r2_T_envs1, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR);
 		C.r_Sampler("sky_s0", r2_T_sky0, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR);
 		C.r_Sampler("sky_s1", r2_T_sky1, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR);
-		C.r_Sampler_rtf("s_vollight", r2_RT_generic2);
 
 		C.r_Sampler_clf("s_brdf_lut", "vfx\\vfx_brdf_lut");
 

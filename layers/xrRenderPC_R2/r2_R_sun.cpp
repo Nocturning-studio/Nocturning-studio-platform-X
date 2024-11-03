@@ -612,16 +612,8 @@ void CRender::init_cacades()
 
 void CRender::render_sun_cascades()
 {
-	bool b_need_to_render_sunshafts = RImplementation.Target->need_to_render_sunshafts();
-	bool last_cascade_chain_mode = m_sun_cascades.back().reset_chain;
-	if (b_need_to_render_sunshafts)
-		m_sun_cascades[m_sun_cascades.size() - 1].reset_chain = true;
-
 	for (u32 i = 0; i < m_sun_cascades.size(); ++i)
 		render_sun_cascade(i);
-
-	if (b_need_to_render_sunshafts)
-		m_sun_cascades[m_sun_cascades.size() - 1].reset_chain = last_cascade_chain_mode;
 }
 
 void CRender::render_sun_cascade(u32 cascade_ind)

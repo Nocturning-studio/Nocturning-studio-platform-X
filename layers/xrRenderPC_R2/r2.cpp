@@ -122,7 +122,7 @@ static class cl_hdr_params : public R_constant_setup
 	}
 } binder_hdr_params;
 //////////////////////////////////////////////////////////////////////////
-void CheckHWSupporting()
+void CRender::CheckHWRenderSupporting()
 {
 	R_ASSERT2(CAP_VERSION(HW.Caps.raster_major, HW.Caps.raster_minor) >= CAP_VERSION(3, 0),
 			  make_string("Your graphics accelerator don`t meet minimal mod system requirements (DX9.0c supporting)"));
@@ -144,6 +144,8 @@ void CheckHWSupporting()
 
 	R_ASSERT2(HW.support(D3DFMT_A16B16G16R16F, D3DRTYPE_TEXTURE, D3DUSAGE_QUERY_POSTPIXELSHADER_BLENDING),
 			  make_string("Your graphics accelerator don`t meet minimal mod system requirements (Post-Pixel Shader blending)"));
+
+	Msg("- 'INTZ' depth format check: %u", HW.support((D3DFORMAT)MAKEFOURCC('I', 'N', 'T', 'Z'), D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL));
 }
 //////////////////////////////////////////////////////////////////////////
 // update with vid_restart
@@ -152,46 +154,12 @@ void CRender::update_options()
 	o.smapsize = 1536;
 
 	o.nvstencil = (HW.Caps.id_vendor == 0x10DE) && (HW.Caps.id_device >= 0x40);
+	if (o.nvstencil)
+		Msg("- Nvidia Stencil supported");
+
 	o.nvdbt = HW.support((D3DFORMAT)MAKEFOURCC('N', 'V', 'D', 'B'), D3DRTYPE_SURFACE, 0);
-
-	o.use_soft_water = ps_r2_postprocess_flags.test(R2FLAG_SOFT_PARTICLES);
-	o.use_soft_particles = ps_r2_postprocess_flags.test(R2FLAG_SOFT_PARTICLES);
-
-	bool intz = HW.support((D3DFORMAT)MAKEFOURCC('I', 'N', 'T', 'Z'), D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL);
-	bool rawz = HW.support((D3DFORMAT)MAKEFOURCC('R', 'A', 'W', 'Z'), D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL);
-
-	Msg("* depth format 'INTZ' check: %u", intz);
-	Msg("* depth format 'RAWZ' check: %u", rawz);
-
-	// check if we can optimize G-Buffer
-	o.gbuffer_opt_mode = ps_r2_gbuffer_opt;
-
-	if (ps_r2_gbuffer_opt == 2)
-	{
-		if (intz)
-			o.gbuffer_opt_mode = 2;
-		else if (rawz)
-			o.gbuffer_opt_mode = 3;
-		else
-			o.gbuffer_opt_mode = 1;
-	}	
-	
-	sprintf(c_gbuffer_opt_mode, "%d", o.gbuffer_opt_mode);
-
-	switch (o.gbuffer_opt_mode)
-	{
-	case 3:
-		Msg("* G-Buffer optimization mode: full 'RAWZ'");
-		break;
-	case 2:
-		Msg("* G-Buffer optimization mode: full 'INTZ'");
-		break;
-	case 1:
-		Msg("* G-Buffer optimization mode: partial");
-		break;
-	default:
-		Msg("* G-Buffer optimization mode: none");
-	}
+	if (o.nvdbt)
+		Msg("- Nvidia Depth Bounds supported");
 
 	sprintf(c_smapsize, "%d", o.smapsize);
 	sprintf(c_debugview, "%d", ps_r2_debug_render);
@@ -200,6 +168,7 @@ void CRender::update_options()
 	sprintf(c_shadow_filter, "%d", ps_r2_shadow_filtering);
 	sprintf(c_material_quality, "%d", ps_r2_material_quality);
 	sprintf(c_ao_quality, "%d", ps_r2_ao_quality);
+	sprintf(c_sun_shafts_quality, "%d", ps_r2_sun_shafts_quality);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -209,9 +178,6 @@ CShaderMacros CRender::FetchShaderMacros()
 
 	// build id
 	macros.add("BUILD_ID", c_build_id);
-
-	// debug view
-	macros.add("DEBUG_VIEW_MODE", c_debugview);
 
 	// skinning
 	macros.add(m_skinning < 0, "SKIN_NONE", "1");
@@ -236,15 +202,17 @@ CShaderMacros CRender::FetchShaderMacros()
 
 	macros.add("MATERIAL_QUALITY", c_material_quality);
 
-	macros.add("GBUFFER_OPT_MODE", c_gbuffer_opt_mode);
+	macros.add(ps_r2_postprocess_flags.test(R2FLAG_SOFT_WATER), "USE_SOFT_WATER", "1");
 
-	macros.add(o.use_soft_water, "USE_SOFT_WATER", "1");
-
-	macros.add(o.use_soft_particles, "USE_SOFT_PARTICLES", "1");
+	macros.add(ps_r2_postprocess_flags.test(R2FLAG_SOFT_PARTICLES), "USE_SOFT_PARTICLES", "1");
 
 	macros.add(ps_render_flags.test(R2FLAG_ANTI_ALIASING_ALPHA_TEST), "ALPHA_TEST_AA", "1");
 
 	macros.add("AO_QUALITY", c_ao_quality);
+
+	macros.add(ps_r2_lighting_flags.test(R2FLAG_SUN_SHAFTS), "SUN_SHAFTS_ENABLED", "1");
+
+	macros.add("SUN_SHAFTS_QUALITY", c_sun_shafts_quality);
 
 	return macros;
 }
@@ -252,7 +220,7 @@ CShaderMacros CRender::FetchShaderMacros()
 extern XRCORE_API u32 build_id;
 void CRender::create()
 {
-	CheckHWSupporting();
+	CheckHWRenderSupporting();
 	xrRender_console_apply_conditions();
 
 	Device.seqFrame.Add(this, REG_PRIORITY_HIGH + 0x12345678);

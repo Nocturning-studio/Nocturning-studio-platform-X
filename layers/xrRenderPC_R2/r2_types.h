@@ -21,7 +21,6 @@
 // Output textures
 #define r2_RT_generic0 "$user$generic0"
 #define r2_RT_generic1 "$user$generic1"
-#define r2_RT_generic2 "$user$generic2"	//	Igor: for volumetric lights
 
 #define r2_RT_distortion_mask "$user$distortion"
 

@@ -64,9 +64,9 @@ u32 ps_r2_shadow_filtering = 2;
 xr_token shadow_filter_token[] = {
 	{"st_opt_disable", 0}, {"st_opt_min", 1}, {"st_opt_mid", 2}, {"st_opt_max", 3}, {0, 0}};
 
-u32 ps_r2_sun_shafts = 2;
+u32 ps_r2_sun_shafts_quality = 2;
 xr_token qsun_shafts_token[] = {
-	{"st_opt_disabled", 0}, {"st_opt_low", 1}, {"st_opt_medium", 2}, {"st_opt_high", 3}, {0, 0}};
+	{"st_opt_low", 1}, {"st_opt_medium", 2}, {"st_opt_high", 3}, {0, 0}};
 
 u32 ps_r2_material_quality = 1;
 xr_token material_quality_token[] = {{"st_opt_low", 1}, {"st_opt_medium", 2}, {"st_opt_high", 3}, {"st_opt_ultra", 4}, {0, 0}};
@@ -743,7 +743,8 @@ void xrRender_initconsole()
 	CMD3(CCC_Mask, "r2_cinema_borders", &ps_r2_overlay_flags, R2FLAG_CINEMA_BORDERS);
 	CMD3(CCC_Mask, "r2_watermark", &ps_r2_overlay_flags, R2FLAG_WATERMARK);
 
-	CMD3(CCC_Token, "r2_sun_shafts", &ps_r2_sun_shafts, qsun_shafts_token);
+	CMD3(CCC_Mask, "r2_sun_shafts_enabled", &ps_r2_lighting_flags, R2FLAG_SUN_SHAFTS);
+	CMD3(CCC_Token, "r2_sun_shafts_quality", &ps_r2_sun_shafts_quality, qsun_shafts_token);
 	CMD3(CCC_Token, "r2_shadow_filtering", &ps_r2_shadow_filtering, shadow_filter_token);
 	CMD3(CCC_Mask, "r2_sun", &ps_r2_lighting_flags, R2FLAG_SUN);
 	CMD3(CCC_Mask, "r2_sun_details", &ps_r2_lighting_flags, R2FLAG_SUN_DETAILS);
@@ -814,6 +815,7 @@ void xrRender_initconsole()
 
 void xrRender_console_apply_conditions()
 {
+#if RENDER == R_R1
 	CCC_ConditionsToken* r1_aa_type = dynamic_cast<CCC_ConditionsToken*>(Console->GetCommand("r1_aa_type"));
 	r1_aa_type->SetCondition(CSAA_4X, HW.Caps.max_coverage >= 2);
 	r1_aa_type->SetCondition(CSAA_8X, HW.Caps.max_coverage >= 4);
@@ -823,6 +825,7 @@ void xrRender_console_apply_conditions()
 	r1_aa_transluency->SetCondition(trans_ssaa_fmt, HW.support(trans_ssaa_fmt, D3DRTYPE_SURFACE, NULL));
 	r1_aa_transluency->SetCondition(trans_atoc_fmt, HW.support(trans_atoc_fmt, D3DRTYPE_SURFACE, NULL));
 	r1_aa_transluency->ApplyConditions();
+#endif
 }
 ///////////////////////////////////////////////////////////////////////////////////
 void xrRender_apply_tf()

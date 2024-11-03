@@ -63,8 +63,6 @@ class CRenderTarget : public IRender_Target
 
 	ref_rt rt_Generic_0; // 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 	ref_rt rt_Generic_1;
-	//	Igor: for volumetric lights
-	ref_rt rt_Generic_2; // 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 
 	ref_rt rt_Distortion_Mask;
 
@@ -117,7 +115,6 @@ class CRenderTarget : public IRender_Target
 	// Accum
 	ref_shader s_accum_mask;
 	ref_shader s_accum_direct_cascade;
-	ref_shader s_accum_direct_volumetric_cascade;
 	ref_shader s_accum_point;
 	ref_shader s_accum_spot;
 
@@ -156,15 +153,10 @@ class CRenderTarget : public IRender_Target
 	ref_geom g_combine_VP; // xy=p,zw=tc
 	ref_geom g_combine_2UV;
 	ref_geom g_combine_cuboid;
-	ref_geom g_aa_blur;
-	ref_geom g_aa_AA;
 
 	ref_geom g_simple_quad;
 
-	ref_shader s_combine_dbg_0;
-	ref_shader s_combine_dbg_1;
 	ref_shader s_combine;
-	ref_shader s_combine_volumetric;
 	ref_shader s_contrast_adaptive_sharpening;
 	ref_shader s_antialiasing;
 	ref_shader s_barrel_blur;
@@ -241,18 +233,12 @@ class CRenderTarget : public IRender_Target
 	void phase_smap_spot(light* L);
 	void phase_smap_spot_tsh(light* L);
 	void phase_accumulator();
-	void phase_vol_accumulator();
-
-	bool need_to_render_sunshafts();
 
 	BOOL enable_scissor(light* L); // true if intersects near plane
 	void enable_dbt_bounds(light* L);
 
 	void draw_volume(light* L);
 	void accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev, float fBias);
-	void SetActiveVolumetric(bool state);
-	bool GetActiveVolumetric();
-	void accum_direct_volumetric(u32 sub_phase, const u32 Offset, const Fmatrix& mShadow);
 	void accum_point(light* L);
 	void accum_spot(light* L);
 

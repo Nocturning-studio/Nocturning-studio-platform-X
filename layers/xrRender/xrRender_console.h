@@ -147,7 +147,7 @@ extern ECORE_API float ps_r2_sun_depth_near_bias;  // -0.0001f
 extern ECORE_API float ps_r2_sun_lumscale;		   // 0.5f
 extern ECORE_API float ps_r2_sun_lumscale_hemi;	   // 1.0f
 extern ECORE_API float ps_r2_sun_lumscale_amb;	   // 1.0f
-extern ECORE_API u32 ps_r2_sun_shafts;			   //=	0;
+extern ECORE_API u32 ps_r2_sun_shafts_quality;			   //=	0;
 extern ECORE_API xr_token qsun_shafts_token[];
 extern ECORE_API u32 ps_r2_shadow_filtering;
 
@@ -177,7 +177,8 @@ enum
 	R2FLAG_SUN_DETAILS = (1 << 1),
 	R2FLAGEXT_SUN_ZCULLING = (1 << 2),
 	R2FLAG_R1LIGHTS = (1 << 3),
-	R2FLAG_EXP_DONT_TEST_UNSHADOWED = (1 << 4)
+	R2FLAG_EXP_DONT_TEST_UNSHADOWED = (1 << 4),
+	R2FLAG_SUN_SHAFTS = (1 << 5)
 };
 
 extern ECORE_API Flags32 ps_r2_postprocess_flags;
