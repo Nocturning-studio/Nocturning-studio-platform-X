@@ -364,6 +364,7 @@ BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 		info.n.set(m_Camera.j);
 		info.d.set(m_Camera.k);
 		info.p.set(m_Camera.c);
+		info.fFov = m_fFov;
 	}
 	else if (m_bMakeLevelMap)
 	{
