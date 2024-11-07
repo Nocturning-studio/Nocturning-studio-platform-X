@@ -107,7 +107,7 @@ public:
 
 	void 					apply_lmaterial			(){}
     
-    virtual LPCSTR			getShaderPath			(){return "R1\\";}
+    virtual LPCSTR			getShaderPath			(){return "R2\\";}
 
 	virtual HRESULT			CompileShader			(
 		LPCSTR          	pSrcData,
