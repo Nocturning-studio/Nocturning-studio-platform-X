@@ -36,7 +36,7 @@
     <USERDEFINES value="_EDITOR;_PARTICLE_EDITOR;_DEBUG"/>
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="ParticleEditor.cpp"/>
-    <INCLUDEPATH value="..\ECore\Editor;$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;..\..\xrEngine;$(CORE_DIR);..\..\xrEngine\xrRender"/>
+    <INCLUDEPATH value="..\ECore\Editor;$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;..\..\xrEngine;$(CORE_DIR);..\..\xrRender"/>
     <LIBPATH value="..\ECore\Editor;..\..\xrEngine;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS)\alexmx;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;x:\libraries"/>
     <WARNINGS value="-w8092 -w8091 -w8090 -w8089 -w8087 -wprc -wuse -wucp -wstv -wstu -wsig 
       -wpin -w-par -wnod -wnak -wdef -wcln -wbbf -wasm -wamp -wamb"/>
@@ -47,7 +47,7 @@
       -I$(DXSDK_DIR)\Include -I$(COMPONENTS)\alexmx -I$(BCB)\include\vcl 
       -I$(BCB)\include -I$(COMPONENTS)\ElPack\Code 
       -I$(COMPONENTS)\ElPack\Code\Source -I..\..\xrEngine -I$(CORE_DIR) 
-      -I..\..\xrEngine\xrRender -no_tie -boa"/>
+      -I..\..\xrRender -no_tie -boa"/>
     <CFLAG1 value="-Od -H=x:\intermediate_ed\pe\pch.csm -Hc -Q -Vms -Vx -Ve -xf -xp -VF -ff 
       -X- -r- -ps -a4 -6 -b- -k -y -v -vi- -He -c -tW -tWM"/>
     <PFLAGS value="-N2x:\intermediate_ed\pe -N0x:\intermediate_ed\pe -$Y+ -$W -$Q -$O- -$A8 
@@ -119,7 +119,7 @@ Comments=
 
 [HistoryLists\hlIncludePath]
 Count=17
-Item0=..\ECore\Editor;$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;..\..\xrEngine;$(CORE_DIR);..\..\xrEngine\xrRender
+Item0=..\ECore\Editor;$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;..\..\xrEngine;$(CORE_DIR);..\..\xrRender
 Item1=..\ECore\Editor;$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;..\..\xrEngine;$(CORE_DIR)
 Item2=$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;..\..\xrEngine;$(CORE_DIR)
 Item3=R:\SDK\Microsoft DirectX 9.0 SDK (April 2005)\Include;r:\borland\components6\alexmx;$(BCB)\include\vcl;$(BCB)\include;R:\SDK\MagicFM_Borland\Sdk\Include;R:\Borland\Components6\ElPack\Code;R:\Borland\Components6\ElPack\Code\Source;P:\xrCore;P:\xrSound;..\ECore;..\ECore\Editor;..\ECore\Engine;..\ECore\Engine\blenders;..\ECore\Engine\visuals;..\xrEProps;..\..\xrParticles

@@ -107,12 +107,12 @@ CDemoRecord::~CDemoRecord()
 			g_pGamePersistent->SetPickableEffectorDOF(false);
 		}
 
-		Console->Execute("r2_photo_grid off");
-		Console->Execute("r2_cinema_borders off");
-		Console->Execute("r2_watermark off");
+		Console->Execute("r_photo_grid off");
+		Console->Execute("r_cinema_borders off");
+		Console->Execute("r_watermark off");
 
 #ifndef MASTER_GOLD
-		Console->Execute("r2_debug_render disabled");
+		Console->Execute("r_debug_render disabled");
 #endif
 
 		psHUD_Flags.set(HUD_DRAW, m_bGlobalHudDraw);
@@ -490,18 +490,18 @@ void CDemoRecord::SwitchGridState()
 	if (m_bGridEnabled == false)
 	{
 		m_bGridEnabled = true;
-		Console->Execute("r2_photo_grid on");
+		Console->Execute("r_photo_grid on");
 #ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::SwitchGridState - method change m_bGridEnabled to state enabled and activate r2_photo_grid");
+		Msg("CDemoRecord::SwitchGridState - method change m_bGridEnabled to state enabled and activate r_photo_grid");
 #endif
 	}
 	else
 	{
 		m_bGridEnabled = false;
-		Console->Execute("r2_photo_grid off");
+		Console->Execute("r_photo_grid off");
 #ifdef DEBUG_DEMO_RECORD
 		Msg("CDemoRecord::SwitchGridState - method change m_bGridEnabled to state disabled and deactivate "
-			"r2_photo_grid");
+			"r_photo_grid");
 #endif
 	}
 }
@@ -513,19 +513,19 @@ void CDemoRecord::SwitchCinemaBordersState()
 	if (m_bBordersEnabled == false)
 	{
 		m_bBordersEnabled = true;
-		Console->Execute("r2_cinema_borders on");
+		Console->Execute("r_cinema_borders on");
 #ifdef DEBUG_DEMO_RECORD
 		Msg("CDemoRecord::SwitchCinemaBordersState - method change m_bBordersEnabled to state enabled and activate "
-			"r2_cinema_borders");
+			"r_cinema_borders");
 #endif
 	}
 	else
 	{
 		m_bBordersEnabled = false;
-		Console->Execute("r2_cinema_borders off");
+		Console->Execute("r_cinema_borders off");
 #ifdef DEBUG_DEMO_RECORD
 		Msg("CDemoRecord::SwitchCinemaBordersState - method change m_bBordersEnabled to state disabled and deactivate "
-			"r2_cinema_borders");
+			"r_cinema_borders");
 #endif
 	}
 }
@@ -535,19 +535,19 @@ void CDemoRecord::SwitchWatermarkVisibility()
 	if (m_bWatermarkEnabled == false)
 	{
 		m_bWatermarkEnabled = true;
-		Console->Execute("r2_watermark on");
+		Console->Execute("r_watermark on");
 #ifdef DEBUG_DEMO_RECORD
 		Msg("CDemoRecord::SwitchWatermarkVisibility - method change m_bWatermarkEnabled to state enabled and activate "
-			"r2_watermark");
+			"r_watermark");
 #endif
 	}
 	else
 	{
 		m_bWatermarkEnabled = false;
-		Console->Execute("r2_watermark off");
+		Console->Execute("r_watermark off");
 #ifdef DEBUG_DEMO_RECORD
 		Msg("CDemoRecord::SwitchWatermarkVisibility - method change m_bWatermarkEnabled to state disabled and "
-			"deactivate r2_watermark");
+			"deactivate r_watermark");
 #endif
 	}
 }
@@ -604,25 +604,25 @@ void CDemoRecord::IR_OnKeyboardPress(int dik)
 #ifndef MASTER_GOLD
 #pragma todo("Deathman to all: Переделать быструю отладку рендера под удобный вид")
 	if (dik == DIK_1)
-		Console->Execute("r2_debug_render gbuffer_albedo");
+		Console->Execute("r_debug_render gbuffer_albedo");
 	if (dik == DIK_2)
-		Console->Execute("r2_debug_render gbuffer_position");
+		Console->Execute("r_debug_render gbuffer_position");
 	if (dik == DIK_3)
-		Console->Execute("r2_debug_render gbuffer_normal");
+		Console->Execute("r_debug_render gbuffer_normal");
 	if (dik == DIK_4)
-		Console->Execute("r2_debug_render gbuffer_glossiness");
+		Console->Execute("r_debug_render gbuffer_glossiness");
 	if (dik == DIK_5)
-		Console->Execute("r2_debug_render gbuffer_lightmap_ao");
+		Console->Execute("r_debug_render gbuffer_lightmap_ao");
 	if (dik == DIK_6)
-		Console->Execute("r2_debug_render gbuffer_baked_ao");
+		Console->Execute("r_debug_render gbuffer_baked_ao");
 	if (dik == DIK_7)
-		Console->Execute("r2_debug_render accumulator_diffuse");
+		Console->Execute("r_debug_render accumulator_diffuse");
 	if (dik == DIK_8)
-		Console->Execute("r2_debug_render accumulator_specular");
+		Console->Execute("r_debug_render accumulator_specular");
 	if (dik == DIK_9)
-		Console->Execute("r2_debug_render real_time_ao");
+		Console->Execute("r_debug_render real_time_ao");
 	if (dik == DIK_0)
-		Console->Execute("r2_debug_render disabled");
+		Console->Execute("r_debug_render disabled");
 #endif
 }
 

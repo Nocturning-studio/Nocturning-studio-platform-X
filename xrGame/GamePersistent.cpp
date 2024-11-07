@@ -121,7 +121,7 @@ CGamePersistent::CGamePersistent(void)
 	m_DofChangeSpeed = READ_IF_EXISTS(pSettings, r_float, "dof_params", "change_speed", 0.2);
 	m_DofUI = READ_IF_EXISTS(pSettings, r_fvector3, "ui_dof", "dof", Fvector().set(0.0, 0.5, 1));
 
-	Fvector3* DofValue = Console->GetFVectorPtr("r2_dof");
+	Fvector3* DofValue = Console->GetFVectorPtr("r_dof");
 	SetBaseDof(*DofValue);
 }
 

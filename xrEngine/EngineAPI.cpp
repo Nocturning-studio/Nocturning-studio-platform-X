@@ -32,16 +32,11 @@ void CEngineAPI::Initialize(void)
 	Msg("Initializing Engine API...");
 	//////////////////////////////////////////////////////////////////////////
 	// render
-	LPCSTR r2_name = "xrRender_R2.dll";
-
 	Msg("Initializing Renderer...");
-
-	// try to initialize R2
-	Log("Loading DLL:", r2_name);
-	hRender = LoadLibrary(r2_name);
-
-	if (0 == hRender)
-		Msg("Loading failed - incompatible hardware.");
+	LPCSTR render_name = "xrRender_PC.dll";
+	Log("Loading DLL:", render_name);
+	hRender = LoadLibrary(render_name);
+	R_ASSERT2(hRender, "! Can't load renderer");
 
 	// game
 	{
@@ -58,10 +53,10 @@ void CEngineAPI::Initialize(void)
 
 		Msg("Initializing xrFactory...");
 		pCreate = (Factory_Create*)GetProcAddress(hGame, "xrFactory_Create");
-		R_ASSERT(pCreate);
+		R_ASSERT2(pCreate, "Error in xrFactory_Create");
 
 		pDestroy = (Factory_Destroy*)GetProcAddress(hGame, "xrFactory_Destroy");
-		R_ASSERT(pDestroy);
+		R_ASSERT2(pDestroy, "Error in xrFactory_Destroy");
 	}
 
 	//////////////////////////////////////////////////////////////////////////

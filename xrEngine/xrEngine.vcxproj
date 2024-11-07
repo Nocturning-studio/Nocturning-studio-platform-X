@@ -1566,7 +1566,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386  %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>msacm32.lib;vfw32.lib;ogg_static.lib;theora_static.lib;ode.lib;BugTrap.lib;OpenAL32.lib;xrCDB.lib;xrCore.lib;xrCPU_Pipe.lib;xrGame.lib;xrGameSpy.lib;xrNetServer.lib;xrParticles.lib;xrRender_R1.lib;xrRender_R2.lib;xrSound.lib;xrXMLParser.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msacm32.lib;vfw32.lib;ogg_static.lib;theora_static.lib;ode.lib;BugTrap.lib;OpenAL32.lib;xrCDB.lib;xrCore.lib;xrCPU_Pipe.lib;xrGame.lib;xrGameSpy.lib;xrNetServer.lib;xrParticles.lib;xrRender_R1.lib;xrRender_PC.lib;xrSound.lib;xrXMLParser.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -1633,7 +1633,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386  %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>msacm32.lib;vfw32.lib;ogg_static.lib;theora_static.lib;ode.lib;BugTrap.lib;OpenAL32.lib;xrCDB.lib;xrCore.lib;xrCPU_Pipe.lib;xrGame.lib;xrGameSpy.lib;xrNetServer.lib;xrParticles.lib;xrRender_R1.lib;xrRender_R2.lib;xrSound.lib;xrXMLParser.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msacm32.lib;vfw32.lib;ogg_static.lib;theora_static.lib;ode.lib;BugTrap.lib;OpenAL32.lib;xrCDB.lib;xrCore.lib;xrCPU_Pipe.lib;xrGame.lib;xrGameSpy.lib;xrNetServer.lib;xrParticles.lib;xrRender_R1.lib;xrRender_PC.lib;xrSound.lib;xrXMLParser.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
