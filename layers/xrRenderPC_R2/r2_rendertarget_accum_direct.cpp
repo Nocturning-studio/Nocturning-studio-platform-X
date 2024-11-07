@@ -60,11 +60,8 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 		RCache.set_Geometry(g_combine);
 
 		// setup
-		float intensity = 0.3f * sun->color.r + 0.48f * sun->color.g + 0.22f * sun->color.b;
-		Fvector dir = L_dir;
-		dir.normalize().mul(-_sqrt(intensity + EPS));
 		RCache.set_Element(s_accum_mask->E[SE_MASK_DIRECT]); // masker
-		RCache.set_c("Ldynamic_dir", dir.x, dir.y, dir.z, 0);
+		RCache.set_c("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
 
 		// if (stencil>=1 && aref_pass)	stencil = light_id
 		RCache.set_ColorWriteEnable(FALSE);
@@ -81,10 +78,10 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 
 	// nv-stencil recompression
 	if (RImplementation.o.nvstencil && (SE_SUN_NEAR == sub_phase))
-		u_stencil_optimize(); //. driver bug?
+		u_stencil_optimize();
 
 	// Perform lighting
-	// if( sub_phase == SE_SUN_FAR ) //******************************************************************
+	//******************************************************************
 	{
 		phase_accumulator();
 		RCache.set_CullMode(CULL_CCW); //******************************************************************
@@ -92,12 +89,6 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 
 		// texture adjustment matrix
 		float fTexelOffs = (0.5f / float(RImplementation.o.smapsize));
-		//float fRange =
-		//	(SE_SUN_NEAR == sub_phase) ? RImplementation.o.sun_depth_near_scale : RImplementation.o.sun_depth_far_scale;
-		// float fBias = (SE_SUN_NEAR == sub_phase) ? ps_r2_sun_depth_near_bias : ps_r2_sun_depth_far_bias;
-		//float fBias =
-		//	(SE_SUN_NEAR == sub_phase) ? RImplementation.o.sun_depth_near_bias : RImplementation.o.sun_depth_far_bias;
-		// float	fBias = (SE_SUN_NEAR==sub_phase)?(-ps_r2_sun_depth_near_bias):ps_r2_sun_depth_far_bias;
 
 		float fRange = 0.0f;
 		float fBias = 0.0f;
@@ -148,7 +139,6 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 			m_shadow.mul(xf_project, xf_invview);
 
 			// tsm-bias
-			//if ((SE_SUN_FAR == sub_phase))
 			{
 				Fvector bias;
 				bias.mul(L_dir, ps_r2_sun_tsm_bias);
@@ -159,44 +149,12 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 			FPU::m24r();
 		}
 
-		// clouds xform
-		Fmatrix m_clouds_shadow;
-		{
-			static float w_shift = 0;
-			Fmatrix m_xform;
-			Fvector direction = sun->direction;
-			float w_dir = g_pGamePersistent->Environment().CurrentEnv->wind_direction;
-			// float	w_speed				= g_pGamePersistent->Environment().CurrentEnv->wind_velocity	;
-			Fvector normal;
-			normal.setHP(w_dir, 0);
-			w_shift += 0.003f * Device.fTimeDelta;
-			Fvector position;
-			position.set(0, 0, 0);
-			m_xform.build_camera_dir(position, direction, normal);
-			Fvector localnormal;
-			m_xform.transform_dir(localnormal, normal);
-			localnormal.normalize();
-			m_clouds_shadow.mul(m_xform, xf_invview);
-			m_xform.scale(0.002f, 0.002f, 1.f);
-			m_clouds_shadow.mulA_44(m_xform);
-			m_xform.translate(localnormal.mul(w_shift));
-			m_clouds_shadow.mulA_44(m_xform);
-		}
-
 		Fmatrix m_Texgen;
 		m_Texgen.identity();
 		RCache.xforms.set_W(m_Texgen);
 		RCache.xforms.set_V(Device.mView);
 		RCache.xforms.set_P(Device.mProject);
 		u_compute_texgen_screen(m_Texgen);
-
-		// Make jitter texture
-		Fvector2 j0, j1;
-		float scale_X = float(Device.dwWidth) / float(TEX_jitter);
-		// float	scale_Y				= float(Device.dwHeight)/ float(TEX_jitter);
-		float offset = (.5f / float(TEX_jitter));
-		j0.set(offset, offset);
-		j1.set(scale_X, scale_X).add(offset);
 
 		// Fill vertex buffer
 		u32 i_offset;
@@ -206,12 +164,11 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 			RCache.Index.Unlock(sizeof(facetable) / sizeof(u16));
 
 			// corners
-
 			u32 ver_count = sizeof(corners) / sizeof(Fvector3);
 			FVF::L* pv = (FVF::L*)RCache.Vertex.Lock(ver_count, g_combine_cuboid.stride(), Offset);
 
 			Fmatrix inv_XDcombine;
-			if (/*ps_r2_lighting_flags_ext.is(R2FLAGEXT_SUN_ZCULLING) &&*/ sub_phase == SE_SUN_FAR)
+			if ( sub_phase == SE_SUN_FAR)
 				inv_XDcombine.invert(xform_prev);
 			else
 				inv_XDcombine.invert(xform);
@@ -235,22 +192,6 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 		RCache.set_c("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
 		RCache.set_c("Ldynamic_color", L_clr.x, L_clr.y, L_clr.z, L_spec);
 		RCache.set_c("m_shadow", m_shadow);
-		RCache.set_c("m_sunmask", m_clouds_shadow);
-
-		// Pass view vector projected in shadow space to far pixel shader
-		// Needed for shadow fading.
-		if (0)//sub_phase == SE_SUN_FAR)
-		{
-			Fvector3 view_viewspace;
-			view_viewspace.set(0, 0, 1);
-
-			m_shadow.transform_dir(view_viewspace);
-			Fvector4 view_projlightspace;
-			view_projlightspace.set(view_viewspace.x, view_viewspace.y, 0, 0);
-			view_projlightspace.normalize();
-
-			RCache.set_c("view_shadow_proj", view_projlightspace);
-		}
 
 		// nv-DBT
 		float zMin, zMax;
@@ -265,6 +206,7 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 			zMin = ps_r2_sun_near;
 			zMax = ps_r2_sun_far;
 		}
+
 		center_pt.mad(Device.vCameraPosition, Device.vCameraDirection, zMin);
 		Device.mFullTransform.transform(center_pt);
 		zMin = center_pt.z;
@@ -289,7 +231,7 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 			HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
 
 		// setup stencil
-		if (SE_SUN_NEAR == sub_phase || sub_phase == SE_SUN_MIDDLE /*|| SE_SUN_FAR==sub_phase*/)
+		if (SE_SUN_NEAR == sub_phase || sub_phase == SE_SUN_MIDDLE)
 			RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0xFE, D3DSTENCILOP_KEEP,
 							   D3DSTENCILOP_ZERO, D3DSTENCILOP_KEEP);
 		else
