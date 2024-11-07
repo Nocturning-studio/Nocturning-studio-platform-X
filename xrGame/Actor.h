@@ -49,6 +49,7 @@ struct SActorMotions;
 struct SActorVehicleAnims;
 class CActorCondition;
 class SndShockEffector;
+class DeathEffector;
 class CActorFollowerMngr;
 class CGameTaskManager;
 
@@ -278,6 +279,7 @@ class CActor : public CEntityAlive,
 
 	// media
 	SndShockEffector* m_sndShockEffector;
+	DeathEffector* m_DeathEffector;
 	xr_vector<ref_sound> sndHit[ALife::eHitTypeMax];
 	ref_sound sndDie[SND_DIE_COUNT];
 

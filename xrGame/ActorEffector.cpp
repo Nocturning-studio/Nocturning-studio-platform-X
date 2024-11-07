@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 
+#include "..\xrEngine\igame_persistent.h"
 #include "ActorEffector.h"
 #include "PostprocessAnimator.h"
 #include "../xrEngine/effectorPP.h"
@@ -304,6 +305,75 @@ void SndShockEffector::Update()
 	{
 		psSoundVFactor =
 			y * (m_stored_volume - m_stored_volume * SND_MIN_VOLUME_FACTOR) + m_stored_volume * SND_MIN_VOLUME_FACTOR;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+DeathEffector::DeathEffector()
+{
+	m_snd_length = 0.0f;
+	m_cur_length = 0.0f;
+	m_stored_volume = -1.0f;
+	m_actor = NULL;
+}
+
+DeathEffector::~DeathEffector()
+{
+	psSoundVFactor = m_stored_volume;
+	if (m_actor && (m_ce || m_pe))
+		RemoveEffector(m_actor, effHit);
+
+	R_ASSERT(!m_ce && !m_pe);
+}
+
+BOOL DeathEffector::Valid()
+{
+	return true;
+}
+
+BOOL DeathEffector::InWork()
+{
+	return inherited::Valid();
+}
+
+float DeathEffector::GetFactor()
+{
+	float f = (m_end_time - Device.fTimeGlobal) / m_life_time;
+
+	float ff = f * m_life_time / 8.0f;
+	return clampr(ff, 0.0f, 1.0f);
+}
+
+void DeathEffector::Start(CActor* A)
+{
+	m_actor = A;
+	m_snd_length = 100000.0f;
+
+	if (m_stored_volume < 0.0f)
+		m_stored_volume = psSoundVFactor;
+
+	m_cur_length = 0;
+
+	m_life_time = 100000.0f;
+	m_end_time = Device.fTimeGlobal + m_life_time;
+}
+
+void DeathEffector::Update()
+{
+	bool bMenu = g_pGamePersistent->OnRenderPPUI_query();
+	if (!bMenu)
+	{
+		float FadeOutTime = 5.0f;
+		float Delta = Device.dwTimeDelta / FadeOutTime;
+		if (psSoundVFactor > Delta)
+			psSoundVFactor -= Delta;
+		else
+			psSoundVFactor = 0.0f;
+	}
+	else
+	{
+		psSoundVFactor = m_stored_volume;
 	}
 }
 

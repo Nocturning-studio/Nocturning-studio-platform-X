@@ -778,11 +778,17 @@ void CActor::Die(CObject* who)
 		m_BloodSnd.stop();
 	}
 
+	xr_delete(m_sndShockEffector);
+
 	if (IsGameTypeSingle())
 	{
+		if (!m_DeathEffector)
+		{
+			m_DeathEffector = xr_new<DeathEffector>();
+			m_DeathEffector->Start(this);
+		}
 		start_tutorial("game_over");
 	}
-	xr_delete(m_sndShockEffector);
 }
 
 void CActor::SwitchOutBorder(bool new_border_state)
@@ -965,6 +971,21 @@ void CActor::UpdateCL()
 		}
 		else
 			xr_delete(m_sndShockEffector);
+	}
+
+	if (m_DeathEffector)
+	{
+		if (this == Level().CurrentViewEntity())
+		{
+			m_DeathEffector->Update();
+
+			if (g_Alive())
+				xr_delete(m_DeathEffector);
+		}
+		else
+		{
+			xr_delete(m_DeathEffector);
+		}
 	}
 }
 

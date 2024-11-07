@@ -529,6 +529,7 @@ BOOL CActor::net_Spawn(CSE_Abstract* DC)
 	m_feel_touch_characters = 0;
 	m_snd_noise = 0.0f;
 	m_sndShockEffector = NULL;
+	m_DeathEffector = NULL;
 	/*	m_followers			= NULL;*/
 	if (m_pPhysicsShell)
 	{
@@ -745,6 +746,7 @@ void CActor::net_Destroy()
 	m_pPhysics_support->in_NetDestroy();
 
 	xr_delete(m_sndShockEffector);
+	xr_delete(m_DeathEffector);
 	xr_delete(pStatGraph);
 	xr_delete(m_pActorEffector);
 	pCamBobbing = NULL;
