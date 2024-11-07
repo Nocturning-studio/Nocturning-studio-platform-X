@@ -8,6 +8,7 @@
 
 #include "alife_space.h"
 #include "../xrEngine/render.h"
+#include "game_cl_single.h"
 
 class CCartridge;
 class CParticlesObject;
@@ -63,7 +64,7 @@ class CShootingObject
 	bool bWorking;
 
 	float fTimeToFire;
-	Fvector4 fvHitPower;
+	float fvHitPower[egdCount];
 	// float					fHitPower;
 	float fHitImpulse;
 

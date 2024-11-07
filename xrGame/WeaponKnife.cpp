@@ -265,7 +265,10 @@ void CWeaponKnife::LoadFireParams(LPCSTR section, LPCSTR prefix)
 	string32 buffer;
 	shared_str s_sHitPower_2;
 	// fHitPower_1		= fHitPower;
-	fvHitPower_1 = fvHitPower;
+
+	for (int i = 0; i < egdCount; i++)
+		fvHitPower_1[i] = fvHitPower[i];
+
 	fHitImpulse_1 = fHitImpulse;
 	m_eHitType_1 = ALife::g_tfString2HitType(pSettings->r_string(section, "hit_type"));
 

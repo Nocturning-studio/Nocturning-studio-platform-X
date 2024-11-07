@@ -43,12 +43,12 @@ class CWeaponKnife : public CWeapon
 
 	ALife::EHitType m_eHitType_1;
 	// float				fHitPower_1;
-	Fvector4 fvHitPower_1;
+	float fvHitPower_1[egdCount];
 	float fHitImpulse_1;
 
 	ALife::EHitType m_eHitType_2;
 	// float				fHitPower_2;
-	Fvector4 fvHitPower_2;
+	float fvHitPower_2[egdCount];
 	float fCurrentHit;
 	float fHitImpulse_2;
 

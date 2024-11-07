@@ -25,7 +25,10 @@ CShootingObject::CShootingObject(void)
 	fTime = 0;
 	fTimeToFire = 0;
 	// fHitPower						= 0.0f;
-	fvHitPower.set(0.0f, 0.0f, 0.0f, 0.0f);
+
+	for (int i; i < egdCount; i++)
+		fvHitPower[i] = 0.0f;
+
 	m_fStartBulletSpeed = 1000.f;
 
 	m_vCurrentShootDir.set(0, 0, 0);
@@ -114,7 +117,7 @@ void CShootingObject::LoadFireParams(LPCSTR section, LPCSTR prefix)
 		(float)atof(_GetItem(*s_sHitPower, 0, buffer)); // первый параметр - это хит для уровня игры мастер
 
 	#pragma todo("Deathman to ALL: пофиксить то что первый параметр хита задается для мастера, не легенды")
-	fvHitPower[egdLegend] = fvHitPower[egdMaster];
+	fvHitPower[egdLegend] = fvHitPower[egdMaster] * 3;
 	fvHitPower[egdVeteran] = fvHitPower[egdMaster]; // изначально параметры для других уровней
 	fvHitPower[egdStalker] = fvHitPower[egdMaster]; // сложности
 	fvHitPower[egdNovice] = fvHitPower[egdMaster];	// такие же
