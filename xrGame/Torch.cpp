@@ -239,7 +239,8 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	if (!inherited::net_Spawn(DC))
 		return (FALSE);
 
-	bool b_r2 = !!psDeviceFlags.test(rsR2);
+	#pragma todo("Deathman to Deathman: Хардкод")
+	bool b_r2 = true; //!!psDeviceFlags.test(rsR2);
 
 	CKinematics* K = smart_cast<CKinematics*>(Visual());
 	CInifile* pUserData = K->LL_UserData();

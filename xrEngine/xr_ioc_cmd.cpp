@@ -656,42 +656,6 @@ class CCC_DR_UsePoints : public CCC_Integer
 	virtual void Save(IWriter* F){};
 };
 
-u32 renderer_value = 0;
-class CCC_r2 : public CCC_Token
-{
-	typedef CCC_Token inherited;
-
-  public:
-	CCC_r2(LPCSTR N) : inherited(N, &renderer_value, vid_quality_token)
-	{
-		renderer_value = 0;
-	};
-
-	virtual void Execute(LPCSTR args)
-	{
-#ifdef DEDICATED_SERVER
-		inherited::Execute("renderer_r1");
-#else
-		inherited::Execute(args);
-#endif // DEDICATED_SERVER
-
-		psDeviceFlags.set(rsR2, renderer_value == 1);
-	}
-
-	virtual void Save(IWriter* F)
-	{
-		if (!strstr(Core.Params, "-r2"))
-		{
-			inherited::Save(F);
-		}
-	}
-
-	virtual xr_token* GetToken()
-	{
-		tokens = vid_quality_token;
-		return inherited::GetToken();
-	}
-};
 //-----------------------------------------------------------------------
 ENGINE_API float psHUD_FOV = 0.45f;
 
@@ -839,7 +803,6 @@ void CCC_Register()
 	CMD3(CCC_Mask, "game_intro_enable", &ps_game_ls_flags, INTRO_ENABLE);
 	CMD3(CCC_Mask, "game_tutorials_enable", &ps_game_ls_flags, TUTORIALS_ENABLE);
 
-	CMD1(CCC_r2, "renderer");
 	// psSoundRolloff	= pSettings->r_float	("sound","rolloff");		clamp(psSoundRolloff, EPS_S,	2.f);
 	psSoundOcclusionScale = pSettings->r_float("sound", "occlusion_scale");
 	clamp(psSoundOcclusionScale, 0.1f, .5f);
