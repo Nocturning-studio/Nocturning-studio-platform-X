@@ -10,7 +10,7 @@
 
 // Light Accumulating
 #define r2_RT_Light_Accumulator "$user$accumulator"
-//#define r2_RT_Specular_Accumulator "$user$accumulator_specular"
+#define r2_RT_Shadow_Accumulator "$user$shadow_accumulator"
 
 // Environment
 #define r2_T_envs0 "$user$env_s0"

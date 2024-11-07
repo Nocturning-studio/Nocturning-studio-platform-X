@@ -59,7 +59,7 @@ class CRenderTarget : public IRender_Target
 
 	// Accumulation Buffer
 	ref_rt rt_Light_Accumulator;
-	ref_rt rt_Specular_Accumulator;
+	ref_rt rt_Shadow_Accumulator;
 
 	ref_rt rt_Generic_0; // 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 	ref_rt rt_Generic_1;

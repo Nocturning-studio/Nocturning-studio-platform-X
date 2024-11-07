@@ -266,7 +266,7 @@ CRenderTarget::CRenderTarget()
 	}
 
 	rt_Light_Accumulator.create(r2_RT_Light_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
-	//rt_Specular_Accumulator.create(r2_RT_Specular_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	rt_Shadow_Accumulator.create(r2_RT_Shadow_Accumulator, dwWidth, dwHeight, D3DFMT_L8);
 
 	rt_Distortion_Mask.create(r2_RT_distortion_mask, dwWidth, dwHeight, D3DFMT_G16R16);
 
