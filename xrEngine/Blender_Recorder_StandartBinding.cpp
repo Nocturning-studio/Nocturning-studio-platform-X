@@ -50,6 +50,17 @@ DECLARE_TREE_BIND(c_scale);
 DECLARE_TREE_BIND(c_bias);
 DECLARE_TREE_BIND(c_sun);
 
+class cl_invV : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fmatrix mInvV = Fmatrix().invert(RCache.xforms.m_v);
+
+		RCache.set_c(C, mInvV);
+	}
+};
+static cl_invV binder_invv;
+
 class cl_hemi_cube_pos_faces : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -521,6 +532,7 @@ void CBlender_Compile::SetMapping()
 	r_Constant("m_W", &binder_w);
 	r_Constant("m_invW", &binder_invw);
 	r_Constant("m_V", &binder_v);
+	r_Constant("m_invV", &binder_invv);
 	r_Constant("m_P", &binder_p);
 	r_Constant("m_invP", &binder_invP);
 	r_Constant("m_WV", &binder_wv);
