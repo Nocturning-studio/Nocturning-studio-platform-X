@@ -25,7 +25,7 @@ extern DWORD gSecondaryThreadId;
 ENGINE_API bool IsMainThread();
 ENGINE_API bool IsSecondaryThread();
 
-#define VIEWPORT_NEAR 0.2f
+#define VIEWPORT_NEAR 0.01f
 
 #define DEVICE_RESET_PRECACHE_FRAME_COUNT 10
 
@@ -42,6 +42,7 @@ class ENGINE_API CRenderDevice
 	CTimer_paused Timer;
 	CTimer_paused TimerGlobal;
 	CTimer TimerMM;
+	CTimer frame_timer;
 
 	void _Create(LPCSTR shName);
 	void _Destroy(BOOL bKeepTextures);
@@ -192,6 +193,10 @@ class ENGINE_API CRenderDevice
 			std::find(seqParallel.begin(), seqParallel.end(), delegate);
 		if (I != seqParallel.end())
 			seqParallel.erase(I);
+	}
+	IC u32 frame_elapsed()
+	{
+		return frame_timer.GetElapsed_ms();
 	}
 };
 
