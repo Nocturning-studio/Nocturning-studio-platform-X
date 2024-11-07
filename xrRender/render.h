@@ -203,17 +203,6 @@ class CRender : public R_dsgraph_structure
 	}
 
   public:
-	// feature level
-	virtual RenderType get_render_type()
-	{
-		return IRender_interface::RENDER_R2;
-	}
-
-	virtual RenderLightingType get_render_lighting_type()
-	{
-		return IRender_interface::RENDER_DYNAMIC_LIGHTED;
-	}
-
 	// Loading / Unloading
 	virtual void create();
 	virtual void destroy();

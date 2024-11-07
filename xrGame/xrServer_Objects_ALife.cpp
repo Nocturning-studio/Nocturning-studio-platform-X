@@ -1238,12 +1238,8 @@ bool CSE_ALifeObjectHangingLamp::validate()
 bool CSE_ALifeObjectHangingLamp::match_configuration() const
 {
 	R_ASSERT3(flags.test(flR1) || flags.test(flR2), "no renderer type set for hanging-lamp ", name_replace());
-#ifdef XRGAME_EXPORTS
-	return ((flags.test(flR1) && (::Render->get_render_type() == IRender_interface::RENDER_R1)) ||
-			(flags.test(flR2) && (::Render->get_render_type() == IRender_interface::RENDER_R2)));
-#else
+
 	return (true);
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////

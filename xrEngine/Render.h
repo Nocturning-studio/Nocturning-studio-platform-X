@@ -148,18 +148,6 @@ class ENGINE_API IRender_Target
 class ENGINE_API IRender_interface
 {
   public:
-	enum RenderType
-	{
-		RENDER_R1 = 0,
-		RENDER_R2 = 1,
-		RENDER_forcedword = u32(-1)
-	};
-	enum RenderLightingType
-	{
-		RENDER_LIGHTMAP_LIGHTED = 0,
-		RENDER_DYNAMIC_LIGHTED = 1,
-		RENDER_LIGHTING_TYPE_forcedword = u32(-1)
-	};
 	enum ScreenshotMode
 	{
 		SM_NORMAL = 0,		 // jpeg\png,	name ignored
@@ -178,11 +166,6 @@ class ENGINE_API IRender_interface
 	CFrustum* View;
 
   public:
-	// feature level
-	virtual RenderType get_render_type() = 0;
-
-	virtual RenderLightingType get_render_lighting_type() = 0;
-
 	// Loading / Unloading
 	virtual void create() = 0;
 	virtual void destroy() = 0;
