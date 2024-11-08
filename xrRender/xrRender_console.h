@@ -7,8 +7,7 @@
 /*-------------------------------------------------------------------------------*/
 extern ECORE_API u32 ps_r_cubemap_size;
 
-extern ECORE_API u32 ps_r_gbuffer_opt;
-
+/*
 enum enum_r1_msaa
 {
 	MSAA_2X = 12,
@@ -23,6 +22,7 @@ enum enum_r1_msaa
 };
 extern ECORE_API u32 ps_r1_aa;
 extern ECORE_API u32 ps_r1_aa_transluency;
+*/
 
 extern ECORE_API int ps_r_LightSleepFrames;
 
@@ -70,24 +70,6 @@ enum
 	RFLAG_SEPIA = (1 << 3),
 	RFLAG_CHROMATIC_ABBERATION = (1 << 4),
 	RFLAG_DISABLE_POSTPROCESS = (1 << 5)
-};
-
-/*-------------------------------------------------------------------------------*/
-// R1-specific values
-/*-------------------------------------------------------------------------------*/
-
-extern ECORE_API float ps_r1_ssaLOD_A;
-extern ECORE_API float ps_r1_ssaLOD_B;
-extern ECORE_API float ps_r1_tf_Mipbias;
-extern ECORE_API float ps_r1_lmodel_lerp;
-extern ECORE_API float ps_r1_dlights_clip;
-extern ECORE_API int ps_r1_GlowsPerFrame;
-
-// R1-specific flags
-extern ECORE_API Flags32 ps_r1_flags;
-enum
-{
-	R1FLAG_DLIGHTS = (1 << 0),
 };
 
 /*-------------------------------------------------------------------------------*/

@@ -19,6 +19,7 @@ u32 ps_r_cubemap_size = 2048;
 xr_token cubemap_size_token[] = {{"1024", 1024}, {"2048", 2048}, {"3072", 3072}, 
 					   {"4096", 4096}, {"6144", 6144}, {"8192", 8192}, {0, 0}};
 
+/*
 u32 ps_r1_aa = 0;
 xr_token r1_aa_token[] = {
 	{"st_opt_disabled", 0},  
@@ -41,12 +42,10 @@ xr_token r1_aa_transluency_token[] = {
 	{"st_opt_atoc", trans_atoc_fmt},
 	{0, 0},
 };
+*/
 
 u32 ps_vignette_mode = 2;
 xr_token vignette_mode_token[] = {{"st_opt_disabled", 0}, {"st_opt_static", 1}, {"st_opt_dynamic", 2}, {0, 0}};
-
-u32 ps_r_gbuffer_opt = 0;
-xr_token r_gbuffer_opt_token[] = {{"st_opt_disabled", 0}, {"st_opt_partial", 1}, {"st_opt_full", 2}, {0, 0}};
 
 Flags32 ps_r_ls_flags = {};
 
@@ -140,19 +139,6 @@ int ps_r_thread_wait_sleep = 0;
 Flags32 ps_render_flags = {RFLAG_LENS_FLARES | RFLAG_EXP_MT_CALC | RFLAG_EXP_HW_OCC};
 
 /*-------------------------------------------------------------------------------*/
-// R1-specific values
-/*-------------------------------------------------------------------------------*/
-float ps_r1_ssaLOD_A = 64.f;
-float ps_r1_ssaLOD_B = 48.f;
-float ps_r1_tf_Mipbias = 0.0f;
-float ps_r1_lmodel_lerp = 0.1f;
-float ps_r1_dlights_clip = 30.f;
-int ps_r1_GlowsPerFrame = 16;
-
-// R1-specific flags
-Flags32 ps_r1_flags = {R1FLAG_DLIGHTS};
-
-/*-------------------------------------------------------------------------------*/
 // R2/R2a/R2.5-specific values
 /*-------------------------------------------------------------------------------*/
 float ps_r_ssaLOD_A = 48.f;
@@ -169,9 +155,9 @@ float ps_r_autoexposure_low_lum = 0.0001f;
 float ps_r_autoexposure_amount = 0.25f;
 
 float ps_r_bloom_threshold = 0.9f;
-float ps_r_bloom_brightness = 0.05f;
+float ps_r_bloom_brightness = 1.5f;
 float ps_r_bloom_blades_threshold = 0.9f;
-float ps_r_bloom_blades_brightness = 0.05f;
+float ps_r_bloom_blades_brightness = 1.5f;
 
 float ps_r_fxaa_subpix = 0.6f;
 float ps_r_fxaa_edge_treshold = 0.063f;
@@ -671,24 +657,12 @@ void xrRender_initconsole()
 
 	CMD3(CCC_Mask, "r_mt", &ps_render_flags, RFLAG_EXP_MT_CALC);
 
-	CMD3(CCC_Token, "r_gbuffer_opt", &ps_r_gbuffer_opt, r_gbuffer_opt_token);
-
 	CMD4(CCC_Integer, "r_wait_sleep", &ps_r_thread_wait_sleep, 0, 1);
 
 	CMD3(CCC_Mask, "r_hardware_occlusion_culling", &ps_render_flags, RFLAG_EXP_HW_OCC);
 
 	CMD4(CCC_Float, "r_pps_u", &ps_pps_u, -1.f, +1.f);
 	CMD4(CCC_Float, "r_pps_v", &ps_pps_v, -1.f, +1.f);
-
-	// R1-specific commands
-	CMD4(CCC_Float, "r1_ssa_lod_a", &ps_r1_ssaLOD_A, 16, 96);
-	CMD4(CCC_Float, "r1_ssa_lod_b", &ps_r1_ssaLOD_B, 16, 64);
-	CMD4(CCC_Float, "r1_lmodel_lerp", &ps_r1_lmodel_lerp, 0, 0.333f);
-	CMD2(CCC_tf_MipBias, "r1_tf_mipbias", &ps_r1_tf_Mipbias); //	{-3 +3}
-	CMD3(CCC_Mask, "r1_dlights", &ps_r1_flags, R1FLAG_DLIGHTS);
-	CMD4(CCC_Float, "r1_dlights_clip", &ps_r1_dlights_clip, 10.f, 150.f);
-	CMD4(CCC_Float, "r1_dlights_clip", &ps_r1_dlights_clip, 10.f, 150.f);
-	CMD4(CCC_Integer, "r1_glows_per_frame", &ps_r1_GlowsPerFrame, 2, 32);
 
 	// R2/R2a/R2.5-specific commands
 	CMD3(CCC_Mask, "r_soft_water", &ps_r_postprocess_flags, RFLAG_SOFT_WATER);
@@ -802,9 +776,9 @@ void xrRender_initconsole()
 	CMD3(CCC_Mask, "r_disable_postprocess", &ps_render_flags, RFLAG_DISABLE_POSTPROCESS);
 
 	// !!! —“–Œ√Œ ¬Õ»«” œŒ—À≈ ¬—≈’ Œœ÷»… !!!
-#pragma todo("¡Ûı")
-	CMD3(CCC_ConditionsToken, "r1_aa_type", &ps_r1_aa, r1_aa_token);
-	CMD3(CCC_ConditionsToken, "r1_aa_transluency", &ps_r1_aa_transluency, r1_aa_transluency_token);
+//#pragma todo("¡Ûı")
+	//CMD3(CCC_ConditionsToken, "r1_aa_type", &ps_r1_aa, r1_aa_token);
+	//CMD3(CCC_ConditionsToken, "r1_aa_transluency", &ps_r1_aa_transluency, r1_aa_transluency_token);
 }
 
 void xrRender_console_apply_conditions()
