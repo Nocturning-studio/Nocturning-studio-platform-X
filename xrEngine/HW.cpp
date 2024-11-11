@@ -80,6 +80,8 @@ void CHW::CreateD3D()
 	LPCSTR _name = "xrd3d9-null.dll";
 #endif
 
+	Msg("Loading d3d DLL: %s", _name);
+
 	hD3D9 = LoadLibrary(_name);
 	if (!hD3D9)
 		make_string("Can't find 'd3d9.dll'\nPlease install latest version of DirectX before running this program");
@@ -87,6 +89,8 @@ void CHW::CreateD3D()
 	typedef IDirect3D9* WINAPI _Direct3DCreate9(UINT SDKVersion);
 	_Direct3DCreate9* createD3D = (_Direct3DCreate9*)GetProcAddress(hD3D9, "Direct3DCreate9");
 	R_ASSERT2(createD3D, "There was a problem with Direct3DCreate9");
+
+	Msg("Creating Direct3D9");
 	this->pD3D = createD3D(D3D_SDK_VERSION);
 	if (!this->pD3D)
 		make_string("Please install DirectX 9.0c");

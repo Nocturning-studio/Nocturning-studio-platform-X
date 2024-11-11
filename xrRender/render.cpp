@@ -151,7 +151,8 @@ void CRender::update_options()
 {
 	o.smapsize = 1536;
 
-	if (HW.support((D3DFORMAT)MAKEFOURCC('I', 'N', 'T', 'Z'), D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL))
+	o.intz = (HW.support((D3DFORMAT)MAKEFOURCC('I', 'N', 'T', 'Z'), D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL));
+	if (o.intz)
 		Msg("- 'INTZ' depth format supported");
 
 	o.nvstencil = (HW.Caps.id_vendor == 0x10DE) && (HW.Caps.id_device >= 0x40);
@@ -221,10 +222,10 @@ CShaderMacros CRender::FetchShaderMacros()
 extern XRCORE_API u32 build_id;
 void CRender::create()
 {
+	Device.seqFrame.Add(this, REG_PRIORITY_HIGH + 0x12345678);
+
 	CheckHWRenderSupporting();
 	xrRender_console_apply_conditions();
-
-	Device.seqFrame.Add(this, REG_PRIORITY_HIGH + 0x12345678);
 
 	m_skinning = -1;
 
@@ -323,8 +324,7 @@ void CRender::OnFrame()
 	if (ps_render_flags.test(RFLAG_EXP_MT_CALC))
 	{
 		// MT-details (@front)
-		Device.seqParallel.insert(Device.seqParallel.begin(),
-								  fastdelegate::FastDelegate0<>(Details, &CDetailManager::MT_CALC));
+		Device.seqParallel.insert(Device.seqParallel.begin(), fastdelegate::FastDelegate0<>(Details, &CDetailManager::MT_CALC));
 
 		// MT-HOM (@front)
 		Device.seqParallel.insert(Device.seqParallel.begin(), fastdelegate::FastDelegate0<>(&HOM, &CHOM::MT_RENDER));
@@ -571,7 +571,9 @@ CRender::CRender() : m_bFirstFrameAfterReset(false)
 	LPCSTR CompilerName = "D3DCompiler_43.dll";
 	Msg("Loading d3d compiler DLL: %s", CompilerName);
 	hCompiler = LoadLibrary(CompilerName);
-	R_ASSERT(hCompiler, "! Failed to load d3d compiler library. Try to update DXSDK");
+
+	if (!hCompiler)
+		make_string("Can't find 'D3DCompiler_43.dll'\nPlease install latest version of DirectX before running this program");
 
 	init_cacades();
 }

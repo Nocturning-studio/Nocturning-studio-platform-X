@@ -662,7 +662,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lp
 	g_temporary_stuff = &trivial_encryptor::decode;
 
 	compute_build_id();
-	Core._initialize("X-Ray_Engine", NULL, TRUE, fsgame[0] ? fsgame : NULL);
+	Core._initialize("X-Ray Engine", NULL, TRUE, fsgame[0] ? fsgame : NULL);
 	InitSettings();
 
 #ifndef DEDICATED_SERVER
@@ -694,16 +694,6 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lp
 			if (l_res != 0)
 				return 0;
 		};
-
-			Console->Execute("renderer renderer_r2");
-		/*
-		else
-		{
-			CCC_LoadCFG_custom* pTmp = xr_new<CCC_LoadCFG_custom>("renderer ");
-			pTmp->Execute(Console->ConfigFile);
-			xr_delete(pTmp);
-		}
-		*/
 
 		Engine.External.Initialize();
 		//Console->Execute("stat_memory");

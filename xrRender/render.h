@@ -37,6 +37,7 @@ class CRender : public R_dsgraph_structure
 	struct _options
 	{
 		u32 smapsize : 16;
+		u32 intz : 1;
 		u32 nvstencil : 1;
 		u32 nvdbt : 1;
 		u32 distortion : 1;
