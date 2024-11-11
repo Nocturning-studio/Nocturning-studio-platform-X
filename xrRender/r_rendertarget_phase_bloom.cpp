@@ -30,8 +30,8 @@ void CRenderTarget::phase_bloom()
 		break;
 	}
 
-	float w = float(Device.dwWidth) * BloomResolutionMultiplier;
-	float h = float(Device.dwHeight) * BloomResolutionMultiplier;
+	float w = 256; // float(Device.dwWidth) * BloomResolutionMultiplier;
+	float h = 256; // float(Device.dwHeight) * BloomResolutionMultiplier;
 
 	float d_Z = EPS_S;
 	float d_W = 1.f;

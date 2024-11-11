@@ -19,7 +19,7 @@ void CBlender_bloom_build::Compile(CBlender_Compile& C)
 	{
 	case 0: // transfer into bloom-target
 		C.r_Pass("null", "postprocess_stage_bloom_prepare", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
-		C.r_Sampler_clf("s_image", r_RT_generic0);
+		C.r_Sampler_gaussian("s_image", r_RT_generic0);
 		C.r_End();
 		break;
 	case 1:
