@@ -22,9 +22,6 @@ extern ENGINE_API Flags32 ps_game_ls_flags = {INTRO_ENABLE | TUTORIALS_ENABLE};
 
 extern xr_token* vid_mode_token;
 
-xr_token vid_quality_token[] = {
-	{"renderer_r1", 0}, {"renderer_r2", 1}, {0, 0}};
-
 xr_token vid_bpp_token[] = {{"16", 16}, {"32", 32}, {0, 0}};
 
 xr_token wpn_zoom_button_mode[] = {{"st_opt_press", 1}, {"st_opt_hold", 2}, {0, 0}};
