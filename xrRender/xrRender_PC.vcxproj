@@ -1185,6 +1185,7 @@
     <ClInclude Include="ParticleEffectDef.h" />
     <ClInclude Include="ParticleGroup.h" />
     <ClInclude Include="PSLibrary.h" />
+    <ClInclude Include="r_color_converting.h" />
     <ClInclude Include="r_dsgraph_structure.h" />
     <ClInclude Include="r_dsgraph_types.h" />
     <ClInclude Include="r_occlusion.h" />

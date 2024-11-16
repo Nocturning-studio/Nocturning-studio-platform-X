@@ -96,7 +96,8 @@ void CBlender_Particle::Compile(CBlender_Compile& C)
 			C.r_Pass("particle", "particle", FALSE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_ONE, TRUE, 0);
 			break; // ALPHA-ADD
 		};
-		C.r_Sampler("s_base", C.L_textures[0], false, oClamp.value ? D3DTADDRESS_CLAMP : D3DTADDRESS_WRAP);
+		C.r_Sampler("s_base", C.L_textures[0], false, oClamp.value ? D3DTADDRESS_CLAMP : D3DTADDRESS_WRAP,
+					D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 		//	Igor: soft particles
 		C.r_Sampler("s_gbuffer_2", "$user$gbuffer_2");
 		C.r_End();
@@ -129,7 +130,8 @@ void CBlender_Particle::Compile(CBlender_Compile& C)
 					 TRUE, 0);
 			break; // ALPHA-ADD
 		};
-		C.r_Sampler("s_base", C.L_textures[0], false, oClamp.value ? D3DTADDRESS_CLAMP : D3DTADDRESS_WRAP);
+		C.r_Sampler("s_base", C.L_textures[0], false, oClamp.value ? D3DTADDRESS_CLAMP : D3DTADDRESS_WRAP,
+					D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 		//	Igor: soft particles
 		C.r_Sampler("s_gbuffer_2", "$user$gbuffer_2");
 		C.r_End();

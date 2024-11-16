@@ -19,7 +19,7 @@ void CRenderTarget::phase_combine()
 	}
 
 	// low/hi RTs
-	u_setrt(rt_Generic_0, rt_Generic_1, 0, rt_ZB->pRT);
+	u_setrt(rt_Generic_0, rt_Generic_1, 0, HW.pBaseZB);
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
 
@@ -42,10 +42,10 @@ void CRenderTarget::phase_combine()
 		// Compute params
 		CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
 		const float minamb = 0.001f;
-		Fvector4 ambclr = {_max(envdesc->ambient.x, minamb), _max(envdesc->ambient.y, minamb),
-						   _max(envdesc->ambient.z, minamb), 0};
+		Fvector4 ambclr = {_max(sRgbToLinear(envdesc->ambient.x), minamb), _max(sRgbToLinear(envdesc->ambient.y), minamb),
+						   _max(sRgbToLinear(envdesc->ambient.z), minamb), 0};
 		// ambclr.mul(ps_r_sun_lumscale_amb);
-		Fvector4 envclr = {envdesc->hemi_color.x, envdesc->hemi_color.y, envdesc->hemi_color.z, envdesc->weight};
+		Fvector4 envclr = {sRgbToLinear(envdesc->hemi_color.x), sRgbToLinear(envdesc->hemi_color.y), sRgbToLinear(envdesc->hemi_color.z), envdesc->weight};
 		// envclr.x *= 2 * ps_r_sun_lumscale_hemi;
 		// envclr.y *= 2 * ps_r_sun_lumscale_hemi;
 		// envclr.z *= 2 * ps_r_sun_lumscale_hemi;
@@ -61,7 +61,7 @@ void CRenderTarget::phase_combine()
 			Device.mView.transform_dir(L_dir, sun->direction);
 			L_dir.normalize();
 
-			sunclr.set(L_clr.x, L_clr.y, L_clr.z, L_spec);
+			sunclr.set(sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
 			sundir.set(L_dir.x, L_dir.y, L_dir.z, 0);
 		}
 
@@ -117,7 +117,7 @@ void CRenderTarget::phase_combine()
 	if (ps_r_debug_render == 0)
 #endif
 	{
-		u_setrt(rt_Generic_0, rt_GBuffer_2, 0, rt_ZB->pRT); // LDR RT
+		u_setrt(rt_Generic_0, rt_GBuffer_2, 0, HW.pBaseZB); // LDR RT
 
 		RCache.set_CullMode(CULL_CCW);
 		RCache.set_Stencil(FALSE);

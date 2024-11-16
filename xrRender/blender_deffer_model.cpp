@@ -64,7 +64,7 @@ void CBlender_deffer_model::Compile(CBlender_Compile& C)
 			vsname = psname = "model_def_lq";
 			C.r_Pass(vsname, psname, TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE,
 					 oAREF.value);
-			C.r_Sampler("s_base", C.L_textures[0]);
+			C.r_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 			C.r_End();
 			break;
 		default:
@@ -87,8 +87,9 @@ void CBlender_deffer_model::Compile(CBlender_Compile& C)
 		case SE_SHADOW: // smap
 			if (bAref)
 			{
-				C.r_Pass("shadow_direct_dynamic_mesh_alphatest", "shadow_direct_static_mesh_alphatest", FALSE, TRUE, TRUE, FALSE, D3DBLEND_ZERO, D3DBLEND_ONE, TRUE, 220);
+				C.r_Pass("shadow_direct_dynamic_mesh_alphatest", "shadow_direct_static_mesh_alphatest", FALSE);
 				C.r_Sampler("s_base", C.L_textures[0]);
+				jitter(C);
 				C.r_End();
 				break;
 			}

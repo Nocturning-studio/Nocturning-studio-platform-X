@@ -110,7 +110,7 @@ static class cl_sun_color : public R_constant_setup
 	virtual void setup(R_constant* C)
 	{
 		light* sun = (light*)RImplementation.Lights.sun_adapted._get();
-		RCache.set_c(C, sun->color.r, sun->color.g, sun->color.b, 0);
+		RCache.set_c(C, sRgbToLinear(sun->color.r), sRgbToLinear(sun->color.g), sRgbToLinear(sun->color.b), 0);
 	}
 } binder_sun_color;
 //////////////////////////////////////////////////////////////////////////

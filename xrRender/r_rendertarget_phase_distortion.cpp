@@ -8,7 +8,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::phase_create_distortion_mask()
 {
-	u_setrt(rt_Distortion_Mask, 0, 0, rt_ZB->pRT); // Now RT is a distortion mask
+	u_setrt(rt_Distortion_Mask, 0, 0, HW.pBaseZB); // Now RT is a distortion mask
 	RCache.set_CullMode(CULL_CCW);
 	RCache.set_Stencil(FALSE);
 	RCache.set_ColorWriteEnable();

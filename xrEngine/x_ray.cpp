@@ -1150,7 +1150,7 @@ void FreeLauncher()
 
 int doLauncher()
 {
-#pragma todo("Deathman to Deathman: Починить лаунчер и режим бенчмарка")ж
+#pragma todo("Deathman to Deathman: Починить лаунчер и режим бенчмарка")
 	/*
 		execUserScript();
 		InitLauncher();

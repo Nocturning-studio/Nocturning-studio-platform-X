@@ -48,17 +48,18 @@ void CBlender_deffer_aref::Compile(CBlender_Compile& C)
 			{
 				C.r_Pass("alpha_blend_lightmap_lighted", "alpha_blend_lightmap_lighted", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE,
 						 oAREF.value);
-				C.r_Sampler("s_base", C.L_textures[0]);
+				C.r_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 				C.r_Sampler("s_lmap", C.L_textures[1]);
 				C.r_Sampler_clf("s_hemi", *C.L_textures[2]);
-				C.r_Sampler("s_env", r_T_envs0, false, D3DTADDRESS_CLAMP);
+				C.r_Sampler("s_env", r_T_envs0, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR,
+							true);
 				C.r_End();
 			}
 			else
 			{
 				C.r_Pass("alpha_blend_vertex_lighted", "alpha_blend_vertex_lighted", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE,
 						 oAREF.value);
-				C.r_Sampler("s_base", C.L_textures[0]);
+				C.r_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 				C.r_End();
 			}
 			break;
@@ -81,8 +82,9 @@ void CBlender_deffer_aref::Compile(CBlender_Compile& C)
 			generate_shader_name(C, false, "static_mesh", "static_mesh", true);
 			break;
 		case SE_SHADOW: // smap
-			C.r_Pass("shadow_direct_static_mesh_alphatest", "shadow_direct_static_mesh_alphatest", FALSE, TRUE, TRUE, FALSE, D3DBLEND_ZERO, D3DBLEND_ONE, TRUE, 220);
+			C.r_Pass("shadow_direct_static_mesh_alphatest", "shadow_direct_static_mesh_alphatest", FALSE);
 			C.r_Sampler("s_base", C.L_textures[0]);
+			jitter(C);
 			C.r_End();
 			break;
 		}

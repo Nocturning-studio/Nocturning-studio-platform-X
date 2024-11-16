@@ -652,8 +652,8 @@ void xrRender_initconsole()
 	CMD3(CCC_Token, "r_vignette_mode", &ps_vignette_mode, vignette_mode_token);
 	CMD3(CCC_Mask, "r_chromatic_abberation", &ps_render_flags, RFLAG_CHROMATIC_ABBERATION);
 	CMD4(CCC_Float, "r_hdr_white_intensity", &ps_r_hdr_white_intensity, 0, 2);
-	CMD4(CCC_Float, "r_hdr_gamma", &ps_r_hdr_gamma, 1, 1.75);
-	CMD4(CCC_Float, "r_hdr_brightness", &ps_r_hdr_brightness, 1, 1.75);
+	CMD4(CCC_Float, "r_hdr_gamma", &ps_r_hdr_gamma, 0, 2);
+	CMD4(CCC_Float, "r_hdr_brightness", &ps_r_hdr_brightness, 0, 2);
 
 	CMD3(CCC_Mask, "r_mt", &ps_render_flags, RFLAG_EXP_MT_CALC);
 

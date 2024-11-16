@@ -61,8 +61,9 @@ void CBlender_Model_EbB::Compile(CBlender_Compile& C)
 		case 1:
 			vsname = psname = "model_env_lq";
 			C.r_Pass(vsname, psname, TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, 0);
-			C.r_Sampler("s_base", C.L_textures[0]);
-			C.r_Sampler("s_env", oT2_Name, false, D3DTADDRESS_CLAMP);
+			C.r_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
+			C.r_Sampler("s_env", oT2_Name, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR,
+						true);
 			C.r_End();
 			break;
 		}

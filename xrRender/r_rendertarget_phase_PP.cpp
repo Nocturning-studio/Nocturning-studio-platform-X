@@ -114,7 +114,7 @@ bool CRenderTarget::u_need_CM()
 void CRenderTarget::phase_pp()
 {
 	// combination/postprocess
-	u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, NULL, NULL, rt_ZB->pRT);
+	u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, NULL, NULL, HW.pBaseZB);
 
 	RCache.set_Shader(s_postprocess);
 

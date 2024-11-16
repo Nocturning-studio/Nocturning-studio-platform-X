@@ -11,7 +11,7 @@ void CRenderTarget::phase_wallmarks()
 	// Targets
 	RCache.set_RT(NULL, 2);
 	RCache.set_RT(NULL, 1);
-	u_setrt(rt_GBuffer_1, NULL, NULL, rt_ZB->pRT);
+	u_setrt(rt_GBuffer_1, NULL, NULL, HW.pBaseZB);
 
 	// Stencil	- draw only where stencil >= 0x1
 	RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00);

@@ -63,11 +63,11 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 		break;
 	case SE_SHADOW: // smap-spot
 		if (oBlend.value)
-			C.r_Pass(tvs_s, "shadow_direct_static_mesh_alphatest", FALSE, TRUE, TRUE, TRUE, D3DBLEND_ZERO, D3DBLEND_ONE,
-					 TRUE, 200);
+			C.r_Pass(tvs_s, "shadow_direct_static_mesh_alphatest", FALSE);
 		else
 			C.r_Pass(tvs_s, "shadow_direct_static_mesh", FALSE);
 		C.r_Sampler("s_base", C.L_textures[0]);
+		jitter(C);
 		C.r_End();
 		break;
 	}

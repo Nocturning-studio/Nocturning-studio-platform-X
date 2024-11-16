@@ -10,6 +10,8 @@
 #include "blenders\Blender_Recorder.h"
 #include "blenders\Blender.h"
 
+#include "../xrRender/r_color_converting.h"
+
 #include "igame_persistent.h"
 #include "environment.h"
 
@@ -167,7 +169,8 @@ class cl_fog_params : public R_constant_setup
 		if (marker != Device.dwFrame)
 		{
 			CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
-			result.set(desc->fog_color.x, desc->fog_color.y, desc->fog_color.z, desc->fog_density);
+			result.set(sRgbToLinear(desc->fog_color.x), sRgbToLinear(desc->fog_color.y), sRgbToLinear(desc->fog_color.z),
+					   desc->fog_density);
 		}
 		RCache.set_c(C, result);
 	}
@@ -184,7 +187,7 @@ class cl_fog_color : public R_constant_setup
 		if (marker != Device.dwFrame)
 		{
 			CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
-			result.set(desc->fog_color.x, desc->fog_color.y, desc->fog_color.z, 0);
+			result.set(sRgbToLinear(desc->fog_color.x), sRgbToLinear(desc->fog_color.y), sRgbToLinear(desc->fog_color.z), 0);
 		}
 		RCache.set_c(C, result);
 	}
@@ -343,7 +346,7 @@ static class cl_sepia_params : public R_constant_setup
 		CEnvDescriptor* E = g_pGamePersistent->Environment().CurrentEnv;
 		Fvector3 SepiaColor = E->m_SepiaColor;
 		float SepiaPower = E->m_SepiaPower;
-		RCache.set_c(C, SepiaColor.x, SepiaColor.y, SepiaColor.z, SepiaPower);
+		RCache.set_c(C, sRgbToLinear(SepiaColor.x), sRgbToLinear(SepiaColor.y), sRgbToLinear(SepiaColor.z), SepiaPower);
 	}
 } binder_sepia_params;
 
@@ -411,7 +414,7 @@ class cl_sun0_color : public R_constant_setup
 		if (marker != Device.dwFrame)
 		{
 			CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
-			result.set(desc->sun_color.x, desc->sun_color.y, desc->sun_color.z, 0);
+			result.set(sRgbToLinear(desc->sun_color.x), sRgbToLinear(desc->sun_color.y), sRgbToLinear(desc->sun_color.z), 0);
 		}
 		RCache.set_c(C, result);
 	}
@@ -423,8 +426,8 @@ static class cl_env_color : public R_constant_setup
 	virtual void setup(R_constant* C)
 	{
 		CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
-		Fvector4 envclr = {envdesc->hemi_color.x * 2 + EPS, envdesc->hemi_color.y * 2 + EPS,
-						   envdesc->hemi_color.z * 2 + EPS, envdesc->weight};
+		Fvector4 envclr = {sRgbToLinear(envdesc->hemi_color.x) * 2 + EPS,sRgbToLinear( envdesc->hemi_color.y) * 2 + EPS,
+						   sRgbToLinear(envdesc->hemi_color.z) * 2 + EPS, envdesc->weight};
 		RCache.set_c(C, envclr);
 	}
 } binder_env_color;
@@ -473,7 +476,7 @@ class cl_amb_color : public R_constant_setup
 		if (marker != Device.dwFrame)
 		{
 			CEnvDescriptorMixer* desc = g_pGamePersistent->Environment().CurrentEnv;
-			result.set(desc->ambient.x, desc->ambient.y, desc->ambient.z, desc->weight);
+			result.set(sRgbToLinear(desc->ambient.x), sRgbToLinear(desc->ambient.y), sRgbToLinear(desc->ambient.z), desc->weight);
 		}
 		RCache.set_c(C, result);
 	}
@@ -489,7 +492,7 @@ class cl_hemi_color : public R_constant_setup
 		if (marker != Device.dwFrame)
 		{
 			CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
-			result.set(desc->hemi_color.x, desc->hemi_color.y, desc->hemi_color.z, desc->hemi_color.w);
+			result.set(sRgbToLinear(desc->hemi_color.x), sRgbToLinear(desc->hemi_color.y), sRgbToLinear(desc->hemi_color.z), desc->hemi_color.w);
 		}
 		RCache.set_c(C, result);
 	}

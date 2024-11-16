@@ -159,19 +159,19 @@ void CRender::render_menu()
 
 	// Main Render
 	{
-		Target->u_setrt(Target->rt_Generic_0, 0, 0, Target->rt_ZB->pRT); // LDR RT
+		Target->u_setrt(Target->rt_Generic_0, 0, 0, HW.pBaseZB); // LDR RT
 		g_pGamePersistent->OnRenderPPUI_main();					 // PP-UI
 	}
 
 	// Distort
 	{
-		Target->u_setrt(Target->rt_Distortion_Mask, 0, 0, Target->rt_ZB->pRT); // Now RT is a distortion mask
+		Target->u_setrt(Target->rt_Distortion_Mask, 0, 0, HW.pBaseZB); // Now RT is a distortion mask
 		CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, color_rgba(127, 127, 0, 127), 1.0f, 0L));
 		g_pGamePersistent->OnRenderPPUI_PP(); // PP-UI
 	}
 
 	// Actual Display
-	Target->u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, NULL, NULL, Target->rt_ZB->pRT);
+	Target->u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, NULL, NULL, HW.pBaseZB);
 	RCache.set_Shader(Target->s_menu);
 	RCache.set_Geometry(Target->g_menu);
 

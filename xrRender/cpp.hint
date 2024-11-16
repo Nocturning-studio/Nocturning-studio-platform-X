@@ -2,3 +2,4 @@
 // (например, имена функций и макросов).
 // Дополнительные сведения: https://go.microsoft.com/fwlink/?linkid=865984
 #define CMD4(cls, p1, p2, p3, p4) { static cls x##cls(p1,p2,p3,p4); Console->AddCommand(&x##cls);}
+#define IC

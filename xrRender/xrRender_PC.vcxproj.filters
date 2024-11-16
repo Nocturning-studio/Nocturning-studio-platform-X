@@ -88,9 +88,6 @@
     <Filter Include="Blenders\GBuffer stage">
       <UniqueIdentifier>{701d8886-e6b4-42d7-8c7a-3acfe27989a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blenders\GBuffer stage\R1%255cR2 Blenders">
-      <UniqueIdentifier>{e60df327-0b19-4693-a9cf-0c202e630d00}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Blenders\Postprocess stage">
       <UniqueIdentifier>{ebfa012d-91b1-43d7-9030-8a3b34316da3}</UniqueIdentifier>
     </Filter>
@@ -147,6 +144,9 @@
     </Filter>
     <Filter Include="Rendertargets\Render stages\Postprocess stages\ColorMap">
       <UniqueIdentifier>{62ec11ae-77b9-4c27-acbf-ebfd9b85f724}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Color convertation">
+      <UniqueIdentifier>{1bdf62cf-c42a-47dc-ad73-10ecbca02a69}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -221,21 +221,6 @@
     </ClInclude>
     <ClInclude Include="WallmarksEngine.h">
       <Filter>Wallmarks</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_detail_still.h">
-      <Filter>Blenders\GBuffer stage\R1%255cR2 Blenders</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Lm(EbB).h">
-      <Filter>Blenders\GBuffer stage\R1%255cR2 Blenders</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Model_EbB.h">
-      <Filter>Blenders\GBuffer stage\R1%255cR2 Blenders</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Screen_SET.h">
-      <Filter>Blenders\GBuffer stage\R1%255cR2 Blenders</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_tree.h">
-      <Filter>Blenders\GBuffer stage\R1%255cR2 Blenders</Filter>
     </ClInclude>
     <ClInclude Include="ModelPool.h">
       <Filter>Models</Filter>
@@ -366,6 +351,24 @@
     <ClInclude Include="ColorMapManager.h">
       <Filter>Rendertargets\Render stages\Postprocess stages\ColorMap</Filter>
     </ClInclude>
+    <ClInclude Include="Blender_detail_still.h">
+      <Filter>Blenders\GBuffer stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Lm(EbB).h">
+      <Filter>Blenders\GBuffer stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Model_EbB.h">
+      <Filter>Blenders\GBuffer stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Screen_SET.h">
+      <Filter>Blenders\GBuffer stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_tree.h">
+      <Filter>Blenders\GBuffer stage</Filter>
+    </ClInclude>
+    <ClInclude Include="r_color_converting.h">
+      <Filter>Core\Color convertation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -475,21 +478,6 @@
     </ClCompile>
     <ClCompile Include="WallmarksEngine.cpp">
       <Filter>Wallmarks</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_detail_still.cpp">
-      <Filter>Blenders\GBuffer stage\R1%255cR2 Blenders</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Lm(EbB).cpp">
-      <Filter>Blenders\GBuffer stage\R1%255cR2 Blenders</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Model_EbB.cpp">
-      <Filter>Blenders\GBuffer stage\R1%255cR2 Blenders</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Screen_SET.cpp">
-      <Filter>Blenders\GBuffer stage\R1%255cR2 Blenders</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_tree.cpp">
-      <Filter>Blenders\GBuffer stage\R1%255cR2 Blenders</Filter>
     </ClCompile>
     <ClCompile Include="ModelPool.cpp">
       <Filter>Models</Filter>
@@ -718,6 +706,21 @@
     </ClCompile>
     <ClCompile Include="ColorMapManager.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages\ColorMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_detail_still.cpp">
+      <Filter>Blenders\GBuffer stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_Lm(EbB).cpp">
+      <Filter>Blenders\GBuffer stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_Model_EbB.cpp">
+      <Filter>Blenders\GBuffer stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_Screen_SET.cpp">
+      <Filter>Blenders\GBuffer stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_tree.cpp">
+      <Filter>Blenders\GBuffer stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

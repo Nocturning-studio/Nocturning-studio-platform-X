@@ -38,12 +38,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 	if (!Device.b_is_Ready)
 		return;
 
-	BOOL fullscreen = psDeviceFlags.test(rsFullscreen);
-
-	if (fullscreen)
-		R_CHK(HW.pDevice->GetFrontBufferData(NULL, Target->surf_screenshot_normal));
-	else
-		R_CHK(HW.pDevice->GetRenderTargetData(HW.pBaseRT, Target->surf_screenshot_normal));
+	R_CHK(HW.pDevice->GetRenderTargetData(HW.pBaseRT, Target->surf_screenshot_normal));
 
 	D3DLOCKED_RECT rect;
 	R_CHK(Target->surf_screenshot_normal->LockRect(&rect, 0, D3DLOCK_NOSYSLOCK));
