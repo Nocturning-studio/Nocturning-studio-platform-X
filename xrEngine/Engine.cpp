@@ -56,6 +56,8 @@ void CEngine::Destroy()
 #endif // DEBUG_MEMORY_MANAGER
 	Engine.External.Destroy();
 
+
+
 	if (hPSGP)
 	{
 		FreeLibrary(hPSGP);

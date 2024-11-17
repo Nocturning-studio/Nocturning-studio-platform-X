@@ -308,4 +308,5 @@ class XRCORE_API xrCore
 };
 extern XRCORE_API xrCore Core;
 
+XRCORE_API xr_string ANSIToUTF8(const xr_string& string);
 #endif

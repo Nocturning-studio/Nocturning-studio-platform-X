@@ -2418,6 +2418,9 @@
     <Text Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DiscordAPI\DiscordAPI.vcxproj">
+      <Project>{f4b26665-46b9-4e39-8c2c-d302b095ec14}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\xrCDB\xrCDB.vcxproj">
       <Project>{a19b1df2-82ec-4364-8bdf-85d13a1c89b5}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

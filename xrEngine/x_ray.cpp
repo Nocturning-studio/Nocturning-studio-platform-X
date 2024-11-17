@@ -20,6 +20,7 @@
 #include "CopyProtection.h"
 #include "Text_Console.h"
 #include <process.h>
+#include "../DiscordAPI/DiscordAPI.h"
 
 //---------------------------------------------------------------------
 ENGINE_API CInifile* pGameIni = NULL;
@@ -849,6 +850,8 @@ CApplication::CApplication()
 
 	Console->Show();
 
+	Discord.Init();
+
 	// App Title
 	app_title[0] = '\0';
 }
@@ -1032,8 +1035,9 @@ void CApplication::LoadSwitch()
 {
 }
 
-void CApplication::SetLoadLogo(ref_shader NewLoadLogo){
-	//	hLevelLogo = NewLoadLogo;
+void CApplication::SetLoadLogo(ref_shader NewLoadLogo)
+{
+		hLevelLogo = NewLoadLogo;
 	//	R_ASSERT(0);
 };
 
@@ -1045,6 +1049,9 @@ void CApplication::OnFrame()
 	g_SpatialSpacePhysic->update();
 	if (g_pGameLevel)
 		g_pGameLevel->SoundEvent_Dispatch();
+
+	if (!g_dedicated_server)
+		Discord.Update();
 }
 
 void CApplication::Level_Append(LPCSTR folder)
@@ -1054,8 +1061,7 @@ void CApplication::Level_Append(LPCSTR folder)
 	strconcat(sizeof(N2), N2, folder, "level.ltx");
 	strconcat(sizeof(N3), N3, folder, "level.geom");
 	strconcat(sizeof(N4), N4, folder, "level.cform");
-	if (FS.exist("$game_levels$", N1) && FS.exist("$game_levels$", N2) && FS.exist("$game_levels$", N3) &&
-		FS.exist("$game_levels$", N4))
+	if (FS.exist("$game_levels$", N1) && FS.exist("$game_levels$", N2) && FS.exist("$game_levels$", N3) && FS.exist("$game_levels$", N4))
 	{
 		sLevelInfo LI;
 		LI.folder = xr_strdup(folder);
@@ -1203,6 +1209,9 @@ void doBenchmark(LPCSTR name)
 		}
 
 		Engine.External.Initialize();
+
+#pragma todo("Deathman to Deathman: Починить бенчмарк")
+#pragma todo("Deathman to Deathman: Отдельное сообщение DiscordAPI для бенчмарка")
 
 		Startup();
 	}

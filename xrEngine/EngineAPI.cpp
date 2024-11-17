@@ -5,7 +5,6 @@
 #include "stdafx.h"
 #include "EngineAPI.h"
 #include "xrXRC.h"
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -25,12 +24,11 @@ CEngineAPI::CEngineAPI()
 CEngineAPI::~CEngineAPI()
 {
 }
-extern u32 renderer_value; // con cmd
 
 void CEngineAPI::Initialize(void)
 {
 	Msg("Initializing Engine API...");
-	//////////////////////////////////////////////////////////////////////////
+
 	// render
 	Msg("Initializing Renderer...");
 	LPCSTR render_name = "xrRender_PC.dll";
@@ -59,7 +57,6 @@ void CEngineAPI::Initialize(void)
 		R_ASSERT2(pDestroy, "Error in xrFactory_Destroy");
 	}
 
-	//////////////////////////////////////////////////////////////////////////
 	// vTune
 	tune_enabled = FALSE;
 	if (strstr(Core.Params, "-tune"))
@@ -79,6 +76,11 @@ void CEngineAPI::Initialize(void)
 			tune_resume = (VTResume*)GetProcAddress(hTuner, "VTResume");
 		}
 	}
+
+	LPCSTR DiscordAPI_name = "DiscordAPI.dll";
+	Log("Loading DLL:", DiscordAPI_name);
+	hDiscordAPI = LoadLibrary(DiscordAPI_name);
+	R_ASSERT2(DiscordAPI_name, "! Can't load discord api");
 }
 
 void CEngineAPI::Destroy(void)
@@ -92,6 +94,11 @@ void CEngineAPI::Destroy(void)
 	{
 		FreeLibrary(hRender);
 		hRender = 0;
+	}
+	if (hDiscordAPI)
+	{
+		FreeLibrary(hDiscordAPI);
+		hDiscordAPI = 0;
 	}
 	pCreate = 0;
 	pDestroy = 0;

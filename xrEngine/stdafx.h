@@ -61,6 +61,8 @@ extern ENGINE_API CInifile* pGameIni;
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
+//#pragma comment(lib, "DiscordAPI.lib")
+
 #ifndef DEBUG
 #define LUABIND_NO_ERROR_CHECKING
 #endif
@@ -71,7 +73,7 @@ extern ENGINE_API CInifile* pGameIni;
 #define BOOST_THROW_EXCEPTION_HPP_INCLUDED
 namespace std
 {
-class exception;
+	class exception;
 }
 namespace boost
 {
