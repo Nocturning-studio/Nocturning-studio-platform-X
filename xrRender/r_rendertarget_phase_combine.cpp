@@ -42,28 +42,8 @@ void CRenderTarget::phase_combine()
 		// Compute params
 		CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
 		const float minamb = 0.001f;
-		Fvector4 ambclr = {_max(sRgbToLinear(envdesc->ambient.x), minamb), _max(sRgbToLinear(envdesc->ambient.y), minamb),
-						   _max(sRgbToLinear(envdesc->ambient.z), minamb), 0};
-		// ambclr.mul(ps_r_sun_lumscale_amb);
+		Fvector4 ambclr = {_max(sRgbToLinear(envdesc->ambient.x), minamb), _max(sRgbToLinear(envdesc->ambient.y), minamb), _max(sRgbToLinear(envdesc->ambient.z), minamb), ps_r_ao_brightness};
 		Fvector4 envclr = {sRgbToLinear(envdesc->hemi_color.x), sRgbToLinear(envdesc->hemi_color.y), sRgbToLinear(envdesc->hemi_color.z), envdesc->weight};
-		// envclr.x *= 2 * ps_r_sun_lumscale_hemi;
-		// envclr.y *= 2 * ps_r_sun_lumscale_hemi;
-		// envclr.z *= 2 * ps_r_sun_lumscale_hemi;
-		Fvector4 sunclr, sundir;
-
-		// sun-params
-		{
-			light* sun = (light*)RImplementation.Lights.sun_adapted._get();
-			Fvector L_dir, L_clr;
-			float L_spec;
-			L_clr.set(sun->color.r, sun->color.g, sun->color.b);
-			L_spec = u_diffuse2s(L_clr);
-			Device.mView.transform_dir(L_dir, sun->direction);
-			L_dir.normalize();
-
-			sunclr.set(sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
-			sundir.set(L_dir.x, L_dir.y, L_dir.z, 0);
-		}
 
 		//----------------------
 		// Start combine stage
@@ -89,9 +69,10 @@ void CRenderTarget::phase_combine()
 
 		// Setup textures
 		IDirect3DBaseTexture9* e0 = _menu_pp ? 0 : envdesc->sky_r_textures_env[0].second->surface_get();
-		IDirect3DBaseTexture9* e1 = _menu_pp ? 0 : envdesc->sky_r_textures_env[1].second->surface_get();
 		t_envmap_0->surface_set(e0);
 		_RELEASE(e0);
+
+		IDirect3DBaseTexture9* e1 = _menu_pp ? 0 : envdesc->sky_r_textures_env[1].second->surface_get();
 		t_envmap_1->surface_set(e1);
 		_RELEASE(e1);
 
@@ -103,10 +84,7 @@ void CRenderTarget::phase_combine()
 		Fvector4 debug_mode = {ps_r_debug_render, 0, 0, 0};
 		RCache.set_c("debug_mode", debug_mode);
 
-		RCache.set_c("L_ambient", ambclr);
-
-		RCache.set_c("Ldynamic_color", sunclr);
-		RCache.set_c("Ldynamic_dir", sundir);
+		RCache.set_c("ao_color", ambclr);
 
 		RCache.set_c("env_color", envclr);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);

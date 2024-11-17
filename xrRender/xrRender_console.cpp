@@ -149,6 +149,8 @@ float ps_r_tf_Mipbias = -0.5f;
 
 float ps_r_df_parallax_h = 0.02f;
 
+float ps_r_ao_brightness = 0.0f;
+
 float ps_r_autoexposure_middlegray = 1.f;
 float ps_r_autoexposure_adaptation = 1.f;
 float ps_r_autoexposure_low_lum = 0.0001f;
@@ -675,6 +677,7 @@ void xrRender_initconsole()
 	CMD4(CCC_Float, "r_fxaa_treshold_min", &ps_r_fxaa_edge_treshold_min, 0.0f, 1.0f);
 
 	CMD3(CCC_Token, "r_ao_quality", &ps_r_ao_quality, ao_quality_token);
+	CMD4(CCC_Float, "r_ao_brightness", &ps_r_ao_brightness, 0.0f, 1.0f);
 
 	CMD3(CCC_Mask, "r_autoexposure", &ps_r_postprocess_flags, RFLAG_AUTOEXPOSURE);
 	CMD4(CCC_Float, "r_autoexposure_middlegray", &ps_r_autoexposure_middlegray, 0.0f, 2.0f);

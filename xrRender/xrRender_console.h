@@ -141,6 +141,7 @@ extern ECORE_API int ps_r_dhemi_count;	  // 5
 extern ECORE_API float ps_r_slight_fade; // 1.f
 
 extern ECORE_API u32 ps_r_ao_quality;
+extern ECORE_API float ps_r_ao_brightness;
 
 extern ECORE_API u32 ps_r_debug_render;
 
