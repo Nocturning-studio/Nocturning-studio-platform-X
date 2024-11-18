@@ -523,7 +523,7 @@ void CGamePersistent::OnFrame()
 	if (Device.Paused())
 	{
 #ifndef MASTER_GOLD
-		if (Level().CurrentViewEntity())
+		if (Level().CurrentViewEntity() && !Device.Paused())
 		{
 			if (!g_actor || (g_actor->ID() != Level().CurrentViewEntity()->ID()))
 			{
@@ -547,7 +547,7 @@ void CGamePersistent::OnFrame()
 			}
 		}
 #else  // MASTER_GOLD
-		if (g_actor)
+		if (g_actor && !Device.Paused())
 		{
 			CCameraBase* C = NULL;
 			if (!Actor()->Holder())
@@ -555,7 +555,7 @@ void CGamePersistent::OnFrame()
 			else
 				C = Actor()->Holder()->Camera();
 
-			Actor()->Cameras().Update(C);
+			Actor()->Cameras().UpdateFromCamera(C);
 			Actor()->Cameras().ApplyDevice(VIEWPORT_NEAR);
 		}
 #endif // MASTER_GOLD
