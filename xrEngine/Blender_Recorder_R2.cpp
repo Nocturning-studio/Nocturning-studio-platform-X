@@ -77,11 +77,13 @@ u32 CBlender_Compile::i_Sampler(LPCSTR _name)
 	// while (stage>=passTextures.size())	passTextures.push_back		(NULL);
 	return stage;
 }
+
 void CBlender_Compile::i_Texture(u32 s, LPCSTR name)
 {
 	if (name)
 		passTextures.push_back(mk_pair(s, ref_texture(Device.Resources->_CreateTexture(name))));
 }
+
 void CBlender_Compile::i_Projective(u32 s, bool b)
 {
 	if (b)
@@ -89,36 +91,48 @@ void CBlender_Compile::i_Projective(u32 s, bool b)
 	else
 		RS.SetTSS(s, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
 }
+
 void CBlender_Compile::i_Address(u32 s, u32 address)
 {
 	RS.SetSAMP(s, D3DSAMP_ADDRESSU, address);
 	RS.SetSAMP(s, D3DSAMP_ADDRESSV, address);
 	RS.SetSAMP(s, D3DSAMP_ADDRESSW, address);
 }
+
 void CBlender_Compile::i_BorderColor(u32 s, u32 color)
 {
 	RS.SetSAMP(s, D3DSAMP_BORDERCOLOR, color);
 }
+
 void CBlender_Compile::i_Filter_Min(u32 s, u32 f)
 {
 	RS.SetSAMP(s, D3DSAMP_MINFILTER, f);
 }
+
 void CBlender_Compile::i_Filter_Mip(u32 s, u32 f)
 {
 	RS.SetSAMP(s, D3DSAMP_MIPFILTER, f);
 }
+
 void CBlender_Compile::i_Filter_Mag(u32 s, u32 f)
 {
 	RS.SetSAMP(s, D3DSAMP_MAGFILTER, f);
 }
+
 void CBlender_Compile::i_Filter(u32 s, u32 _min, u32 _mip, u32 _mag)
 {
 	i_Filter_Min(s, _min);
 	i_Filter_Mip(s, _mip);
 	i_Filter_Mag(s, _mag);
 }
+
+void CBlender_Compile::i_sRGB(u32 s, bool state)
+{
+	RS.SetSAMP(s, D3DSAMP_SRGBTEXTURE, state);
+}
+
 u32 CBlender_Compile::r_Sampler(LPCSTR _name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, u32 address, u32 fmin,
-								u32 fmip, u32 fmag)
+								u32 fmip, u32 fmag, bool b_srgb)
 {
 	dwStage = i_Sampler(_name);
 	if (u32(-1) != dwStage)
@@ -140,7 +154,8 @@ u32 CBlender_Compile::r_Sampler(LPCSTR _name, LPCSTR texture, bool b_ps1x_Projec
 		// Sampler states
 		i_Address(dwStage, address);
 		i_Filter(dwStage, fmin, fmip, fmag);
-		//.i_Filter				(dwStage,D3DTEXF_POINT,D3DTEXF_POINT,D3DTEXF_POINT); // show pixels
+		i_sRGB(dwStage, b_srgb);
+
 		if (dwStage < 4)
 			i_Projective(dwStage, b_ps1x_ProjectiveDivide);
 	}
@@ -151,10 +166,12 @@ void CBlender_Compile::r_Sampler_rtf(LPCSTR name, LPCSTR texture, bool b_ps1x_Pr
 {
 	r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
 }
+
 void CBlender_Compile::r_Sampler_clf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide)
 {
 	r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_LINEAR);
 }
+
 void CBlender_Compile::r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide)
 {
 	u32 s = r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE,
@@ -162,27 +179,24 @@ void CBlender_Compile::r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_Pr
 	if (u32(-1) != s)
 		RS.SetSAMP(s, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
 }
+
 void CBlender_Compile::r_Sampler_tex(LPCSTR name, LPCSTR texture)
 {
 	r_Sampler(name, texture, false, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
 }
+
 void CBlender_Compile::r_Sampler_gaussian(LPCSTR name, LPCSTR texture)
 {
-	r_Sampler(name, texture, false, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_GAUSSIANQUAD);
+	r_Sampler(name, texture, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_GAUSSIANQUAD);
 }
+
 void CBlender_Compile::r_End()
 {
 	dest.constants = Device.Resources->_CreateConstantTable(ctable);
 	dest.state = Device.Resources->_CreateState(RS.GetContainer());
 	dest.T = Device.Resources->_CreateTextureList(passTextures);
 	dest.C = 0;
-#ifdef _EDITOR
-	dest.M = 0;
-	SH->passes.push_back(
-		Device.Resources->_CreatePass(dest.state, dest.ps, dest.vs, dest.constants, dest.T, dest.M, dest.C));
-#else
+
 	ref_matrix_list temp(0);
-	SH->passes.push_back(
-		Device.Resources->_CreatePass(dest.state, dest.ps, dest.vs, dest.constants, dest.T, temp, dest.C));
-#endif
+	SH->passes.push_back(Device.Resources->_CreatePass(dest.state, dest.ps, dest.vs, dest.constants, dest.T, temp, dest.C));
 }

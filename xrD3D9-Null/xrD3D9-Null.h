@@ -4,14 +4,10 @@
 // that uses this DLL. This way any other project whose source files include this file see 
 // XRD3D9NULL_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
-#ifdef ALL_TO_ONE
-#define XRD3D9NULL_API
-#else
 #ifdef XRD3D9NULL_EXPORTS
 #define XRD3D9NULL_API __declspec(dllexport)
 #else
 #define XRD3D9NULL_API __declspec(dllimport)
-#endif
 #endif
 //---------------------------------
 #include <stdlib.h>

@@ -95,6 +95,9 @@ class CHudItem
 	virtual bool Activate();
 	virtual void Deactivate();
 
+	void IR_OnKeyboardPress(int key);
+	void IR_OnKeyboardRelease(int key);
+
 	virtual void OnActiveItem(){};
 	virtual void OnHiddenItem(){};
 

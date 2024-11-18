@@ -475,17 +475,11 @@ void CEnvironment::OnFrame()
 	float current_weight;
 	lerp(current_weight);
 
-	if (::Render->get_render_lighting_type() == IRender_interface::RENDER_DYNAMIC_LIGHTED)
-		calculate_dynamic_sun_dir();
-	else
-		CurrentEnv->sun_dir.setHP(deg2rad(292.0f), deg2rad(-25.0f));
+	calculate_dynamic_sun_dir();
 
-	if (::Render->get_render_type() == IRender_interface::RENDER_R2)
-	{
-		CurrentEnv->sky_r_textures.push_back(mk_pair(2, autoexposure));
-		CurrentEnv->sky_r_textures_env.push_back(mk_pair(2, autoexposure));
-		CurrentEnv->clouds_r_textures.push_back(mk_pair(2, autoexposure));
-	}
+	CurrentEnv->sky_r_textures.push_back(mk_pair(2, autoexposure));
+	CurrentEnv->sky_r_textures_env.push_back(mk_pair(2, autoexposure));
+	CurrentEnv->clouds_r_textures.push_back(mk_pair(2, autoexposure));
 
 	//. Setup skybox textures, somewhat ugly
 	IDirect3DBaseTexture9* e0 = CurrentEnv->sky_r_textures[0].second->surface_get();

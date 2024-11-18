@@ -61,7 +61,7 @@ class CCustomDetector : public CInventoryItemObject, public Feel::Touch
 	}
 
 	virtual void OnMoveToSlot();
-	virtual void OnMoveToRuck();
+	virtual void OnMoveToRuck(EItemPlace prev);
 	virtual void OnMoveToBelt();
 
   protected:

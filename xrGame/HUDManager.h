@@ -57,6 +57,7 @@ class CHUDManager : public CCustomHUD
 
 	virtual void Render_First();
 	virtual void Render_Last();
+	virtual void Render_Actor_Shadow();
 	virtual void OnFrame();
 
 	virtual void RenderUI();

@@ -20,6 +20,12 @@ struct ENGINE_API SPPInfo
 			int _b = clampr(iFloor(b * 255.f + .5f), 0, 255);
 			return color_rgba(_r, _g, _b, 0);
 		}
+
+		IC operator const Fvector&()
+		{
+			return *((Fvector*)this);
+		}
+
 		IC SColor& operator+=(const SColor& ppi)
 		{
 			r += ppi.r;
@@ -81,115 +87,111 @@ struct ENGINE_API SPPInfo
 	SColor color_base;
 	SColor color_gray;
 	SColor color_add;
+	float cm_influence;
+	float cm_interpolate;
+	shared_str cm_tex1;
+	shared_str cm_tex2;
 
-	IC SPPInfo& operator+=(const SPPInfo& ppi)
-	{
-		blur += ppi.blur;
-		gray += ppi.gray;
-		duality.h += ppi.duality.h;
-		duality.v += ppi.duality.v;
-		noise.intensity += ppi.noise.intensity;
-		noise.grain += ppi.noise.grain;
-		noise.fps += ppi.noise.fps;
-		color_base += ppi.color_base;
-		color_gray += ppi.color_gray;
-		color_add += ppi.color_add;
-		return *this;
-	}
-	IC SPPInfo& operator-=(const SPPInfo& ppi)
-	{
-		blur -= ppi.blur;
-		gray -= ppi.gray;
-		duality.h -= ppi.duality.h;
-		duality.v -= ppi.duality.v;
-		noise.intensity -= ppi.noise.intensity;
-		noise.grain -= ppi.noise.grain;
-		noise.fps -= ppi.noise.fps;
-		color_base -= ppi.color_base;
-		color_gray -= ppi.color_gray;
-		color_add -= ppi.color_add;
-		return *this;
-	}
+	SPPInfo& add(const SPPInfo& ppi);
+	SPPInfo& sub(const SPPInfo& ppi);
 	void normalize();
-	SPPInfo()
-	{
-		blur = gray = duality.h = duality.v = 0;
-		noise.intensity = 0;
-		noise.grain = 1;
-		noise.fps = 10;
-		color_base.set(.5f, .5f, .5f);
-		color_gray.set(.333f, .333f, .333f);
-		color_add.set(0.f, 0.f, 0.f);
-	}
+	SPPInfo();
 	SPPInfo& lerp(const SPPInfo& def, const SPPInfo& to, float factor);
 	void validate(LPCSTR str);
 };
 
-DEFINE_VECTOR(CEffectorCam*, EffectorCamVec, EffectorCamIt);
+DEFINE_LIST(CEffectorCam*, EffectorCamVec, EffectorCamIt);
 DEFINE_VECTOR(CEffectorPP*, EffectorPPVec, EffectorPPIt);
 
+#define effCustomEffectorStartID 10000
+
+struct SCamEffectorInfo;
 class ENGINE_API CCameraManager
 {
-	Fvector vPosition;
-	Fvector vDirection;
-	Fvector vNormal;
-	Fvector vRight;
+  protected:
+	SCamEffectorInfo m_cam_info;
 
 	EffectorCamVec m_EffectorsCam;
 	EffectorCamVec m_EffectorsCam_added_deffered;
-	EffectorCamVec m_EffectorsCam_removed_deffered;
 	EffectorPPVec m_EffectorsPP;
 
-	float fFov;
-	float fFar;
-	float fAspect;
+	float fFovSecond;
+
 	bool m_bAutoApply;
 	SPPInfo pp_affected;
 	void UpdateDeffered();
+
+	virtual void UpdateCamEffectors();
+	virtual void UpdatePPEffectors();
+	virtual bool ProcessCameraEffector(CEffectorCam* eff);
+	void OnEffectorReleased(SBaseEffector* e);
 
   public:
 #ifdef DEBUG
 	u32 dbg_upd_frame;
 #endif
 
-	void Dump(void);
+	void Dump();
+	u32 Count()
+	{
+		return m_EffectorsCam.size() + m_EffectorsCam_added_deffered.size();
+	}
 	CEffectorCam* AddCamEffector(CEffectorCam* ef);
 	CEffectorCam* GetCamEffector(ECamEffectorType type);
 	void RemoveCamEffector(ECamEffectorType type);
 
+	ECamEffectorType RequestCamEffectorId();
+	EEffectorPPType RequestPPEffectorId();
 	CEffectorPP* GetPPEffector(EEffectorPPType type);
 	CEffectorPP* AddPPEffector(CEffectorPP* ef);
 	void RemovePPEffector(EEffectorPPType type);
 
-	IC Fvector Pos() const
+	IC Fvector Position() const
 	{
-		return vPosition;
+		return m_cam_info.p;
 	}
-	IC Fvector Dir() const
+	IC Fvector Direction() const
 	{
-		return vDirection;
+		return m_cam_info.d;
 	}
 	IC Fvector Up() const
 	{
-		return vNormal;
+		return m_cam_info.n;
 	}
 	IC Fvector Right() const
 	{
-		return vRight;
+		return m_cam_info.r;
+	}
+	IC float Fov() const
+	{
+		return m_cam_info.fFov;
+	}
+	IC float Aspect() const
+	{
+		return m_cam_info.fAspect;
+	}
+	IC ECameraStyle Style() const
+	{
+		return m_cam_info.style;
+	}
+	IC CObject* Parent() const
+	{
+		return m_cam_info.parent;
 	}
 
 	IC void camera_Matrix(Fmatrix& M)
 	{
-		M.set(vRight, vNormal, vDirection, vPosition);
+		M.set(m_cam_info.r, m_cam_info.n, m_cam_info.d, m_cam_info.p);
 	}
 	void Update(const Fvector& P, const Fvector& D, const Fvector& N, float fFOV_Dest, float fASPECT_Dest,
-				float fFAR_Dest, u32 flags = 0);
-	void Update(const CCameraBase* C);
+				float fFAR_Dest, u32 flags);
+	void UpdateFromCamera(const CCameraBase* C);
+
 	void ApplyDevice(float _viewport_near);
 	static void ResetPP();
 
 	CCameraManager(bool bApplyOnUpdate);
-	~CCameraManager();
+	virtual ~CCameraManager();
 };
 ENGINE_API extern SPPInfo pp_identity;
 ENGINE_API extern SPPInfo pp_zero;

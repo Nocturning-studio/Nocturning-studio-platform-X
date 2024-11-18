@@ -30,7 +30,7 @@ class CCustomOutfit : public CInventoryItemObject
 	float GetPowerLoss();
 
 	virtual void OnMoveToSlot();
-	virtual void OnMoveToRuck();
+	virtual void OnMoveToRuck(EItemPlace prev);
 
   protected:
 	HitImmunity::HitTypeSVec m_HitTypeProtection;

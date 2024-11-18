@@ -76,15 +76,9 @@ class ENGINE_API CConsole : public pureRender, public pureFrame
 	typedef xr_vector<shared_str> vecTips;
 	typedef xr_vector<TipString> vecTipsEx;
 
-	enum
-	{
-		CONSOLE_BUF_SIZE = 1024
-	};
-	enum
-	{
-		VIEW_TIPS_COUNT = 14,
-		MAX_TIPS_COUNT = 220
-	};
+	const u32 CONSOLE_BUF_SIZE = 1024;
+	const u32 VIEW_TIPS_COUNT = 14;
+	const u32 MAX_TIPS_COUNT = 220;
 
   protected:
 	int scroll_delta;
@@ -220,6 +214,8 @@ class ENGINE_API CConsole : public pureRender, public pureFrame
 
 	void update_tips();
 	void select_for_filter(LPCSTR filter_str, vecTips& in_v, vecTipsEx& out_v);
+
+	friend class ConsoleInput;
 
 }; // class CConsole
 

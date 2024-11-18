@@ -49,6 +49,7 @@ class ENGINE_API CEngineAPI
 	HMODULE hGame;
 	HMODULE hRender;
 	HMODULE hTuner;
+	HMODULE hDiscordAPI;
 
   public:
 	Factory_Create* pCreate;

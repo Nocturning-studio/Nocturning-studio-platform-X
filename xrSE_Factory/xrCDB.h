@@ -8,14 +8,10 @@
 // that uses this DLL. This way any other project whose source files include this file see
 // XRCDB_API functions as being imported from a DLL, wheras this DLL sees symbols
 // defined with this macro as being exported.
-#ifdef ALL_TO_ONE
-#define XRCDB_API
-#else
 #ifdef XRCDB_EXPORTS
 #define XRCDB_API __declspec(dllexport)
 #else
 #define XRCDB_API __declspec(dllimport)
-#endif
 #endif
 
 #ifdef M_VISUAL

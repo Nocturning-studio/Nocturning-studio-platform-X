@@ -4,15 +4,12 @@
 // that uses this DLL. This way any other project whose source files include this file see 
 // XRGAMESPY_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
-#ifdef ALL_TO_ONE
-#define XRGAMESPY_API
-#else
 #ifdef XRGAMESPY_EXPORTS
 #define XRGAMESPY_API __declspec(dllexport)
 #else
 #define XRGAMESPY_API __declspec(dllimport)
 #endif
-#endif
+
 /*
 // This class is exported from the xrGameSpy.dll
 class XRGAMESPY_API CxrGameSpy {

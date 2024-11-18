@@ -157,7 +157,7 @@ void CWeaponStatMgun::UpdateCL()
 	if (OwnerActor() && OwnerActor()->IsMyCamera())
 	{
 		cam_Update(Device.fTimeDelta, g_fov);
-		OwnerActor()->Cameras().Update(Camera());
+		OwnerActor()->Cameras().UpdateFromCamera(Camera());
 		OwnerActor()->Cameras().ApplyDevice(VIEWPORT_NEAR);
 	}
 }
@@ -241,7 +241,7 @@ void CWeaponStatMgun::cam_Update(float dt, float fov)
 	}
 
 	Camera()->Update(P, Da);
-	Level().Cameras().Update(Camera());
+	Level().Cameras().UpdateFromCamera(Camera());
 }
 
 void CWeaponStatMgun::renderable_Render()

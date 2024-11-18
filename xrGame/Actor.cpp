@@ -778,11 +778,17 @@ void CActor::Die(CObject* who)
 		m_BloodSnd.stop();
 	}
 
+	xr_delete(m_sndShockEffector);
+
 	if (IsGameTypeSingle())
 	{
+		if (!m_DeathEffector)
+		{
+			m_DeathEffector = xr_new<DeathEffector>();
+			m_DeathEffector->Start(this);
+		}
 		start_tutorial("game_over");
 	}
-	xr_delete(m_sndShockEffector);
 }
 
 void CActor::SwitchOutBorder(bool new_border_state)
@@ -965,6 +971,21 @@ void CActor::UpdateCL()
 		}
 		else
 			xr_delete(m_sndShockEffector);
+	}
+
+	if (m_DeathEffector)
+	{
+		if (this == Level().CurrentViewEntity())
+		{
+			m_DeathEffector->Update();
+
+			if (g_Alive())
+				xr_delete(m_DeathEffector);
+		}
+		else
+		{
+			xr_delete(m_DeathEffector);
+		}
 	}
 }
 
@@ -1236,6 +1257,13 @@ void CActor::renderable_Render()
 	inherited::renderable_Render();
 	if (!HUDview())
 	{
+		if ((cam_active==eacFirstEye &&									// first eye cam
+		::Render->active_phase() ==	1)									// shadow map rendering on R2
+		||
+		!(IsFocused() &&
+		(cam_active==eacFirstEye) &&
+		((!m_holder) || (m_holder && m_holder->allowWeapon() && m_holder->HUDView()))))
+
 		CInventoryOwner::renderable_Render();
 	}
 }
@@ -1482,9 +1510,9 @@ void CActor::OnItemTake(CInventoryItem* inventory_item)
 		return;
 }
 
-void CActor::OnItemDrop(CInventoryItem* inventory_item)
+void CActor::OnItemDrop(CInventoryItem* inventory_item, bool just_before_destroy)
 {
-	CInventoryOwner::OnItemDrop(inventory_item);
+	CInventoryOwner::OnItemDrop(inventory_item, just_before_destroy);
 
 	CArtefact* artefact = smart_cast<CArtefact*>(inventory_item);
 	if (artefact && artefact->m_eItemPlace == eItemPlaceBelt)
@@ -1721,7 +1749,7 @@ bool CActor::can_attach(const CInventoryItem* inventory_item) const
 void CActor::OnDifficultyChanged()
 {
 	// immunities
-	VERIFY(g_SingleGameDifficulty >= egdNovice && g_SingleGameDifficulty <= egdMaster);
+	VERIFY(g_SingleGameDifficulty >= egdNovice && g_SingleGameDifficulty <= egdLegend);
 	LPCSTR diff_name = get_token_name(difficulty_type_token, g_SingleGameDifficulty);
 	string128 tmp;
 	strconcat(sizeof(tmp), tmp, "actor_immunities_", diff_name);

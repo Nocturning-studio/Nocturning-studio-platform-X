@@ -31,6 +31,7 @@ enum ESingleGameDifficulty
 	egdStalker = 1,
 	egdVeteran = 2,
 	egdMaster = 3,
+	egdLegend = 4,
 	egdCount,
 	egd_force_u32 = u32(-1)
 };

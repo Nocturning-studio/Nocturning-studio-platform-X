@@ -175,6 +175,8 @@ void CTexture::Preload()
 
 void CTexture::Load()
 {
+	Msg("Loading texture: %s", *cName);
+
 	flags.bLoaded = true;
 	desc_cache = 0;
 	if (pSurface)
@@ -214,7 +216,7 @@ void CTexture::Load()
 			u32 _w = pTheora->Width(false);
 			u32 _h = pTheora->Height(false);
 
-                const auto hr = HW.pDevice->CreateTexture(_w, _h, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT,
+            const auto hr = HW.pDevice->CreateTexture(_w, _h, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT,
 														reinterpret_cast<IDirect3DTexture9**>(&pSurface), nullptr);
 			const auto hr2 = HW.pDevice->CreateTexture(_w, _h, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM,
 														reinterpret_cast<IDirect3DTexture9**>(&pTempSurface), nullptr);

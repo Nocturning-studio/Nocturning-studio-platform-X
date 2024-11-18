@@ -1,13 +1,14 @@
 #include "stdafx.h"
-#include "customdetector.h"
-#include "customzone.h"
-#include "hudmanager.h"
-#include "artifact.h"
-#include "inventory.h"
-#include "level.h"
+#include "CustomDetector.h"
+#include "CustomZone.h"
+#include "HUDManager.h"
+#include "Artifact.h"
+#include "Inventory.h"
+#include "Level.h"
 #include "map_manager.h"
-#include "cameraEffector.h"
-#include "actor.h"
+#include "CameraEffector.h"
+#include "Actor.h"
+#include "ActorEffector.h"
 #include "ai_sounds.h"
 
 ZONE_INFO::ZONE_INFO()
@@ -219,9 +220,9 @@ u32 CCustomDetector::ef_detector_type() const
 	return (m_ef_detector_type);
 }
 
-void CCustomDetector::OnMoveToRuck()
+void CCustomDetector::OnMoveToRuck(EItemPlace prev)
 {
-	inherited::OnMoveToRuck();
+	inherited::OnMoveToRuck(prev);
 	TurnOff();
 }
 

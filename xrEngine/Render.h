@@ -137,6 +137,9 @@ class ENGINE_API IRender_Target
 	virtual void set_color_add(u32 f) = 0;
 	virtual u32 get_width() = 0;
 	virtual u32 get_height() = 0;
+	virtual void set_cm_imfluence(float f) = 0;
+	virtual void set_cm_interpolate(float f) = 0;
+	virtual void set_cm_textures(const shared_str& tex0, const shared_str& tex1) = 0;
 	virtual ~IRender_Target(){};
 };
 
@@ -145,18 +148,6 @@ class ENGINE_API IRender_Target
 class ENGINE_API IRender_interface
 {
   public:
-	enum RenderType
-	{
-		RENDER_R1 = 0,
-		RENDER_R2 = 1,
-		RENDER_forcedword = u32(-1)
-	};
-	enum RenderLightingType
-	{
-		RENDER_LIGHTMAP_LIGHTED = 0,
-		RENDER_DYNAMIC_LIGHTED = 1,
-		RENDER_LIGHTING_TYPE_forcedword = u32(-1)
-	};
 	enum ScreenshotMode
 	{
 		SM_NORMAL = 0,		 // jpeg\png,	name ignored
@@ -175,11 +166,6 @@ class ENGINE_API IRender_interface
 	CFrustum* View;
 
   public:
-	// feature level
-	virtual RenderType get_render_type() = 0;
-
-	virtual RenderLightingType get_render_lighting_type() = 0;
-
 	// Loading / Unloading
 	virtual void create() = 0;
 	virtual void destroy() = 0;
@@ -269,6 +255,9 @@ class ENGINE_API IRender_interface
 	virtual void rmFar() = 0;
 	virtual void rmNormal() = 0;
 	virtual u32 memory_usage() = 0;
+
+	// KD: need to know, what R2 phase is active now
+	virtual u32 active_phase() = 0;
 
 	// Constructor/destructor
 	virtual ~IRender_interface();

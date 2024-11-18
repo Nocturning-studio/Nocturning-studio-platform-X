@@ -2,15 +2,11 @@
 #define xrXMLParserH
 #pragma once
 
-#ifdef ALL_TO_ONE
-#define XRXMLPARSER_API
-#else
 #ifdef XRXMLPARSER_EXPORTS
 #define XRXMLPARSER_API __declspec(dllexport)
 #else
 #define XRXMLPARSER_API __declspec(dllimport)
 #pragma comment(lib, "xrXMLParser.lib")
-#endif
 #endif
 
 const LPCSTR GAMEDATA_PATH = "$game_data$";

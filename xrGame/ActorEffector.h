@@ -6,6 +6,40 @@ class CObjectAnimator;
 class CEffectorController;
 class CActor;
 
+class CActorCameraManager : public CCameraManager
+{
+	typedef CCameraManager inherited;
+
+	SCamEffectorInfo m_cam_info_hud;
+
+  protected:
+	virtual void UpdateCamEffectors();
+	virtual bool ProcessCameraEffector(CEffectorCam* eff);
+
+  public:
+	CActorCameraManager() : inherited(false)
+	{
+	}
+	virtual ~CActorCameraManager()
+	{
+	}
+
+	IC void hud_camera_Matrix(Fmatrix& M)
+	{
+		M.set(m_cam_info_hud.r, m_cam_info_hud.n, m_cam_info_hud.d, m_cam_info_hud.p);
+	}
+
+	IC Fvector hud_camera_dir()
+	{
+		return m_cam_info_hud.d;
+	}
+
+	IC Fvector hud_camera_rotate()
+	{
+		return m_cam_info_hud.r;
+	}
+};
+
 typedef fastdelegate::FastDelegate0<float> GET_KOEFF_FUNC;
 
 void AddEffector(CActor* A, int type, const shared_str& sect_name);
@@ -59,7 +93,7 @@ class CAnimatorCamEffector : public CEffectorCam
 	CAnimatorCamEffector();
 	virtual ~CAnimatorCamEffector();
 	void Start(LPCSTR fn);
-	virtual BOOL Process(Fvector& p, Fvector& d, Fvector& n, float& fFov, float& fFar, float& fAspect);
+	virtual BOOL ProcessCam(SCamEffectorInfo& info);
 	void SetCyclic(bool b)
 	{
 		m_bCyclic = b;
@@ -87,7 +121,7 @@ class CAnimatorCamEffectorScriptCB : public CAnimatorCamEffector
 	{
 		return m_bAbsolutePositioning;
 	}
-	virtual void ProcessIfInvalid(Fvector& p, Fvector& d, Fvector& n, float& fFov, float& fFar, float& fAspect);
+	virtual void ProcessIfInvalid(SCamEffectorInfo& info);
 };
 
 class CAnimatorCamLerpEffector : public CAnimatorCamEffector
@@ -101,7 +135,7 @@ class CAnimatorCamLerpEffector : public CAnimatorCamEffector
 	{
 		m_func = f;
 	}
-	virtual BOOL Process(Fvector& p, Fvector& d, Fvector& n, float& fFov, float& fFar, float& fAspect);
+	virtual BOOL ProcessCam(SCamEffectorInfo& info);
 };
 
 class CAnimatorCamLerpEffectorConst : public CAnimatorCamLerpEffector
@@ -154,6 +188,29 @@ class SndShockEffector : public CEffectorController
 	BOOL InWork();
 	virtual float xr_stdcall GetFactor();
 };
+//////////////////////////////////////////////////////////////////////////
+class DeathEffector : public CEffectorController
+{
+	typedef CEffectorController inherited;
+
+  public:
+	float m_snd_length; // ms
+	float m_cur_length; // ms
+	float m_stored_volume;
+	float m_end_time;
+	float m_life_time;
+	CActor* m_actor;
+
+  public:
+	DeathEffector();
+	virtual ~DeathEffector();
+	void Start(CActor* A);
+	void Update();
+
+	virtual BOOL Valid();
+	BOOL InWork();
+	virtual float xr_stdcall GetFactor();
+};
 
 //////////////////////////////////////////////////////////////////////////
 class CControllerPsyHitCamEffector : public CEffectorCam
@@ -170,6 +227,6 @@ class CControllerPsyHitCamEffector : public CEffectorCam
 
   public:
 	CControllerPsyHitCamEffector(ECamEffectorType type, const Fvector& src_pos, const Fvector& target_pos, float time);
-	virtual BOOL Process(Fvector& p, Fvector& d, Fvector& n, float& fFov, float& fFar, float& fAspect);
+	virtual BOOL ProcessCam(SCamEffectorInfo& info);
 };
 //////////////////////////////////////////////////////////////////////////

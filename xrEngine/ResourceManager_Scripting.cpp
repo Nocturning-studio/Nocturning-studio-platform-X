@@ -177,6 +177,13 @@ class adopt_sampler
 			C->i_Filter_Mag(stage, D3DTEXF_LINEAR);
 		return *this;
 	}
+
+	adopt_sampler& _srgb()
+	{
+		if (C)
+			C->i_sRGB(stage, true);
+		return *this;
+	}
 };
 
 // wrapper
@@ -368,7 +375,8 @@ void CResourceManager::LS_Load()
 					 .def("fmip_linear", &adopt_sampler::_fmip_linear, return_reference_to(_1))
 					 .def("fmag_none", &adopt_sampler::_fmag_none, return_reference_to(_1))
 					 .def("fmag_point", &adopt_sampler::_fmag_point, return_reference_to(_1))
-					 .def("fmag_linear", &adopt_sampler::_fmag_linear, return_reference_to(_1)),
+					 .def("fmag_linear", &adopt_sampler::_fmag_linear, return_reference_to(_1))
+					 .def("srgb", &adopt_sampler::_srgb, return_reference_to(_1)),
 
 				 class_<adopt_compiler>("_compiler")
 					 .def(constructor<const adopt_compiler&>())

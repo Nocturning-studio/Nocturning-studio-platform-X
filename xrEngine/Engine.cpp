@@ -24,14 +24,21 @@ extern void msCreate(LPCSTR name);
 
 void CEngine::Initialize(void)
 {
+	Msg("Initializing Engine...");
+
 	// Bind PSGP
-	hPSGP = LoadLibrary("xrCPU_Pipe.dll");
-	R_ASSERT(hPSGP);
+	LPCSTR xrCPUPipeDllName = "xrCPU_Pipe.dll";
+	Msg("Loading DLL: %s", xrCPUPipeDllName);
+	hPSGP = LoadLibrary(xrCPUPipeDllName);
+	if (!hPSGP)
+		make_string("Can't load xrCPU_Pipe.dll, please reinstall application");
+
 	xrBinder* bindCPU = (xrBinder*)GetProcAddress(hPSGP, "xrBind_PSGP");
 	R_ASSERT(bindCPU);
 	bindCPU(&PSGP, true);
 
 	// Other stuff
+	Msg("Initializing Engine Sheduler...");
 	Engine.Sheduler.Initialize();
 	//
 #ifdef DEBUG
@@ -48,6 +55,8 @@ void CEngine::Destroy()
 		dbg_dump_leaks_prepare();
 #endif // DEBUG_MEMORY_MANAGER
 	Engine.External.Destroy();
+
+
 
 	if (hPSGP)
 	{

@@ -33,12 +33,8 @@ float CWeapon::GetFireDispersion(float cartridge_k)
 {
 	// учет базовой дисперсии, состояние оружия и влияение патрона
 	float fire_disp;
-	if (ParentIsActor() && Actor() && Actor()->IsZoomAimingMode() &&
-		g_SingleGameDifficulty <
-			egdMaster) // Если оружие принадлежит гг, Actor() не вернул 0 и актор находится в режиме прицеливания, а
-					   // также уровень сложности не "Мастер" (Спасибо Maks0 и Skyloader за помощь)
-		fire_disp = zoom_fireDispersionBase * cartridge_k *
-					GetConditionDispersionFactor(); // То используем параметр разброса в прицеливании
+	if (ParentIsActor() && Actor() && Actor()->IsZoomAimingMode()) // Если оружие принадлежит гг, Actor() не вернул 0 и актор находится в режиме прицеливания (Спасибо Maks0 и Skyloader за помощь)
+		fire_disp = zoom_fireDispersionBase * cartridge_k * GetConditionDispersionFactor(); // То используем параметр разброса в прицеливании
 	else											// Иначе
 		fire_disp = fireDispersionBase * cartridge_k * GetConditionDispersionFactor(); // Используем обычный разброс
 

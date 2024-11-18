@@ -16,6 +16,7 @@
 #include "IGame_Persistent.h"
 
 CDemoRecord* xrDemoRecord = 0;
+CDemoRecord::force_position CDemoRecord::g_position = {false, {0, 0, 0}};
 //////////////////////////////////////////////////////////////////////
 #ifdef DEBUG
 #define DEBUG_DEMO_RECORD
@@ -30,6 +31,7 @@ CDemoRecord::CDemoRecord(const char* name, float life_time) : CEffectorCam(cefDe
 	file = FS.w_open(name);
 	if (file)
 	{
+		g_position.set_position = false;
 		IR_Capture(); // capture input
 		m_Camera.invert(Device.mView);
 
@@ -89,7 +91,6 @@ CDemoRecord::CDemoRecord(const char* name, float life_time) : CEffectorCam(cefDe
 	{
 		fLifeTime = -1;
 	}
-	m_bOverlapped = FALSE;
 }
 
 CDemoRecord::~CDemoRecord()
@@ -106,12 +107,12 @@ CDemoRecord::~CDemoRecord()
 			g_pGamePersistent->SetPickableEffectorDOF(false);
 		}
 
-		Console->Execute("r2_photo_grid off");
-		Console->Execute("r2_cinema_borders off");
-		Console->Execute("r2_watermark off");
+		Console->Execute("r_photo_grid off");
+		Console->Execute("r_cinema_borders off");
+		Console->Execute("r_watermark off");
 
 #ifndef MASTER_GOLD
-		Console->Execute("r2_debug_render disabled");
+		Console->Execute("r_debug_render disabled");
 #endif
 
 		psHUD_Flags.set(HUD_DRAW, m_bGlobalHudDraw);
@@ -193,7 +194,6 @@ void CDemoRecord::MakeLevelMapProcess()
 		psDeviceFlags.set(rsFullscreen, s_dev_flags.test(rsFullscreen));
 		break;
 	case DEVICE_RESET_PRECACHE_FRAME_COUNT + 1: {
-		m_bOverlapped = TRUE;
 		s_hud_flag.assign(psHUD_Flags);
 		psHUD_Flags.assign(0);
 
@@ -223,7 +223,6 @@ void CDemoRecord::MakeLevelMapProcess()
 	}
 	break;
 	case DEVICE_RESET_PRECACHE_FRAME_COUNT + 2: {
-		m_bOverlapped = FALSE;
 		string_path tmp;
 		Fbox bb = g_pGameLevel->ObjectSpace.GetBoundingVolume();
 
@@ -252,6 +251,8 @@ void CDemoRecord::MakeLevelMapProcess()
 
 void CDemoRecord::MakeCubeMapFace(Fvector& D, Fvector& N)
 {
+	Console->Execute("r_disable_postprocess on");
+
 	string32 buf;
 	switch (m_Stage)
 	{
@@ -279,6 +280,8 @@ void CDemoRecord::MakeCubeMapFace(Fvector& D, Fvector& N)
 		break;
 	}
 	m_Stage++;
+
+	Console->Execute("r_disable_postprocess off");
 }
 
 void CDemoRecord::SwitchShowInputInfo()
@@ -349,7 +352,7 @@ void CDemoRecord::ShowInputInfo()
 #endif
 }
 
-BOOL CDemoRecord::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float& fFar, float& fAspect)
+BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 {
 	if (0 == file)
 		return TRUE;
@@ -358,10 +361,10 @@ BOOL CDemoRecord::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float
 	{
 		MakeScreenshotFace();
 		// update camera
-		N.set(m_Camera.j);
-		D.set(m_Camera.k);
-		P.set(m_Camera.c);
-		fFov = m_fFov;
+		info.n.set(m_Camera.j);
+		info.d.set(m_Camera.k);
+		info.p.set(m_Camera.c);
+		info.fFov = m_fFov;
 	}
 	else if (m_bMakeLevelMap)
 	{
@@ -369,10 +372,10 @@ BOOL CDemoRecord::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float
 	}
 	else if (m_bMakeCubeMap)
 	{
-		fFov = 90.0f;
-		MakeCubeMapFace(D, N);
-		P.set(m_Camera.c);
-		fAspect = 1.f;
+		info.fFov = 90.0f;
+		MakeCubeMapFace(info.d, info.n);
+		info.p.set(m_Camera.c);
+		info.fAspect = 1.f;
 	}
 	else
 	{
@@ -405,6 +408,16 @@ BOOL CDemoRecord::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float
 		m_HPB.y -= m_vR.x;
 		m_HPB.z += m_vR.z;
 
+		if (g_position.set_position)
+		{
+			m_Position.set(g_position.p);
+			g_position.set_position = false;
+		}
+		else
+		{
+			g_position.p.set(m_Position);
+		}
+
 		// move
 		Fvector vmove;
 
@@ -427,16 +440,16 @@ BOOL CDemoRecord::Process(Fvector& P, Fvector& D, Fvector& N, float& fFov, float
 		m_Camera.translate_over(m_Position);
 
 		// update camera
-		N.set(m_Camera.j);
-		D.set(m_Camera.k);
-		P.set(m_Camera.c);
+		info.n.set(m_Camera.j);
+		info.d.set(m_Camera.k);
+		info.p.set(m_Camera.c);
 
 		fLifeTime -= Device.fTimeDelta;
 
 		m_vT.set(0, 0, 0);
 		m_vR.set(0, 0, 0);
 
-		fFov = m_fFov;
+		info.fFov = m_fFov;
 	}
 	return TRUE;
 }
@@ -477,18 +490,18 @@ void CDemoRecord::SwitchGridState()
 	if (m_bGridEnabled == false)
 	{
 		m_bGridEnabled = true;
-		Console->Execute("r2_photo_grid on");
+		Console->Execute("r_photo_grid on");
 #ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::SwitchGridState - method change m_bGridEnabled to state enabled and activate r2_photo_grid");
+		Msg("CDemoRecord::SwitchGridState - method change m_bGridEnabled to state enabled and activate r_photo_grid");
 #endif
 	}
 	else
 	{
 		m_bGridEnabled = false;
-		Console->Execute("r2_photo_grid off");
+		Console->Execute("r_photo_grid off");
 #ifdef DEBUG_DEMO_RECORD
 		Msg("CDemoRecord::SwitchGridState - method change m_bGridEnabled to state disabled and deactivate "
-			"r2_photo_grid");
+			"r_photo_grid");
 #endif
 	}
 }
@@ -500,19 +513,19 @@ void CDemoRecord::SwitchCinemaBordersState()
 	if (m_bBordersEnabled == false)
 	{
 		m_bBordersEnabled = true;
-		Console->Execute("r2_cinema_borders on");
+		Console->Execute("r_cinema_borders on");
 #ifdef DEBUG_DEMO_RECORD
 		Msg("CDemoRecord::SwitchCinemaBordersState - method change m_bBordersEnabled to state enabled and activate "
-			"r2_cinema_borders");
+			"r_cinema_borders");
 #endif
 	}
 	else
 	{
 		m_bBordersEnabled = false;
-		Console->Execute("r2_cinema_borders off");
+		Console->Execute("r_cinema_borders off");
 #ifdef DEBUG_DEMO_RECORD
 		Msg("CDemoRecord::SwitchCinemaBordersState - method change m_bBordersEnabled to state disabled and deactivate "
-			"r2_cinema_borders");
+			"r_cinema_borders");
 #endif
 	}
 }
@@ -522,19 +535,19 @@ void CDemoRecord::SwitchWatermarkVisibility()
 	if (m_bWatermarkEnabled == false)
 	{
 		m_bWatermarkEnabled = true;
-		Console->Execute("r2_watermark on");
+		Console->Execute("r_watermark on");
 #ifdef DEBUG_DEMO_RECORD
 		Msg("CDemoRecord::SwitchWatermarkVisibility - method change m_bWatermarkEnabled to state enabled and activate "
-			"r2_watermark");
+			"r_watermark");
 #endif
 	}
 	else
 	{
 		m_bWatermarkEnabled = false;
-		Console->Execute("r2_watermark off");
+		Console->Execute("r_watermark off");
 #ifdef DEBUG_DEMO_RECORD
 		Msg("CDemoRecord::SwitchWatermarkVisibility - method change m_bWatermarkEnabled to state disabled and "
-			"deactivate r2_watermark");
+			"deactivate r_watermark");
 #endif
 	}
 }
@@ -591,25 +604,25 @@ void CDemoRecord::IR_OnKeyboardPress(int dik)
 #ifndef MASTER_GOLD
 #pragma todo("Deathman to all: Переделать быструю отладку рендера под удобный вид")
 	if (dik == DIK_1)
-		Console->Execute("r2_debug_render gbuffer_albedo");
+		Console->Execute("r_debug_render gbuffer_albedo");
 	if (dik == DIK_2)
-		Console->Execute("r2_debug_render gbuffer_position");
+		Console->Execute("r_debug_render gbuffer_position");
 	if (dik == DIK_3)
-		Console->Execute("r2_debug_render gbuffer_normal");
+		Console->Execute("r_debug_render gbuffer_normal");
 	if (dik == DIK_4)
-		Console->Execute("r2_debug_render gbuffer_glossiness");
+		Console->Execute("r_debug_render gbuffer_glossiness");
 	if (dik == DIK_5)
-		Console->Execute("r2_debug_render gbuffer_lightmap_ao");
+		Console->Execute("r_debug_render gbuffer_lightmap_ao");
 	if (dik == DIK_6)
-		Console->Execute("r2_debug_render gbuffer_baked_ao");
+		Console->Execute("r_debug_render gbuffer_baked_ao");
 	if (dik == DIK_7)
-		Console->Execute("r2_debug_render accumulator_diffuse");
+		Console->Execute("r_debug_render accumulator_diffuse");
 	if (dik == DIK_8)
-		Console->Execute("r2_debug_render accumulator_specular");
+		Console->Execute("r_debug_render accumulator_specular");
 	if (dik == DIK_9)
-		Console->Execute("r2_debug_render real_time_ao");
+		Console->Execute("r_debug_render real_time_ao");
 	if (dik == DIK_0)
-		Console->Execute("r2_debug_render disabled");
+		Console->Execute("r_debug_render disabled");
 #endif
 }
 

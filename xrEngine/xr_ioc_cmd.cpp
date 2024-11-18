@@ -22,9 +22,6 @@ extern ENGINE_API Flags32 ps_game_ls_flags = {INTRO_ENABLE | TUTORIALS_ENABLE};
 
 extern xr_token* vid_mode_token;
 
-xr_token vid_quality_token[] = {
-	{"renderer_r1", 0}, {"renderer_r2", 1}, {0, 0}};
-
 xr_token vid_bpp_token[] = {{"16", 16}, {"32", 32}, {0, 0}};
 
 xr_token wpn_zoom_button_mode[] = {{"st_opt_press", 1}, {"st_opt_hold", 2}, {0, 0}};
@@ -656,42 +653,6 @@ class CCC_DR_UsePoints : public CCC_Integer
 	virtual void Save(IWriter* F){};
 };
 
-u32 renderer_value = 0;
-class CCC_r2 : public CCC_Token
-{
-	typedef CCC_Token inherited;
-
-  public:
-	CCC_r2(LPCSTR N) : inherited(N, &renderer_value, vid_quality_token)
-	{
-		renderer_value = 0;
-	};
-
-	virtual void Execute(LPCSTR args)
-	{
-#ifdef DEDICATED_SERVER
-		inherited::Execute("renderer_r1");
-#else
-		inherited::Execute(args);
-#endif // DEDICATED_SERVER
-
-		psDeviceFlags.set(rsR2, renderer_value == 1);
-	}
-
-	virtual void Save(IWriter* F)
-	{
-		if (!strstr(Core.Params, "-r2"))
-		{
-			inherited::Save(F);
-		}
-	}
-
-	virtual xr_token* GetToken()
-	{
-		tokens = vid_quality_token;
-		return inherited::GetToken();
-	}
-};
 //-----------------------------------------------------------------------
 ENGINE_API float psHUD_FOV = 0.45f;
 
@@ -765,7 +726,7 @@ void CCC_Register()
 	CMD3(CCC_Mask, "rs_fullscreen", &psDeviceFlags, rsFullscreen);
 	CMD3(CCC_Mask, "rs_refresh_60hz", &psDeviceFlags, rsRefresh60hz);
 	CMD3(CCC_Mask, "rs_stats", &psDeviceFlags, rsStatistic);
-	CMD4(CCC_Float, "rs_vis_distance", &psVisDistance, 0.4f, 1.5f);
+	CMD4(CCC_Float, "rs_vis_distance", &psVisDistance, 0.7f, 1.5f);
 
 #ifdef DEBUG
 	CMD3(CCC_Mask, "rs_cam_pos", &psDeviceFlags, rsCameraPos);
@@ -781,7 +742,7 @@ void CCC_Register()
 	//	CMD4(CCC_Integer,	"rs_ib_size",			&rsDIB_Size,		32,		4096);
 
 	// Texture manager
-	CMD4(CCC_Integer, "texture_lod", &psTextureLOD, 0, 4);
+	CMD4(CCC_Integer, "texture_lod", &psTextureLOD, 0, 3);
 	CMD4(CCC_Integer, "net_dedicated_sleep", &psNET_DedicatedSleep, 0, 64);
 
 	// General video control
@@ -839,7 +800,6 @@ void CCC_Register()
 	CMD3(CCC_Mask, "game_intro_enable", &ps_game_ls_flags, INTRO_ENABLE);
 	CMD3(CCC_Mask, "game_tutorials_enable", &ps_game_ls_flags, TUTORIALS_ENABLE);
 
-	CMD1(CCC_r2, "renderer");
 	// psSoundRolloff	= pSettings->r_float	("sound","rolloff");		clamp(psSoundRolloff, EPS_S,	2.f);
 	psSoundOcclusionScale = pSettings->r_float("sound", "occlusion_scale");
 	clamp(psSoundOcclusionScale, 0.1f, .5f);

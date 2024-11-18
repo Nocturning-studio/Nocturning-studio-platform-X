@@ -25,7 +25,10 @@ CShootingObject::CShootingObject(void)
 	fTime = 0;
 	fTimeToFire = 0;
 	// fHitPower						= 0.0f;
-	fvHitPower.set(0.0f, 0.0f, 0.0f, 0.0f);
+
+	for (int i; i < egdCount; i++)
+		fvHitPower[i] = 0.0f;
+
 	m_fStartBulletSpeed = 1000.f;
 
 	m_vCurrentShootDir.set(0, 0, 0);
@@ -80,10 +83,7 @@ void CShootingObject::Light_Create()
 {
 	// lights
 	light_render = ::Render->light_create();
-	if (::Render->get_render_type() == IRender_interface::RENDER_R2)
-		light_render->set_shadow(true);
-	else
-		light_render->set_shadow(false);
+	light_render->set_shadow(true);
 }
 
 void CShootingObject::Light_Destroy()
@@ -113,6 +113,8 @@ void CShootingObject::LoadFireParams(LPCSTR section, LPCSTR prefix)
 	fvHitPower[egdMaster] =
 		(float)atof(_GetItem(*s_sHitPower, 0, buffer)); // первый параметр - это хит для уровня игры мастер
 
+	#pragma todo("Deathman to ALL: пофиксить то что первый параметр хита задается для мастера, не легенды")
+	fvHitPower[egdLegend] = fvHitPower[egdMaster] * 3;
 	fvHitPower[egdVeteran] = fvHitPower[egdMaster]; // изначально параметры для других уровней
 	fvHitPower[egdStalker] = fvHitPower[egdMaster]; // сложности
 	fvHitPower[egdNovice] = fvHitPower[egdMaster];	// такие же

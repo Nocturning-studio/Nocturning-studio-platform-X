@@ -10,6 +10,8 @@
 #include "blenders\Blender_Recorder.h"
 #include "blenders\Blender.h"
 
+#include "../xrRender/r_color_converting.h"
+
 #include "igame_persistent.h"
 #include "environment.h"
 
@@ -49,6 +51,17 @@ DECLARE_TREE_BIND(wind);
 DECLARE_TREE_BIND(c_scale);
 DECLARE_TREE_BIND(c_bias);
 DECLARE_TREE_BIND(c_sun);
+
+class cl_invV : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fmatrix mInvV = Fmatrix().invert(RCache.xforms.m_v);
+
+		RCache.set_c(C, mInvV);
+	}
+};
+static cl_invV binder_invv;
 
 class cl_hemi_cube_pos_faces : public R_constant_setup
 {
@@ -156,7 +169,8 @@ class cl_fog_params : public R_constant_setup
 		if (marker != Device.dwFrame)
 		{
 			CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
-			result.set(desc->fog_color.x, desc->fog_color.y, desc->fog_color.z, desc->fog_density);
+			result.set(sRgbToLinear(desc->fog_color.x), sRgbToLinear(desc->fog_color.y), sRgbToLinear(desc->fog_color.z),
+					   desc->fog_density);
 		}
 		RCache.set_c(C, result);
 	}
@@ -173,7 +187,7 @@ class cl_fog_color : public R_constant_setup
 		if (marker != Device.dwFrame)
 		{
 			CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
-			result.set(desc->fog_color.x, desc->fog_color.y, desc->fog_color.z, 0);
+			result.set(sRgbToLinear(desc->fog_color.x), sRgbToLinear(desc->fog_color.y), sRgbToLinear(desc->fog_color.z), 0);
 		}
 		RCache.set_c(C, result);
 	}
@@ -305,6 +319,26 @@ static class cl_pos_decompress_params : public R_constant_setup
 	}
 } binder_pos_decompress_params;
 
+extern ENGINE_API float psHUD_FOV;
+static class cl_pos_decompress_params_hud : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		float VertTan = -1.0f * tanf(deg2rad(psHUD_FOV / 2.0f));
+		float HorzTan = -VertTan / Device.fASPECT;
+
+		RCache.set_c(C, HorzTan, VertTan, (2.0f * HorzTan) / Device.dwWidth, (2.0f * VertTan) / Device.dwHeight);
+	}
+} binder_pos_decompress_params_hud;
+
+static class cl_fov : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, Device.fFOV, 0, 0, 0);
+	}
+} binder_fov;
+
 static class cl_sepia_params : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -312,7 +346,7 @@ static class cl_sepia_params : public R_constant_setup
 		CEnvDescriptor* E = g_pGamePersistent->Environment().CurrentEnv;
 		Fvector3 SepiaColor = E->m_SepiaColor;
 		float SepiaPower = E->m_SepiaPower;
-		RCache.set_c(C, SepiaColor.x, SepiaColor.y, SepiaColor.z, SepiaPower);
+		RCache.set_c(C, sRgbToLinear(SepiaColor.x), sRgbToLinear(SepiaColor.y), sRgbToLinear(SepiaColor.z), SepiaPower);
 	}
 } binder_sepia_params;
 
@@ -380,7 +414,7 @@ class cl_sun0_color : public R_constant_setup
 		if (marker != Device.dwFrame)
 		{
 			CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
-			result.set(desc->sun_color.x, desc->sun_color.y, desc->sun_color.z, 0);
+			result.set(sRgbToLinear(desc->sun_color.x), sRgbToLinear(desc->sun_color.y), sRgbToLinear(desc->sun_color.z), 0);
 		}
 		RCache.set_c(C, result);
 	}
@@ -392,8 +426,8 @@ static class cl_env_color : public R_constant_setup
 	virtual void setup(R_constant* C)
 	{
 		CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
-		Fvector4 envclr = {envdesc->hemi_color.x * 2 + EPS, envdesc->hemi_color.y * 2 + EPS,
-						   envdesc->hemi_color.z * 2 + EPS, envdesc->weight};
+		Fvector4 envclr = {sRgbToLinear(envdesc->hemi_color.x) * 2 + EPS,sRgbToLinear( envdesc->hemi_color.y) * 2 + EPS,
+						   sRgbToLinear(envdesc->hemi_color.z) * 2 + EPS, envdesc->weight};
 		RCache.set_c(C, envclr);
 	}
 } binder_env_color;
@@ -442,12 +476,13 @@ class cl_amb_color : public R_constant_setup
 		if (marker != Device.dwFrame)
 		{
 			CEnvDescriptorMixer* desc = g_pGamePersistent->Environment().CurrentEnv;
-			result.set(desc->ambient.x, desc->ambient.y, desc->ambient.z, desc->weight);
+			result.set(sRgbToLinear(desc->ambient.x), sRgbToLinear(desc->ambient.y), sRgbToLinear(desc->ambient.z), desc->weight);
 		}
 		RCache.set_c(C, result);
 	}
 };
 static cl_amb_color binder_amb_color;
+
 class cl_hemi_color : public R_constant_setup
 {
 	u32 marker;
@@ -457,7 +492,7 @@ class cl_hemi_color : public R_constant_setup
 		if (marker != Device.dwFrame)
 		{
 			CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
-			result.set(desc->hemi_color.x, desc->hemi_color.y, desc->hemi_color.z, desc->hemi_color.w);
+			result.set(sRgbToLinear(desc->hemi_color.x), sRgbToLinear(desc->hemi_color.y), sRgbToLinear(desc->hemi_color.z), desc->hemi_color.w);
 		}
 		RCache.set_c(C, result);
 	}
@@ -483,6 +518,16 @@ static class cl_v2w final : public R_constant_setup
 	}
 } binder_v2w;
 
+static class cl_invP final : public R_constant_setup
+{
+	void setup(R_constant* C) override
+	{
+		Fmatrix m_invP;
+		m_invP.invert(Device.mProject);
+		RCache.set_c(C, m_invP);
+	}
+} binder_invP;
+
 // Standart constant-binding
 void CBlender_Compile::SetMapping()
 {
@@ -490,7 +535,9 @@ void CBlender_Compile::SetMapping()
 	r_Constant("m_W", &binder_w);
 	r_Constant("m_invW", &binder_invw);
 	r_Constant("m_V", &binder_v);
+	r_Constant("m_invV", &binder_invv);
 	r_Constant("m_P", &binder_p);
+	r_Constant("m_invP", &binder_invP);
 	r_Constant("m_WV", &binder_wv);
 	r_Constant("m_VP", &binder_vp);
 	r_Constant("m_WVP", &binder_wvp);
@@ -536,6 +583,10 @@ void CBlender_Compile::SetMapping()
 	r_Constant("far_plane", &binder_far_plane);
 
 	r_Constant("pos_decompression_params", &binder_pos_decompress_params);
+	r_Constant("pos_decompression_params_hud", &binder_pos_decompress_params_hud);
+
+	r_Constant("fov", &binder_fov);
+	
 
 	// env-params
 	r_Constant("env_color", &binder_env_color);

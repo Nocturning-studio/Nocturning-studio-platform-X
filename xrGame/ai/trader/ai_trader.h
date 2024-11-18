@@ -183,6 +183,11 @@ class CAI_Trader : public CEntityAlive, public CInventoryOwner, public CScriptEn
 	}
 	virtual bool AllowItemToTrade(CInventoryItem const* item, EItemPlace place) const;
 
+	virtual bool CanPutInSlot(PIItem item, u32 slot)
+	{
+		return (slot == PDA_SLOT);
+	}
+
 	void dialog_sound_start(LPCSTR phrase);
 	void dialog_sound_stop();
 

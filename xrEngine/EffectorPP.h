@@ -1,10 +1,9 @@
-#pragma once
+п»ї#pragma once
 
 #include "CameraDefs.h"
 struct SPPInfo;
 
-// постпроцесс
-class ENGINE_API CEffectorPP
+class ENGINE_API CEffectorPP : public SBaseEffector
 {
 	EEffectorPPType eType;
 	bool bFreeOnRemove;
@@ -14,7 +13,7 @@ class ENGINE_API CEffectorPP
 
   public:
 	CEffectorPP(EEffectorPPType type, f32 lifeTime, bool free_on_remove = true);
-	CEffectorPP() : bFreeOnRemove(true), fLifeTime(0.0f){};
+	CEffectorPP() : bFreeOnRemove(true), fLifeTime(0.0f), bOverlap(true){};
 	virtual ~CEffectorPP();
 	virtual BOOL Process(SPPInfo& PPInfo);
 	virtual BOOL Valid()
@@ -37,4 +36,6 @@ class ENGINE_API CEffectorPP
 	{
 		fLifeTime = 0.0f;
 	};
+
+	bool bOverlap;
 };

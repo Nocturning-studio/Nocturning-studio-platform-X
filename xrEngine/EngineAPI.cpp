@@ -5,7 +5,6 @@
 #include "stdafx.h"
 #include "EngineAPI.h"
 #include "xrXRC.h"
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -25,45 +24,17 @@ CEngineAPI::CEngineAPI()
 CEngineAPI::~CEngineAPI()
 {
 }
-extern u32 renderer_value; // con cmd
 
 void CEngineAPI::Initialize(void)
 {
 	Msg("Initializing Engine API...");
-	//////////////////////////////////////////////////////////////////////////
+
 	// render
-	LPCSTR r1_name = "xrRender_R1.dll";
-	LPCSTR r2_name = "xrRender_R2.dll";
-
 	Msg("Initializing Renderer...");
-
-#ifndef DEDICATED_SERVER
-	if (psDeviceFlags.test(rsR2))
-	{
-		// try to initialize R2
-		Log("Loading DLL:", r2_name);
-		hRender = LoadLibrary(r2_name);
-
-		if (0 == hRender)
-		{
-			Msg("Loading failed - incompatible hardware.");
-			Msg("Try to load %s", r1_name);
-		}
-	}
-#endif
-
-	if (0 == hRender)
-	{
-		// try to load R1
-		psDeviceFlags.set(rsR2, FALSE);
-		renderer_value = 0; // con cmd
-
-		Msg("Loading DLL: %s", r1_name);
-		hRender = LoadLibrary(r1_name);
-
-		if (0 == hRender)
-			Msg("Loading failed - library not exist.");
-	}
+	LPCSTR render_name = "xrRender_PC.dll";
+	Log("Loading DLL:", render_name);
+	hRender = LoadLibrary(render_name);
+	R_ASSERT2(hRender, "! Can't load renderer");
 
 	// game
 	{
@@ -78,14 +49,14 @@ void CEngineAPI::Initialize(void)
 
 		R_ASSERT2(hGame, "Game DLL raised exception during loading or there is no game DLL at all");
 
+		Msg("Initializing xrFactory...");
 		pCreate = (Factory_Create*)GetProcAddress(hGame, "xrFactory_Create");
-		R_ASSERT(pCreate);
+		R_ASSERT2(pCreate, "Error in xrFactory_Create");
 
 		pDestroy = (Factory_Destroy*)GetProcAddress(hGame, "xrFactory_Destroy");
-		R_ASSERT(pDestroy);
+		R_ASSERT2(pDestroy, "Error in xrFactory_Destroy");
 	}
 
-	//////////////////////////////////////////////////////////////////////////
 	// vTune
 	tune_enabled = FALSE;
 	if (strstr(Core.Params, "-tune"))
@@ -105,6 +76,11 @@ void CEngineAPI::Initialize(void)
 			tune_resume = (VTResume*)GetProcAddress(hTuner, "VTResume");
 		}
 	}
+
+	LPCSTR DiscordAPI_name = "DiscordAPI.dll";
+	Log("Loading DLL:", DiscordAPI_name);
+	hDiscordAPI = LoadLibrary(DiscordAPI_name);
+	R_ASSERT2(DiscordAPI_name, "! Can't load discord api");
 }
 
 void CEngineAPI::Destroy(void)
@@ -118,6 +94,11 @@ void CEngineAPI::Destroy(void)
 	{
 		FreeLibrary(hRender);
 		hRender = 0;
+	}
+	if (hDiscordAPI)
+	{
+		FreeLibrary(hDiscordAPI);
+		hDiscordAPI = 0;
 	}
 	pCreate = 0;
 	pDestroy = 0;

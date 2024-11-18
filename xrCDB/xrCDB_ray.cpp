@@ -11,15 +11,9 @@ using namespace CDB;
 using namespace Opcode;
 
 // can you say "barebone"?
-#ifdef ALL_TO_ONE
-#ifndef _MM_ALIGN16
-#define _MM_ALIGN16
-#endif // _MM_ALIGN16
-#else
 #ifndef _MM_ALIGN16
 #define _MM_ALIGN16 __declspec(align(16))
 #endif // _MM_ALIGN16
-#endif
 
 struct _MM_ALIGN16 vec_t : public Fvector3
 {

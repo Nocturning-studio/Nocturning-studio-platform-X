@@ -10,7 +10,8 @@
 #include "game_base_space.h"
 #include "level.h"
 #include "ParticlesObject.h"
-#include "actor.h"
+#include "Actor.h"
+#include "ActorEffector.h"
 #include "game_base_space.h"
 #include "weaponhud.h"
 #include "stalker_animation_data_storage.h"
@@ -120,7 +121,7 @@ CGamePersistent::CGamePersistent(void)
 	m_DofChangeSpeed = READ_IF_EXISTS(pSettings, r_float, "dof_params", "change_speed", 0.2);
 	m_DofUI = READ_IF_EXISTS(pSettings, r_fvector3, "ui_dof", "dof", Fvector().set(0.0, 0.5, 1));
 
-	Fvector3* DofValue = Console->GetFVectorPtr("r2_dof");
+	Fvector3* DofValue = Console->GetFVectorPtr("r_dof");
 	SetBaseDof(*DofValue);
 }
 
@@ -540,7 +541,7 @@ void CGamePersistent::OnFrame()
 					else
 						C = Actor()->Holder()->Camera();
 
-					Actor()->Cameras().Update(C);
+					Actor()->Cameras().UpdateFromCamera(C);
 					Actor()->Cameras().ApplyDevice(VIEWPORT_NEAR);
 				}
 			}

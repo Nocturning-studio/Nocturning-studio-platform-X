@@ -26,6 +26,8 @@ void CResourceManager::reset_begin()
 	_RELEASE(RCache.QuadIB);
 	RCache.Index.reset_begin();
 	RCache.Vertex.reset_begin();
+
+	DeferredUnload();
 }
 
 bool cmp_rt(const CRT* A, const CRT* B)

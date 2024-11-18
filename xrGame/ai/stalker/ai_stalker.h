@@ -220,6 +220,7 @@ class CAI_Stalker : public CCustomMonster, public CObjectHandler, public CAI_Phr
 
 	virtual void OnEvent(NET_Packet& P, u16 type);
 	virtual void feel_touch_new(CObject* O);
+	void on_ownership_reject(CObject* O, bool just_before_destroy);
 
 	virtual void renderable_Render();
 	virtual void Exec_Look(float dt);
@@ -291,7 +292,7 @@ class CAI_Stalker : public CCustomMonster, public CObjectHandler, public CAI_Phr
 	//////////////////////////////////////////////////////////////////////////
   public:
 	virtual void OnItemTake(CInventoryItem* inventory_item);
-	virtual void OnItemDrop(CInventoryItem* inventory_item);
+	virtual void OnItemDrop(CInventoryItem* inventory_item, bool just_before_destroy);
 	bool item_to_kill();
 	bool item_can_kill();
 	bool remember_item_to_kill();

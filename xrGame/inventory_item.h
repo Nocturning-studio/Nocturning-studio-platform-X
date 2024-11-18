@@ -182,7 +182,7 @@ class CInventoryItem : public CAttachableItem,
 
 	virtual void OnMoveToSlot(){};
 	virtual void OnMoveToBelt(){};
-	virtual void OnMoveToRuck(){};
+	virtual void OnMoveToRuck(EItemPlace prev){};
 
 	int GetGridWidth() const;
 	int GetGridHeight() const;
@@ -243,6 +243,11 @@ class CInventoryItem : public CAttachableItem,
 	virtual bool IsNecessaryItem(const shared_str& item_sect)
 	{
 		return false;
+	};
+
+	void SetSlot(u32 slot)
+	{
+		m_slot = slot;
 	};
 
   protected:

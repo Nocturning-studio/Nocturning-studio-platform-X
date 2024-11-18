@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "UIInventoryWnd.h"
 #include "../actor.h"
 #include "../silencer.h"
@@ -31,7 +31,7 @@ void CUIInventoryWnd::EatItem(PIItem itm)
 #include "../Antirad.h"
 void CUIInventoryWnd::ActivatePropertiesBox()
 {
-	// Ôëàã-ïðèçíàê äëÿ íåâëþ÷åíèÿ ïóíêòà êîíòåêñòíîãî ìåíþ: Dreess Outfit, åñëè êîñòþì óæå íàäåò
+	// Ð¤Ð»Ð°Ð³-Ð¿Ñ€Ð¸Ð·Ð½Ð°Ðº Ð´Ð»Ñ Ð½ÐµÐ²Ð»ÑŽÑ‡ÐµÐ½Ð¸Ñ Ð¿ÑƒÐ½ÐºÑ‚Ð° ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚Ð½Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÑŽ: Dreess Outfit, ÐµÑÐ»Ð¸ ÐºÐ¾ÑÑ‚ÑŽÐ¼ ÑƒÐ¶Ðµ Ð½Ð°Ð´ÐµÑ‚
 	bool bAlreadyDressed = false;
 
 	UIPropertiesBox.RemoveAll();
@@ -48,7 +48,26 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 
 	bool b_show = false;
 
-	if (!pOutfit && CurrentIItem()->GetSlot() != NO_ACTIVE_SLOT &&
+	uint32 slot = CurrentIItem()->GetSlot();
+
+	//Real Wolf.
+	bool is_double_slot = slot == RIFLE_SLOT || slot == PISTOL_SLOT;
+	if (is_double_slot)
+	{
+		if (!m_pInv->m_slots[PISTOL_SLOT].m_pIItem || m_pInv->m_slots[PISTOL_SLOT].m_pIItem != CurrentIItem())
+		{
+			UIPropertiesBox.AddItem("st_move_to_slot1", NULL, INVENTORY_TO_SLOT1_ACTION);
+			b_show = true;
+		}
+
+		if (!m_pInv->m_slots[RIFLE_SLOT].m_pIItem || m_pInv->m_slots[RIFLE_SLOT].m_pIItem != CurrentIItem())
+		{
+			UIPropertiesBox.AddItem("st_move_to_slot2", NULL, INVENTORY_TO_SLOT2_ACTION);
+			b_show = true;
+		}
+	}
+
+	if (!is_double_slot && !pOutfit && CurrentIItem()->GetSlot() != NO_ACTIVE_SLOT &&
 		!m_pInv->m_slots[CurrentIItem()->GetSlot()].m_bPersistent && m_pInv->CanPutInSlot(CurrentIItem()))
 	{
 		UIPropertiesBox.AddItem("st_move_to_slot", NULL, INVENTORY_TO_SLOT_ACTION);
@@ -76,7 +95,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		b_show = true;
 	}
 
-	// îòñîåäèíåíèå àääîíîâ îò âåùè
+	// Ð¾Ñ‚ÑÐ¾ÐµÐ´Ð¸Ð½ÐµÐ½Ð¸Ðµ Ð°Ð´Ð´Ð¾Ð½Ð¾Ð² Ð¾Ñ‚ Ð²ÐµÑ‰Ð¸
 	if (pWeapon)
 	{
 		if (pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
@@ -120,19 +139,19 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		}
 	}
 
-	// ïðèñîåäèíåíèå àääîíîâ ê àêòèâíîìó ñëîòó (2 èëè 3)
+	// Ð¿Ñ€Ð¸ÑÐ¾ÐµÐ´Ð¸Ð½ÐµÐ½Ð¸Ðµ Ð°Ð´Ð´Ð¾Ð½Ð¾Ð² Ðº Ð°ÐºÑ‚Ð¸Ð²Ð½Ð¾Ð¼Ñƒ ÑÐ»Ð¾Ñ‚Ñƒ (2 Ð¸Ð»Ð¸ 3)
 	if (pScope)
 	{
 		if (m_pInv->m_slots[PISTOL_SLOT].m_pIItem != NULL && m_pInv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pScope))
 		{
 			PIItem tgt = m_pInv->m_slots[PISTOL_SLOT].m_pIItem;
-			UIPropertiesBox.AddItem("st_attach_scope_to_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			UIPropertiesBox.AddItem("st_attach_scope_to_slot1", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 		if (m_pInv->m_slots[RIFLE_SLOT].m_pIItem != NULL && m_pInv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pScope))
 		{
 			PIItem tgt = m_pInv->m_slots[RIFLE_SLOT].m_pIItem;
-			UIPropertiesBox.AddItem("st_attach_scope_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			UIPropertiesBox.AddItem("st_attach_scope_to_slot2", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 	}
@@ -142,23 +161,30 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			m_pInv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pSilencer))
 		{
 			PIItem tgt = m_pInv->m_slots[PISTOL_SLOT].m_pIItem;
-			UIPropertiesBox.AddItem("st_attach_silencer_to_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			UIPropertiesBox.AddItem("st_attach_silencer_to_slot1", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 		if (m_pInv->m_slots[RIFLE_SLOT].m_pIItem != NULL && m_pInv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pSilencer))
 		{
 			PIItem tgt = m_pInv->m_slots[RIFLE_SLOT].m_pIItem;
-			UIPropertiesBox.AddItem("st_attach_silencer_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			UIPropertiesBox.AddItem("st_attach_silencer_to_slot2", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 	}
 	else if (pGrenadeLauncher)
 	{
+		if (m_pInv->m_slots[PISTOL_SLOT].m_pIItem != NULL &&
+			m_pInv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pGrenadeLauncher))
+		{
+			PIItem tgt = m_pInv->m_slots[PISTOL_SLOT].m_pIItem;
+			UIPropertiesBox.AddItem("st_attach_gl_to_slot1", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
 		if (m_pInv->m_slots[RIFLE_SLOT].m_pIItem != NULL &&
 			m_pInv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pGrenadeLauncher))
 		{
 			PIItem tgt = m_pInv->m_slots[RIFLE_SLOT].m_pIItem;
-			UIPropertiesBox.AddItem("st_attach_gl_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			UIPropertiesBox.AddItem("st_attach_gl_to_slot2", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 	}
@@ -216,6 +242,15 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked()
 	{
 		switch (UIPropertiesBox.GetClickedItem()->GetTAG())
 		{
+		// Real Wolf.
+		case INVENTORY_TO_SLOT1_ACTION:
+			CurrentIItem()->SetSlot(PISTOL_SLOT);
+			ToSlot(CurrentItem(), true);
+			break;
+		case INVENTORY_TO_SLOT2_ACTION:
+			CurrentIItem()->SetSlot(RIFLE_SLOT);
+			ToSlot(CurrentItem(), true);
+			break;
 		case INVENTORY_TO_SLOT_ACTION:
 			ToSlot(CurrentItem(), true);
 			break;

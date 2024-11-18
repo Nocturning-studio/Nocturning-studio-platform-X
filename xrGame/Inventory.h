@@ -39,7 +39,7 @@ class CInventory
 	float CalcTotalWeight();
 
 	void Take(CGameObject* pObj, bool bNotActivate, bool strict_placement);
-	bool DropItem(CGameObject* pObj);
+	bool DropItem(CGameObject* pObj, bool just_before_destroy, bool dont_create_shell);
 	void Clear();
 
 	bool Slot(PIItem pIItem, bool bNotActivate = false);

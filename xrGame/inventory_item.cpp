@@ -373,6 +373,7 @@ void CInventoryItem::save(NET_Packet& packet)
 {
 	packet.w_u8((u8)m_eItemPlace);
 	packet.w_float(m_fCondition);
+	packet.w_u8((u8)m_slot);
 
 	if (object().H_Parent())
 	{
@@ -542,6 +543,9 @@ void CInventoryItem::load(IReader& packet)
 {
 	m_eItemPlace = (EItemPlace)packet.r_u8();
 	m_fCondition = packet.r_float();
+	m_slot = (u32)packet.r_u8();
+	if (m_slot == 255)
+		m_slot = NO_ACTIVE_SLOT;
 
 	u8 tmp = packet.r_u8();
 	if (!tmp)

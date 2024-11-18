@@ -29,11 +29,7 @@ extern xrMemFill_32b xrMemFill32_MMX;
 
 extern "C"
 {
-#ifdef ALL_TO_ONE
-	void __cdecl xrBind_PSGP(xrDispatchTable* T, DWORD dwFeatures)
-#else
 	__declspec(dllexport) void __cdecl xrBind_PSGP(xrDispatchTable* T, DWORD dwFeatures)
-#endif
 	{
 		// generic
 		T->skin1W = xrSkin1W_x86;
