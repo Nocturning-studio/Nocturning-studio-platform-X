@@ -83,15 +83,10 @@ static union { unsigned char __c[8]; double __d; } __ode_huge_val =
 
 #endif
 
-
-#ifdef ALL_TO_ONE
-#define SHAREDLIBEXPORT
-#define SHAREDLIBIMPORT 
-#else
 #define SHAREDLIBIMPORT __declspec (dllimport)
 
 #define SHAREDLIBEXPORT __declspec (dllexport)
-#endif
+
 
 
 /* some types. assume `int' >= 32 bits */

@@ -29,15 +29,13 @@
  * BUGTRAP_API functions as being imported from a DLL, whereas this DLL sees symbols
  * defined with this macro as being exported.
  */
-#ifdef ALL_TO_ONE
-#define BUGTRAP_API
-#else
+
 #ifdef BUGTRAP_EXPORTS
  #define BUGTRAP_API __declspec(dllexport)
 #else
  #define BUGTRAP_API __declspec(dllimport)
 #endif // ! BUGTRAP_EXPORTS
-#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus

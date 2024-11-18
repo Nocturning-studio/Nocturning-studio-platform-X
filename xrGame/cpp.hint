@@ -3,7 +3,4 @@
 // Дополнительные сведения: https://go.microsoft.com/fwlink/?linkid=865984
 #define IC
 #define ENGINE_API
-#ifndef ALL_TO_ONE
-#define ENGINE_API __declspec(dllexport)
-#define ENGINE_API __declspec(dllimport)
-#endif
+

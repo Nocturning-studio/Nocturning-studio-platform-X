@@ -5133,11 +5133,7 @@ ACCLIB_PUBLIC(long, acc_safe_hwrite) (int fd, const acc_hvoid_p buf, long size)
 #      include <mmsystem.h>
 #    else
 #      if (ACC_CC_INTELC || ACC_CC_MSC || ACC_CC_PELLESC)
-#ifdef ALL_TO_ONE
-        ACC_EXTERN_C
-#else
          ACC_EXTERN_C __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
-#endif
 #      else
          ACC_EXTERN_C unsigned long __stdcall timeGetTime(void);
 #      endif

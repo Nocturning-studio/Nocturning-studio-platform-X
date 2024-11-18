@@ -172,14 +172,10 @@
 #pragma warning(disable : 4100) // unreferenced formal parameter
 
 // Our headers
-#if defined(XRCORE_STATIC) || defined(ALL_TO_ONE)
-#define XRCORE_API
-#else
 #ifdef XRCORE_EXPORTS
 #define XRCORE_API __declspec(dllexport)
 #else
 #define XRCORE_API __declspec(dllimport)
-#endif
 #endif
 
 #include "xrDebug.h"
