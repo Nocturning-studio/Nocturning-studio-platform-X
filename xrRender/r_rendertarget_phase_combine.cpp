@@ -152,6 +152,13 @@ void CRenderTarget::phase_combine()
 			if (ps_r_postprocess_flags.test(RFLAG_BARREL_BLUR))
 				phase_barrel_blur();
 
+			{
+				u_setrt(rt_Generic_0, rt_Generic_1, 0, HW.pBaseZB);
+				RCache.set_Element(s_combine->E[2]);
+				RCache.set_Geometry(g_combine_VP);
+				RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+			}
+
 			if (ps_render_flags.test(RFLAG_LENS_FLARES))
 				g_pGamePersistent->Environment().RenderFlares();
 		}
