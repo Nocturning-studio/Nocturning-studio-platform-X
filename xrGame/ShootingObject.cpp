@@ -24,9 +24,8 @@ CShootingObject::CShootingObject(void)
 {
 	fTime = 0;
 	fTimeToFire = 0;
-	// fHitPower						= 0.0f;
 
-	for (int i; i < egdCount; i++)
+	for (int i = 0; i < egdCount; i++)
 		fvHitPower[i] = 0.0f;
 
 	m_fStartBulletSpeed = 1000.f;

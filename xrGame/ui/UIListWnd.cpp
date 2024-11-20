@@ -124,6 +124,7 @@ void CUIListWnd::RemoveItem(int index)
 
 	// выбрать нужный элемент
 	it = m_ItemList.begin();
+	int i;
 	for (int i = 0; i < index; ++i, ++it)
 		;
 
@@ -224,7 +225,7 @@ void CUIListWnd::UpdateList()
 	}
 
 	// показать текущий список
-	for (i = m_iFirstShownIndex; i < _min(m_ItemList.size(), m_iFirstShownIndex + m_iRowNum + 1); ++i, ++it)
+	for (int i = m_iFirstShownIndex; i < _min(m_ItemList.size(), m_iFirstShownIndex + m_iRowNum + 1); ++i, ++it)
 	{
 		(*it)->SetWndRect((*it)->GetWndRect().left,
 						  m_bVertFlip ? GetHeight() - (i - m_iFirstShownIndex) * m_iItemHeight - m_iItemHeight

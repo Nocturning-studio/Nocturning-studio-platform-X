@@ -65,16 +65,18 @@ void CCoverManager::compute_static_cover()
 									  4 * 65536, 2 * 65536);
 	m_temp.resize(ai().level_graph().header().vertex_count());
 
-	for (u32 i = 0, n = ai().level_graph().header().vertex_count(); i < n; ++i)
+	u32 n = ai().level_graph().header().vertex_count();
+
+	for (u32 i = 0; i < n; ++i)
 		if (ai().level_graph().vertex(i)->cover(0) + ai().level_graph().vertex(i)->cover(1) +
 			ai().level_graph().vertex(i)->cover(2) + ai().level_graph().vertex(i)->cover(3))
 			m_temp[i] = edge_vertex(i);
 		else
 			m_temp[i] = false;
 
-	for (u32 it = 0; it < n; ++it)
-		if (m_temp[it] && critical_cover(it))
-			m_covers->insert(xr_new<CCoverPoint>(ai().level_graph().vertex_position(ai().level_graph().vertex(it)), it));
+	for (u32 j = 0; j < n; ++j)
+		if (m_temp[j] && critical_cover(j))
+			m_covers->insert(xr_new<CCoverPoint>(ai().level_graph().vertex_position(ai().level_graph().vertex(j)), j));
 }
 
 void CCoverManager::clear()
