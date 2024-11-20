@@ -153,7 +153,6 @@ void CLight_DB::Update()
 		sun_original->set_position(OP);
 		sun_original->set_color(E->sun_color.x, E->sun_color.y, E->sun_color.z);
 		sun_original->set_range(600.f);
-#pragma todo("Deathman to Deathman : AD->OP)";
 		sun_adapted->set_rotation(OD, _sun_adapted->right);
 		sun_adapted->set_position(OP);
 		sun_adapted->set_color(E->sun_color.x * ps_r_sun_lumscale, E->sun_color.y * ps_r_sun_lumscale,

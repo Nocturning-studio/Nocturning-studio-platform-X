@@ -195,7 +195,8 @@ void Detect()
 	// Detect RDTSC Overhead
 	clk_overhead = 0;
 	u64 dummy = 0;
-	for (int i = 0; i < 256; i++)
+	int i = 0;
+	for (; i < 256; i++)
 	{
 		start = GetCLK();
 		clk_overhead += GetCLK() - start - dummy;

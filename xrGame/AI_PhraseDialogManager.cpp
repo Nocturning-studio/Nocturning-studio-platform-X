@@ -51,7 +51,8 @@ void CAI_PhraseDialogManager::AnswerPhrase(DIALOG_SHARED_PTR& phrase_dialog)
 		// если не найдем более подходяещей выводим фразу
 		// последнюю из списка (самую грубую)
 		int phrase_num = phrase_dialog->PhraseList().size() - 1;
-		for (u32 i = 0; i < phrase_dialog->PhraseList().size(); ++i)
+		u32 i = 0;
+		for (; i < phrase_dialog->PhraseList().size(); ++i)
 		{
 			phrase_goodwill = phrase_dialog->PhraseList()[phrase_num]->GoodwillLevel();
 			if (attitude >= phrase_goodwill)

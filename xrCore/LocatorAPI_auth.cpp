@@ -50,7 +50,8 @@ void CLocatorAPI::auth_runtime(void* params)
 
 			// test for skip
 			BOOL bSkip = FALSE;
-			for (u32 s = 0; s < _o->ignore.size(); s++)
+			u32 s = 0;
+			for (; s < _o->ignore.size(); s++)
 			{
 				if (strstr(f.name, _o->ignore[s].c_str()))
 					bSkip = TRUE;

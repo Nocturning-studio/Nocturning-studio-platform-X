@@ -480,7 +480,8 @@ void CActor::OnNextWeaponSlot()
 		ActiveSlot = KNIFE_SLOT;
 
 	u32 NumSlotsToCheck = sizeof(SlotsToCheck) / sizeof(u32);
-	for (u32 CurSlot = 0; CurSlot < NumSlotsToCheck; CurSlot++)
+	u32 CurSlot = 0;
+	for (; CurSlot < NumSlotsToCheck; CurSlot++)
 	{
 		if (SlotsToCheck[CurSlot] == ActiveSlot)
 			break;
@@ -512,7 +513,8 @@ void CActor::OnPrevWeaponSlot()
 		ActiveSlot = KNIFE_SLOT;
 
 	u32 NumSlotsToCheck = sizeof(SlotsToCheck) / sizeof(u32);
-	for (u32 CurSlot = 0; CurSlot < NumSlotsToCheck; CurSlot++)
+	u32 CurSlot = 0;
+	for (; CurSlot < NumSlotsToCheck; CurSlot++)
 	{
 		if (SlotsToCheck[CurSlot] == ActiveSlot)
 			break;

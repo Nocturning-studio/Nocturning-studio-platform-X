@@ -49,7 +49,7 @@ void CPSLibrary::OnDestroy()
 	for (PS::PEDIt e_it = m_PEDs.begin(); e_it != m_PEDs.end(); e_it++)
 		(*e_it)->DestroyShader();
 
-	for (e_it = m_PEDs.begin(); e_it != m_PEDs.end(); e_it++)
+	for (PS::PEDIt e_it = m_PEDs.begin(); e_it != m_PEDs.end(); e_it++)
 		xr_delete(*e_it);
 	m_PEDs.clear();
 
@@ -120,20 +120,20 @@ void CPSLibrary::RenamePGD(PS::CPGDef* src, LPCSTR new_name)
 
 void CPSLibrary::Remove(const char* nm)
 {
-	PS::PEDIt it = FindPEDIt(nm);
-	if (it != m_PEDs.end())
+	PS::PEDIt itPED = FindPEDIt(nm);
+	if (itPED != m_PEDs.end())
 	{
-		(*it)->DestroyShader();
-		xr_delete(*it);
-		m_PEDs.erase(it);
+		(*itPED)->DestroyShader();
+		xr_delete(*itPED);
+		m_PEDs.erase(itPED);
 	}
 	else
 	{
-		PS::PGDIt it = FindPGDIt(nm);
-		if (it != m_PGDs.end())
+		PS::PGDIt itPGD = FindPGDIt(nm);
+		if (itPGD != m_PGDs.end())
 		{
-			xr_delete(*it);
-			m_PGDs.erase(it);
+			xr_delete(*itPGD);
+			m_PGDs.erase(itPGD);
 		}
 	}
 }
