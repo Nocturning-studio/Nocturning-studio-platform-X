@@ -458,8 +458,8 @@ void CMainMenu::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 			Device.seqRender.Add(g_pGameLevel);
 		};
 		m_screenshotFrame = Device.dwFrame + 1;
-		m_Flags.set(flRestoreConsole, Console->bVisible);
-		Console->Hide();
+		//m_Flags.set(flRestoreConsole, Console->bVisible);
+		//Console->Hide();
 	}
 }
 
