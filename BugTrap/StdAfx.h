@@ -23,7 +23,6 @@
 #pragma warning(disable : 4005)
 #pragma warning(disable : 4996)
 #pragma warning(disable : 4995)
-#pragma warning(disable : 9035)
 
 #include <windows.h>
 #include <windowsx.h>
