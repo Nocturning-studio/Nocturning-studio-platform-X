@@ -75,7 +75,7 @@ struct PsiEquation
 		beta = b;
 		xi = x;
 		a2b2 = a * a + b * b;
-		atan2ba = atan2(b, a);
+		atan2ba = atan2f(b, a);
 		num_crits = num_roots = status = 0;
 		status_ptr = &status;
 		num_roots_ptr = &num_roots;

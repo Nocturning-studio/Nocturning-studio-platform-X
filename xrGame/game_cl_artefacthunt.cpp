@@ -25,11 +25,11 @@
 #include "string_table.h"
 #include "CustomOutfit.h"
 
-#define TEAM0_MENU "artefacthunt_team0"
-#define TEAM1_MENU "artefacthunt_team1"
-#define TEAM2_MENU "artefacthunt_team2"
+#define AH_TEAM0_MENU "artefacthunt_team0"
+#define AH_TEAM1_MENU "artefacthunt_team1"
+#define AH_TEAM2_MENU "artefacthunt_team2"
 
-#define MESSAGE_MENUS "ahunt_messages_menu"
+#define AH_MESSAGE_MENUS "ahunt_messages_menu"
 
 #include "game_cl_artefacthunt_snd_msg.h"
 #include "../xrEngine/IGame_Persistent.h"
@@ -54,8 +54,8 @@ void game_cl_ArtefactHunt::Init()
 	//	pPdaMenu = xr_new<CUIPdaWnd>();
 	//	pMapDesc = xr_new<CUIMapDesc>();
 
-	LoadTeamData(TEAM1_MENU);
-	LoadTeamData(TEAM2_MENU);
+	LoadTeamData(AH_TEAM1_MENU);
+	LoadTeamData(AH_TEAM2_MENU);
 
 	old_artefactBearerID = 0;
 	old_artefactID = 0;
@@ -285,7 +285,7 @@ CUIGameCustom* game_cl_ArtefactHunt::createGameUI()
 	//-----------------------------------------------------------
 	//	pMapDesc = xr_new<CUIMapDesc>();
 	//-----------------------------------------------------------
-	LoadMessagesMenu(MESSAGE_MENUS);
+	LoadMessagesMenu(AH_MESSAGE_MENUS);
 	//-----------------------------------------------------------
 	return m_game_ui;
 }

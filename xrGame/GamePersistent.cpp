@@ -118,8 +118,8 @@ CGamePersistent::CGamePersistent(void)
 
 	m_PickDofFar = READ_IF_EXISTS(pSettings, r_float, "zone_pick_dof", "far", 70);
 	m_PickDofNear = READ_IF_EXISTS(pSettings, r_float, "zone_pick_dof", "near", -70);
-	m_DofChangeSpeed = READ_IF_EXISTS(pSettings, r_float, "dof_params", "change_speed", 0.2);
-	m_DofUI = READ_IF_EXISTS(pSettings, r_fvector3, "ui_dof", "dof", Fvector().set(0.0, 0.5, 1));
+	m_DofChangeSpeed = READ_IF_EXISTS(pSettings, r_float, "dof_params", "change_speed", 0.2f);
+	m_DofUI = READ_IF_EXISTS(pSettings, r_fvector3, "ui_dof", "dof", Fvector().set(0.0f, 0.5f, 1));
 
 	Fvector3* DofValue = Console->GetFVectorPtr("r_dof");
 	SetBaseDof(*DofValue);

@@ -21,7 +21,7 @@
 //.#define	TEAM1_MENU		"teamdeathmatch_team1"
 //.#define	TEAM2_MENU		"teamdeathmatch_team2"
 
-#define MESSAGE_MENUS "tdm_messages_menu"
+#define TDM_MESSAGE_MENUS "tdm_messages_menu"
 
 #include "game_cl_teamdeathmatch_snd_messages.h"
 
@@ -178,7 +178,7 @@ CUIGameCustom* game_cl_TeamDeathmatch::createGameUI()
 	//-----------------------------------------------------------
 	//	pMapDesc = xr_new<CUIMapDesc>();
 	//-----------------------------------------------------------
-	LoadMessagesMenu(MESSAGE_MENUS);
+	LoadMessagesMenu(TDM_MESSAGE_MENUS);
 	//-----------------------------------------------------------
 	return m_game_ui;
 }

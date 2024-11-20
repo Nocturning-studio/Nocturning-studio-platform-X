@@ -133,10 +133,47 @@ ICF int iFloor(float x)
 	return r;
 }
 
+ICF int iFloor(double x)
+{
+	int a = *(const int*)(&x);
+	int exponent = (127 + 31) - ((a >> 23) & 0xFF);
+	int r = (((u32)(a) << 8) | (1U << 31)) >> exponent;
+	exponent += 31 - 127;
+	{
+		int imask = (!(((((1 << (exponent))) - 1) >> 8) & a));
+		exponent -= (31 - 127) + 32;
+		exponent >>= 31;
+		a >>= 31;
+		r -= (imask & a);
+		r &= exponent;
+		r ^= a;
+	}
+	return r;
+}
+
 /* intCeil() is a non-interesting variant, since effectively
    ceil(x) == -floor(-x)
 */
 ICF int iCeil(float x)
+{
+	int a = (*(const int*)(&x));
+	int exponent = (127 + 31) - ((a >> 23) & 0xFF);
+	int r = (((u32)(a) << 8) | (1U << 31)) >> exponent;
+	exponent += 31 - 127;
+	{
+		int imask = (!(((((1 << (exponent))) - 1) >> 8) & a));
+		exponent -= (31 - 127) + 32;
+		exponent >>= 31;
+		a = ~((a - 1) >> 31); /* change sign */
+		r -= (imask & a);
+		r &= exponent;
+		r ^= a;
+		r = -r; /* change sign */
+	}
+	return r; /* r = (int)(ceil(f)) */
+}
+
+ICF int iCeil(double x)
 {
 	int a = (*(const int*)(&x));
 	int exponent = (127 + 31) - ((a >> 23) & 0xFF);
@@ -161,7 +198,19 @@ IC bool fis_gremlin(const float& f)
 	u8 value = u8(((*(int*)&f & 0x7f800000) >> 23) - 0x20);
 	return value > 0xc0;
 }
+
+IC bool fis_gremlin(const double& f)
+{
+	u8 value = u8(((*(int*)&f & 0x7f800000) >> 23) - 0x20);
+	return value > 0xc0;
+}
+
 IC bool fis_denormal(const float& f)
+{
+	return !(*(int*)&f & 0x7f800000);
+}
+
+IC bool fis_denormal(const double& f)
 {
 	return !(*(int*)&f & 0x7f800000);
 }
@@ -173,6 +222,14 @@ IC float apx_InvSqrt(const float& n)
 	float y = *(float*)&tmp;
 	return y * (1.47f - 0.47f * n * y * y);
 }
+
+IC double apx_InvSqrt(const double& n)
+{
+	long tmp = (long(0xBE800000) - *(long*)&n) >> 1;
+	double y = *(double*)&tmp;
+	return y * (1.47f - 0.47f * n * y * y);
+}
+
 // Only for [0..1] (positive) range
 IC float apx_asin(const float x)
 {
@@ -186,8 +243,27 @@ IC float apx_asin(const float x)
 
 	return d;
 }
+
+IC double apx_asin(const double x)
+{
+	const double c1 = 0.892399;
+	const double c3 = 1.693204;
+	const double c5 = -3.853735;
+	const double c7 = 2.838933;
+
+	const double x2 = x * x;
+	const double d = x * (c1 + x2 * (c3 + x2 * (c5 + x2 * c7)));
+
+	return d;
+}
+
 // Only for [0..1] (positive) range
 IC float apx_acos(const float x)
+{
+	return PI_DIV_2 - apx_asin(x);
+}
+
+IC double apx_acos(const double x)
 {
 	return PI_DIV_2 - apx_asin(x);
 }

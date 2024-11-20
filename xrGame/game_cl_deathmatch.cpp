@@ -32,7 +32,7 @@
 #include "ui\UIBuyWnd.h"
 #endif
 
-#define TEAM0_MENU "deathmatch_team0"
+#define DM_TEAM0_MENU "deathmatch_team0"
 
 game_cl_Deathmatch::game_cl_Deathmatch()
 {
@@ -62,7 +62,7 @@ game_cl_Deathmatch::game_cl_Deathmatch()
 
 void game_cl_Deathmatch::Init()
 {
-	LoadTeamData(TEAM0_MENU);
+	LoadTeamData(DM_TEAM0_MENU);
 
 	if (pSettings->line_exist("deathmatch_gamedata", "actor_spawn_effect"))
 		Actor_Spawn_Effect = pSettings->r_string("deathmatch_gamedata", "actor_spawn_effect");
@@ -1131,7 +1131,7 @@ void game_cl_Deathmatch::SendPickUpEvent(u16 ID_who, u16 ID_what)
 
 const shared_str game_cl_Deathmatch::GetTeamMenu(s16 team)
 {
-	return TEAM0_MENU;
+	return DM_TEAM0_MENU;
 }
 
 #define SELF_LOCATION "mp_self_location"

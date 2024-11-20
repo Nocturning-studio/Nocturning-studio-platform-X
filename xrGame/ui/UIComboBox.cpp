@@ -13,7 +13,7 @@
 #include "UIScrollBar.h"
 
 #define CB_HEIGHT 23.0f
-#define BTN_SIZE 23.0f
+#define CB_BTN_SIZE 23.0f
 
 CUIComboBox::CUIComboBox()
 {
@@ -48,7 +48,7 @@ void CUIComboBox::Init(float x, float y, float width)
 	if (0 == m_iListHeight)
 		m_iListHeight = 4;
 
-	//.	width								-= BTN_SIZE;
+	//.	width								-= CB_BTN_SIZE;
 
 	CUIWindow::Init(x, y, width, CB_HEIGHT);
 	// Frame Line
@@ -61,7 +61,7 @@ void CUIComboBox::Init(float x, float y, float width)
 	m_text.SetTextColor(m_textColor[0]);
 	m_text.Enable(false);
 	// Button on right side of frame line
-	//.	m_btn.Init							("ui_cb_button", width, 0, BTN_SIZE, BTN_SIZE);
+	//.	m_btn.Init							("ui_cb_button", width, 0, CB_BTN_SIZE, CB_BTN_SIZE);
 
 	// height of list equal to height of ONE element
 	float item_height = CUITextureMaster::GetTextureHeight("ui_cb_listline_b");

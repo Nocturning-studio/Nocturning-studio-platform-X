@@ -48,7 +48,7 @@ void _make_rot(Fvector2& pt, const Fvector2& src, float sin_a, float cos_a, floa
 float calc_color(u32 idx, u32 total, float stage, float max_stage)
 {
 	float kk = (stage / max_stage) * (float(total + 1));
-	float f = 1 / (exp((float(idx) - kk) * 0.9f) + 1.0f);
+	float f = 1 / (expf((float(idx) - kk) * 0.9f) + 1.0f);
 
 	return f;
 }

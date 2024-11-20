@@ -173,7 +173,7 @@ void CHelicopter::MGunFireStart()
 		float h = fp.y - ep.y;
 		if (h > 0.0f)
 		{
-			float dl = h * tan(m_lim_x_rot.y);
+			float dl = h * tanf(m_lim_x_rot.y);
 			float ds = fp.distance_to_xz(ep);
 			if (ds > dl)
 			{

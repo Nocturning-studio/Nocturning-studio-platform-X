@@ -51,7 +51,7 @@ bool CPHAICharacter::TryPosition(Fvector pos, bool exact_state)
 	float rest = 0.f;
 
 	float parts = disp_mag / disp_pstep;
-	fsteps_num = floor(parts);
+	fsteps_num = floorf(parts);
 	steps_num = iFloor(parts);
 	if (steps_num > max_steps)
 	{

@@ -102,14 +102,14 @@ void CUIFrameLine::UpdateSize()
 
 	if (bHorizontalOrientation)
 	{
-		rem = fmod(back_width, b_width);
+		rem = fmodf(back_width, b_width);
 		tile = iFloor(back_width / b_width);
 		elements[flBack].SetPos(iPos.x + f_width, iPos.y);
 		elements[flBack].SetTile(tile, 1, rem, 0);
 	}
 	else
 	{
-		rem = fmod(back_height, b_height);
+		rem = fmodf(back_height, b_height);
 		tile = iFloor(back_height / b_height);
 		elements[flBack].SetPos(iPos.x, iPos.y + f_height);
 		elements[flBack].SetTile(1, tile, 0, rem);

@@ -665,7 +665,7 @@ static void get_aim_circle_equation(const float g[3], const float a[3], const fl
 	unitize(t2);
 
 	vecmult(t1, (float*)a, Ry);
-	float alpha = acos(DOT(t1, t2));
+	float alpha = acosf(DOT(t1, t2));
 
 	//
 	// Compute the angles of the triangle s,h,g
@@ -673,7 +673,7 @@ static void get_aim_circle_equation(const float g[3], const float a[3], const fl
 	float L4 = _sqrt(DOT(g, g));
 	float beta = M_PI - alpha;
 
-	float delta = asin(_sin(beta) * L3 / L4);
+	float delta = asinf(_sin(beta) * L3 / L4);
 	if (delta < 0)
 		delta = -delta;
 	float gamma = M_PI - delta - beta;
