@@ -2717,8 +2717,8 @@ BOOL CSymEngine::GetNextStackTraceEntry(CStackTraceEntry& rEntry)
 	DWORD64 dwExceptionAddress = m_swContext.m_stFrame.AddrPC.Offset;
 	WORD wExceptionSegment; // wExceptionSegment = m_swContext.m_stFrame.AddrPC.Segment;
 	__asm { mov word ptr [wExceptionSegment], cs }
-	_stprintf_s(rEntry.m_szAddress, countof(rEntry.m_szAddress),
-	            _T("%04lX:%08lX"), wExceptionSegment, dwExceptionAddress);
+	_stprintf_s(rEntry.m_szAddress, countof(rEntry.m_szAddress), _T("%04lX:%08lX"), wExceptionSegment,
+				(DWORD)dwExceptionAddress);
 
 	BYTE arrSymBuffer[512];
 	ZeroMemory(arrSymBuffer, sizeof(arrSymBuffer));

@@ -1579,11 +1579,11 @@ CXmlReader::XML_RESULT CXmlReader::CXmlParser::DtdEntityHandler(CXmlNode& /*rXml
 			CStrStream strEntityValue(128);
 			for (;;)
 			{
-				TCHAR arrChar[2];
-				int nCharSize = decInputStream.ReadChar(arrChar);
-				if (nCharSize <= 0)
+				TCHAR arrCharInputStream[2];
+				int nCharSizeInputStream = decInputStream.ReadChar(arrCharInputStream);
+				if (nCharSizeInputStream <= 0)
 					break;
-				PutCharToStream(strEntityValue, arrChar, nCharSize);
+				PutCharToStream(strEntityValue, arrCharInputStream, nCharSizeInputStream);
 			}
 			decInputStream.SetInputStream(NULL);
 			delete pInputStream;
