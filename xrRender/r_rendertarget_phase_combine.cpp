@@ -84,7 +84,7 @@ void CRenderTarget::phase_combine()
 		Fvector4 debug_mode = {ps_r_debug_render, 0, 0, 0};
 		RCache.set_c("debug_mode", debug_mode);
 
-		RCache.set_c("ao_color", ambclr);
+		RCache.set_c("ambient_color", ambclr);
 
 		RCache.set_c("env_color", envclr);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
