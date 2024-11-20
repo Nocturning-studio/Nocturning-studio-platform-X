@@ -86,13 +86,8 @@ xr_token debug_render_token[] = {{"disabled", 0},
 								 {"gbuffer_lightmap_ao", 8},
 								 {"gbuffer_baked_ao", 9},
 								 {"direct_light", 10},
-								 {"direct_light_diffuse", 11},
-								 {"direct_light_specular", 12},
-								 {"indirect_light", 13},
-								 {"indirect_light_diffuse", 14},
-								 {"indirect_light_specular", 15},
-								 {"subsurface_scattering", 16},
-								 {"real_time_ao", 17},
+								 {"indirect_light", 11},
+								 {"real_time_ao", 12},
 								 {0, 0}};
 
 u32 ps_r_rt_format = 1;

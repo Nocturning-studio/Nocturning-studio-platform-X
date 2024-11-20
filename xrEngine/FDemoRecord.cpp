@@ -610,15 +610,15 @@ void CDemoRecord::IR_OnKeyboardPress(int dik)
 	if (dik == DIK_3)
 		Console->Execute("r_debug_render gbuffer_normal");
 	if (dik == DIK_4)
-		Console->Execute("r_debug_render gbuffer_glossiness");
+		Console->Execute("r_debug_render gbuffer_roughness");
 	if (dik == DIK_5)
-		Console->Execute("r_debug_render gbuffer_lightmap_ao");
+		Console->Execute("r_debug_render gbuffer_matallness");
 	if (dik == DIK_6)
-		Console->Execute("r_debug_render gbuffer_baked_ao");
+		Console->Execute("r_debug_render gbuffer_lightmap_ao");
 	if (dik == DIK_7)
-		Console->Execute("r_debug_render accumulator_diffuse");
+		Console->Execute("r_debug_render direct_light");
 	if (dik == DIK_8)
-		Console->Execute("r_debug_render accumulator_specular");
+		Console->Execute("r_debug_render indirect_light");
 	if (dik == DIK_9)
 		Console->Execute("r_debug_render real_time_ao");
 	if (dik == DIK_0)
