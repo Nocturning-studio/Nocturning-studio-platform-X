@@ -326,8 +326,8 @@ void CPhantom::UpdatePosition(const Fvector& tgt_pos)
 	tgt_dir.sub(tgt_pos, Position());
 	tgt_dir.getHP(tgt_h, tgt_p);
 
-	angle_lerp(vHP.x, tgt_h, fASpeed, Device.fTimeDelta);
-	angle_lerp(vHP.y, tgt_p, fASpeed, Device.fTimeDelta);
+	angle_lerpf(vHP.x, tgt_h, fASpeed, Device.fTimeDelta);
+	angle_lerpf(vHP.y, tgt_p, fASpeed, Device.fTimeDelta);
 
 	cur_dir.setHP(vHP.x, vHP.y);
 

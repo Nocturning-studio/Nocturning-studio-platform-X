@@ -814,8 +814,8 @@ IC void Dequantize(CKey& K, const CBlend& BD, const CMotion& M)
 	// rotation
 	if (M.test_flag(flRKeyAbsent))
 	{
-		const CKeyQR* K = &M._keysR[0];
-		QR2Quat(*K, D->Q);
+		const CKeyQR* KQR = &M._keysR[0];
+		QR2Quat(*KQR, D->Q);
 	}
 	else
 	{

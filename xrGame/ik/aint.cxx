@@ -38,7 +38,7 @@
 //
 void AngleInt::SetLow(float l)
 {
-	low = angle_normalize(l);
+	low = angle_normalizef(l);
 }
 
 //
@@ -46,7 +46,7 @@ void AngleInt::SetLow(float l)
 //
 void AngleInt::SetHigh(float h)
 {
-	high = angle_normalize(h);
+	high = angle_normalizef(h);
 }
 
 AngleInt::AngleInt(float l, float h)
@@ -61,7 +61,7 @@ float AngleInt::Mid() const
 	if (High() > Low())
 		mid = ((High() + Low()) / 2.0f);
 	else
-		mid = angle_normalize(M_PI + (High() + Low()) / 2.0f);
+		mid = angle_normalizef(M_PI + (High() + Low()) / 2.0f);
 
 	return mid;
 }
@@ -78,7 +78,7 @@ float AngleInt::Distance(float v) const
 	const float TwoPi = 2 * M_PI;
 
 	float t1, t2;
-	v = angle_normalize(v);
+	v = angle_normalizef(v);
 
 	if (IsEmpty(eps))
 		return TwoPi;
@@ -476,7 +476,7 @@ int AngleIntIterator::Next(float& a)
 	if (count == n)
 		return 0;
 
-	a = angle_normalize(x);
+	a = angle_normalizef(x);
 	x += dx;
 	count++;
 

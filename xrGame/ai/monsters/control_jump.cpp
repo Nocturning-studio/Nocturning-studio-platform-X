@@ -401,7 +401,7 @@ void CControlJump::on_event(ControlCom::EEventType type, ControlCom::IEventData*
 
 			float cur_yaw, target_yaw;
 			m_man->direction().get_heading(cur_yaw, target_yaw);
-			ctrl_data_dir->heading.target_speed = angle_difference(cur_yaw, target_yaw) / m_jump_time;
+			ctrl_data_dir->heading.target_speed = angle_differencef(cur_yaw, target_yaw) / m_jump_time;
 			ctrl_data_dir->linear_dependency = false;
 			//---------------------------------------------------------------------------------
 
@@ -452,14 +452,14 @@ void CControlJump::hit_test()
 		m_object->Direction().getHP(my_h, my_p);
 		d.getHP(h, p);
 
-		float from = angle_normalize(my_h - PI_DIV_6);
-		float to = angle_normalize(my_h + PI_DIV_6);
+		float from = angle_normalizef(my_h - PI_DIV_6);
+		float to = angle_normalizef(my_h + PI_DIV_6);
 
 		if (!is_angle_between(h, from, to))
 			m_object_hitted = false;
 
-		from = angle_normalize(my_p - PI_DIV_6);
-		to = angle_normalize(my_p + PI_DIV_6);
+		from = angle_normalizef(my_p - PI_DIV_6);
+		to = angle_normalizef(my_p + PI_DIV_6);
 
 		if (!is_angle_between(p, from, to))
 			m_object_hitted = false;
@@ -485,12 +485,12 @@ bool CControlJump::can_jump(CObject* target)
 
 	// получить вектор направления и его мир угол
 	float dir_yaw = Fvector().sub(target_position, source_position).getH();
-	dir_yaw = angle_normalize(-dir_yaw);
+	dir_yaw = angle_normalizef(-dir_yaw);
 
 	// проверка на angle
 	float yaw_current, yaw_target;
 	m_object->control().direction().get_heading(yaw_current, yaw_target);
-	if (angle_difference(yaw_current, dir_yaw) > m_max_angle)
+	if (angle_differencef(yaw_current, dir_yaw) > m_max_angle)
 		return false;
 
 	// check if target on the same floor etc
@@ -581,7 +581,7 @@ Fvector CControlJump::predict_position(CObject* obj, const Fvector& pos)
 	//// проверка на angle и на dist
 	// float yaw_current, yaw_target;
 	// m_object->control().direction().get_heading(yaw_current, yaw_target);
-	// if (angle_difference(yaw_current, -dir_yaw) > m_max_angle) return pos;
+	// if (angle_differencef(yaw_current, -dir_yaw) > m_max_angle) return pos;
 
 	// #ifdef DEBUG
 	//	DBG().level_info(this).clear	();

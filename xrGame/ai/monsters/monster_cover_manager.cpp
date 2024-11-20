@@ -198,15 +198,15 @@ void CMonsterCoverManager::less_cover_direction(Fvector& dir)
 
 	collide::rq_result l_rq;
 
-	float angle_from = angle_normalize(angle - ANGLE_DISP);
-	float angle_to = angle_normalize(angle + ANGLE_DISP);
+	float angle_from = angle_normalizef(angle - ANGLE_DISP);
+	float angle_to = angle_normalizef(angle + ANGLE_DISP);
 
 	Fvector trace_from;
 	m_object->Center(trace_from);
 	Fvector direction;
 
 	// trace discretely left
-	for (float ang = angle; angle_difference(ang, angle) < ANGLE_DISP; ang = angle_normalize(ang - ANGLE_DISP_STEP))
+	for (float ang = angle; angle_differencef(ang, angle) < ANGLE_DISP; ang = angle_normalizef(ang - ANGLE_DISP_STEP))
 	{
 
 		direction.setHP(ang, 0.f);
@@ -222,7 +222,7 @@ void CMonsterCoverManager::less_cover_direction(Fvector& dir)
 	}
 
 	// trace discretely right
-	for (float ang = angle; angle_difference(ang, angle) < ANGLE_DISP; ang = angle_normalize(ang + ANGLE_DISP_STEP))
+	for (float ang = angle; angle_differencef(ang, angle) < ANGLE_DISP; ang = angle_normalizef(ang + ANGLE_DISP_STEP))
 	{
 
 		direction.setHP(ang, 0.f);
@@ -237,7 +237,7 @@ void CMonsterCoverManager::less_cover_direction(Fvector& dir)
 		}
 	}
 
-	angle = angle_normalize(angle_from + angle_difference(angle_from, angle_to) / 2);
+	angle = angle_normalizef(angle_from + angle_differencef(angle_from, angle_to) / 2);
 	dir.setHP(angle, 0.f);
 }
 //////////////////////////////////////////////////////////////////////////

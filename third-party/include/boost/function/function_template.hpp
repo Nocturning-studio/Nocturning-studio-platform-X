@@ -316,14 +316,14 @@ namespace boost {
       if (this->empty())
         boost::throw_exception(bad_function_call());
 
-      internal_result_type result = invoker(function_base::functor
+      internal_result_type reslt_t = invoker(function_base::functor
                                             BOOST_FUNCTION_COMMA
                                             BOOST_FUNCTION_ARGS);
 
 #ifndef BOOST_NO_VOID_RETURNS
-      return static_cast<result_type>(result);
+	  return static_cast<result_type>(reslt_t);
 #else
-      return result;
+	  return reslt_t;
 #endif // BOOST_NO_VOID_RETURNS
     }
 
@@ -443,9 +443,9 @@ namespace boost {
                            R BOOST_FUNCTION_COMMA
                            BOOST_FUNCTION_TEMPLATE_ARGS
                          >::type
-          invoker_type;
+          invokr_type;
 
-        invoker = &invoker_type::invoke;
+        invoker = &invokr_type::invoke;
         function_base::manager =
           &detail::function::functor_manager<FunctionPtr, Allocator>::manage;
         function_base::functor =

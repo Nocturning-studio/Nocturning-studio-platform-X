@@ -174,10 +174,10 @@ EFC_Visible CFrustum::testSAABB(Fvector& c, float r, const float* mM, u32& test_
 				test_mask &= ~bit; // fully - no need to test this plane
 			else
 			{
-				EFC_Visible r = AABB_OverlapPlane(planes[i], mM);
-				if (fcvFully == r)
+				EFC_Visible Visible = AABB_OverlapPlane(planes[i], mM);
+				if (fcvFully == Visible)
 					test_mask &= ~bit; // fully - no need to test this plane
-				else if (fcvNone == r)
+				else if (fcvNone == Visible)
 				{
 					test_mask = 0;
 					return fcvNone;
@@ -365,19 +365,19 @@ sPoly* CFrustum::ClipPoly(sPoly& S, sPoly& D) const
 	for (int i = 0; i < p_count; i++)
 	{
 		// cache plane and swap lists
-		const fplane& P = planes[i];
+		const fplane& Plane = planes[i];
 		std::swap(src, dest);
 		dest->clear();
 
 		// classify all points relative to plane #i
 		float cls[FRUSTUM_SAFE];
 		for (u32 j = 0; j < src->size(); j++)
-			cls[j] = P.classify((*src)[j]);
+			cls[j] = Plane.classify((*src)[j]);
 
 		// clip everything to this plane
 		cls[src->size()] = cls[0];
 		src->push_back((*src)[0]);
-		Fvector D;
+		Fvector Distance;
 		float denum, t;
 		for (j = 0; j < src->size() - 1; j++)
 		{
@@ -390,12 +390,12 @@ sPoly* CFrustum::ClipPoly(sPoly& S, sPoly& D) const
 				if (positive(cls[j + 1]))
 				{
 					// segment intersects plane
-					D.sub((*src)[j + 1], (*src)[j]);
-					denum = P.n.dotproduct(D);
+					Distance.sub((*src)[j + 1], (*src)[j]);
+					denum = Plane.n.dotproduct(Distance);
 					if (denum != 0)
 					{
 						t = -cls[j] / denum; // VERIFY(t<=1.f && t>=0);
-						dest->last().mad((*src)[j], D, t);
+						dest->last().mad((*src)[j], Distance, t);
 						dest->inc();
 					}
 				}
@@ -407,12 +407,12 @@ sPoly* CFrustum::ClipPoly(sPoly& S, sPoly& D) const
 				{
 					// J+1  - inside
 					// segment intersects plane
-					D.sub((*src)[j + 1], (*src)[j]);
-					denum = P.n.dotproduct(D);
+					Distance.sub((*src)[j + 1], (*src)[j]);
+					denum = Plane.n.dotproduct(Distance);
 					if (denum != 0)
 					{
 						t = -cls[j] / denum; // VERIFY(t<=1.f && t>=0);
-						dest->last().mad((*src)[j], D, t);
+						dest->last().mad((*src)[j], Distance, t);
 						dest->inc();
 					}
 				}

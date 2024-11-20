@@ -500,12 +500,13 @@ void CEnvironment::OnFrame()
 	eff_Rain->OnFrame();
 
 	// ******************** Environment params (setting) (R1 specific fog)
-	u32 FogFar = CurrentEnv->far_plane;
-	u32 FogNear = FogFar * (1.0f - CurrentEnv->fog_density * 10.0f);
+#pragma todo("Deathman to Deathman: Отрефакторить погоду")
+	u32 FogFar = 0; // CurrentEnv->far_plane;
+	u32 FogNear = 0; // FogFar * (1.0f - CurrentEnv->fog_density * 10.0f);
 
-	CHK_DX(HW.pDevice->SetRenderState(
-		D3DRS_FOGCOLOR, color_rgba_f(CurrentEnv->fog_color.x, CurrentEnv->fog_color.y, CurrentEnv->fog_color.z, 0)));
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_FOGDENSITY, CurrentEnv->fog_density));
+	//CHK_DX(HW.pDevice->SetRenderState(
+	//	D3DRS_FOGCOLOR, color_rgba_f(CurrentEnv->fog_color.x, CurrentEnv->fog_color.y, CurrentEnv->fog_color.z, 0)));
+	//CHK_DX(HW.pDevice->SetRenderState(D3DRS_FOGDENSITY, CurrentEnv->fog_density));
 
 	sound_env_fog_density = CurrentEnv->fog_density;
 }
@@ -656,19 +657,19 @@ void CEnvironment::load_weathers()
 	file_list_type* file_list = FS.file_list_open("$game_weathers$", "");
 	VERIFY(file_list);
 
-	file_list_type::const_iterator i = file_list->begin();
+	file_list_type::const_iterator it = file_list->begin();
 	file_list_type::const_iterator e = file_list->end();
-	for (; i != e; ++i)
+	for (; it != e; ++it)
 	{
-		u32 length = xr_strlen(*i);
+		u32 length = xr_strlen(*it);
 		VERIFY(length >= 4);
-		VERIFY((*i)[length - 4] == '.');
-		VERIFY((*i)[length - 3] == 'l');
-		VERIFY((*i)[length - 2] == 't');
-		VERIFY((*i)[length - 1] == 'x');
+		VERIFY((*it)[length - 4] == '.');
+		VERIFY((*it)[length - 3] == 'l');
+		VERIFY((*it)[length - 2] == 't');
+		VERIFY((*it)[length - 1] == 'x');
 		u32 new_length = length - 4;
 		LPSTR identifier = (LPSTR)_alloca((new_length + 1) * sizeof(char));
-		Memory.mem_copy(identifier, *i, new_length * sizeof(char));
+		Memory.mem_copy(identifier, *it, new_length * sizeof(char));
 		identifier[new_length] = 0;
 		EnvVec& env = WeatherCycles[identifier];
 
@@ -682,11 +683,11 @@ void CEnvironment::load_weathers()
 
 		env.reserve(sections.size());
 
-		sections_type::const_iterator i = sections.begin();
-		sections_type::const_iterator e = sections.end();
-		for (; i != e; ++i)
+		sections_type::const_iterator iterator = sections.begin();
+		sections_type::const_iterator iterations = sections.end();
+		for (; iterator != iterations; ++iterator)
 		{
-			CEnvDescriptor* object = create_descriptor((*i)->Name, config);
+			CEnvDescriptor* object = create_descriptor((*iterator)->Name, config);
 			env.push_back(object);
 		}
 
@@ -716,19 +717,19 @@ void CEnvironment::load_weather_effects()
 	file_list_type* file_list = FS.file_list_open("$game_weather_effects$", "");
 	VERIFY(file_list);
 
-	file_list_type::const_iterator i = file_list->begin();
+	file_list_type::const_iterator it = file_list->begin();
 	file_list_type::const_iterator e = file_list->end();
-	for (; i != e; ++i)
+	for (; it != e; ++it)
 	{
-		u32 length = xr_strlen(*i);
+		u32 length = xr_strlen(*it);
 		VERIFY(length >= 4);
-		VERIFY((*i)[length - 4] == '.');
-		VERIFY((*i)[length - 3] == 'l');
-		VERIFY((*i)[length - 2] == 't');
-		VERIFY((*i)[length - 1] == 'x');
+		VERIFY((*it)[length - 4] == '.');
+		VERIFY((*it)[length - 3] == 'l');
+		VERIFY((*it)[length - 2] == 't');
+		VERIFY((*it)[length - 1] == 'x');
 		u32 new_length = length - 4;
 		LPSTR identifier = (LPSTR)_alloca((new_length + 1) * sizeof(char));
-		Memory.mem_copy(identifier, *i, new_length * sizeof(char));
+		Memory.mem_copy(identifier, *it, new_length * sizeof(char));
 		identifier[new_length] = 0;
 		EnvVec& env = WeatherFXs[identifier];
 
@@ -743,11 +744,11 @@ void CEnvironment::load_weather_effects()
 		env.reserve(sections.size() + 2);
 		env.push_back(create_descriptor("00:00:00", false));
 
-		sections_type::const_iterator i = sections.begin();
-		sections_type::const_iterator e = sections.end();
-		for (; i != e; ++i)
+		sections_type::const_iterator Iterator = sections.begin();
+		sections_type::const_iterator IterationsCount = sections.end();
+		for (; Iterator != IterationsCount; ++Iterator)
 		{
-			CEnvDescriptor* object = create_descriptor((*i)->Name, config);
+			CEnvDescriptor* object = create_descriptor((*Iterator)->Name, config);
 			env.push_back(object);
 		}
 

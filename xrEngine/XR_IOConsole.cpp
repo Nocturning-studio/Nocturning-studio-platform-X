@@ -521,13 +521,13 @@ void CConsole::DrawBackgrounds(bool bGame)
 
 	if (m_select_tip < (int)m_tips.size())
 	{
-		Frect r;
+		Frect rect;
 
-		vecTipsEx::iterator itb = m_tips.begin() + m_start_tip;
-		vecTipsEx::iterator ite = m_tips.end();
-		for (u32 i = 0; itb != ite; ++itb, ++i) // tips
+		vecTipsEx::iterator iteratorb = m_tips.begin() + m_start_tip;
+		vecTipsEx::iterator iteratore = m_tips.end();
+		for (u32 i = 0; iteratorb != iteratore; ++iteratorb, ++i) // tips
 		{
-			TipString const& ts = (*itb);
+			TipString const& ts = (*iteratorb);
 			if ((ts.HL_start < 0) || (ts.HL_finish < 0) || (ts.HL_start > ts.HL_finish))
 			{
 				continue;
@@ -538,18 +538,18 @@ void CConsole::DrawBackgrounds(bool bGame)
 				continue;
 			}
 
-			r.null();
+			rect.null();
 			LPSTR tmp = (PSTR)_alloca((str_size + 1) * sizeof(char));
 
 			strncpy_s(tmp, str_size + 1, ts.text.c_str(), ts.HL_start);
-			r.x1 = pr.x1 + w1 + pFont->SizeOf_(tmp);
-			r.y1 = pr.y1 + i * font_h;
+			rect.x1 = pr.x1 + w1 + pFont->SizeOf_(tmp);
+			rect.y1 = pr.y1 + i * font_h;
 
 			strncpy_s(tmp, str_size + 1, ts.text.c_str(), ts.HL_finish);
-			r.x2 = pr.x1 + w1 + pFont->SizeOf_(tmp);
-			r.y2 = r.y1 + font_h;
+			rect.x2 = pr.x1 + w1 + pFont->SizeOf_(tmp);
+			rect.y2 = rect.y1 + font_h;
 
-			DrawRect(TL_pv, r, tips_word_color);
+			DrawRect(TL_pv, rect, tips_word_color);
 
 			if (i >= VIEW_TIPS_COUNT - 1)
 			{
@@ -649,10 +649,10 @@ void CConsole::ExecuteCommand(LPCSTR cmd_str, bool record_cmd)
 	text_editor::split_cmd(first, last, edt);
 
 	// search
-	vecCMD_IT it = Commands.find(first);
-	if (it != Commands.end())
+	vecCMD_IT iterator = Commands.find(first);
+	if (iterator != Commands.end())
 	{
-		IConsole_Command* cc = it->second;
+		IConsole_Command* cc = iterator->second;
 		if (cc && cc->bEnabled)
 		{
 			if (cc->bLowerCaseArgs)
@@ -795,10 +795,10 @@ IConsole_Command* CConsole::find_next_cmd(LPCSTR in_str, shared_str& out_str)
 	LPSTR t2;
 	STRCONCAT(t2, in_str + offset, " ");
 
-	vecCMD_IT it = Commands.lower_bound(t2);
-	if (it != Commands.end())
+	vecCMD_IT iterator = Commands.lower_bound(t2);
+	if (iterator != Commands.end())
 	{
-		IConsole_Command* cc = it->second;
+		IConsole_Command* cc = iterator->second;
 		LPCSTR name_cmd = cc->Name();
 		u32 name_cmd_size = xr_strlen(name_cmd);
 		PSTR new_str = (PSTR)_alloca((offset + name_cmd_size + 2) * sizeof(char));
@@ -970,10 +970,10 @@ void CConsole::update_tips()
 				reset_selected_tip();
 			}
 
-			vecCMD_IT it = Commands.find(first);
-			if (it != Commands.end())
+			vecCMD_IT iterator = Commands.find(first);
+			if (iterator != Commands.end())
 			{
-				IConsole_Command* cc = it->second;
+				IConsole_Command* cc = iterator->second;
 
 				u32 mode = 0;
 				if ((first_lenght + 2 <= cur_length) && (cur[first_lenght] == ' ') && (cur[first_lenght + 1] == ' '))

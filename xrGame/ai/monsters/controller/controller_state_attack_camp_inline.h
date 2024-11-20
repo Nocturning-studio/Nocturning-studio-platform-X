@@ -19,15 +19,15 @@ void CStateControlCampAbstract::initialize()
 
 	collide::rq_result l_rq;
 
-	m_angle_from = angle_normalize(angle - ANGLE_DISP);
-	m_angle_to = angle_normalize(angle + ANGLE_DISP);
+	m_angle_from = angle_normalizef(angle - ANGLE_DISP);
+	m_angle_to = angle_normalizef(angle + ANGLE_DISP);
 
 	Fvector trace_from;
 	object->Center(trace_from);
 	Fvector direction;
 
 	// trace discretely left
-	for (float ang = angle; angle_difference(ang, angle) < ANGLE_DISP; ang = angle_normalize(ang - ANGLE_DISP_STEP))
+	for (float ang = angle; angle_differencef(ang, angle) < ANGLE_DISP; ang = angle_normalizef(ang - ANGLE_DISP_STEP))
 	{
 
 		direction.setHP(ang, 0.f);
@@ -43,7 +43,7 @@ void CStateControlCampAbstract::initialize()
 	}
 
 	// trace discretely right
-	for (float ang = angle; angle_difference(ang, angle) < ANGLE_DISP; ang = angle_normalize(ang + ANGLE_DISP_STEP))
+	for (float ang = angle; angle_differencef(ang, angle) < ANGLE_DISP; ang = angle_normalizef(ang + ANGLE_DISP_STEP))
 	{
 
 		direction.setHP(ang, 0.f);

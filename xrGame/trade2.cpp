@@ -50,8 +50,8 @@ bool CTrade::CanTrade()
 
 	pThis.base->Direction().getHP(yaw, pitch);
 	pPartner.base->Direction().getHP(yaw2, pitch2);
-	yaw = angle_normalize(yaw);
-	yaw2 = angle_normalize(yaw2);
+	yaw = angle_normalizef(yaw);
+	yaw2 = angle_normalizef(yaw2);
 
 	float Res = rad2deg(_abs(yaw - yaw2) < PI ? _abs(yaw - yaw2) : PI_MUL_2 - _abs(yaw - yaw2));
 	if (Res < 165.f || Res > 195.f)

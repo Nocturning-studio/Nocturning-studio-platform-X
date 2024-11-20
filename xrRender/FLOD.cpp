@@ -37,18 +37,18 @@ void FLOD::Load(LPCSTR N, IReader* data, u32 dwFlags)
 		data->r(facets[f].v, sizeof(facets[f].v));
 		_vertex* v = facets[f].v;
 
-		Fvector N, T;
-		N.set(0, 0, 0);
+		Fvector Norm, T;
+		Norm.set(0, 0, 0);
 		T.mknormal(v[0].v, v[1].v, v[2].v);
-		N.add(T);
+		Norm.add(T);
 		T.mknormal(v[1].v, v[2].v, v[3].v);
-		N.add(T);
+		Norm.add(T);
 		T.mknormal(v[2].v, v[3].v, v[0].v);
-		N.add(T);
+		Norm.add(T);
 		T.mknormal(v[3].v, v[0].v, v[1].v);
-		N.add(T);
-		N.div(4.f);
-		facets[f].N.normalize(N);
+		Norm.add(T);
+		Norm.div(4.f);
+		facets[f].N.normalize(Norm);
 		facets[f].N.invert();
 	}
 
@@ -61,7 +61,7 @@ void FLOD::Load(LPCSTR N, IReader* data, u32 dwFlags)
 	float r = vis.sphere.R;
 	std::sort(&S.x, &S.x + 3);
 	float a = S.y;
-	float Sf = 4.f * (0.5f * (r * r * asin(a / r) + a * _sqrt(r * r - a * a)));
+	float Sf = 4.f * (0.5f * (r * r * asinf(a / r) + a * _sqrt(r * r - a * a)));
 	float Ss = M_PI * r * r;
 	lod_factor = Sf / Ss;
 }

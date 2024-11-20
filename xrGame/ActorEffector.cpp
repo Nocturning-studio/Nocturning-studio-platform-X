@@ -390,8 +390,8 @@ CControllerPsyHitCamEffector::CControllerPsyHitCamEffector(ECamEffectorType type
 {
 	m_time_total = time;
 	m_time_current = 0;
-	m_dangle_target.set(angle_normalize(Random.randFs(DELTA_ANGLE_X)), angle_normalize(Random.randFs(DELTA_ANGLE_Y)),
-						angle_normalize(Random.randFs(DELTA_ANGLE_Z)));
+	m_dangle_target.set(angle_normalizef(Random.randFs(DELTA_ANGLE_X)), angle_normalizef(Random.randFs(DELTA_ANGLE_Y)),
+						angle_normalizef(Random.randFs(DELTA_ANGLE_Z)));
 	m_dangle_current.set(0.f, 0.f, 0.f);
 	m_position_source = src_pos;
 	m_direction.sub(target_pos, src_pos);
@@ -413,19 +413,19 @@ BOOL CControllerPsyHitCamEffector::ProcessCam(SCamEffectorInfo& info)
 
 	//////////////////////////////////////////////////////////////////////////
 
-	if (angle_lerp(m_dangle_current.x, m_dangle_target.x, ANGLE_SPEED, Device.fTimeDelta))
+	if (angle_lerpf(m_dangle_current.x, m_dangle_target.x, ANGLE_SPEED, Device.fTimeDelta))
 	{
-		m_dangle_target.x = angle_normalize(Random.randFs(DELTA_ANGLE_X));
+		m_dangle_target.x = angle_normalizef(Random.randFs(DELTA_ANGLE_X));
 	}
 
-	if (angle_lerp(m_dangle_current.y, m_dangle_target.y, ANGLE_SPEED, Device.fTimeDelta))
+	if (angle_lerpf(m_dangle_current.y, m_dangle_target.y, ANGLE_SPEED, Device.fTimeDelta))
 	{
-		m_dangle_target.y = angle_normalize(Random.randFs(DELTA_ANGLE_Y));
+		m_dangle_target.y = angle_normalizef(Random.randFs(DELTA_ANGLE_Y));
 	}
 
-	if (angle_lerp(m_dangle_current.z, m_dangle_target.z, ANGLE_SPEED, Device.fTimeDelta))
+	if (angle_lerpf(m_dangle_current.z, m_dangle_target.z, ANGLE_SPEED, Device.fTimeDelta))
 	{
-		m_dangle_target.z = angle_normalize(Random.randFs(DELTA_ANGLE_Z));
+		m_dangle_target.z = angle_normalizef(Random.randFs(DELTA_ANGLE_Z));
 	}
 
 	//////////////////////////////////////////////////////////////////////////

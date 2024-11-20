@@ -20,15 +20,15 @@ IC Fvector random_position(const Fvector& center, float R)
 
 IC bool from_right(float ty, float cy)
 {
-	return ((angle_normalize_signed(ty - cy) > 0));
+	return ((angle_normalize_signedf(ty - cy) > 0));
 }
 
 IC bool is_angle_between(float yaw, float yaw_from, float yaw_to)
 {
-	float diff = angle_difference(yaw_from, yaw_to);
+	float diff = angle_differencef(yaw_from, yaw_to);
 	R_ASSERT(diff < PI);
 
-	if ((angle_difference(yaw, yaw_from) < diff) && (angle_difference(yaw, yaw_to) < diff))
+	if ((angle_differencef(yaw, yaw_from) < diff) && (angle_differencef(yaw, yaw_to) < diff))
 		return true;
 	else
 		return false;

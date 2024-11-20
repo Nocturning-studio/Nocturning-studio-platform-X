@@ -224,11 +224,11 @@ void CHOM::Render_DB(CFrustum& base)
 #endif
 		u32 pixels = 0;
 		int limit = int(P->size()) - 1;
-		for (int v = 1; v < limit; v++)
+		for (int Iterator = 1; Iterator < limit; Iterator++)
 		{
 			m_xform.transform(T.raster[0], (*P)[0]);
-			m_xform.transform(T.raster[1], (*P)[v + 0]);
-			m_xform.transform(T.raster[2], (*P)[v + 1]);
+			m_xform.transform(T.raster[1], (*P)[Iterator + 0]);
+			m_xform.transform(T.raster[2], (*P)[Iterator + 1]);
 			pixels += Raster.rasterize(&T);
 		}
 		if (0 == pixels)

@@ -91,7 +91,7 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 		float fTexelOffs = (0.5f / float(RImplementation.o.smapsize));
 
 		float fRange = 0.0f;
-		float fBias = 0.0f;
+		fBias = 0.0f;
 
 		switch (sub_phase)
 		{

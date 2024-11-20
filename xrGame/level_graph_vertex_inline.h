@@ -512,7 +512,7 @@ IC float CLevelGraph::square(float a1, float b1, float fAlpha) const
 
 IC float CLevelGraph::compute_square(float fAngle, float fAngleOfView, float b1, float b0, float b3, float b2) const
 {
-	fAngle = angle_normalize(fAngle - 0 * PI_DIV_2);
+	fAngle = angle_normalizef(fAngle - 0 * PI_DIV_2);
 
 	if (fAngle < PI_DIV_2)
 		;

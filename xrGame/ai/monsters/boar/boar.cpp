@@ -144,13 +144,13 @@ void CAI_Boar::CheckSpecParams(u32 spec_params)
 	//	float yaw, pitch;
 	//	Fvector().sub(EnemyMan.get_enemy()->Position(), Position()).getHP(yaw,pitch);
 	//	yaw *= -1;
-	//	yaw = angle_normalize(yaw);
+	//	yaw = angle_normalizef(yaw);
 
 	//	EMotionAnim anim = eAnimJumpLeft;
 	//	if (from_right(yaw,movement().m_body.current.yaw)) {
 	//		anim = eAnimJumpRight;
-	//		yaw = angle_normalize(yaw + PI / 20);
-	//	} else yaw = angle_normalize(yaw - PI / 20);
+	//		yaw = angle_normalizef(yaw + PI / 20);
+	//	} else yaw = angle_normalizef(yaw - PI / 20);
 
 	//	anim().Seq_Add(anim);
 	//	anim().Seq_Switch();
@@ -159,7 +159,7 @@ void CAI_Boar::CheckSpecParams(u32 spec_params)
 
 	//	// calculate angular speed
 	//	float new_angular_velocity;
-	//	float delta_yaw = angle_difference(yaw,movement().m_body.current.yaw);
+	//	float delta_yaw = angle_differencef(yaw,movement().m_body.current.yaw);
 	//	float time = anim().GetCurAnimTime();
 	//	new_angular_velocity = 2.5f * delta_yaw / time;
 
@@ -176,5 +176,5 @@ void CAI_Boar::CheckSpecParams(u32 spec_params)
 void CAI_Boar::UpdateCL()
 {
 	inherited::UpdateCL();
-	angle_lerp(_cur_delta, _target_delta, _velocity, client_update_fdelta());
+	angle_lerpf(_cur_delta, _target_delta, _velocity, client_update_fdelta());
 }

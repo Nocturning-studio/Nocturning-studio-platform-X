@@ -35,7 +35,7 @@ void CActor::cam_SetLadder()
 	g_LadderOrient();
 	float yaw = (-XFORM().k.getH());
 	float& cam_yaw = C->yaw;
-	float delta_yaw = angle_difference_signed(yaw, cam_yaw);
+	float delta_yaw = angle_difference_signedf(yaw, cam_yaw);
 
 	if (-f_Ladder_cam_limit < delta_yaw && f_Ladder_cam_limit > delta_yaw)
 	{
@@ -56,7 +56,7 @@ void CActor::camUpdateLadder(float dt)
 	float yaw = (-XFORM().k.getH());
 
 	float& cam_yaw = cameras[eacFirstEye]->yaw;
-	float delta = angle_difference_signed(yaw, cam_yaw);
+	float delta = angle_difference_signedf(yaw, cam_yaw);
 
 	if (-0.05f < delta && 0.05f > delta)
 	{
@@ -77,7 +77,7 @@ void CActor::camUpdateLadder(float dt)
 	{
 		float& cam_pitch = cameras[eacFirstEye]->pitch;
 		const float ldown_pitch = cameras[eacFirstEye]->lim_pitch.y;
-		float delta = angle_difference_signed(ldown_pitch, cam_pitch);
+		float delta = angle_difference_signedf(ldown_pitch, cam_pitch);
 		if (delta > 0.f)
 			cam_pitch += delta * _min(dt * 10.f, 1.f);
 	}

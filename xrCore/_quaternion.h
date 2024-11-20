@@ -148,21 +148,21 @@ template <class T> struct /*XRCORE_API*/ _quaternion
 	typedef const Self& SelfCRef;
 
   private:
-	IC T _asin_(T x)
+	IC T _asin_(T Tx)
 	{
 		const T c1 = 0.892399f;
 		const T c3 = 1.693204f;
 		const T c5 = -3.853735f;
 		const T c7 = 2.838933f;
 
-		const T x2 = x * x;
-		const T d = x * (c1 + x2 * (c3 + x2 * (c5 + x2 * c7)));
+		const T x2 = Tx * Tx;
+		const T d = Tx * (c1 + x2 * (c3 + x2 * (c5 + x2 * c7)));
 
 		return d;
 	}
-	IC T _acos_(T x)
+	IC T _acos_(T Tx)
 	{
-		return PI_DIV_2 - _asin_(x);
+		return PI_DIV_2 - _asin_(Tx);
 	}
 
   public:

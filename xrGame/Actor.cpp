@@ -619,7 +619,7 @@ void CActor::HitMark(float P, Fvector dir, CObject* who, s16 element, Fvector po
 				cam_dir.normalize_safe();
 				dir.normalize_safe();
 
-				float ang_diff = angle_difference(cam_dir.getH(), dir.getH());
+				float ang_diff = angle_differencef(cam_dir.getH(), dir.getH());
 				Fvector cp;
 				cp.crossproduct(cam_dir, dir);
 				bool bUp = (cp.y > 0.0f);
@@ -692,7 +692,7 @@ void CActor::HitSignal(float perc, Fvector& vLocalDir, CObject* who, s16 element
 		MotionID motion_ID =
 			m_anims->m_normal
 				.m_damage[iFloor(tpKinematics->LL_GetBoneInstance(element).get_param(1) +
-								 (angle_difference(r_model_yaw + r_model_yaw_delta, yaw) <= PI_DIV_2 ? 0 : 1))];
+								 (angle_differencef(r_model_yaw + r_model_yaw_delta, yaw) <= PI_DIV_2 ? 0 : 1))];
 		float power_factor = perc / 100.f;
 		clamp(power_factor, 0.f, 1.f);
 		VERIFY(motion_ID.valid());

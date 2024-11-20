@@ -289,8 +289,8 @@ void imf_Process(u32* dstI, u32 dstW, u32 dstH, u32* srcI, u32 srcW, u32 srcH, E
 	float xscale = 0, yscale = 0; /* zoom scale factors */
 	int i, j, k;				  /* loop variables */
 	int n;						  /* pixel number */
-	double center, left, right;	  /* filter calculation variables */
-	double width, fscale, weight; /* filter calculation variables */
+	float center, left, right;	  /* filter calculation variables */
+	float width, fscale, weight; /* filter calculation variables */
 	Pixel* raster = 0;			  /* a row or column of pixels */
 	CLIST* contrib = 0;			  /* array of contribution lists */
 
@@ -327,12 +327,12 @@ void imf_Process(u32* dstI, u32 dstW, u32 dstH, u32* srcI, u32 srcW, u32 srcH, E
 				contrib[i].n = 0;
 				contrib[i].p = (CONTRIB*)xr_malloc((int)(width * 2 + 1) * sizeof(CONTRIB));
 				ZeroMemory(contrib[i].p, (int)(width * 2 + 1) * sizeof(CONTRIB));
-				center = double(i) / xscale;
-				left = ceil(center - width);
-				right = floor(center + width);
+				center = float(i) / xscale;
+				left = ceilf(center - width);
+				right = floorf(center + width);
 				for (j = int(left); j <= int(right); ++j)
 				{
-					weight = center - double(j);
+					weight = center - float(j);
 					weight = filterf(weight / fscale) / fscale;
 					if (j < 0)
 					{
@@ -366,12 +366,12 @@ void imf_Process(u32* dstI, u32 dstW, u32 dstH, u32* srcI, u32 srcW, u32 srcH, E
 				contrib[i].n = 0;
 				contrib[i].p = (CONTRIB*)xr_malloc((int)(fwidth * 2 + 1) * sizeof(CONTRIB));
 				ZeroMemory(contrib[i].p, (int)(fwidth * 2 + 1) * sizeof(CONTRIB));
-				center = double(i) / xscale;
-				left = ceil(center - fwidth);
-				right = floor(center + fwidth);
+				center = float(i) / xscale;
+				left = ceilf(center - fwidth);
+				right = floorf(center + fwidth);
 				for (j = int(left); j <= int(right); ++j)
 				{
-					weight = center - (double)j;
+					weight = center - (float)j;
 					weight = (*filterf)(weight);
 					if (j < 0)
 					{
@@ -468,12 +468,12 @@ void imf_Process(u32* dstI, u32 dstW, u32 dstH, u32* srcI, u32 srcW, u32 srcH, E
 				contrib[i].n = 0;
 				contrib[i].p = (CONTRIB*)xr_malloc((int)(width * 2 + 1) * sizeof(CONTRIB));
 				ZeroMemory(contrib[i].p, (int)(width * 2 + 1) * sizeof(CONTRIB));
-				center = (double)i / yscale;
-				left = ceil(center - width);
-				right = floor(center + width);
+				center = (float)i / yscale;
+				left = ceilf(center - width);
+				right = floorf(center + width);
 				for (j = int(left); j <= int(right); ++j)
 				{
-					weight = center - (double)j;
+					weight = center - (float)j;
 					weight = filterf(weight / fscale) / fscale;
 					if (j < 0)
 					{
@@ -507,12 +507,12 @@ void imf_Process(u32* dstI, u32 dstW, u32 dstH, u32* srcI, u32 srcW, u32 srcH, E
 				contrib[i].n = 0;
 				contrib[i].p = (CONTRIB*)xr_malloc((int)(fwidth * 2 + 1) * sizeof(CONTRIB));
 				ZeroMemory(contrib[i].p, (int)(fwidth * 2 + 1) * sizeof(CONTRIB));
-				center = (double)i / yscale;
-				left = ceil(center - fwidth);
-				right = floor(center + fwidth);
+				center = (float)i / yscale;
+				left = ceilf(center - fwidth);
+				right = floorf(center + fwidth);
 				for (j = int(left); j <= int(right); ++j)
 				{
-					weight = center - (double)j;
+					weight = center - (float)j;
 					weight = (*filterf)(weight);
 					if (j < 0)
 					{

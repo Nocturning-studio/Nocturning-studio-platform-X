@@ -480,7 +480,7 @@ bool CVisualMemoryManager::visible(u32 _level_vertex_id, float yaw, float eye_fo
 	direction.normalize_safe();
 	float y, p;
 	direction.getHP(y, p);
-	if (angle_difference(yaw, y) <= eye_fov * PI / 180.f / 2.f)
+	if (angle_differencef(yaw, y) <= eye_fov * PI / 180.f / 2.f)
 		return (ai().level_graph().check_vertex_in_direction(m_object->ai_location().level_vertex_id(),
 															 m_object->Position(), _level_vertex_id));
 	else

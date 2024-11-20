@@ -560,14 +560,14 @@ void CControlAnimationBase::check_hit(MotionID motion, float time_perc)
 	m_object->Direction().getHP(my_h, my_p);
 	d.getHP(h, p);
 
-	float from = angle_normalize(my_h + params.foh.from_yaw);
-	float to = angle_normalize(my_h + params.foh.to_yaw);
+	float from = angle_normalizef(my_h + params.foh.from_yaw);
+	float to = angle_normalizef(my_h + params.foh.to_yaw);
 
 	if (!is_angle_between(h, from, to))
 		should_hit = false;
 
-	from = angle_normalize(my_p + params.foh.from_pitch);
-	to = angle_normalize(my_p + params.foh.to_pitch);
+	from = angle_normalizef(my_p + params.foh.from_pitch);
+	to = angle_normalizef(my_p + params.foh.to_pitch);
 
 	if (!is_angle_between(p, from, to))
 		should_hit = false;

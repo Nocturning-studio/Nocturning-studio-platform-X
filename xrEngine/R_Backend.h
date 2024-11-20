@@ -159,15 +159,15 @@ class ENGINE_API CBackend
 	IC void set_ZB(IDirect3DSurface9* ZB);
 
 	IC void set_Constants(R_constant_table* C);
-	IC void set_Constants(ref_ctable& C)
+	IC void set_Constants(ref_ctable& Ctable)
 	{
-		set_Constants(&*C);
+		set_Constants(&*Ctable);
 	}
 
 	void set_Textures(STextureList* T);
-	IC void set_Textures(ref_texture_list& T)
+	IC void set_Textures(ref_texture_list& Tlist)
 	{
-		set_Textures(&*T);
+		set_Textures(&*Tlist);
 	}
 
 #ifdef _EDITOR
@@ -248,35 +248,35 @@ class ENGINE_API CBackend
 	}
 
 	// constants - direct (fast)
-	ICF void set_c(R_constant* C, const Fmatrix& A)
+	ICF void set_c(R_constant* Clist, const Fmatrix& A)
 	{
-		if (C)
-			constants.set(C, A);
+		if (Clist)
+			constants.set(Clist, A);
 	}
-	ICF void set_c(R_constant* C, const Fvector4& A)
+	ICF void set_c(R_constant* Clist, const Fvector4& A)
 	{
-		if (C)
-			constants.set(C, A);
+		if (Clist)
+			constants.set(Clist, A);
 	}
-	ICF void set_c(R_constant* C, float x, float y, float z, float w)
+	ICF void set_c(R_constant* Clist, float x, float y, float z, float w)
 	{
-		if (C)
-			constants.set(C, x, y, z, w);
+		if (Clist)
+			constants.set(Clist, x, y, z, w);
 	}
-	ICF void set_ca(R_constant* C, u32 e, const Fmatrix& A)
+	ICF void set_ca(R_constant* Clist, u32 e, const Fmatrix& A)
 	{
-		if (C)
-			constants.seta(C, e, A);
+		if (Clist)
+			constants.seta(Clist, e, A);
 	}
-	ICF void set_ca(R_constant* C, u32 e, const Fvector4& A)
+	ICF void set_ca(R_constant* Clist, u32 e, const Fvector4& A)
 	{
-		if (C)
-			constants.seta(C, e, A);
+		if (Clist)
+			constants.seta(Clist, e, A);
 	}
-	ICF void set_ca(R_constant* C, u32 e, float x, float y, float z, float w)
+	ICF void set_ca(R_constant* Clist, u32 e, float x, float y, float z, float w)
 	{
-		if (C)
-			constants.seta(C, e, x, y, z, w);
+		if (Clist)
+			constants.seta(Clist, e, x, y, z, w);
 	}
 
 	// constants - LPCSTR (slow)

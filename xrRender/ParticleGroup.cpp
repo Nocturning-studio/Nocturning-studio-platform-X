@@ -343,21 +343,21 @@ void CParticleGroup::SItem::OnFrame(u32 u_dt, const CPGDef::SEffect& def, Fbox& 
 	{
 		for (it = _children_related.begin(); it != _children_related.end(); it++)
 		{
-			CParticleEffect* E = static_cast<CParticleEffect*>(*it);
-			if (E)
+			CParticleEffect* Eff = static_cast<CParticleEffect*>(*it);
+			if (Eff)
 			{
-				E->OnFrame(u_dt);
-				if (E->IsPlaying())
+				Eff->OnFrame(u_dt);
+				if (Eff->IsPlaying())
 				{
 					bPlaying = true;
-					if (E->vis.box.is_valid())
-						box.merge(E->vis.box);
+					if (Eff->vis.box.is_valid())
+						box.merge(Eff->vis.box);
 				}
 				else
 				{
 					if (def.m_Flags.is(CPGDef::SEffect::flOnPlayChildRewind))
 					{
-						E->Play();
+						Eff->Play();
 					}
 				}
 			}
@@ -368,15 +368,15 @@ void CParticleGroup::SItem::OnFrame(u32 u_dt, const CPGDef::SEffect& def, Fbox& 
 		u32 rem_cnt = 0;
 		for (it = _children_free.begin(); it != _children_free.end(); it++)
 		{
-			CParticleEffect* E = static_cast<CParticleEffect*>(*it);
-			if (E)
+			CParticleEffect* Effit = static_cast<CParticleEffect*>(*it);
+			if (Effit)
 			{
-				E->OnFrame(u_dt);
-				if (E->IsPlaying())
+				Effit->OnFrame(u_dt);
+				if (Effit->IsPlaying())
 				{
 					bPlaying = true;
-					if (E->vis.box.is_valid())
-						box.merge(E->vis.box);
+					if (Effit->vis.box.is_valid())
+						box.merge(Effit->vis.box);
 				}
 				else
 				{

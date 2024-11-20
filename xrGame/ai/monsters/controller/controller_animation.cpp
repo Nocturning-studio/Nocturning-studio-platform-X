@@ -197,14 +197,14 @@ void CControllerAnimation::select_velocity()
 void CControllerAnimation::set_path_direction()
 {
 	float cur_yaw = Fvector().sub(m_controller->custom_dir().get_head_look_point(), m_object->Position()).getH();
-	cur_yaw = angle_normalize(-cur_yaw);
+	cur_yaw = angle_normalizef(-cur_yaw);
 
 	float target_yaw = m_man->path_builder().detail().direction().getH();
-	target_yaw = angle_normalize(-target_yaw);
+	target_yaw = angle_normalizef(-target_yaw);
 
 	SPathRotations path_rot = get_path_rotation(cur_yaw);
 
-	m_object->dir().set_heading(angle_normalize(target_yaw + path_rot.angle));
+	m_object->dir().set_heading(angle_normalizef(target_yaw + path_rot.angle));
 	m_object->dir().set_heading_speed(PI);
 }
 
@@ -279,22 +279,22 @@ void CControllerAnimation::select_legs_animation()
 CControllerAnimation::SPathRotations CControllerAnimation::get_path_rotation(float cur_yaw)
 {
 	float target_yaw = m_man->path_builder().detail().direction().getH();
-	target_yaw = angle_normalize(-target_yaw);
+	target_yaw = angle_normalizef(-target_yaw);
 
-	float diff = angle_difference(cur_yaw, target_yaw);
+	float diff = angle_differencef(cur_yaw, target_yaw);
 	if (from_right(target_yaw, cur_yaw))
 		diff = -diff;
 
-	diff = angle_normalize(diff);
+	diff = angle_normalizef(diff);
 
 	PATH_ROTATIONS_VEC_IT it_best = m_path_rotations[m_current_legs_action].begin();
 	float best_diff = flt_max;
 	for (PATH_ROTATIONS_VEC_IT it = m_path_rotations[m_current_legs_action].begin();
 		 it != m_path_rotations[m_current_legs_action].end(); it++)
 	{
-		float angle_diff = angle_normalize(it->angle);
+		float angle_diff = angle_normalizef(it->angle);
 
-		float cur_diff = angle_difference(angle_diff, diff);
+		float cur_diff = angle_differencef(angle_diff, diff);
 		if (cur_diff < best_diff)
 		{
 			best_diff = cur_diff;
@@ -348,10 +348,10 @@ void CControllerAnimation::set_path_params()
 		{
 
 			float target_yaw = dir.getH();
-			target_yaw = angle_normalize(-target_yaw);
+			target_yaw = angle_normalizef(-target_yaw);
 			float cur_yaw = m_man->direction().get_heading_current();
 
-			if (angle_difference(target_yaw, cur_yaw) > PI_DIV_2)
+			if (angle_differencef(target_yaw, cur_yaw) > PI_DIV_2)
 				looking_fwd = false;
 		}
 

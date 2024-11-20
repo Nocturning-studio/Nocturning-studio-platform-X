@@ -280,17 +280,8 @@ void CSpaceRestriction::remove_border()
 
 u32 CSpaceRestriction::accessible_nearest(const Fvector& position, Fvector& result)
 {
-#pragma todo(                                                                                                          \
-	"Deathman to Deathman: перенеси нормальный фикс из комита Вадима от 28.08.2022, иначе после твоей смерти будет крайне неловко если кто-то столкнется с проблемой этого недофикса")
 	if (m_out_space_restriction)
-		return (m_out_space_restriction->accessible_nearest(m_out_space_restriction, position, result, true)); // this
-	// return						(m_out_space_restriction->accessible_nearest(this, position, result, true));
-	// return						(m_out_space_restriction->accessible_nearest(m_in_space_restriction, position,
-	// result, true)); //this
-
-	// Msg("message for Deathman - succesful acces to 'CSpaceRestriction::accessible_nearest' and
-	// m_out_space_restriction == true"); return
-	// (m_out_space_restriction->accessible_nearest(m_out_space_restriction, position, result, true)); //this
+		return (m_out_space_restriction->accessible_nearest(m_out_space_restriction, position, result, true));
 
 	VERIFY(m_in_space_restriction);
 	return (m_in_space_restriction->accessible_nearest(m_in_space_restriction, position, result, false));

@@ -197,7 +197,7 @@ void CSightManager::SetLessCoverLook(const CLevelGraph::CVertex* tpNode, float f
 			fBestAngle = fSingleIncrement;
 	}
 
-	object().movement().m_head.target.yaw = angle_normalize_signed(fBestAngle);
+	object().movement().m_head.target.yaw = angle_normalize_signedf(fBestAngle);
 	object().movement().m_head.target.pitch = 0;
 	VERIFY(_valid(object().movement().m_head.target.yaw));
 }
@@ -208,24 +208,24 @@ bool CSightManager::bfIf_I_SeePosition(Fvector tPosition) const
 	Fvector tVector;
 	tVector.sub(tPosition, m_object->Position());
 	tVector.getHP(yaw, pitch);
-	yaw = angle_normalize_signed(-yaw);
-	pitch = angle_normalize_signed(-pitch);
-	return (angle_difference(yaw, object().movement().m_head.current.yaw) <=
-			PI_DIV_6); // && angle_difference(pitch,object().movement().m_head.current.pitch,PI_DIV_6));
+	yaw = angle_normalize_signedf(-yaw);
+	pitch = angle_normalize_signedf(-pitch);
+	return (angle_differencef(yaw, object().movement().m_head.current.yaw) <=
+			PI_DIV_6); // && angle_differencef(pitch,object().movement().m_head.current.pitch,PI_DIV_6));
 }
 
 void CSightManager::vfValidateAngleDependency(float x1, float& x2, float x3)
 {
-	float _x2 = angle_normalize_signed(x2 - x1);
-	float _x3 = angle_normalize_signed(x3 - x1);
+	float _x2 = angle_normalize_signedf(x2 - x1);
+	float _x3 = angle_normalize_signedf(x3 - x1);
 	if ((_x2 * _x3 <= 0.f) && (_abs(_x2) + _abs(_x3) > PI - EPS_L))
 		x2 = x3;
 }
 
 bool CSightManager::need_correction(float x1, float x2, float x3)
 {
-	float _x2 = angle_normalize_signed(x2 - x1);
-	float _x3 = angle_normalize_signed(x3 - x1);
+	float _x2 = angle_normalize_signedf(x2 - x1);
+	float _x3 = angle_normalize_signedf(x3 - x1);
 	if ((_x2 * _x3 <= 0) && (_abs(_x2) + _abs(_x3) > PI - EPS_L))
 		return (true);
 	return (false);
@@ -241,16 +241,16 @@ void CSightManager::Exec_Look(float dt)
 	CBoneRotation& head = object().movement().m_head;
 
 	// normalizing torso angles
-	body.current.yaw = angle_normalize_signed(body.current.yaw);
-	body.current.pitch = angle_normalize_signed(body.current.pitch);
-	body.target.yaw = angle_normalize_signed(body.target.yaw);
-	body.target.pitch = angle_normalize_signed(body.target.pitch);
+	body.current.yaw = angle_normalize_signedf(body.current.yaw);
+	body.current.pitch = angle_normalize_signedf(body.current.pitch);
+	body.target.yaw = angle_normalize_signedf(body.target.yaw);
+	body.target.pitch = angle_normalize_signedf(body.target.pitch);
 
 	// normalizing head angles
-	head.current.yaw = angle_normalize_signed(head.current.yaw);
-	head.current.pitch = angle_normalize_signed(head.current.pitch);
-	head.target.yaw = angle_normalize_signed(head.target.yaw);
-	head.target.pitch = angle_normalize_signed(head.target.pitch);
+	head.current.yaw = angle_normalize_signedf(head.current.yaw);
+	head.current.pitch = angle_normalize_signedf(head.current.pitch);
+	head.target.yaw = angle_normalize_signedf(head.target.yaw);
+	head.target.pitch = angle_normalize_signedf(head.target.pitch);
 
 	float body_speed = body.speed;
 	if (current_action().change_body_speed())
@@ -277,12 +277,12 @@ void CSightManager::Exec_Look(float dt)
 
 #ifdef SIGHT_DEBUG
 	// normalizing torso angles
-	body.current.yaw = angle_normalize_signed(body.current.yaw);
-	body.current.pitch = angle_normalize_signed(body.current.pitch);
+	body.current.yaw = angle_normalize_signedf(body.current.yaw);
+	body.current.pitch = angle_normalize_signedf(body.current.pitch);
 
 	// normalizing head angles
-	head.current.yaw = angle_normalize_signed(head.current.yaw);
-	head.current.pitch = angle_normalize_signed(head.current.pitch);
+	head.current.yaw = angle_normalize_signedf(head.current.yaw);
+	head.current.pitch = angle_normalize_signedf(head.current.pitch);
 
 	Msg("%6d AFTER  BODY [%f] -> [%f]", Device.dwTimeGlobal, object().movement().m_body.current.yaw,
 		object().movement().m_body.target.yaw);
@@ -341,7 +341,7 @@ void CSightManager::update()
 		{
 			if (!m_turning_in_place)
 			{
-				if (angle_difference(object().movement().m_body.current.yaw, object().movement().m_head.current.yaw) >
+				if (angle_differencef(object().movement().m_body.current.yaw, object().movement().m_head.current.yaw) >
 					(left_angle(-object().movement().m_head.current.yaw, -object().movement().m_body.current.yaw)
 						 ? m_max_left_angle
 						 : m_max_right_angle))
@@ -357,7 +357,7 @@ void CSightManager::update()
 			}
 			else
 			{
-				if (angle_difference(object().movement().m_body.current.yaw, object().movement().m_head.target.yaw) >
+				if (angle_differencef(object().movement().m_body.current.yaw, object().movement().m_head.target.yaw) >
 					EPS_L)
 				{
 					//					object().movement().m_body.target.yaw	=

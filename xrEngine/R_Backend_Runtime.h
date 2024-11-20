@@ -43,22 +43,22 @@ IC void R_xforms::set_c_wvp(R_constant* C)
 	RCache.set_c(C, m_wvp);
 };
 
-IC void CBackend::set_xform(u32 ID, const Fmatrix& M)
+IC void CBackend::set_xform(u32 ID, const Fmatrix& Mtrx)
 {
 	stat.xforms++;
-	CHK_DX(HW.pDevice->SetTransform((D3DTRANSFORMSTATETYPE)ID, (D3DMATRIX*)&M));
+	CHK_DX(HW.pDevice->SetTransform((D3DTRANSFORMSTATETYPE)ID, (D3DMATRIX*)&Mtrx));
 }
-IC void CBackend::set_xform_world(const Fmatrix& M)
+IC void CBackend::set_xform_world(const Fmatrix& Mtrx)
 {
-	xforms.set_W(M);
+	xforms.set_W(Mtrx);
 }
-IC void CBackend::set_xform_view(const Fmatrix& M)
+IC void CBackend::set_xform_view(const Fmatrix& Mtrx)
 {
-	xforms.set_V(M);
+	xforms.set_V(Mtrx);
 }
-IC void CBackend::set_xform_project(const Fmatrix& M)
+IC void CBackend::set_xform_project(const Fmatrix& Mtrx)
 {
-	xforms.set_P(M);
+	xforms.set_P(Mtrx);
 }
 IC const Fmatrix& CBackend::get_xform_world()
 {
@@ -132,26 +132,26 @@ IC void CBackend::set_Matrices(SMatrixList* _M)
 }
 #endif
 
-IC void CBackend::set_Constants(R_constant_table* C)
+IC void CBackend::set_Constants(R_constant_table* Clist)
 {
 	// caching
-	if (ctable == C)
+	if (ctable == Clist)
 		return;
-	ctable = C;
+	ctable = Clist;
 	xforms.unmap();
-	if (0 == C)
+	if (0 == Clist)
 		return;
 
 	PGO(Msg("PGO:c-table"));
 
 	// process constant-loaders
-	R_constant_table::c_table::iterator it = C->table.begin();
-	R_constant_table::c_table::iterator end = C->table.end();
+	R_constant_table::c_table::iterator it = Clist->table.begin();
+	R_constant_table::c_table::iterator end = Clist->table.end();
 	for (; it != end; it++)
 	{
-		R_constant* C = &**it;
-		if (C->handler)
-			C->handler->setup(C);
+		R_constant* Const = &**it;
+		if (Const->handler)
+			Const->handler->setup(Const);
 	}
 }
 
@@ -236,23 +236,23 @@ ICF void CBackend::set_Indices(IDirect3DIndexBuffer9* _ib)
 	}
 }
 
-ICF void CBackend::Render(D3DPRIMITIVETYPE T, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC)
+ICF void CBackend::Render(D3DPRIMITIVETYPE Type, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC)
 {
 	stat.calls++;
 	stat.verts += countV;
 	stat.polys += PC;
 	constants.flush();
-	CHK_DX(HW.pDevice->DrawIndexedPrimitive(T, baseV, startV, countV, startI, PC));
+	CHK_DX(HW.pDevice->DrawIndexedPrimitive(Type, baseV, startV, countV, startI, PC));
 	PGO(Msg("PGO:DIP:%dv/%df", countV, PC));
 }
 
-ICF void CBackend::Render(D3DPRIMITIVETYPE T, u32 startV, u32 PC)
+ICF void CBackend::Render(D3DPRIMITIVETYPE Type, u32 startV, u32 PC)
 {
 	stat.calls++;
 	stat.verts += 3 * PC;
 	stat.polys += PC;
 	constants.flush();
-	CHK_DX(HW.pDevice->DrawPrimitive(T, startV, PC));
+	CHK_DX(HW.pDevice->DrawPrimitive(Type, startV, PC));
 	PGO(Msg("PGO:DIP:%dv/%df", 3 * PC, PC));
 }
 

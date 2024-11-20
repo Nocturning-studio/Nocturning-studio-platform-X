@@ -63,7 +63,7 @@ void CControlledActor::update_turn()
 	D.getHP(cam_current_yaw, cam_current_pitch);
 
 	// YAW
-	float speed_factor = angle_difference(cam_current_yaw, cam_target_yaw) / MAX_DIST;
+	float speed_factor = angle_differencef(cam_current_yaw, cam_target_yaw) / MAX_DIST;
 	clamp(speed_factor, 0.f, 1.f);
 	if (speed_factor > 0.5f)
 		speed_factor = 1.f - speed_factor;
@@ -84,7 +84,7 @@ void CControlledActor::update_turn()
 	}
 
 	// PITCH
-	speed_factor = angle_difference(cam_current_pitch, cam_target_pitch) / MAX_DIST;
+	speed_factor = angle_differencef(cam_current_pitch, cam_target_pitch) / MAX_DIST;
 	clamp(speed_factor, 0.f, 1.f);
 	if (speed_factor > 0.5f)
 		speed_factor = 1.f - speed_factor;

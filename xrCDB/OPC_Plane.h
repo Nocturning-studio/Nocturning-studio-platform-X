@@ -57,16 +57,16 @@ class ICEMATHS_API Plane
 		d = 0.0f;
 		return *this;
 	}
-	inline_ Plane& Set(float nx, float ny, float nz, float d)
+	inline_ Plane& Set(float nx, float ny, float nz, float distance)
 	{
 		n.Set(nx, ny, nz);
-		this->d = d;
+		this->d = distance;
 		return *this;
 	}
-	inline_ Plane& Set(const Point& p, const Point& n)
+	inline_ Plane& Set(const Point& p, const Point& normal)
 	{
-		this->n = n;
-		d = -p | n;
+		this->n = normal;
+		d = -p | normal;
 		return *this;
 	}
 	Plane& Set(const Point& p0, const Point& p1, const Point& p2);

@@ -159,7 +159,7 @@ void CBaseMonster::HitEntity(const CEntity* pEntity, float fDamage, float impuls
 					cam_dir.normalize_safe();
 					dir.normalize_safe();
 
-					float ang_diff = angle_difference(cam_dir.getH(), dir.getH());
+					float ang_diff = angle_differencef(cam_dir.getH(), dir.getH());
 					Fvector cp;
 					cp.crossproduct(cam_dir, dir);
 					bool bUp = (cp.y > 0.0f);
@@ -263,7 +263,7 @@ void CBaseMonster::HitSignal(float amount, Fvector& vLocalDir, CObject* who, s16
 	float yaw, pitch;
 	vLocalDir.getHP(yaw, pitch);
 
-	yaw = angle_normalize(yaw);
+	yaw = angle_normalizef(yaw);
 
 	EHitSide hit_side = eSideFront;
 	if ((yaw >= PI_DIV_4) && (yaw <= 3 * PI_DIV_4))

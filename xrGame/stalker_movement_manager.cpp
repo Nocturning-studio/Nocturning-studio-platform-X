@@ -61,7 +61,7 @@ IC float CStalkerMovementManager::path_direction_angle()
 			  path()[detail().curr_travel_point_index()].position);
 		float y, p;
 		t.getHP(y, p);
-		return (angle_difference(-y, m_body.current.yaw));
+		return (angle_differencef(-y, m_body.current.yaw));
 	}
 	return (0.f);
 }

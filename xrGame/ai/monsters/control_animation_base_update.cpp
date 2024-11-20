@@ -154,7 +154,7 @@ void CControlAnimationBase::SetTurnAnimation()
 {
 	float yaw_current, yaw_target;
 	m_man->direction().get_heading(yaw_current, yaw_target);
-	float delta_yaw = angle_difference(yaw_target, yaw_current);
+	float delta_yaw = angle_differencef(yaw_target, yaw_current);
 
 	bool turn_left = true;
 	if (from_right(yaw_target, yaw_current))

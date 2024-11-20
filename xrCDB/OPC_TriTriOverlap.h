@@ -285,26 +285,26 @@ inline_ BOOL AABBTreeCollider::TriTriOverlap(const Point& V0, const Point& V1, c
 	const float up2 = ((const float*)U2)[index];
 
 	// Compute interval for triangle 1
-	float a, b, c, x0, x1;
-	NEWCOMPUTE_INTERVALS(vp0, vp1, vp2, dv0, dv1, dv2, dv0dv1, dv0dv2, a, b, c, x0, x1);
+	float a_value, b_value, c_value, x0_value, x1_value;
+	NEWCOMPUTE_INTERVALS(vp0, vp1, vp2, dv0, dv1, dv2, dv0dv1, dv0dv2, a_value, b_value, c_value, x0_value, x1_value);
 
 	// Compute interval for triangle 2
-	float d, e, f, y0, y1;
-	NEWCOMPUTE_INTERVALS(up0, up1, up2, du0, du1, du2, du0du1, du0du2, d, e, f, y0, y1);
+	float d_value, e_value, f_value, y0_value, y1_value;
+	NEWCOMPUTE_INTERVALS(up0, up1, up2, du0, du1, du2, du0du1, du0du2, d_value, e_value, f_value, y0_value, y1_value);
 
-	const float xx = x0 * x1;
-	const float yy = y0 * y1;
+	const float xx = x0_value * x1_value;
+	const float yy = y0_value * y1_value;
 	const float xxyy = xx * yy;
 
 	float isect1[2], isect2[2];
 
-	float tmp = a * xxyy;
-	isect1[0] = tmp + b * x1 * yy;
-	isect1[1] = tmp + c * x0 * yy;
+	float tmp = a_value * xxyy;
+	isect1[0] = tmp + b_value * x1_value * yy;
+	isect1[1] = tmp + c_value * x0_value * yy;
 
-	tmp = d * xxyy;
-	isect2[0] = tmp + e * xx * y1;
-	isect2[1] = tmp + f * xx * y0;
+	tmp = d_value * xxyy;
+	isect2[0] = tmp + e_value * xx * y1_value;
+	isect2[1] = tmp + f_value * xx * y0_value;
 
 	SORT(isect1[0], isect1[1]);
 	SORT(isect2[0], isect2[1]);

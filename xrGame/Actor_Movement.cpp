@@ -424,7 +424,7 @@ void CActor::g_Orientate(u32 mstate_rl, float dt)
 	}
 
 	// lerp angle for "effect" and capture torso data from camera
-	angle_lerp(r_model_yaw_delta, calc_yaw, PI_MUL_4, dt);
+	angle_lerpf(r_model_yaw_delta, calc_yaw, PI_MUL_4, dt);
 
 	// build matrix
 	Fmatrix mXFORM;
@@ -444,8 +444,8 @@ void CActor::g_Orientate(u32 mstate_rl, float dt)
 	}
 	if (!fsimilar(tgt_roll, r_torso_tgt_roll, EPS))
 	{
-		angle_lerp(r_torso_tgt_roll, tgt_roll, PI_MUL_2, dt);
-		r_torso_tgt_roll = angle_normalize_signed(r_torso_tgt_roll);
+		angle_lerpf(r_torso_tgt_roll, tgt_roll, PI_MUL_2, dt);
+		r_torso_tgt_roll = angle_normalize_signedf(r_torso_tgt_roll);
 	}
 }
 bool CActor::g_LadderOrient()
@@ -475,14 +475,14 @@ bool CActor::g_LadderOrient()
 	// Fvector angles1,angles2,angles3;
 	// XFORM().getHPB(angles1.x,angles1.y,angles1.z);
 	// M.getHPB(angles2.x,angles2.y,angles2.z);
-	////angle_lerp(angles3.x,angles1.x,angles2.x,dt);
-	////angle_lerp(angles3.y,angles1.y,angles2.y,dt);
-	////angle_lerp(angles3.z,angles1.z,angles2.z,dt);
+	////angle_lerpf(angles3.x,angles1.x,angles2.x,dt);
+	////angle_lerpf(angles3.y,angles1.y,angles2.y,dt);
+	////angle_lerpf(angles3.z,angles1.z,angles2.z,dt);
 
 	// angles3.lerp(angles1,angles2,dt);
-	////angle_lerp(angles3.y,angles1.y,angles2.y,dt);
-	////angle_lerp(angles3.z,angles1.z,angles2.z,dt);
-	// angle_lerp(angles3.x,angles1.x,angles2.x,dt);
+	////angle_lerpf(angles3.y,angles1.y,angles2.y,dt);
+	////angle_lerpf(angles3.z,angles1.z,angles2.z,dt);
+	// angle_lerpf(angles3.x,angles1.x,angles2.x,dt);
 	// XFORM().setHPB(angles3.x,angles3.y,angles3.z);
 	Fvector position;
 	position.set(Position());
@@ -527,13 +527,13 @@ void CActor::g_cl_Orientate(u32 mstate_rl, float dt)
 	// если есть движение - выровнять модель по камере
 	if (mstate_rl & mcAnyMove)
 	{
-		r_model_yaw = angle_normalize(r_torso.yaw);
+		r_model_yaw = angle_normalizef(r_torso.yaw);
 		mstate_real &= ~mcTurn;
 	}
 	else
 	{
 		// if camera rotated more than 45 degrees - align model with it
-		float ty = angle_normalize(r_torso.yaw);
+		float ty = angle_normalizef(r_torso.yaw);
 		if (_abs(r_model_yaw - ty) > PI_DIV_4)
 		{
 			r_model_yaw_dest = ty;
@@ -546,7 +546,7 @@ void CActor::g_cl_Orientate(u32 mstate_rl, float dt)
 		}
 		if (mstate_rl & mcTurn)
 		{
-			angle_lerp(r_model_yaw, r_model_yaw_dest, PI_MUL_2, dt);
+			angle_lerpf(r_model_yaw, r_model_yaw_dest, PI_MUL_2, dt);
 		}
 	}
 }

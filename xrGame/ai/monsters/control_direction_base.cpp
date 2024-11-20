@@ -34,7 +34,7 @@ void CControlDirectionBase::face_target(const Fvector& position, u32 delay, floa
 	yaw *= -1;
 
 	yaw += (m_man->direction().is_from_right(position)) ? add_yaw : -add_yaw;
-	yaw = angle_normalize(yaw);
+	yaw = angle_normalizef(yaw);
 
 	m_heading.target = yaw;
 
@@ -53,7 +53,7 @@ void CControlDirectionBase::use_path_direction(bool reversed)
 	if (fsimilar(yaw, 0.f, EPS_S))
 		return;
 
-	m_heading.target = angle_normalize((reversed) ? (-yaw + PI) : (-yaw));
+	m_heading.target = angle_normalizef((reversed) ? (-yaw + PI) : (-yaw));
 }
 
 void CControlDirectionBase::set_heading_speed(float value, bool force)

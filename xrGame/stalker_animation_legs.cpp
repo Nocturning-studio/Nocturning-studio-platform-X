@@ -113,7 +113,7 @@ void CStalkerAnimationManager::legs_process_direction(float yaw)
 	}
 	test_angle_backward = PI - test_angle_backward;
 
-	float difference = angle_difference(yaw, head_current);
+	float difference = angle_differencef(yaw, head_current);
 
 	if (difference <= test_angle_forward)
 		legs_assign_direction(switch_factor, eMovementDirectionForward);
@@ -151,7 +151,7 @@ MotionID CStalkerAnimationManager::legs_move_animation()
 	float yaw, pitch;
 	object().sight().GetDirectionAngles(yaw, pitch);
 
-	yaw = angle_normalize_signed(-yaw);
+	yaw = angle_normalize_signedf(-yaw);
 	;
 	legs_process_direction(yaw);
 
@@ -167,7 +167,7 @@ MotionID CStalkerAnimationManager::legs_move_animation()
 	test_angle_backward = PI - test_angle_backward;
 
 	EMovementDirection speed_direction;
-	float difference = angle_difference(yaw, body_current);
+	float difference = angle_differencef(yaw, body_current);
 
 	if (difference <= test_angle_forward)
 		speed_direction = eMovementDirectionForward;
@@ -230,12 +230,12 @@ MotionID CStalkerAnimationManager::legs_no_move_animation()
 	const SBoneRotation& body_orientation = movement.body_orientation();
 	float current = body_orientation.current.yaw;
 	float target = body_orientation.target.yaw;
-	if (angle_difference(target, current) < EPS_L)
+	if (angle_differencef(target, current) < EPS_L)
 	{
 
 		float head_current = movement.head_orientation().current.yaw;
 		if ((movement.mental_state() != eMentalStateFree) ||
-			(!object().sight().turning_in_place() && (angle_difference(current, head_current) <= standing_turn_angle)))
+			(!object().sight().turning_in_place() && (angle_differencef(current, head_current) <= standing_turn_angle)))
 		{
 			if (movement.mental_state() == eMentalStateFree)
 				return (animation[1]);

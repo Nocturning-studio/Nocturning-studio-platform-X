@@ -229,13 +229,13 @@ void* xrMemory::mem_realloc(void* P, size_t size
 #endif // DEBUG_MEMORY_MANAGER
 	u32 p_current = get_header(P);
 	//	Igor: Reserve 1 byte for xrMemory header
-	u32 p_new = get_pool(1 + size + (debug_mode ? 4 : 0));
-	// u32		p_new				= get_pool	(size+(debug_mode?4:0));
+	u32 pool_new = get_pool(1 + size + (debug_mode ? 4 : 0));
+	// u32		pool_new				= get_pool	(size+(debug_mode?4:0));
 	u32 p_mode;
 
 	if (mem_generic == p_current)
 	{
-		if (p_new < p_current)
+		if (pool_new < p_current)
 			p_mode = 2;
 		else
 			p_mode = 0;

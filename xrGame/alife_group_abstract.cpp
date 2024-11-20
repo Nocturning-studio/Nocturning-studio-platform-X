@@ -37,7 +37,7 @@ void CSE_ALifeGroupAbstract::switch_online()
 			J->m_tNodeID = object->m_tNodeID;
 			CSE_ALifeMonsterAbstract* l_tpALifeMonsterAbstract = smart_cast<CSE_ALifeMonsterAbstract*>(J);
 			if (l_tpALifeMonsterAbstract)
-				l_tpALifeMonsterAbstract->o_torso.yaw = angle_normalize_signed((I - B) / N * PI_MUL_2);
+				l_tpALifeMonsterAbstract->o_torso.yaw = angle_normalize_signedf((I - B) / N * PI_MUL_2);
 		}
 		object->alife().add_online(J, false);
 	}

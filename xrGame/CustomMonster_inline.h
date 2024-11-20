@@ -2,13 +2,13 @@
 
 IC bool CCustomMonster::angle_lerp_bounds(float& a, float b, float c, float d)
 {
-	if (c * d >= angle_difference(a, b))
+	if (c * d >= angle_differencef(a, b))
 	{
 		a = b;
 		return (true);
 	}
 
-	angle_lerp(a, b, c, d);
+	angle_lerpf(a, b, c, d);
 
 	return (false);
 };

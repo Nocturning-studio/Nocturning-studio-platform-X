@@ -30,7 +30,7 @@ void CControlRotationJump::activate()
 	m_man->move_stop(this);
 
 	float yaw = Fvector().sub(m_object->EnemyMan.get_enemy()->Position(), m_object->Position()).getH();
-	m_right_side = m_man->direction().is_from_right(angle_normalize(-yaw));
+	m_right_side = m_man->direction().is_from_right(angle_normalizef(-yaw));
 
 	//////////////////////////////////////////////////////////////////////////
 	if (m_data.flags.is(SControlRotationJumpData::eStopAtOnce))
@@ -107,19 +107,19 @@ void CControlRotationJump::stop_at_once()
 		Fvector dir_to_enemy;
 		dir_to_enemy.sub(m_object->EnemyMan.get_enemy()->Position(), m_object->Position());
 		dir_to_enemy.normalize();
-		target_yaw = angle_normalize(-dir_to_enemy.getH());
+		target_yaw = angle_normalizef(-dir_to_enemy.getH());
 	}
 	else
 	{
 		target_yaw =
-			angle_normalize(-m_object->Direction().getH() + (m_right_side ? m_data.turn_angle : -m_data.turn_angle));
+			angle_normalizef(-m_object->Direction().getH() + (m_right_side ? m_data.turn_angle : -m_data.turn_angle));
 	}
 
 	ctrl_data_dir->heading.target_angle = target_yaw;
 
 	float cur_yaw;
 	m_man->direction().get_heading(cur_yaw, target_yaw);
-	ctrl_data_dir->heading.target_speed = angle_difference(cur_yaw, target_yaw) / m_time;
+	ctrl_data_dir->heading.target_speed = angle_differencef(cur_yaw, target_yaw) / m_time;
 	ctrl_data_dir->linear_dependency = false;
 	VERIFY(!fis_zero(ctrl_data_dir->heading.target_speed));
 
@@ -153,12 +153,12 @@ void CControlRotationJump::build_line_first()
 	VERIFY(ctrl_data_dir);
 
 	float target_yaw =
-		angle_normalize(-m_object->Direction().getH() + (m_right_side ? m_data.turn_angle : -m_data.turn_angle));
+		angle_normalizef(-m_object->Direction().getH() + (m_right_side ? m_data.turn_angle : -m_data.turn_angle));
 	ctrl_data_dir->heading.target_angle = target_yaw;
 
 	float cur_yaw;
 	m_man->direction().get_heading(cur_yaw, target_yaw);
-	ctrl_data_dir->heading.target_speed = angle_difference(cur_yaw, target_yaw) / m_time;
+	ctrl_data_dir->heading.target_speed = angle_differencef(cur_yaw, target_yaw) / m_time;
 	ctrl_data_dir->linear_dependency = false;
 
 	VERIFY(!fis_zero(ctrl_data_dir->heading.target_speed));
@@ -226,12 +226,12 @@ void CControlRotationJump::build_line_second()
 	dir_to_enemy.normalize();
 
 	float target_yaw = dir_to_enemy.getH();
-	target_yaw = angle_normalize(-target_yaw);
+	target_yaw = angle_normalizef(-target_yaw);
 	ctrl_data_dir->heading.target_angle = target_yaw;
 
 	float cur_yaw;
 	m_man->direction().get_heading(cur_yaw, target_yaw);
-	ctrl_data_dir->heading.target_speed = angle_difference(cur_yaw, target_yaw) / m_time;
+	ctrl_data_dir->heading.target_speed = angle_differencef(cur_yaw, target_yaw) / m_time;
 	ctrl_data_dir->linear_dependency = false;
 
 	VERIFY(!fis_zero(ctrl_data_dir->heading.target_speed));

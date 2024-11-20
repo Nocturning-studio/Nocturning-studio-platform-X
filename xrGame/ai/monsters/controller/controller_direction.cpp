@@ -75,14 +75,14 @@ void CControllerDirection::head_look_point(const Fvector& look_point)
 
 	float dir_yaw, dir_pitch;
 	Fvector().sub(look_point, get_head_position(m_controller)).getHP(dir_yaw, dir_pitch);
-	dir_yaw = angle_normalize(-dir_yaw);
+	dir_yaw = angle_normalizef(-dir_yaw);
 
 	float bone_angle_head;
 	float bone_angle_torso;
 
 	// установить параметры вращения по heading
 	float cur_yaw = m_man->direction().get_heading_current();
-	float dy = _abs(angle_normalize_signed(dir_yaw - cur_yaw)); // дельта, на которую нужно поворачиваться
+	float dy = _abs(angle_normalize_signedf(dir_yaw - cur_yaw)); // дельта, на которую нужно поворачиваться
 
 	bone_angle_head = _pmt_head_bone_limit / (_pmt_head_bone_limit + _pmt_torso_bone_limit) * dy;
 	bone_angle_torso = _pmt_torso_bone_limit / (_pmt_head_bone_limit + _pmt_torso_bone_limit) * dy;

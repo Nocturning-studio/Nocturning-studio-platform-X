@@ -232,14 +232,14 @@ void CLocatorAPI::Register(LPCSTR name, u32 vfs, u32 crc, u32 ptr, u32 size_real
 	desc.modif = modif & (~u32(0x3));
 	//	Msg("registering file %s - %d", name, size_real);
 	//	if file already exist - update info
-	files_it I = files.find(desc);
-	if (I != files.end())
+	files_it It = files.find(desc);
+	if (It != files.end())
 	{
-		desc.name = I->name;
+		desc.name = It->name;
 
 		// sad but true, performance option
 		// correct way is to erase and then insert new record:
-		const_cast<file&>(*I) = desc;
+		const_cast<file&>(*It) = desc;
 		return;
 	}
 	else

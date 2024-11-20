@@ -302,14 +302,14 @@ void CHelicopter::MoveStep()
 		float speed_ = _min(m_movement.GetSpeedInDestPoint(), GetMaxVelocity());
 
 		static float ang = pSettings->r_float(cNameSect(), "magic_angle");
-		if (m_movement.curLinearSpeed > GetMaxVelocity() || angle_difference(m_movement.currPathH, desired_H) > ang)
+		if (m_movement.curLinearSpeed > GetMaxVelocity() || angle_differencef(m_movement.currPathH, desired_H) > ang)
 			m_movement.curLinearAcc = -m_movement.LinearAcc_bk;
 		else
 			m_movement.curLinearAcc = GetCurrAcc(m_movement.curLinearSpeed, speed_, dist * 0.95f,
 												 m_movement.LinearAcc_fw, -m_movement.LinearAcc_bk);
 
-		angle_lerp(m_movement.currPathH, desired_H, m_movement.GetAngSpeedHeading(m_movement.curLinearSpeed), STEP);
-		angle_lerp(m_movement.currPathP, desired_P, m_movement.GetAngSpeedPitch(m_movement.curLinearSpeed), STEP);
+		angle_lerpf(m_movement.currPathH, desired_H, m_movement.GetAngSpeedHeading(m_movement.curLinearSpeed), STEP);
+		angle_lerpf(m_movement.currPathP, desired_P, m_movement.GetAngSpeedPitch(m_movement.curLinearSpeed), STEP);
 
 		dir.setHP(m_movement.currPathH, m_movement.currPathP);
 
@@ -351,28 +351,28 @@ void CHelicopter::MoveStep()
 
 		float center_desired_H, tmp_P;
 		desired_dir.getHP(center_desired_H, tmp_P);
-		angle_lerp(m_body.currBodyHPB.x, center_desired_H, m_movement.GetAngSpeedHeading(m_movement.curLinearSpeed),
+		angle_lerpf(m_body.currBodyHPB.x, center_desired_H, m_movement.GetAngSpeedHeading(m_movement.curLinearSpeed),
 				   STEP);
 	}
 	else
 	{
-		angle_lerp(m_body.currBodyHPB.x, m_movement.currPathH, m_movement.GetAngSpeedHeading(m_movement.curLinearSpeed),
+		angle_lerpf(m_body.currBodyHPB.x, m_movement.currPathH, m_movement.GetAngSpeedHeading(m_movement.curLinearSpeed),
 				   STEP);
 	}
 
 	float needBodyP = -m_body.model_pitch_k * m_movement.curLinearSpeed;
 	if (m_movement.curLinearAcc < 0)
 		needBodyP *= -1;
-	angle_lerp(m_body.currBodyHPB.y, needBodyP, m_body.model_angSpeedPitch, STEP);
+	angle_lerpf(m_body.currBodyHPB.y, needBodyP, m_body.model_angSpeedPitch, STEP);
 
 	float sign;
 	Fvector cp;
 	cp.crossproduct(pathDir, dir);
 	(cp.y > 0.0) ? sign = 1.0f : sign = -1.0f;
-	float ang_diff = angle_difference(m_movement.currPathH, desired_H);
+	float ang_diff = angle_differencef(m_movement.currPathH, desired_H);
 
 	float needBodyB = -ang_diff * sign * m_body.model_bank_k * m_movement.curLinearSpeed;
-	angle_lerp(m_body.currBodyHPB.z, needBodyB, m_body.model_angSpeedBank, STEP);
+	angle_lerpf(m_body.currBodyHPB.z, needBodyB, m_body.model_angSpeedBank, STEP);
 
 	XFORM().setHPB(m_body.currBodyHPB.x, m_body.currBodyHPB.y, m_body.currBodyHPB.z);
 

@@ -42,7 +42,7 @@ IC void CStalkerMovementManager::add_velocity(int mask, float linear, float comp
 IC bool CStalkerMovementManager::turn_in_place() const
 {
 	return (!path_completed() && fis_zero(speed()) &&
-			(angle_difference(body_orientation().current.yaw, body_orientation().target.yaw) > EPS_L));
+			(angle_differencef(body_orientation().current.yaw, body_orientation().target.yaw) > EPS_L));
 }
 
 IC void CStalkerMovementManager::set_body_state(EBodyState body_state)
@@ -60,9 +60,6 @@ IC void CStalkerMovementManager::set_mental_state(EMentalState mental_state)
 {
 	THROW((m_target.m_body_state != eBodyStateCrouch) || (mental_state != eMentalStateFree));
 	m_target.m_mental_state = mental_state;
-#pragma todo(                                                                                                          \
-	"Dima to Dima: this is correct, commented just because of the October presentation, no time right now to fix it correctly, should be fixed sometimes later")
-	// m_path_actuality			= m_path_actuality && (m_target.m_mental_state == m_current.m_mental_state);
 }
 
 IC void CStalkerMovementManager::set_path_type(EPathType path_type)

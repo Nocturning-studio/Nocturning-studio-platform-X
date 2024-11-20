@@ -41,7 +41,7 @@ const double HighBound = 2*M_PI;
 const double TwoPi = 2*M_PI;
 
 
-static double angle_normalize(double theta)
+static double angle_normalizef(double theta)
 {
 	while (theta < LowBound)
 	theta += TwoPi;
@@ -69,8 +69,8 @@ static int solve_trig1_aux(float c, float a2b2, float atan2ba, float theta[2])
 		theta[1] = theta[0] - temp;
 		theta[0] += temp;
 
-		// theta[0] = angle_normalize(theta[0]);
-		// theta[1] = angle_normalize(theta[1]);
+		// theta[0] = angle_normalizef(theta[0]);
+		// theta[1] = angle_normalizef(theta[1]);
 
 		if (theta[0] > theta[1])
 		{

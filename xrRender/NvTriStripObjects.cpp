@@ -764,7 +764,7 @@ bool NvStripifier::IsCW(NvFaceInfo* faceInfo, int v0, int v1)
 //
 // Generates actual strips from the list-in-strip-order.
 //
-void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIndices, const bool bStitchStrips,
+void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIndices, const bool bStitchStrips_local,
 								unsigned int& numSeparateStrips)
 {
 	assert(numSeparateStrips == 0);
@@ -814,7 +814,7 @@ void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIn
 				}
 			}
 
-			if ((i == 0) || !bStitchStrips)
+			if ((i == 0) || !bStitchStrips_local)
 			{
 				if (!IsCW(strip->m_faces[0], tFirstFace.m_v0, tFirstFace.m_v1))
 					stripIndices.push_back(tFirstFace.m_v0);
@@ -855,7 +855,7 @@ void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIn
 		}
 
 		// Double tap between strips.
-		if (bStitchStrips)
+		if (bStitchStrips_local)
 		{
 			if (i != nStripCount - 1)
 				stripIndices.push_back(tLastFace.m_v2);
@@ -874,7 +874,7 @@ void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIn
 		tLastFace.m_v2 = tLastFace.m_v2;
 	}
 
-	if (bStitchStrips)
+	if (bStitchStrips_local)
 		numSeparateStrips = 1;
 }
 
@@ -1046,16 +1046,16 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec& allStrips, NvStripIn
 			bestNumHits = -1.0f;
 
 			// find best strip to add next, given the current cache
-			for (int i = 0; i < tempStrips2.size(); i++)
+			for (int it = 0; it < tempStrips2.size(); it++)
 			{
-				if (tempStrips2[i]->visited)
+				if (tempStrips2[it]->visited)
 					continue;
 
-				numHits = CalcNumHitsStrip(vcache, tempStrips2[i]);
+				numHits = CalcNumHitsStrip(vcache, tempStrips2[it]);
 				if (numHits > bestNumHits)
 				{
 					bestNumHits = numHits;
-					bestIndex = i;
+					bestIndex = it;
 				}
 			}
 
@@ -1305,7 +1305,7 @@ void NvStripifier::FindAllStrips(NvStripInfoVec& allStrips, NvFaceInfoVec& allFa
 
 			// build the first strip of the list
 			experiments[i][0]->Build(allEdgeInfos, allFaceInfos);
-			int experimentId = experiments[i][0]->m_experimentId;
+			experimentId = experiments[i][0]->m_experimentId;
 
 			NvStripInfo* stripIter = experiments[i][0];
 			NvStripStartInfo startInfo(NULL, NULL, false);

@@ -32,8 +32,8 @@ class CShaderIncluder : public ID3DXInclude
 		}
 			
 		static string_path hash;
-		int i = 0;
-		for (i = 0; i < strlen(full_path); i++)
+		size_t i = 0;
+		for (i = 0; i < strnlen_s(full_path, sizeof(full_path)); i++)
 		{
 			hash[i] = (full_path[i] >= '0' && full_path[i] <= '9')
 				  ||  (full_path[i] >= 'a' && full_path[i] <= 'z')
@@ -59,7 +59,7 @@ class CShaderIncluder : public ID3DXInclude
 		FS.r_close(R);
 
 		*ppData = data;
-		*pBytes = strlen(data);
+		*pBytes = strnlen_s(data, sizeof(data));
 
 #ifdef DEBUG_SHADER_COMPILATION
 		Msg("*   includer open: (id:%u): %s", counter, pName);

@@ -4,6 +4,8 @@
 
 #include "memory_monitor.h"
 
+#pragma warning(disable : 4595)
+
 #ifdef USE_MEMORY_MONITOR
 #define DEBUG_MEMORY_NAME
 #endif // USE_MEMORY_MONITOR

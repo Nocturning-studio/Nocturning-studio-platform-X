@@ -58,10 +58,10 @@ void CActorMP::fill_state(actor_mp_state& state)
 
 	state.logic_acceleration = NET_SavedAccel;
 
-	state.model_yaw = angle_normalize(r_model_yaw);
-	state.camera_yaw = angle_normalize(unaffected_r_torso.yaw);
-	state.camera_pitch = angle_normalize(unaffected_r_torso.pitch);
-	state.camera_roll = angle_normalize(unaffected_r_torso.roll);
+	state.model_yaw = angle_normalizef(r_model_yaw);
+	state.camera_yaw = angle_normalizef(unaffected_r_torso.yaw);
+	state.camera_pitch = angle_normalizef(unaffected_r_torso.pitch);
+	state.camera_roll = angle_normalizef(unaffected_r_torso.roll);
 
 	state.time = Level().timeServer();
 

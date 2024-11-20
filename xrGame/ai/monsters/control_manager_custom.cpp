@@ -518,8 +518,8 @@ void CControlManagerCustom::check_jump_over_physics()
 			float my_h = m_object->Direction().getH();
 			float h = dir.getH();
 
-			float from = angle_normalize(my_h - deg(8));
-			float to = angle_normalize(my_h + deg(8));
+			float from = angle_normalizef(my_h - deg(8));
+			float to = angle_normalizef(my_h + deg(8));
 
 			if (!is_angle_between(h, from, to))
 				continue;

@@ -263,7 +263,7 @@ void CAI_Stalker::Hit(SHit* pHDS)
 #endif
 				//				int						fx_index =
 				//iFloor(tpKinematics->LL_GetBoneInstance(pHDS->bone()).get_param(1) +
-				//(angle_difference(movement().m_body.current.yaw,-yaw) <= PI_DIV_2 ? 0 : 1)); 				if (fx_index != -1)
+				//(angle_differencef(movement().m_body.current.yaw,-yaw) <= PI_DIV_2 ? 0 : 1)); 				if (fx_index != -1)
 				//					animation().play_fx	(power_factor,fx_index);
 			}
 			else

@@ -77,12 +77,27 @@ public:
 													xalloc			(const xalloc<T>&)						{	}
 	template<class _Other>							xalloc			(const xalloc<_Other>&)					{	}
 	template<class _Other>	xalloc<T>&				operator=		(const xalloc<_Other>&)					{	return (*this);	}
-							pointer					allocate		(size_type n, const void* p=0) const	{	return xr_alloc<T>((u32)n);	}
+	pointer allocate(size_type n, const void* pntr = 0) const
+	{
+		return xr_alloc<T>((u32)n);
+	}
 							char*					_charalloc		(size_type n)							{	return (char*)allocate(n); }
-							void					deallocate		(pointer p, size_type n) const			{	xr_free	(p);				}
-							void					deallocate		(void* p, size_type n) const			{	xr_free	(p);				}
-							void					construct		(pointer p, const T& _Val)				{	::new((void*)p) value_type (_Val); }
-							void					destroy			(pointer p)								{	std::_Destroy_in_place(p);			}
+							void deallocate(pointer pntr, size_type n) const
+							{
+								xr_free(pntr);
+							}
+							void deallocate(void* pntr, size_type n) const
+							{
+								xr_free(pntr);
+							}
+							void construct(pointer pntr, const T& _Val)
+							{
+								::new ((void*)pntr) value_type(_Val);
+							}
+							void destroy(pointer pntr)
+							{
+								std::_Destroy_in_place(pntr);
+							}
 							size_type				max_size		() const								{	size_type _Count = (size_type)(-1) / sizeof (T);	return (0 < _Count ? _Count : 1);	}
 };
 

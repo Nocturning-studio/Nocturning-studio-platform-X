@@ -72,9 +72,9 @@ void CCoverManager::compute_static_cover()
 		else
 			m_temp[i] = false;
 
-	for (u32 i = 0; i < n; ++i)
-		if (m_temp[i] && critical_cover(i))
-			m_covers->insert(xr_new<CCoverPoint>(ai().level_graph().vertex_position(ai().level_graph().vertex(i)), i));
+	for (u32 it = 0; it < n; ++it)
+		if (m_temp[it] && critical_cover(it))
+			m_covers->insert(xr_new<CCoverPoint>(ai().level_graph().vertex_position(ai().level_graph().vertex(it)), it));
 }
 
 void CCoverManager::clear()

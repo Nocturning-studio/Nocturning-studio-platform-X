@@ -23,7 +23,7 @@ void CBaseMonster::LookPosition(Fvector to_point, float angular_speed)
 	d.sub(Position());
 
 	// установить текущий угол
-	dir().set_heading(angle_normalize(-d.getH()));
+	dir().set_heading(angle_normalizef(-d.getH()));
 }
 
 //////////////////////////////////////////////////////////////////////////

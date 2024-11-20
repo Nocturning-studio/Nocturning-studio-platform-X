@@ -34,10 +34,10 @@ void CCustomMonster::Exec_Look(float dt)
 	if (animation_movement_controlled())
 		return;
 
-	movement().m_body.current.yaw = angle_normalize_signed(movement().m_body.current.yaw);
-	movement().m_body.current.pitch = angle_normalize_signed(movement().m_body.current.pitch);
-	movement().m_body.target.yaw = angle_normalize_signed(movement().m_body.target.yaw);
-	movement().m_body.target.pitch = angle_normalize_signed(movement().m_body.target.pitch);
+	movement().m_body.current.yaw = angle_normalize_signedf(movement().m_body.current.yaw);
+	movement().m_body.current.pitch = angle_normalize_signedf(movement().m_body.current.pitch);
+	movement().m_body.target.yaw = angle_normalize_signedf(movement().m_body.target.yaw);
+	movement().m_body.target.pitch = angle_normalize_signedf(movement().m_body.target.pitch);
 
 	float pitch_speed = get_custom_pitch_speed(movement().m_body.speed);
 	angle_lerp_bounds(movement().m_body.current.yaw, movement().m_body.target.yaw, movement().m_body.speed, dt);

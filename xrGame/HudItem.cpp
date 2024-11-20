@@ -246,7 +246,7 @@ void CHudItem::UpdateHudInertion(Fmatrix& hud_trans)
 	origin.mad(diff_dir, ORIGIN_OFFSET);
 
 	// pitch compensation
-	float pitch = angle_normalize_signed(xform.k.getP());
+	float pitch = angle_normalize_signedf(xform.k.getP());
 
 	if (Actor()->IsZoomAimingMode())
 	{

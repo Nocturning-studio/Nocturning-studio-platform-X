@@ -191,7 +191,7 @@ void CWeaponStatMgun::UpdateBarrelDir()
 	{ // x angle
 		m_i_bind_x_xform.transform_dir(dep);
 		dep.normalize();
-		m_tgt_x_rot = angle_normalize_signed(m_bind_x_rot - dep.getP());
+		m_tgt_x_rot = angle_normalize_signedf(m_bind_x_rot - dep.getP());
 		float sv_x = m_tgt_x_rot;
 
 		clamp(m_tgt_x_rot, -m_lim_x_rot.y, -m_lim_x_rot.x);
@@ -201,15 +201,15 @@ void CWeaponStatMgun::UpdateBarrelDir()
 	{ // y angle
 		m_i_bind_y_xform.transform_dir(dep);
 		dep.normalize();
-		m_tgt_y_rot = angle_normalize_signed(m_bind_y_rot - dep.getH());
+		m_tgt_y_rot = angle_normalize_signedf(m_bind_y_rot - dep.getH());
 		float sv_y = m_tgt_y_rot;
 		clamp(m_tgt_y_rot, -m_lim_y_rot.y, -m_lim_y_rot.x);
 		if (!fsimilar(sv_y, m_tgt_y_rot, EPS_L))
 			m_allow_fire = FALSE;
 	}
 
-	m_cur_x_rot = angle_inertion_var(m_cur_x_rot, m_tgt_x_rot, 0.5f, 3.5f, PI_DIV_6, Device.fTimeDelta);
-	m_cur_y_rot = angle_inertion_var(m_cur_y_rot, m_tgt_y_rot, 0.5f, 3.5f, PI_DIV_6, Device.fTimeDelta);
+	m_cur_x_rot = angle_inertion_varf(m_cur_x_rot, m_tgt_x_rot, 0.5f, 3.5f, PI_DIV_6, Device.fTimeDelta);
+	m_cur_y_rot = angle_inertion_varf(m_cur_y_rot, m_tgt_y_rot, 0.5f, 3.5f, PI_DIV_6, Device.fTimeDelta);
 }
 
 void CWeaponStatMgun::cam_Update(float dt, float fov)
@@ -230,8 +230,8 @@ void CWeaponStatMgun::cam_Update(float dt, float fov)
 	d.getHP(des_cam_dir.x, des_cam_dir.y);
 	des_cam_dir.mul(-1.0f);
 
-	Camera()->yaw = angle_inertion_var(Camera()->yaw, des_cam_dir.x, 0.5f, 7.5f, PI_DIV_6, Device.fTimeDelta);
-	Camera()->pitch = angle_inertion_var(Camera()->pitch, des_cam_dir.y, 0.5f, 7.5f, PI_DIV_6, Device.fTimeDelta);
+	Camera()->yaw = angle_inertion_varf(Camera()->yaw, des_cam_dir.x, 0.5f, 7.5f, PI_DIV_6, Device.fTimeDelta);
+	Camera()->pitch = angle_inertion_varf(Camera()->pitch, des_cam_dir.y, 0.5f, 7.5f, PI_DIV_6, Device.fTimeDelta);
 
 	if (OwnerActor())
 	{

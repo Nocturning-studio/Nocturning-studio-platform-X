@@ -578,8 +578,8 @@ bool CController::can_psy_fire()
 
 	float cur_yaw = custom_dir().get_head_orientation().current.yaw;
 	float dir_yaw = Fvector().sub(EnemyMan.get_enemy()->Position(), Position()).getH();
-	dir_yaw = angle_normalize(-dir_yaw);
-	if (angle_difference(cur_yaw, dir_yaw) > _pmt_psy_attack_min_angle)
+	dir_yaw = angle_normalizef(-dir_yaw);
+	if (angle_differencef(cur_yaw, dir_yaw) > _pmt_psy_attack_min_angle)
 		return false;
 
 	m_psy_fire_start_time = time();
@@ -599,16 +599,16 @@ void CController::set_psy_fire_delay_default()
 // TUBE
 //////////////////////////////////////////////////////////////////////////
 
-#define SEE_ENEMY_DURATION 1000
-#define MIN_DELAY 10000
-#define TUBE_PROBABILITY 20
+#define TUBE_SEE_ENEMY_DURATION 1000
+#define TUBE_MIN_DELAY 10000
+#define TUBE_TUBE_PROBABILITY 20
 
 void CController::tube_fire()
 {
 	m_time_last_tube = time();
 
 	// missed
-	if (!m_tube_at_once && (Random.randI(100) > TUBE_PROBABILITY))
+	if (!m_tube_at_once && (Random.randI(100) > TUBE_TUBE_PROBABILITY))
 		return;
 
 	control().activate(ControlCom::eComCustom1);
@@ -626,9 +626,9 @@ bool CController::can_tube_fire()
 
 	if (!EnemyMan.get_enemy())
 		return false;
-	if (m_time_last_tube + MIN_DELAY > time())
+	if (m_time_last_tube + TUBE_MIN_DELAY > time())
 		return false;
-	if (EnemyMan.see_enemy_duration() < SEE_ENEMY_DURATION)
+	if (EnemyMan.see_enemy_duration() < TUBE_SEE_ENEMY_DURATION)
 		return false;
 	if (!m_psy_hit->check_start_conditions())
 		return false;

@@ -30,10 +30,10 @@ template <class T> class _box2
 		max.set(_max);
 		return *this;
 	};
-	IC SelfRef set(T x1, T y1, T x2, T y2)
+	IC SelfRef set(T Tx1, T Ty1, T Tx2, T Ty2)
 	{
-		min.set(x1, y1);
-		max.set(x2, y2);
+		min.set(Tx1, Ty1);
+		max.set(Tx2, Ty2);
 		return *this;
 	};
 	IC SelfRef set(SelfCRef b)

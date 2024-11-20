@@ -48,7 +48,7 @@ inline float math_iszero(float x)
 //
 // Normalize an angle to to range -Pi..Pi
 //
-//double angle_normalize(double x);
+//double angle_normalizef(double x);
 
 
 //

@@ -273,7 +273,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 
 	SwitchNightVision(false);
 
-	m_delta_h = PI_DIV_2 - atan((range * 0.5f) / _abs(TORCH_OFFSET.x));
+	m_delta_h = PI_DIV_2 - atanf((range * 0.5f) / _abs(TORCH_OFFSET.x));
 
 	return (TRUE);
 }
@@ -342,9 +342,9 @@ void CTorch::UpdateCL()
 
 		if (actor)
 		{
-			m_prev_hp.x = angle_inertion_var(m_prev_hp.x, -actor->cam_FirstEye()->yaw, TORCH_INERTION_SPEED_MIN,
+			m_prev_hp.x = angle_inertion_varf(m_prev_hp.x, -actor->cam_FirstEye()->yaw, TORCH_INERTION_SPEED_MIN,
 											 TORCH_INERTION_SPEED_MAX, TORCH_INERTION_CLAMP, Device.fTimeDelta);
-			m_prev_hp.y = angle_inertion_var(m_prev_hp.y, -actor->cam_FirstEye()->pitch, TORCH_INERTION_SPEED_MIN,
+			m_prev_hp.y = angle_inertion_varf(m_prev_hp.y, -actor->cam_FirstEye()->pitch, TORCH_INERTION_SPEED_MIN,
 											 TORCH_INERTION_SPEED_MAX, TORCH_INERTION_CLAMP, Device.fTimeDelta);
 
 			Fvector dir, right, up;

@@ -59,7 +59,7 @@ void CStalkerActionCombatBase::fire()
 	float yaw, pitch;
 	direction.getHP(yaw, pitch);
 	const MonsterSpace::SBoneRotation& current_angles = object().movement().head_orientation();
-	if (angle_difference(-yaw, current_angles.current.yaw) > start_fire_angle_difference)
+	if (angle_differencef(-yaw, current_angles.current.yaw) > start_fire_angle_difference)
 	{
 		aim_ready();
 		return;

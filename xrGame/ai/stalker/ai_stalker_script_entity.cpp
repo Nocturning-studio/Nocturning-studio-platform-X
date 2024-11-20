@@ -125,8 +125,8 @@ bool CAI_Stalker::bfAssignWatch(CScriptEntityAction* tpEntityAction)
 	}
 
 	if ((CScriptWatchAction::eGoalTypeWatchType != l_tWatchAction.m_tGoalType) &&
-		(angle_difference(movement().m_head.target.yaw, movement().m_head.current.yaw) < EPS_L) &&
-		(angle_difference(movement().m_head.target.pitch, movement().m_head.current.pitch) < EPS_L))
+		(angle_differencef(movement().m_head.target.yaw, movement().m_head.current.yaw) < EPS_L) &&
+		(angle_differencef(movement().m_head.target.pitch, movement().m_head.current.pitch) < EPS_L))
 		l_tWatchAction.m_bCompleted = true;
 	else
 		l_tWatchAction.m_bCompleted = false;

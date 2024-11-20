@@ -45,8 +45,8 @@ void CProjector::BoneCallbackY(CBoneInstance* B)
 {
 	CProjector* P = static_cast<CProjector*>(B->Callback_Param);
 
-	float delta_yaw = angle_difference(P->_start.yaw, P->_current.yaw);
-	if (angle_normalize_signed(P->_start.yaw - P->_current.yaw) > 0)
+	float delta_yaw = angle_differencef(P->_start.yaw, P->_current.yaw);
+	if (angle_normalize_signedf(P->_start.yaw - P->_current.yaw) > 0)
 		delta_yaw = -delta_yaw;
 
 	Fmatrix M;
@@ -170,8 +170,8 @@ void CProjector::UpdateCL()
 	}
 
 	// Update searchlight
-	angle_lerp(_current.yaw, _target.yaw, bone_x.velocity, Device.fTimeDelta);
-	angle_lerp(_current.pitch, _target.pitch, bone_y.velocity, Device.fTimeDelta);
+	angle_lerpf(_current.yaw, _target.yaw, bone_x.velocity, Device.fTimeDelta);
+	angle_lerpf(_current.pitch, _target.pitch, bone_y.velocity, Device.fTimeDelta);
 }
 
 void CProjector::renderable_Render()
@@ -194,8 +194,8 @@ bool CProjector::bfAssignWatch(CScriptEntityAction* tpEntityAction)
 	(!l_tWatchAction.m_tpObjectToWatch) ? SetTarget(l_tWatchAction.m_tTargetPoint)
 										: SetTarget(l_tWatchAction.m_tpObjectToWatch->Position());
 
-	float delta_yaw = angle_difference(_current.yaw, _target.yaw);
-	float delta_pitch = angle_difference(_current.pitch, _target.pitch);
+	float delta_yaw = angle_differencef(_current.yaw, _target.yaw);
+	float delta_pitch = angle_differencef(_current.pitch, _target.pitch);
 
 	bone_x.velocity = l_tWatchAction.vel_bone_x;
 	float time = delta_yaw / bone_x.velocity;
@@ -225,13 +225,13 @@ void CProjector::SetTarget(const Fvector& target_pos)
 	Fvector().sub(target_pos, Position()).getHP(th, tp);
 
 	float delta_h;
-	delta_h = angle_difference(th, _start.yaw);
+	delta_h = angle_differencef(th, _start.yaw);
 
-	if (angle_normalize_signed(th - _start.yaw) > 0)
+	if (angle_normalize_signedf(th - _start.yaw) > 0)
 		delta_h = -delta_h;
 	clamp(delta_h, -PI_DIV_2, PI_DIV_2);
 
-	_target.yaw = angle_normalize(_start.yaw + delta_h);
+	_target.yaw = angle_normalizef(_start.yaw + delta_h);
 
 	clamp(tp, -PI_DIV_2, PI_DIV_2);
 	_target.pitch = tp;

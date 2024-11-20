@@ -38,7 +38,7 @@
 // Normalize an angle to the range -Pi..Pi
 //
 
-// static double angle_normalize_signed(double x)
+// static double angle_normalize_signedf(double x)
 //{
 //     while (x > M_PI)  x -= 2*M_PI;
 //     while (x < -M_PI) x += 2*M_PI;
@@ -106,8 +106,8 @@ int math_solve_trig1(float a, float b, float c, float theta[2])
 		theta[1] = theta[0] - temp;
 		theta[0] += temp;
 
-		// theta[0] = angle_normalize_signed(theta[0]);
-		// theta[1] = angle_normalize_signed(theta[1]);
+		// theta[0] = angle_normalize_signedf(theta[0]);
+		// theta[1] = angle_normalize_signedf(theta[1]);
 	}
 	return num;
 }
@@ -133,7 +133,7 @@ int myacos(float x, float solns[2])
 	if (_abs(x) > 1)
 		return 0;
 
-	solns[0] = angle_normalize_signed(acos(x));
+	solns[0] = angle_normalize_signedf(acosf(x));
 
 	if (math_iszero(solns[0]))
 		return 1;
@@ -151,7 +151,7 @@ int myasin(float x, float solns[2])
 	if (_abs(x) > 1)
 		return 0;
 
-	solns[0] = (float)angle_normalize_signed(asin(x));
+	solns[0] = (float)angle_normalize_signedf(asinf(x));
 
 	if (math_iszero(solns[0]))
 		return 1;

@@ -358,8 +358,8 @@ void CWeaponMounted::UpdateFire()
 	}
 	else
 	{
-		angle_lerp(m_dAngle.x, 0.f, 5.f, Device.fTimeDelta);
-		angle_lerp(m_dAngle.y, 0.f, 5.f, Device.fTimeDelta);
+		angle_lerpf(m_dAngle.x, 0.f, 5.f, Device.fTimeDelta);
+		angle_lerpf(m_dAngle.y, 0.f, 5.f, Device.fTimeDelta);
 	}
 }
 

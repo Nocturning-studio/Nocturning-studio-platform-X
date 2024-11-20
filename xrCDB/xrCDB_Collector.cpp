@@ -155,23 +155,23 @@ void Collector::calc_adjacency(xr_vector<u32>& dest)
 	dest.assign(edge_count, u32(-1));
 
 	{
-		edge *I = edges, *J;
-		edge* E = edges + edge_count;
-		for (; I != E; ++I)
+		edge *EdgeIterator = edges, *J;
+		edge* EdgesCount = edges + edge_count;
+		for (; EdgeIterator != EdgesCount; ++EdgeIterator)
 		{
-			if (I + 1 == E)
+			if (EdgeIterator + 1 == EdgesCount)
 				continue;
 
-			J = I + 1;
+			J = EdgeIterator + 1;
 
-			if ((*I).vertex_id0 != (*J).vertex_id0)
+			if ((*EdgeIterator).vertex_id0 != (*J).vertex_id0)
 				continue;
 
-			if ((*I).vertex_id1 != (*J).vertex_id1)
+			if ((*EdgeIterator).vertex_id1 != (*J).vertex_id1)
 				continue;
 
-			dest[(*I).face_id * 3 + (*I).edge_id] = (*J).face_id;
-			dest[(*J).face_id * 3 + (*J).edge_id] = (*I).face_id;
+			dest[(*EdgeIterator).face_id * 3 + (*EdgeIterator).edge_id] = (*J).face_id;
+			dest[(*J).face_id * 3 + (*J).edge_id] = (*EdgeIterator).face_id;
 		}
 	}
 #if 0

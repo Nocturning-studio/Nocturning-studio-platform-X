@@ -23,6 +23,8 @@
 
 #ifndef _OPENAL32_H_
 #define _OPENAL32_H_
+#pragma warning(disable : 4995)
+#pragma warning(disable : 9035)
 
 #ifdef __cplusplus
 extern "C" {

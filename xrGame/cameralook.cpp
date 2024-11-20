@@ -190,10 +190,9 @@ void CCameraLook2::UpdateAutoAim()
 	Fvector xyz;
 	_m.getXYZi(xyz);
 
-	yaw = angle_inertion_var(yaw, xyz.y, m_autoaim_inertion_yaw.x, m_autoaim_inertion_yaw.y, PI, Device.fTimeDelta);
+	yaw = angle_inertion_varf(yaw, xyz.y, m_autoaim_inertion_yaw.x, m_autoaim_inertion_yaw.y, PI, Device.fTimeDelta);
 
-	pitch =
-		angle_inertion_var(pitch, xyz.x, m_autoaim_inertion_pitch.x, m_autoaim_inertion_pitch.y, PI, Device.fTimeDelta);
+	pitch = angle_inertion_varf(pitch, xyz.x, m_autoaim_inertion_pitch.x, m_autoaim_inertion_pitch.y, PI, Device.fTimeDelta);
 }
 
 void CCameraLook2::Load(LPCSTR section)

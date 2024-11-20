@@ -174,10 +174,10 @@ template <bool bClass3, bool bFirst> class box_collider
 		v2.x = mLeafVerts[2].x - center.x;
 
 		// First, test overlap in the {x,y,z}-directions
-		float min, max;
+		float min_value, max_value;
 		// Find min, max of the triangle in x-direction, and test for overlap in X
-		FINDMINMAX(v0.x, v1.x, v2.x, min, max);
-		if (min > extents.x || max < -extents.x)
+		FINDMINMAX(v0.x, v1.x, v2.x, min_value, max_value);
+		if (min_value > extents.x || max_value < -extents.x)
 			return false;
 
 		// Same for Y
@@ -185,8 +185,8 @@ template <bool bClass3, bool bFirst> class box_collider
 		v1.y = mLeafVerts[1].y - center.y;
 		v2.y = mLeafVerts[2].y - center.y;
 
-		FINDMINMAX(v0.y, v1.y, v2.y, min, max);
-		if (min > extents.y || max < -extents.y)
+		FINDMINMAX(v0.y, v1.y, v2.y, min_value, max_value);
+		if (min_value > extents.y || max_value < -extents.y)
 			return false;
 
 		// Same for Z
@@ -194,8 +194,8 @@ template <bool bClass3, bool bFirst> class box_collider
 		v1.z = mLeafVerts[1].z - center.z;
 		v2.z = mLeafVerts[2].z - center.z;
 
-		FINDMINMAX(v0.z, v1.z, v2.z, min, max);
-		if (min > extents.z || max < -extents.z)
+		FINDMINMAX(v0.z, v1.z, v2.z, min_value, max_value);
+		if (min_value > extents.z || max_value < -extents.z)
 			return false;
 
 		// 2) Test if the box intersects the plane of the triangle

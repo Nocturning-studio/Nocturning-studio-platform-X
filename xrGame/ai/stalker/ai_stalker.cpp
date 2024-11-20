@@ -403,7 +403,7 @@ BOOL CAI_Stalker::net_Spawn(CSE_Abstract* DC)
 #endif // DEBUG_MEMORY_MANAGER
 
 	movement().m_head.current.yaw = movement().m_head.target.yaw = movement().m_body.current.yaw =
-		movement().m_body.target.yaw = angle_normalize_signed(-tpHuman->o_torso.yaw);
+		movement().m_body.target.yaw = angle_normalize_signedf(-tpHuman->o_torso.yaw);
 	movement().m_body.current.pitch = movement().m_body.target.pitch = 0;
 
 	if (ai().game_graph().valid_vertex_id(tpHuman->m_tGraphID))

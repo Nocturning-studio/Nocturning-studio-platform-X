@@ -217,8 +217,8 @@ void CHelicopter::UpdateWeapons()
 	};
 
 	// lerp angle
-	angle_lerp(m_cur_rot.x, m_tgt_rot.x, PI, Device.fTimeDelta);
-	angle_lerp(m_cur_rot.y, m_tgt_rot.y, PI, Device.fTimeDelta);
+	angle_lerpf(m_cur_rot.x, m_tgt_rot.x, PI, Device.fTimeDelta);
+	angle_lerpf(m_cur_rot.y, m_tgt_rot.y, PI, Device.fTimeDelta);
 
 	if (isOnAttack())
 	{
@@ -293,7 +293,7 @@ void CHelicopter::UpdateMGunDir()
 		A_.sub(dep, m_bind_x);
 		m_i_bind_x_xform.transform_dir(A_);
 		A_.normalize();
-		m_tgt_rot.x = angle_normalize_signed(m_bind_rot.x - A_.getP());
+		m_tgt_rot.x = angle_normalize_signedf(m_bind_rot.x - A_.getP());
 		float sv_x = m_tgt_rot.x;
 		clamp(m_tgt_rot.x, -m_lim_x_rot.y, -m_lim_x_rot.x);
 		if (!fsimilar(sv_x, m_tgt_rot.x, EPS_L))
@@ -304,15 +304,15 @@ void CHelicopter::UpdateMGunDir()
 		A_.sub(dep, m_bind_y);
 		m_i_bind_y_xform.transform_dir(A_);
 		A_.normalize();
-		m_tgt_rot.y = angle_normalize_signed(m_bind_rot.y - A_.getH());
+		m_tgt_rot.y = angle_normalize_signedf(m_bind_rot.y - A_.getH());
 		float sv_y = m_tgt_rot.y;
 		clamp(m_tgt_rot.y, -m_lim_y_rot.y, -m_lim_y_rot.x);
 		if (!fsimilar(sv_y, m_tgt_rot.y, EPS_L))
 			m_allow_fire = FALSE;
 	}
 
-	if ((angle_difference(m_cur_rot.x, m_tgt_rot.x) > deg2rad(m_barrel_dir_tolerance)) ||
-		(angle_difference(m_cur_rot.y, m_tgt_rot.y) > deg2rad(m_barrel_dir_tolerance)))
+	if ((angle_differencef(m_cur_rot.x, m_tgt_rot.x) > deg2rad(m_barrel_dir_tolerance)) ||
+		(angle_differencef(m_cur_rot.y, m_tgt_rot.y) > deg2rad(m_barrel_dir_tolerance)))
 		m_allow_fire = FALSE;
 }
 

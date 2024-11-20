@@ -25,6 +25,8 @@
 
 /* include *everything* here */
 
+#pragma warning(disable : 4995)
+
 #include "config.h"
 #include "compatibility.h"
 #include "common.h"

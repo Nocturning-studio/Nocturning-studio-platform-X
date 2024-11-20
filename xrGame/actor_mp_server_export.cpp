@@ -15,10 +15,10 @@ void CSE_ActorMP::fill_state(actor_mp_state& state)
 
 	state.logic_acceleration = accel;
 
-	state.model_yaw = angle_normalize(o_model);
-	state.camera_yaw = angle_normalize(o_torso.yaw);
-	state.camera_pitch = angle_normalize(o_torso.pitch);
-	state.camera_roll = angle_normalize(o_torso.roll);
+	state.model_yaw = angle_normalizef(o_model);
+	state.camera_yaw = angle_normalizef(o_torso.yaw);
+	state.camera_pitch = angle_normalizef(o_torso.pitch);
+	state.camera_roll = angle_normalizef(o_torso.roll);
 
 	state.time = timestamp;
 

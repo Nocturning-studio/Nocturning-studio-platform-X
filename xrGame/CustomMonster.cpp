@@ -390,9 +390,9 @@ void CCustomMonster::shedule_Update(u32 DT)
 void CCustomMonster::net_update::lerp(CCustomMonster::net_update& A, CCustomMonster::net_update& B, float f)
 {
 	//
-	o_model = angle_lerp(A.o_model, B.o_model, f);
-	o_torso.yaw = angle_lerp(A.o_torso.yaw, B.o_torso.yaw, f);
-	o_torso.pitch = angle_lerp(A.o_torso.pitch, B.o_torso.pitch, f);
+	o_model = angle_lerpf(A.o_model, B.o_model, f);
+	o_torso.yaw = angle_lerpf(A.o_torso.yaw, B.o_torso.yaw, f);
+	o_torso.pitch = angle_lerpf(A.o_torso.pitch, B.o_torso.pitch, f);
 	p_pos.lerp(A.p_pos, B.p_pos, f);
 	fHealth = A.fHealth * (1.f - f) + B.fHealth * f;
 }

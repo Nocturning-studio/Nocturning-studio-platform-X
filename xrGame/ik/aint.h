@@ -67,7 +67,7 @@ inline int ge(float x, float y, const float eps = AINT_EPSILON)
 //
 // Puts an angle in the range 0..2*PI
 //
-// inline float angle_normalize(float psi)
+// inline float angle_normalizef(float psi)
 //{
 //    if (fabs(psi-2*M_PI) < AINT_EPSILON)
 //	psi = 2*M_PI;
@@ -90,8 +90,8 @@ inline float angle_distance(float a1, float a2)
 {
 	float t1, t2;
 
-	a1 = angle_normalize(a1);
-	a2 = angle_normalize(a2);
+	a1 = angle_normalizef(a1);
+	a2 = angle_normalizef(a2);
 
 	if (a1 > a2)
 	{
@@ -183,7 +183,7 @@ class AngleInt
 		if (IsEmpty())
 			return 0;
 
-		a = angle_normalize(a);
+		a = angle_normalizef(a);
 		if (iszero(a) || istwopi(a))
 			return (low > high) || iszero(low) || istwopi(high);
 		else
