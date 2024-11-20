@@ -476,9 +476,9 @@ namespace boost {
                                        R BOOST_FUNCTION_COMMA
                                        BOOST_FUNCTION_TEMPLATE_ARGS
                                      >::type
-          invoker_type;
+          invokr_type;
 
-        invoker = &invoker_type::invoke;
+        invoker = &invokr_type::invoke;
         function_base::manager = &detail::function::functor_manager<
                                     FunctionObj, Allocator>::manage;
 #ifndef BOOST_NO_STD_ALLOCATOR
