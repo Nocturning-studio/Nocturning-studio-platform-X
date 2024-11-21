@@ -689,7 +689,7 @@ void CActor::g_SetAnimation(u32 mstate_rl)
 		float pos = 0.f;
 		VERIFY(!m_current_legs_blend || !fis_zero(m_current_legs_blend->timeTotal));
 		if ((mstate_real & mcAnyMove) && (mstate_old & mcAnyMove) && m_current_legs_blend)
-			pos = fmod(m_current_legs_blend->timeCurrent, m_current_legs_blend->timeTotal) /
+			pos = fmodf(m_current_legs_blend->timeCurrent, m_current_legs_blend->timeTotal) /
 				  m_current_legs_blend->timeTotal;
 		m_current_legs_blend =
 			smart_cast<CKinematicsAnimated*>(Visual())->PlayCycle(M_legs, TRUE, legs_play_callback, this);

@@ -81,7 +81,7 @@ void CRenderTarget::phase_combine()
 
 		RCache.set_Geometry(g_combine_VP);
 
-		Fvector4 debug_mode = {ps_r_debug_render, 0, 0, 0};
+		Fvector4 debug_mode = {(float)ps_r_debug_render, 0, 0, 0};
 		RCache.set_c("debug_mode", debug_mode);
 
 		RCache.set_c("ambient_color", ambclr);

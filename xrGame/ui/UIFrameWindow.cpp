@@ -134,8 +134,8 @@ void CUIFrameWindow::FrameClip(const Frect parentAbsR)
 			 max(m_UIWndFrame.frame[CUIFrameRect::fmR].GetPosY(), parentAbsR.top);
 	size_x =
 		min(ourAbsR.right, parentAbsR.right) - max(m_UIWndFrame.frame[CUIFrameRect::fmR].GetPosX(), parentAbsR.left);
-	rem_y = fmod(size_y, ts.y);
-	rem_x = fmod(size_x, ts.x);
+	rem_y = fmodf(size_y, ts.y);
+	rem_x = fmodf(size_x, ts.x);
 	tile_y = iFloor(size_y / ts.y);
 	tile_x = iFloor(size_x / ts.x);
 
@@ -173,8 +173,8 @@ void CUIFrameWindow::FrameClip(const Frect parentAbsR)
 			 max(m_UIWndFrame.frame[CUIFrameRect::fmB].GetPosX(), parentAbsR.left);
 	size_y =
 		min(ourAbsR.bottom, parentAbsR.bottom) - max(m_UIWndFrame.frame[CUIFrameRect::fmRB].GetPosY(), parentAbsR.top);
-	rem_x = fmod(size_x, ts.x);
-	rem_y = fmod(size_y, ts.y);
+	rem_x = fmodf(size_x, ts.x);
+	rem_y = fmodf(size_y, ts.y);
 	tile_x = iFloor(float(size_x) / ts.x);
 	tile_y = iFloor(float(size_y) / ts.y);
 
@@ -213,8 +213,8 @@ void CUIFrameWindow::FrameClip(const Frect parentAbsR)
 			 max(m_UIWndFrame.frame[CUIFrameRect::fmL].GetPosY(), parentAbsR.top);
 	size_x = min(m_UIWndFrame.frame[CUIFrameRect::fmB].GetPosX(), parentAbsR.right) -
 			 max(m_UIWndFrame.frame[CUIFrameRect::fmL].GetPosX(), parentAbsR.left);
-	rem_x = fmod(size_x, ts.x);
-	rem_y = fmod(size_y, ts.y);
+	rem_x = fmodf(size_x, ts.x);
+	rem_y = fmodf(size_y, ts.y);
 	tile_y = iFloor(float(size_y) / ts.y);
 	tile_x = iFloor(float(size_x) / ts.y);
 
@@ -252,8 +252,8 @@ void CUIFrameWindow::FrameClip(const Frect parentAbsR)
 			 max(m_UIWndFrame.frame[CUIFrameRect::fmT].GetPosX(), parentAbsR.left);
 	size_y = min(m_UIWndFrame.frame[CUIFrameRect::fmBK].GetPosY(), parentAbsR.bottom) -
 			 max(m_UIWndFrame.frame[CUIFrameRect::fmT].GetPosY(), parentAbsR.top);
-	rem_x = fmod(size_x, ts.x);
-	rem_y = fmod(size_y, ts.y);
+	rem_x = fmodf(size_x, ts.x);
+	rem_y = fmodf(size_y, ts.y);
 	tile_x = iFloor(float(size_x) / ts.x);
 	tile_y = iFloor(float(size_y) / ts.y);
 
@@ -276,8 +276,8 @@ void CUIFrameWindow::FrameClip(const Frect parentAbsR)
 			 max(m_UIWndFrame.frame[CUIFrameRect::fmBK].GetPosX(), parentAbsR.left);
 	size_y = min(m_UIWndFrame.frame[CUIFrameRect::fmB].GetPosY(), parentAbsR.bottom) -
 			 max(m_UIWndFrame.frame[CUIFrameRect::fmBK].GetPosY(), parentAbsR.top);
-	rem_x = fmod(size_x, ts.x);
-	rem_y = fmod(size_y, ts.y);
+	rem_x = fmodf(size_x, ts.x);
+	rem_y = fmodf(size_y, ts.y);
 	tile_x = iFloor(float(size_x) / ts.x);
 	tile_y = iFloor(float(size_y) / ts.y);
 

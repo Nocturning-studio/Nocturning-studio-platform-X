@@ -133,7 +133,7 @@ int myacos(float x, float solns[2])
 	if (_abs(x) > 1)
 		return 0;
 
-	solns[0] = angle_normalize_signed(acos(x));
+	solns[0] = angle_normalize_signed(acosf(x));
 
 	if (math_iszero(solns[0]))
 		return 1;
@@ -151,7 +151,7 @@ int myasin(float x, float solns[2])
 	if (_abs(x) > 1)
 		return 0;
 
-	solns[0] = (float)angle_normalize_signed(asin(x));
+	solns[0] = (float)angle_normalize_signed(asinf(x));
 
 	if (math_iszero(solns[0]))
 		return 1;

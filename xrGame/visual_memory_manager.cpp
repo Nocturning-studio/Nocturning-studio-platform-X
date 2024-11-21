@@ -258,8 +258,8 @@ float CVisualMemoryManager::object_luminocity(const CGameObject* game_object) co
 	if (game_object->CLS_ID != CLSID_OBJECT_ACTOR)
 		return (1.f);
 	float luminocity = const_cast<CGameObject*>(game_object)->ROS()->get_luminocity();
-	float power = log(luminocity > .001f ? luminocity : .001f) * current_state().m_luminocity_factor;
-	return (exp(power));
+	float power = logf(luminocity > .001f ? luminocity : .001f) * current_state().m_luminocity_factor;
+	return (expf(power));
 }
 
 float CVisualMemoryManager::get_object_velocity(const CGameObject* game_object,

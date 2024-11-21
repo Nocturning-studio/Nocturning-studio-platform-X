@@ -375,7 +375,7 @@ inline float mytan(float v)
 		else
 			v = 3 * M_PI / 2 - big_eps;
 	}
-	return tan(v);
+	return tanf(v);
 }
 
 void ComplexJtLimit::init(int jt_type, float a1, float b1, float c1, float a2, float b2, float c2, float a3, float b3,
@@ -413,12 +413,12 @@ static AngleInt PosCos(-M_PI / 2, M_PI / 2);
 
 float ComplexJtLimit::theta1(float v) const
 {
-	return angle_normalize(atan2(sin_eq.eval(v), cos_eq.eval(v)));
+	return angle_normalize(atan2f(sin_eq.eval(v), cos_eq.eval(v)));
 }
 
 float ComplexJtLimit::theta2(float v) const
 {
-	return angle_normalize(atan2(-sin_eq.eval(v), -cos_eq.eval(v)));
+	return angle_normalize(atan2f(-sin_eq.eval(v), -cos_eq.eval(v)));
 }
 
 float ComplexJtLimit::theta(int family, float psi) const
@@ -688,7 +688,7 @@ void ComplexJtLimit::store_intersections(int n, const float* s, float low, float
 	sort(n2, f2);
 }
 
-const float tan_0 = tan(eps / 2.0f);
+const float tan_0 = tanf(eps / 2.0f);
 const float tan_two_pi = (2 * M_PI - eps / 2.0f);
 
 void ComplexJtLimit::PsiLimits(int num_s, float s[], AngleIntList& psi1, AngleIntList& psi2) const
