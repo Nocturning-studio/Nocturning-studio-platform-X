@@ -614,7 +614,7 @@ int __cdecl main	(int argc, char* argv[])
 	g_temporary_stuff	= &trivial_encryptor::decode;
 	g_dummy_stuff		= &trivial_encryptor::encode;
 
-	Core._initialize("xrCompress",0,FALSE);
+	Core._initialize("xrCompress", "xrCompress", 0, FALSE);
 	printf			("\n\n");
 
 	LPCSTR params = GetCommandLine();

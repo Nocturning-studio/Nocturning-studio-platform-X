@@ -292,6 +292,7 @@ class XRCORE_API xrCore
 {
   public:
 	string64 ApplicationName;
+	string64 ApplicationNameLog;
 	string_path ApplicationPath;
 	string_path WorkingPath;
 	string64 UserName;
@@ -299,7 +300,8 @@ class XRCORE_API xrCore
 	string512 Params;
 
   public:
-	void _initialize(LPCSTR ApplicationName, LogCallback cb = 0, BOOL init_fs = TRUE, LPCSTR fs_fname = 0);
+	void _initialize(LPCSTR ApplicationName, LPCSTR _ApplicationNameLog, LogCallback cb = 0, BOOL init_fs = TRUE,
+					 LPCSTR fs_fname = 0);
 	void _destroy();
 };
 extern XRCORE_API xrCore Core;
