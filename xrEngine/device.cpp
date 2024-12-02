@@ -379,8 +379,7 @@ void CRenderDevice::FrameMove()
 		// Timer
 		float fPreviousFrameTime = Timer.GetElapsed_sec();
 		Timer.Start(); // previous frame
-		fTimeDelta =
-			0.1f * fTimeDelta + 0.9f * fPreviousFrameTime; // smooth random system activity - worst case ~7% error
+		fTimeDelta = 0.1f * fTimeDelta + 0.9f * fPreviousFrameTime; // smooth random system activity - worst case ~7% error
 		if (fTimeDelta > .1f)
 			fTimeDelta = .1f; // limit to 15fps minimum
 
@@ -428,6 +427,7 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
 
 	if (bOn)
 	{
+#pragma todo("Deathman to Deathman: ƒобавить сюда проверку на разрешение отрисовку HUD")
 		if (!Paused())
 			bShowPauseString = TRUE;
 
