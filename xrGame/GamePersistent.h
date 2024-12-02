@@ -31,6 +31,7 @@ class CGamePersistent : public IGame_Persistent, public IEventReceiver
 	float m_PickDofNear;
 	float m_DofChangeSpeed;
 	Fvector m_dof[4]; // 0-dest 1-current 2-from 3-original
+	bool m_bNightVisionState;
 
 	fastdelegate::FastDelegate0<> m_intro_event;
 
@@ -84,12 +85,23 @@ class CGamePersistent : public IGame_Persistent, public IEventReceiver
 
 	Fvector3 m_DofUI;
 
+	// Depth of field
 	virtual void SetPickableEffectorDOF(bool bSet);
 	virtual void SetEffectorDOF(const Fvector& needed_dof);
 	virtual void RestoreEffectorDOF();
 
 	virtual void GetCurrentDof(Fvector3& dof);
 	virtual void SetBaseDof(const Fvector3& dof);
+
+	// Night vision
+	virtual bool GetNightVisionState()
+	{
+		return m_bNightVisionState;
+	};
+	virtual void SetNightVisionState(bool state)
+	{
+		m_bNightVisionState = state;
+	};
 };
 
 IC CGamePersistent& GamePersistent()

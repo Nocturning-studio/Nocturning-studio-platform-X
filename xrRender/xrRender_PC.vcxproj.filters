@@ -148,6 +148,15 @@
     <Filter Include="Core\Color convertation">
       <UniqueIdentifier>{1bdf62cf-c42a-47dc-ad73-10ecbca02a69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Blenders\Postprocess stage\Effectors">
+      <UniqueIdentifier>{33a9d6a0-c2d2-43ab-8a47-46b0c89a5e66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendertargets\Render stages\Output to screen stage">
+      <UniqueIdentifier>{1506a672-e327-473e-89b1-1d4fc7661f5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blenders\Output to screen stage">
+      <UniqueIdentifier>{ba8794b8-d398-4582-84a5-b2f9894a9c4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl_intersect.h">
@@ -369,6 +378,12 @@
     <ClInclude Include="r_color_converting.h">
       <Filter>Core\Color convertation</Filter>
     </ClInclude>
+    <ClInclude Include="blender_effectors.h">
+      <Filter>Blenders\Postprocess stage\Effectors</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_output_to_screen.h">
+      <Filter>Blenders\Output to screen stage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -536,7 +551,7 @@
     <ClCompile Include="r_rendertarget_phase_frame_overlay.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_PP.cpp">
+    <ClCompile Include="r_rendertarget_phase_effectors.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="du_sphere_part.cpp">
@@ -721,6 +736,15 @@
     </ClCompile>
     <ClCompile Include="Blender_tree.cpp">
       <Filter>Blenders\GBuffer stage</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_effectors.cpp">
+      <Filter>Blenders\Postprocess stage\Effectors</Filter>
+    </ClCompile>
+    <ClCompile Include="r_rendertarget_output_to_screen.cpp">
+      <Filter>Rendertargets\Render stages\Output to screen stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_output_to_screen.cpp">
+      <Filter>Blenders\Output to screen stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

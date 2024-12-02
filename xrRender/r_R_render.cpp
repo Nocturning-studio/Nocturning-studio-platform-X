@@ -449,8 +449,41 @@ void CRender::Render()
 
 	// Postprocess
 	Device.Statistic->RenderCALC_POSTPROCESS.Begin();
+
 	Target->phase_combine();
+
+	// Generic0 -> Generic1
+	Target->phase_antialiasing();
+
+	if (ps_r_postprocess_flags.test(RFLAG_BLOOM))
+		Target->phase_bloom();
+
+	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
+		Target->phase_autoexposure();
+
+	if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
+		Target->motion_blur_phase_save_frame();
+
+	// Generic1 -> Generic0 -> Generic1
+	if (ps_r_postprocess_flags.test(RFLAG_DOF))
+		Target->phase_depth_of_field();
+
+	// Generic1 -> Generic0 -> Generic1
+	if (ps_r_postprocess_flags.test(RFLAG_BARREL_BLUR))
+		Target->phase_barrel_blur();
+
+	if (ps_render_flags.test(RFLAG_LENS_FLARES))
+		g_pGamePersistent->Environment().RenderFlares();
+
+	// Generic1 -> Generic0
+	Target->phase_combine_postprocess();
+
+	// Generic0 -> Generic1
+	Target->phase_effectors();
+
 	Device.Statistic->RenderCALC_POSTPROCESS.End();
+
+	Target->phase_output_to_screen();
 
 	VERIFY(0 == mapDistort.size());
 

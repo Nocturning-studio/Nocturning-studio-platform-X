@@ -47,13 +47,13 @@ void CRenderTarget::phase_depth_of_field()
 
 	for (int i = 0; i < 4; i++)
 	{
-		u_setrt(rt_Generic_1, NULL, NULL, NULL);
+		u_setrt(rt_Generic_0, NULL, NULL, NULL);
 		RCache.set_Element(s_dof->E[0]);
 		RCache.set_c("dof_params", dof.x, dof.y, dof.z, ps_r_dof_sky);
 		RCache.set_c("dof_kernel", vDofKernel.x, vDofKernel.y, ps_r_dof_kernel_size, 0);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-		u_setrt(rt_Generic_0, NULL, NULL, NULL);
+		u_setrt(rt_Generic_1, NULL, NULL, NULL);
 		RCache.set_Element(s_dof->E[1]);
 		RCache.set_c("dof_params", dof.x, dof.y, dof.z, ps_r_dof_sky);
 		RCache.set_c("dof_kernel", vDofKernel.x, vDofKernel.y, ps_r_dof_kernel_size, 0);

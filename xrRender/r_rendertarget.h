@@ -37,6 +37,8 @@ class CRenderTarget : public IRender_Target
 	IBlender* b_motion_blur;
 	IBlender* b_frame_overlay;
 	IBlender* b_reflections;
+	IBlender* b_effectors;
+	IBlender* b_output_to_screen;
 
 #ifdef DEBUG
 	struct dbg_line_t
@@ -81,6 +83,10 @@ class CRenderTarget : public IRender_Target
 	ref_texture t_LUM_dest; // destination & usage for current frame
 
 	ref_rt rt_Reflections;
+
+	ref_rt rt_Radiation_Noise0;
+	ref_rt rt_Radiation_Noise1;
+	ref_rt rt_Radiation_Noise2;
 
 	// ao
 	ref_rt rt_ao_base;
@@ -167,10 +173,11 @@ class CRenderTarget : public IRender_Target
 	ref_shader s_frame_overlay;
 	ref_shader s_tonemapping;
 	ref_shader s_fog_scattering;
+	ref_shader s_output_to_screen;
 
   public:
-	ref_shader s_postprocess;
-	ref_geom g_postprocess;
+	ref_shader s_effectors;
+	ref_geom g_effectors;
 	ref_shader s_menu;
 	ref_geom g_menu;
 
@@ -195,6 +202,8 @@ class CRenderTarget : public IRender_Target
 	float param_color_map_interpolate;
 	ColorMapManager color_map_manager;
 
+	float param_radiation_intensity;
+
 	//	Igor: used for volumetric lights
 	bool m_bHasActiveVolumetric;
 
@@ -217,7 +226,6 @@ class CRenderTarget : public IRender_Target
 				 IDirect3DSurface9* zb);
 	void u_calc_tc_noise(Fvector2& p0, Fvector2& p1);
 	void u_calc_tc_duality_ss(Fvector2& r0, Fvector2& r1, Fvector2& l0, Fvector2& l1);
-	BOOL u_need_PP();
 	BOOL u_DBT_enable(float zMin, float zMax);
 	void u_DBT_disable();
 
@@ -248,8 +256,9 @@ class CRenderTarget : public IRender_Target
 
 	void phase_autoexposure();
 
+	void phase_combine_postprocess();
+
 	void phase_combine();
-	void phase_combine_volumetric();
 
 	void calc_screen_space_reflections();
 
@@ -262,8 +271,6 @@ class CRenderTarget : public IRender_Target
 	void phase_create_distortion_mask();
 	void phase_distortion();
 
-	void depth_of_field_pass_poisson_filter();
-	void depth_of_field_pass_separated_filter();
 	void phase_depth_of_field();
 
 	void phase_barrel_blur();
@@ -276,7 +283,13 @@ class CRenderTarget : public IRender_Target
 
 	bool u_need_CM();
 
-	void phase_pp();
+	void phase_effectors_pass_generate_noise0();
+	void phase_effectors_pass_generate_noise1();
+	void phase_effectors_pass_generate_noise2();
+	void phase_effectors_pass_night_vision();
+	void phase_effectors();
+
+	void phase_output_to_screen();
 
 	virtual void set_blur(float f)
 	{
@@ -340,7 +353,10 @@ class CRenderTarget : public IRender_Target
 	{
 		color_map_manager.SetTextures(tex0, tex1);
 	}
-
+	virtual void set_radiation_intensity(float f)
+	{
+		param_radiation_intensity = f;
+	}
 	//	Need to reset stencil only when marker overflows.
 	//	Don't clear when render for the first time
 	void reset_light_marker(bool bResetStencil = false);

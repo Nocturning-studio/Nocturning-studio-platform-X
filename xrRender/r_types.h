@@ -34,6 +34,10 @@
 #define r_RT_bloom_blades1 "$user$bloom_blades1"
 #define r_RT_bloom_blades2 "$user$bloom_blades2"
 
+#define r_RT_radiation_noise0 "$user$radiation_noise0"
+#define r_RT_radiation_noise1 "$user$radiation_noise1"
+#define r_RT_radiation_noise2 "$user$radiation_noise2"
+
 // Ambient occlusion
 #define r_RT_ao "$user$ao"
 
@@ -56,6 +60,9 @@
 #define r_jitter "$user$jitter_"
 
 #define r_sunmask "sunmask"
+
+#define r_colormap0 "$user$cmap0"
+#define r_colormap1 "$user$cmap1"
 
 #define JITTER(a) r_jitter #a
 

@@ -166,6 +166,7 @@ void CPostprocessAnimator::Update(float tm)
 	for (int a = 0; a < POSTPROCESS_PARAMS_COUNT; a++)
 		m_Params[a]->update(tm);
 }
+
 void CPostprocessAnimator::SetDesiredFactor(float f, float sp)
 {
 	m_dest_factor = f;
@@ -185,6 +186,10 @@ void CPostprocessAnimator::SetCurrentFactor(float f)
 #ifndef _PP_EDITOR_
 BOOL CPostprocessAnimator::Process(SPPInfo& PPInfo)
 {
+	VERIFY(_valid(m_factor));
+	VERIFY(_valid(m_factor_speed));
+	VERIFY(_valid(m_dest_factor));
+
 	if (m_bCyclic)
 		fLifeTime = 100000;
 
@@ -192,14 +197,12 @@ BOOL CPostprocessAnimator::Process(SPPInfo& PPInfo)
 
 	if (m_start_time < 0.0f)
 		m_start_time = Device.fTimeGlobal;
+
 	if (m_bCyclic && ((Device.fTimeGlobal - m_start_time) > f_length))
 		m_start_time += f_length;
 
 	Update(Device.fTimeGlobal - m_start_time);
 
-	VERIFY(_valid(m_factor));
-	VERIFY(_valid(m_factor_speed));
-	VERIFY(_valid(m_dest_factor));
 	if (m_bStop)
 		m_factor -= Device.fTimeDelta * m_factor_speed;
 	else
@@ -238,6 +241,8 @@ BOOL CPostprocessAnimator::Process(SPPInfo& PPInfo)
 		R_ASSERT3(0, "noise.grain cant be zero! see postprocess", *m_Name);
 	}
 
+	m_EffectorParams.radiation_intensity = m_radiation_intensity;
+
 	if (fsimilar(m_factor, 0.0001f, EPS_S))
 		return FALSE;
 
@@ -272,6 +277,7 @@ void CPostprocessAnimator::Create()
 	m_start_time = -1.0f;
 	m_factor_speed = 1.0f;
 	f_length = 0.0f;
+	m_radiation_intensity = 0.0f;
 
 	m_Params[0] = xr_new<CPostProcessColor>(&m_EffectorParams.color_base); // base color
 	VERIFY(m_Params[0]);

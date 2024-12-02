@@ -20,6 +20,8 @@
 #include "blender_light_spot.h"
 #include "blender_autoexposure.h"
 #include "blender_barrel_blur.h"
+#include "blender_effectors.h"
+#include "blender_output_to_screen.h"
 
 float CRenderTarget::hclip(float v, float dim)
 {
@@ -29,22 +31,26 @@ float CRenderTarget::hclip(float v, float dim)
 void CRenderTarget::u_setrt(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, IDirect3DSurface9* zb)
 {
 	VERIFY(_1);
+
 	dwWidth = _1->dwWidth;
 	dwHeight = _1->dwHeight;
+
 	if (_1)
 		RCache.set_RT(_1->pRT, 0);
 	else
 		RCache.set_RT(NULL, 0);
+
 	if (_2)
 		RCache.set_RT(_2->pRT, 1);
 	else
 		RCache.set_RT(NULL, 1);
+
 	if (_3)
 		RCache.set_RT(_3->pRT, 2);
 	else
 		RCache.set_RT(NULL, 2);
+
 	RCache.set_ZB(zb);
-	//	RImplementation.rmNormal				();
 }
 
 void CRenderTarget::u_setrt(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3,
@@ -245,6 +251,8 @@ CRenderTarget::CRenderTarget()
 	b_motion_blur = xr_new<CBlender_motion_blur>();
 	b_frame_overlay = xr_new<CBlender_frame_overlay>();
 	b_reflections = xr_new<CBlender_reflections>();
+	b_effectors = xr_new<CBlender_effectors>();
+	b_output_to_screen = xr_new<CBlender_output_to_screen>();
 
 	// SCREENSHOT
 	{
@@ -333,6 +341,10 @@ CRenderTarget::CRenderTarget()
 	g_bloom_build.create(fvf_build, RCache.Vertex.Buffer(), RCache.QuadIB);
 	g_bloom_filter.create(fvf_filter, RCache.Vertex.Buffer(), RCache.QuadIB);
 	s_bloom.create(b_bloom, "r\\bloom");
+
+	rt_Radiation_Noise0.create(r_RT_radiation_noise0, dwWidth * 0.25f, dwHeight * 0.25f, D3DFMT_L8);
+	rt_Radiation_Noise1.create(r_RT_radiation_noise1, dwWidth * 0.5f, dwHeight * 0.5f, D3DFMT_L8);
+	rt_Radiation_Noise2.create(r_RT_radiation_noise2, dwWidth, dwHeight, D3DFMT_L8);
 
 	// AO
 	// Create rendertarget
@@ -512,13 +524,14 @@ CRenderTarget::CRenderTarget()
 	s_fog_scattering.create(b_fog_scattering, "r\\fog_scattering");
 
 	// PP
-	s_postprocess.create("postprocess");
-	g_postprocess.create(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX3, RCache.Vertex.Buffer(),
-						 RCache.QuadIB);
+	s_effectors.create(b_effectors, "postprocess_stage_pass_effectors");
+	g_effectors.create(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX3, RCache.Vertex.Buffer(), RCache.QuadIB);
 
 	// Menu
 	s_menu.create("distort");
 	g_menu.create(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
+
+	s_output_to_screen.create(b_output_to_screen, "output_to_screen_stage");
 }
 
 CRenderTarget::~CRenderTarget()

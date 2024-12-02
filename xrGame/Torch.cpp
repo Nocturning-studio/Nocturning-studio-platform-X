@@ -17,6 +17,9 @@
 #include "UIGameCustom.h"
 #include "actorEffector.h"
 #include "CustomOutfit.h"
+#include "../xrEngine/IGame_Persistent.h"
+
+#pragma todo("Deathman to Deathman: Отрефакторить и разделить ответственности")
 
 static const float TIME_2_HIDE = 5.f;
 static const float TORCH_INERTION_CLAMP = PI_DIV_6;
@@ -50,6 +53,7 @@ CTorch::CTorch(void)
 
 	m_prev_hp.set(0, 0);
 	m_delta_h = 0;
+	m_bNightVisionPostprocessEnabled = false;
 }
 
 CTorch::~CTorch(void)
@@ -147,12 +151,12 @@ void CTorch::SwitchNightVision(bool vision_on)
 
 	if (m_bNightVisionOn)
 	{
-		CEffectorPP* pp = pA->Cameras().GetPPEffector((EEffectorPPType)effNightvision);
-		if (!pp)
+		if (!m_bNightVisionPostprocessEnabled)
 		{
 			if (pCO && pCO->m_NightVisionSect.size())
 			{
-				AddEffector(pA, effNightvision, pCO->m_NightVisionSect);
+				m_bNightVisionPostprocessEnabled = true;
+				g_pGamePersistent->SetNightVisionState(m_bNightVisionPostprocessEnabled);
 				HUD_SOUND::PlaySound(m_NightVisionOnSnd, pA->Position(), pA, bPlaySoundFirstPerson);
 				HUD_SOUND::PlaySound(m_NightVisionIdleSnd, pA->Position(), pA, bPlaySoundFirstPerson, true);
 			}
@@ -160,10 +164,10 @@ void CTorch::SwitchNightVision(bool vision_on)
 	}
 	else
 	{
-		CEffectorPP* pp = pA->Cameras().GetPPEffector((EEffectorPPType)effNightvision);
-		if (pp)
+		if (m_bNightVisionPostprocessEnabled)
 		{
-			pp->Stop(1.0f);
+			m_bNightVisionPostprocessEnabled = false;
+			g_pGamePersistent->SetNightVisionState(m_bNightVisionPostprocessEnabled);
 			HUD_SOUND::PlaySound(m_NightVisionOffSnd, pA->Position(), pA, bPlaySoundFirstPerson);
 			HUD_SOUND::StopSound(m_NightVisionIdleSnd);
 		}

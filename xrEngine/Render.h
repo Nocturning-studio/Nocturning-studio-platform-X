@@ -140,6 +140,7 @@ class ENGINE_API IRender_Target
 	virtual void set_cm_imfluence(float f) = 0;
 	virtual void set_cm_interpolate(float f) = 0;
 	virtual void set_cm_textures(const shared_str& tex0, const shared_str& tex1) = 0;
+	virtual void set_radiation_intensity(float f) = 0;
 	virtual ~IRender_Target(){};
 };
 

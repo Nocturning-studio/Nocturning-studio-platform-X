@@ -27,6 +27,12 @@ void CZoneEffector::Load(LPCSTR section)
 	m_pp_fname = pSettings->r_string(section, "pp_eff_name");
 	r_min_perc = pSettings->r_float(section, "radius_min");
 	r_max_perc = pSettings->r_float(section, "radius_max");
+
+	if (pSettings->line_exist(section, "radiation_intensity"))
+		m_radiation_intensity = pSettings->r_float(section, "radiation_intensity");
+	else
+		m_radiation_intensity = 0.0f;
+
 	VERIFY(r_min_perc <= r_max_perc);
 }
 
@@ -40,6 +46,7 @@ void CZoneEffector::Activate()
 	m_pp_effector->SetCyclic(true);
 	m_pp_effector->SetFactorFunc(GET_KOEFF_FUNC(this, &CZoneEffector::GetFactor));
 	m_pp_effector->Load(*m_pp_fname);
+	m_pp_effector->SetRadiationIntensity(m_radiation_intensity);
 	m_pActor->Cameras().AddPPEffector(m_pp_effector);
 }
 

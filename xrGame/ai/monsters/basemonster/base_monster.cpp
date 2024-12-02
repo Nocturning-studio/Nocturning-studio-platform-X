@@ -494,6 +494,7 @@ void CBaseMonster::on_restrictions_change()
 
 void CBaseMonster::load_effector(LPCSTR section, LPCSTR line, SAttackEffector& effector)
 {
+#pragma todo("Deathman to Deathman: Отрефакторить")
 	LPCSTR ppi_section = pSettings->r_string(section, line);
 	effector.ppi.duality.h = pSettings->r_float(ppi_section, "duality_h");
 	effector.ppi.duality.v = pSettings->r_float(ppi_section, "duality_v");
