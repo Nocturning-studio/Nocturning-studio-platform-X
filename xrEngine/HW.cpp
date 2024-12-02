@@ -107,6 +107,9 @@ void CHW::DestroyD3D()
 //////////////////////////////////////////////////////////////////////
 D3DFORMAT CHW::selectDepthStencil(D3DFORMAT fTarget)
 {
+#pragma todo("Deathman to Deathman: Отрефакторить")
+	return D3DFMT_D24S8;
+	/*
 	static D3DFORMAT fDS_Try1[6] = {D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, D3DFMT_D15S1};
 
 	D3DFORMAT* fDS_Try = fDS_Try1;
@@ -114,8 +117,7 @@ D3DFORMAT CHW::selectDepthStencil(D3DFORMAT fTarget)
 
 	for (int it = 0; it < fDS_Cnt; it++)
 	{
-		if (SUCCEEDED(pD3D->CheckDeviceFormat(DevAdapter, DevT, fTarget, D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE,
-											  fDS_Try[it])))
+		if (SUCCEEDED(pD3D->CheckDeviceFormat(DevAdapter, DevT, fTarget, D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE, fDS_Try[it])))
 		{
 			if (SUCCEEDED(pD3D->CheckDepthStencilMatch(DevAdapter, DevT, fTarget, fTarget, fDS_Try[it])))
 			{
@@ -124,6 +126,7 @@ D3DFORMAT CHW::selectDepthStencil(D3DFORMAT fTarget)
 		}
 	}
 	return D3DFMT_UNKNOWN;
+	*/
 }
 
 void CHW::DestroyDevice()
@@ -235,7 +238,7 @@ void CHW::CreateDevice(HWND m_hWnd)
 	{
 		fTarget = mWindowed.Format;
 		R_CHK(pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, TRUE));
-		fDepth = selectDepthStencil(fTarget);
+		fDepth = D3DFMT_D24S8;
 	}
 	else
 	{
@@ -267,7 +270,7 @@ void CHW::CreateDevice(HWND m_hWnd)
 			fTarget = D3DFMT_UNKNOWN;
 			break;
 		}
-		fDepth = selectDepthStencil(fTarget);
+		fDepth = D3DFMT_D24S8;
 	}
 
 	if ((D3DFMT_UNKNOWN == fTarget) || (D3DFMT_UNKNOWN == fTarget))
