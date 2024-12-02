@@ -663,7 +663,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lp
 	g_temporary_stuff = &trivial_encryptor::decode;
 
 	compute_build_id();
-	Core._initialize("X-Ray Engine", NULL, TRUE, fsgame[0] ? fsgame : NULL);
+	Core._initialize("X-Ray Engine", "xray_engine", NULL, TRUE, fsgame[0] ? fsgame : NULL);
 	InitSettings();
 
 #ifndef DEDICATED_SERVER
