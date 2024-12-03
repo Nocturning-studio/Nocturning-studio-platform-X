@@ -4,6 +4,8 @@
 
 template <typename T> struct ShaderTypeTraits;
 
+#pragma todo("Deathman to Deathman: Изменить расширения шейдеров")
+
 template <> struct ShaderTypeTraits<SVS>
 {
 	typedef CResourceManager::map_VS Map_S;

@@ -658,19 +658,19 @@ void CEnvironment::load_weathers()
 	file_list_type* file_list = FS.file_list_open("$game_weathers$", "");
 	VERIFY(file_list);
 
-	file_list_type::const_iterator i = file_list->begin();
-	file_list_type::const_iterator e = file_list->end();
-	for (; i != e; ++i)
+	file_list_type::const_iterator file_list_it = file_list->begin();
+	file_list_type::const_iterator file_list_end = file_list->end();
+	for (; file_list_it != file_list_end; ++file_list_it)
 	{
-		u32 length = xr_strlen(*i);
+		u32 length = xr_strlen(*file_list_it);
 		VERIFY(length >= 4);
-		VERIFY((*i)[length - 4] == '.');
-		VERIFY((*i)[length - 3] == 'l');
-		VERIFY((*i)[length - 2] == 't');
-		VERIFY((*i)[length - 1] == 'x');
+		VERIFY((*file_list_it)[length - 4] == '.');
+		VERIFY((*file_list_it)[length - 3] == 'l');
+		VERIFY((*file_list_it)[length - 2] == 't');
+		VERIFY((*file_list_it)[length - 1] == 'x');
 		u32 new_length = length - 4;
 		LPSTR identifier = (LPSTR)_alloca((new_length + 1) * sizeof(char));
-		Memory.mem_copy(identifier, *i, new_length * sizeof(char));
+		Memory.mem_copy(identifier, *file_list_it, new_length * sizeof(char));
 		identifier[new_length] = 0;
 		EnvVec& env = WeatherCycles[identifier];
 
@@ -684,11 +684,11 @@ void CEnvironment::load_weathers()
 
 		env.reserve(sections.size());
 
-		sections_type::const_iterator i = sections.begin();
-		sections_type::const_iterator e = sections.end();
-		for (; i != e; ++i)
+		sections_type::const_iterator sections_it = sections.begin();
+		sections_type::const_iterator sections_end = sections.end();
+		for (; sections_it != sections_end; ++sections_it)
 		{
-			CEnvDescriptor* object = create_descriptor((*i)->Name, config);
+			CEnvDescriptor* object = create_descriptor((*sections_it)->Name, config);
 			env.push_back(object);
 		}
 
@@ -718,19 +718,19 @@ void CEnvironment::load_weather_effects()
 	file_list_type* file_list = FS.file_list_open("$game_weather_effects$", "");
 	VERIFY(file_list);
 
-	file_list_type::const_iterator i = file_list->begin();
-	file_list_type::const_iterator e = file_list->end();
-	for (; i != e; ++i)
+	file_list_type::const_iterator file_list_it = file_list->begin();
+	file_list_type::const_iterator file_list_end = file_list->end();
+	for (; file_list_it != file_list_end; ++file_list_it)
 	{
-		u32 length = xr_strlen(*i);
+		u32 length = xr_strlen(*file_list_it);
 		VERIFY(length >= 4);
-		VERIFY((*i)[length - 4] == '.');
-		VERIFY((*i)[length - 3] == 'l');
-		VERIFY((*i)[length - 2] == 't');
-		VERIFY((*i)[length - 1] == 'x');
+		VERIFY((*file_list_it)[length - 4] == '.');
+		VERIFY((*file_list_it)[length - 3] == 'l');
+		VERIFY((*file_list_it)[length - 2] == 't');
+		VERIFY((*file_list_it)[length - 1] == 'x');
 		u32 new_length = length - 4;
 		LPSTR identifier = (LPSTR)_alloca((new_length + 1) * sizeof(char));
-		Memory.mem_copy(identifier, *i, new_length * sizeof(char));
+		Memory.mem_copy(identifier, *file_list_it, new_length * sizeof(char));
 		identifier[new_length] = 0;
 		EnvVec& env = WeatherFXs[identifier];
 
@@ -745,11 +745,11 @@ void CEnvironment::load_weather_effects()
 		env.reserve(sections.size() + 2);
 		env.push_back(create_descriptor("00:00:00", false));
 
-		sections_type::const_iterator i = sections.begin();
-		sections_type::const_iterator e = sections.end();
-		for (; i != e; ++i)
+		sections_type::const_iterator sections_it = sections.begin();
+		sections_type::const_iterator sections_end = sections.end();
+		for (; sections_it != sections_end; ++sections_it)
 		{
-			CEnvDescriptor* object = create_descriptor((*i)->Name, config);
+			CEnvDescriptor* object = create_descriptor((*sections_it)->Name, config);
 			env.push_back(object);
 		}
 
@@ -844,11 +844,11 @@ SThunderboltCollection* CEnvironment::thunderbolt_collection(xr_vector<SThunderb
 															 shared_str const& id)
 {
 	typedef xr_vector<SThunderboltCollection*> Container;
-	Container::iterator i = collection.begin();
-	Container::iterator e = collection.end();
-	for (; i != e; ++i)
-		if ((*i)->section == id)
-			return (*i);
+	Container::iterator container_it = collection.begin();
+	Container::iterator container_end = collection.end();
+	for (; container_it != container_end; ++container_it)
+		if ((*container_it)->section == id)
+			return (*container_it);
 
 	NODEFAULT;
 #ifdef DEBUG
@@ -860,12 +860,12 @@ CLensFlareDescriptor* CEnvironment::add_flare(xr_vector<CLensFlareDescriptor*>& 
 {
 	typedef xr_vector<CLensFlareDescriptor*> Flares;
 
-	Flares::const_iterator i = collection.begin();
-	Flares::const_iterator e = collection.end();
-	for (; i != e; ++i)
+	Flares::const_iterator flares_it = collection.begin();
+	Flares::const_iterator flares_end = collection.end();
+	for (; flares_it != flares_end; ++flares_it)
 	{
-		if ((*i)->section == id)
-			return (*i);
+		if ((*flares_it)->section == id)
+			return (*flares_it);
 	}
 
 	CLensFlareDescriptor* result = xr_new<CLensFlareDescriptor>();

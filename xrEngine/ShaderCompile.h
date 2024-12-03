@@ -32,7 +32,7 @@ class CShaderIncluder : public ID3DXInclude
 		}
 			
 		static string_path hash;
-		int i = 0;
+		size_t i = 0;
 		for (i = 0; i < strlen(full_path); i++)
 		{
 			hash[i] = (full_path[i] >= '0' && full_path[i] <= '9')

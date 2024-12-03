@@ -225,8 +225,8 @@ void CConsole::OutFont(LPCSTR text, float& pos_y)
 	if (str_length > scr_width) // 1024.0f
 	{
 		float f = 0.0f;
-		int sz = 0;
-		int ln = 0;
+		size_t sz = 0;
+		size_t ln = 0;
 		PSTR one_line = (PSTR)_alloca((CONSOLE_BUF_SIZE + 1) * sizeof(char));
 
 		while (text[sz] && (ln + sz < CONSOLE_BUF_SIZE - 5)) // перенос строк
@@ -363,10 +363,10 @@ void CConsole::OnRender()
 
 		vecTipsEx::iterator itb = m_tips.begin() + m_start_tip;
 		vecTipsEx::iterator ite = m_tips.end();
-		for (u32 i = 0; itb != ite; ++itb, ++i) // tips
+		for (u32 iterator = 0; itb != ite; ++itb, ++iterator) // tips
 		{
-			pFont->OutI(-1.0f + shift_x, fMaxY + i * LDIST, "%s", (*itb).text.c_str());
-			if (i >= VIEW_TIPS_COUNT - 1)
+			pFont->OutI(-1.0f + shift_x, fMaxY + iterator * LDIST, "%s", (*itb).text.c_str());
+			if (iterator >= VIEW_TIPS_COUNT - 1)
 			{
 				break; // for
 			}
@@ -521,13 +521,13 @@ void CConsole::DrawBackgrounds(bool bGame)
 
 	if (m_select_tip < (int)m_tips.size())
 	{
-		Frect r;
+		Frect rect;
 
-		vecTipsEx::iterator itb = m_tips.begin() + m_start_tip;
-		vecTipsEx::iterator ite = m_tips.end();
-		for (u32 i = 0; itb != ite; ++itb, ++i) // tips
+		vecTipsEx::iterator tips_it_begin = m_tips.begin() + m_start_tip;
+		vecTipsEx::iterator tips_it_end = m_tips.end();
+		for (u32 iterator = 0; tips_it_begin != tips_it_end; ++tips_it_begin, ++iterator) // tips
 		{
-			TipString const& ts = (*itb);
+			TipString const& ts = (*tips_it_begin);
 			if ((ts.HL_start < 0) || (ts.HL_finish < 0) || (ts.HL_start > ts.HL_finish))
 			{
 				continue;
@@ -538,24 +538,24 @@ void CConsole::DrawBackgrounds(bool bGame)
 				continue;
 			}
 
-			r.null();
+			rect.null();
 			LPSTR tmp = (PSTR)_alloca((str_size + 1) * sizeof(char));
 
 			strncpy_s(tmp, str_size + 1, ts.text.c_str(), ts.HL_start);
-			r.x1 = pr.x1 + w1 + pFont->SizeOf_(tmp);
-			r.y1 = pr.y1 + i * font_h;
+			rect.x1 = pr.x1 + w1 + pFont->SizeOf_(tmp);
+			rect.y1 = pr.y1 + iterator * font_h;
 
 			strncpy_s(tmp, str_size + 1, ts.text.c_str(), ts.HL_finish);
-			r.x2 = pr.x1 + w1 + pFont->SizeOf_(tmp);
-			r.y2 = r.y1 + font_h;
+			rect.x2 = pr.x1 + w1 + pFont->SizeOf_(tmp);
+			rect.y2 = rect.y1 + font_h;
 
-			DrawRect(TL_pv, r, tips_word_color);
+			DrawRect(TL_pv, rect, tips_word_color);
 
-			if (i >= VIEW_TIPS_COUNT - 1)
+			if (iterator >= VIEW_TIPS_COUNT - 1)
 			{
-				break; // for itb
+				break; // for tips_it_begin
 			}
-		} // for itb
+		} // for tips_it_begin
 	}	  // if
 
 	// --------------------------- scroll bar --------------------

@@ -258,6 +258,8 @@ void CInput::MouseUpdate()
 	mouse_prev[1] = mouseState[1];
 	mouse_prev[2] = mouseState[2];
 
+#pragma todo("Deathman to ALL: Разобраться с предупреждением")
+#pragma warning(disable : 4644)
 	offs[0] = offs[1] = offs[2] = 0;
 	for (u32 i = 0; i < dwElements; i++)
 	{
