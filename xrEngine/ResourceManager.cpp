@@ -14,13 +14,6 @@
 #include "blenders\blender.h"
 #include "blenders\blender_recorder.h"
 
-void fix_texture_name(LPSTR fn)
-{
-	LPSTR _ext = strext(fn);
-	if (_ext && (0 == stricmp(_ext, ".tga") || 0 == stricmp(_ext, ".dds") || 0 == stricmp(_ext, ".bmp") ||
-				 0 == stricmp(_ext, ".ogm") || 0 == stricmp(_ext, ".hdr")))
-		*_ext = 0;
-}
 //--------------------------------------------------------------------------------------------------------------
 IBlender* CResourceManager::_GetBlender(LPCSTR Name)
 {
@@ -91,7 +84,7 @@ void CResourceManager::_ParseList(sh_list& dest, LPCSTR names)
 			N.push_back(0);
 			strlwr(N.begin());
 
-			fix_texture_name(N.begin());
+			Device.Resources->fix_texture_name(N.begin());
 			dest.push_back(N.begin());
 			N.clear();
 		}
@@ -107,7 +100,7 @@ void CResourceManager::_ParseList(sh_list& dest, LPCSTR names)
 		N.push_back(0);
 		strlwr(N.begin());
 
-		fix_texture_name(N.begin());
+		Device.Resources->fix_texture_name(N.begin());
 		dest.push_back(N.begin());
 	}
 }
@@ -269,142 +262,8 @@ void CResourceManager::Delete(const Shader* S)
 	Msg("! ERROR: Failed to find complete shader");
 }
 
-//#define MT_TEXTURES - Deathman: Не эффективно при работе с жесткими дисками - мы ограничены возможностью чтения. Мы не
-//можем грузить текстуры четырьмя потоками, потому что они все тупо ждут
-
-#ifdef MT_TEXTURES
-// Загрузка текстур несколькими потоками.
-// Спасибо Morrey из проекта которого я взял функцию,
-//	Maks0 за переделку под определение количества ядер процессора и
-//	использвания соответствующего числа потоков и VAX, который доделал функцию
-
-#include <thread>
-xr_vector<CTexture*> tex_to_load;
-
-void TextureLoading(u16 thread_num, u32 lowerbound, u32 upperbound)
+void __stdcall CResourceManager::ProcessUpload()
 {
-	Msg("* THREAD #%d: Started.", thread_num);
-
-	for (size_t i = lowerbound; i < upperbound; i++)
-		tex_to_load[i]->Load();
-
-	Msg("* THREAD #%d: Task Completed.", thread_num);
-}
-
-void CResourceManager::DeferredUpload()
-{
-	if (!Device.b_is_Ready)
-		return;
-
-	const u32 MinTexturesCntToUseMT = 100;
-
-	tex_to_load.clear();
-	Msg("* Texture Loading, size = %d", m_textures.size());
-	CTimer timer;
-	timer.Start();
-
-	if (m_textures.size() <= MinTexturesCntToUseMT || strstr(Core.Params, "-one_thread_load") ||
-		(std::thread::hardware_concurrency() <= 2))
-	{
-		Msg("* Texture Loading -> Use one thread");
-
-		for (map_TextureIt t = m_textures.begin(); t != m_textures.end(); t++)
-			t->second->Load();
-	}
-	else
-	{
-		u32 th_count = std::thread::hardware_concurrency();
-		u32 texCntOneThread = m_textures.size() / th_count;
-		std::thread* th_arr = new std::thread[th_count];
-
-		for (const auto& tex : m_textures)
-			tex_to_load.push_back(tex.second);
-
-		for (u16 i = 0; i < th_count; i++)
-		{
-			u32 from = i * texCntOneThread;
-			u32 to = (i + 1) * texCntOneThread;
-
-			if (i == th_count - 1)
-				to = m_textures.size();
-
-			th_arr[i] = std::thread(&TextureLoading, i, from, to);
-		}
-
-		for (size_t i = 0; i < th_count; i++)
-			th_arr[i].join();
-
-		delete[] th_arr;
-		tex_to_load.clear();
-	}
-
-	Msg("* Phase time: %d ms", timer.GetElapsed_ms());
-}
-
-void TextureUnloading(u16 thread_num, u32 lowerbound, u32 upperbound)
-{
-	Msg("* THREAD #%d: Started.", thread_num);
-
-	for (size_t i = lowerbound; i < upperbound; i++)
-		tex_to_load[i]->Unload();
-
-	Msg("* THREAD #%d: Task Completed.", thread_num);
-}
-
-void CResourceManager::DeferredUnload()
-{
-	if (!Device.b_is_Ready)
-		return;
-
-	const u32 MinTexturesCntToUseMT = 100;
-
-	tex_to_load.clear();
-	Msg("* Texture Unloading, size = %d", m_textures.size());
-	CTimer timer;
-	timer.Start();
-
-	if (m_textures.size() <= MinTexturesCntToUseMT || strstr(Core.Params, "-one_thread_load"))
-	{
-		Msg("* Texture Unloading -> Use one thread");
-
-		for (map_TextureIt t = m_textures.begin(); t != m_textures.end(); t++)
-			t->second->Unload();
-	}
-	else
-	{
-		u32 th_count = std::thread::hardware_concurrency();
-		u32 texCntOneThread = m_textures.size() / th_count;
-		std::thread* th_arr = new std::thread[th_count];
-
-		for (const auto& tex : m_textures)
-			tex_to_load.push_back(tex.second);
-
-		for (u16 i = 0; i < th_count; i++)
-		{
-			u32 from = i * texCntOneThread;
-			u32 to = (i + 1) * texCntOneThread;
-
-			if (i == th_count - 1)
-				to = m_textures.size();
-
-			th_arr[i] = std::thread(&TextureUnloading, i, from, to);
-		}
-
-		for (size_t i = 0; i < th_count; i++)
-			th_arr[i].join();
-
-		delete[] th_arr;
-		tex_to_load.clear();
-	}
-
-	Msg("* Phase time: %d ms", timer.GetElapsed_ms());
-}
-#else  // MT_TEXTURES
-void CResourceManager::DeferredUpload()
-{
-	if (!Device.b_is_Ready)
-		return;
-
 	Msg("* Texture loading, size = %d", m_textures.size());
 
 	CTimer timer;
@@ -416,6 +275,14 @@ void CResourceManager::DeferredUpload()
 	}
 
 	Msg("* Phase time: %d ms", timer.GetElapsed_ms());
+}
+
+void CResourceManager::DeferredUpload()
+{
+	if (!Device.b_is_Ready)
+		return;
+
+	Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(this, &CResourceManager::ProcessUpload));
 }
 
 void CResourceManager::DeferredUnload()
@@ -435,7 +302,6 @@ void CResourceManager::DeferredUnload()
 
 	Msg("* Phase time: %d ms", timer.GetElapsed_ms());
 }
-#endif // MT_TEXTURES
 
 void CResourceManager::DeferredUnloadLevelTextures(LPCSTR level_name)
 {
@@ -538,6 +404,18 @@ void CResourceManager::_DumpMemoryUsage()
 		for (; I != E; I++)
 			Msg("* %4.1f : [%4d] %s", float(I->first) / 1024.f, I->second.first, I->second.second.c_str());
 	}
+}
+
+void CResourceManager::fix_texture_name(LPSTR fn)
+{
+	LPSTR _ext = strext(fn);
+	if (_ext && (
+		0 == stricmp(_ext, ".tga") || 
+		0 == stricmp(_ext, ".dds") || 
+		0 == stricmp(_ext, ".bmp") ||
+		0 == stricmp(_ext, ".ogm") || 
+		0 == stricmp(_ext, ".hdr")))
+		*_ext = 0;
 }
 
 void CResourceManager::Evict()

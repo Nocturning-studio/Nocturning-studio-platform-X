@@ -5,8 +5,6 @@
 #include "blenders\Blender_Recorder.h"
 #include "blenders\Blender.h"
 
-void fix_texture_name(LPSTR fn);
-
 void CBlender_Compile::sh_macro(BOOL Enabled, string32 Name, string32 Definition)
 {
 	macros.add(Enabled, Name, Definition);
@@ -64,7 +62,7 @@ u32 CBlender_Compile::i_Sampler(LPCSTR _name)
 	string256 name;
 	strcpy_s(name, _name);
 	//. andy	if (strext(name)) *strext(name)=0;
-	fix_texture_name(name);
+	Device.Resources->fix_texture_name(name);
 
 	// Find index
 	ref_constant C = ctable.get(name);

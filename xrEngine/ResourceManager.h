@@ -89,6 +89,7 @@ class ENGINE_API CResourceManager
 	IBlender* _FindBlender(LPCSTR Name);
 	void _GetMemoryUsage(u32& m_base, u32& c_base, u32& m_lmaps, u32& c_lmaps);
 	void _DumpMemoryUsage();
+	void fix_texture_name(LPSTR fn);
 
 	map_Blender& _GetBlenders()
 	{
@@ -107,8 +108,11 @@ class ENGINE_API CResourceManager
 	void ED_UpdateTextures(AStringVec* names);
 #endif
 
+	CTexture* m_LoadedTexture;
+	LPCSTR m_loadingTextureName;
+
 	// Low level resource creation
-	CTexture* _CreateTexture(LPCSTR Name);
+	CTexture* _CreateTexture(LPCSTR _Name);
 	void _DeleteTexture(const CTexture* T);
 
 	CMatrix* _CreateMatrix(LPCSTR Name);
@@ -184,7 +188,10 @@ class ENGINE_API CResourceManager
 	{
 		bDeferredLoad = E;
 	}
+
+	void __stdcall ProcessUpload();
 	void DeferredUpload();
+
 	void DeferredUnload();
 	void DeferredUnloadLevelTextures(LPCSTR level_name);
 	void Evict();

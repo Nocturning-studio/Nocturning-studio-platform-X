@@ -10,14 +10,7 @@
 
 // #include "std_classes.h"
 // #include "xr_avi.h"
-
-void fix_texture_name(LPSTR fn)
-{
-	LPSTR _ext = strext(fn);
-	if (_ext && (0 == stricmp(_ext, ".tga") || 0 == stricmp(_ext, ".dds") || 0 == stricmp(_ext, ".bmp") ||
-				 0 == stricmp(_ext, ".ogm")))
-		*_ext = 0;
-}
+#include "../xrEngine/ResourceManager.h"
 
 int get_texture_load_lod(LPCSTR fn)
 {
@@ -268,7 +261,7 @@ IDirect3DBaseTexture9* CRender::texture_load(LPCSTR fRName, u32& ret_msize)
 	// make file name
 	string_path fname;
 	strcpy(fname, fRName); //. andy if (strext(fname)) *strext(fname)=0;
-	fix_texture_name(fname);
+	Device.Resources->fix_texture_name(fname);
 	IReader* S = NULL;
 	// if (FS.exist(fn,"$game_textures$",fname,	".dds")	&& strstr(fname,"_bump"))	goto _BUMP;
 	if (!FS.exist(fn, "$game_textures$", fname, ".dds") && strstr(fname, "_bump"))
