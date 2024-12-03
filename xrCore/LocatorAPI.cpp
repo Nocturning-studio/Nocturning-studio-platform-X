@@ -232,14 +232,14 @@ void CLocatorAPI::Register(LPCSTR name, u32 vfs, u32 crc, u32 ptr, u32 size_real
 	desc.modif = modif & (~u32(0x3));
 	//	Msg("registering file %s - %d", name, size_real);
 	//	if file already exist - update info
-	files_it I = files.find(desc);
-	if (I != files.end())
+	files_it FilesIterator = files.find(desc);
+	if (FilesIterator != files.end())
 	{
-		desc.name = I->name;
+		desc.name = FilesIterator->name;
 
 		// sad but true, performance option
 		// correct way is to erase and then insert new record:
-		const_cast<file&>(*I) = desc;
+		const_cast<file&>(*FilesIterator) = desc;
 		return;
 	}
 	else
@@ -267,9 +267,9 @@ void CLocatorAPI::Register(LPCSTR name, u32 vfs, u32 crc, u32 ptr, u32 size_real
 			desc.size_real = 0;
 			desc.size_compressed = 0;
 			desc.modif = u32(-1);
-			std::pair<files_it, bool> I = files.insert(desc);
+			std::pair<files_it, bool> ProfilesIteratir = files.insert(desc);
 
-			R_ASSERT(I.second);
+			R_ASSERT(ProfilesIteratir.second);
 		}
 		strcpy_s(temp, sizeof(temp), folder);
 		if (xr_strlen(temp))
