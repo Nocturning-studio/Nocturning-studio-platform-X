@@ -37,10 +37,7 @@ class ENGINE_API CCustomHUD : public DLL_Pure, public IEventReceiver
 		;
 	}
 
-	virtual void Render_Actor_Shadow()
-	{
-		;
-	}
+	virtual void Render_Actor_Shadow() = 0;
 
 	virtual void OnFrame()
 	{

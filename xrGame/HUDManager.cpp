@@ -192,14 +192,18 @@ void CHUDManager::Render_Last()
 {
 	if (!psHUD_Flags.is(HUD_WEAPON | HUD_WEAPON_RT))
 		return;
+
 	if (0 == pUI)
 		return;
+
 	CObject* O = g_pGameLevel->CurrentViewEntity();
 	if (0 == O)
 		return;
+
 	CActor* A = smart_cast<CActor*>(O);
 	if (A && !A->HUDview())
 		return;
+
 	if (O->CLS_ID == CLSID_CAR)
 		return;
 
@@ -217,16 +221,21 @@ void CHUDManager::Render_Actor_Shadow() // added by KD
 {
 	if (0 == pUI)
 		return;
+
 	CObject* O = g_pGameLevel->CurrentViewEntity();
 	if (0 == O)
 		return;
+
 	CActor* A = smart_cast<CActor*>(O);
 	if (!A)
 		return;
+
 	if (A->active_cam() != eacFirstEye)
 		return; // KD: we need to render actor shadow only in first eye cam mode because
 				// in other modes actor model already in scene graph and renders well
+
 	::Render->set_Object(O->H_Root());
+	O->OnHUDDraw(this);
 	O->renderable_Render();
 }
 
