@@ -9,8 +9,8 @@
 
 #define ROTATION_JUMP_DELAY_MIN 3000
 #define ROTATION_JUMP_DELAY_MAX 5000
-#define CHECK_YAW 150 * PI / 180
-#define START_SPEED_DELTA 2.f
+#define ROTATION_JUMP_CHECK_YAW 150 * PI / 180
+#define ROTATION_JUMP_START_SPEED_DELTA 2.f
 
 void CControlRotationJump::reinit()
 {
@@ -68,11 +68,11 @@ bool CControlRotationJump::check_start_conditions()
 
 	Fvector enemy_position;
 	enemy_position.set(m_object->EnemyMan.get_enemy()->Position());
-	if (m_man->direction().is_face_target(enemy_position, CHECK_YAW))
+	if (m_man->direction().is_face_target(enemy_position, ROTATION_JUMP_CHECK_YAW))
 		return false;
 
 	SVelocityParam& velocity_run = m_object->move().get_velocity(MonsterMovement::eVelocityParameterRunNormal);
-	if (!fsimilar(m_man->movement().velocity_current(), velocity_run.velocity.linear, START_SPEED_DELTA))
+	if (!fsimilar(m_man->movement().velocity_current(), velocity_run.velocity.linear, ROTATION_JUMP_START_SPEED_DELTA))
 		return false;
 
 	return true;

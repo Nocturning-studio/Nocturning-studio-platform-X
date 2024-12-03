@@ -241,7 +241,6 @@ add_to_type_list(CSE_ALifeGroupAbstract)
 	virtual void FillProps(LPCSTR pref, PropItemVec& items)
 	{
 		inherited1::FillProps(pref, items);
-		inherited2::FillProps(pref, items);
 	};
 
 	virtual CSE_Abstract* cast_abstract()

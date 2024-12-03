@@ -371,7 +371,7 @@ void CWeaponMagazined::ReloadMagazine()
 		m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));
 	CCartridge l_cartridge = m_DefaultCartridge;
 
-	u32 iAmmoNeededToLoad = iMagazineSize;
+	int iAmmoNeededToLoad = iMagazineSize;
 	if (m_bChamberHasAmmo)
 		iAmmoNeededToLoad += 1;
 

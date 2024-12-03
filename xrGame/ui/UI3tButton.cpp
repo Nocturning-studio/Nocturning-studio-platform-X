@@ -213,8 +213,8 @@ void CUI3tButton::Update()
 		}
 	}
 
-	u32 textColor;
-	u32 hintColor;
+	u32 textColor = 0;
+	u32 hintColor = 0;
 
 	bool hintVisible = false;
 

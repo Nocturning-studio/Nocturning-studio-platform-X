@@ -83,6 +83,9 @@ void CUICursor::UpdateCursorPosition()
 {
 
 	POINT p;
+	p.x = 0.0f;
+	p.y = 0.0f;
+
 	R_ASSERT(GetCursorPos(&p));
 	R_ASSERT(ScreenToClient(Device.m_hWnd, &p));
 

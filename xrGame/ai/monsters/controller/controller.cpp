@@ -600,8 +600,8 @@ void CController::set_psy_fire_delay_default()
 // TUBE
 //////////////////////////////////////////////////////////////////////////
 
-#define SEE_ENEMY_DURATION 1000
-#define MIN_DELAY 10000
+#define TUBE_SEE_ENEMY_DURATION 1000
+#define TUBE_MIN_DELAY 10000
 #define TUBE_PROBABILITY 20
 
 void CController::tube_fire()
@@ -627,9 +627,9 @@ bool CController::can_tube_fire()
 
 	if (!EnemyMan.get_enemy())
 		return false;
-	if (m_time_last_tube + MIN_DELAY > time())
+	if (m_time_last_tube + TUBE_MIN_DELAY > time())
 		return false;
-	if (EnemyMan.see_enemy_duration() < SEE_ENEMY_DURATION)
+	if (EnemyMan.see_enemy_duration() < TUBE_SEE_ENEMY_DURATION)
 		return false;
 	if (!m_psy_hit->check_start_conditions())
 		return false;

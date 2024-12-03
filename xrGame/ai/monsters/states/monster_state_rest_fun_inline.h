@@ -8,9 +8,9 @@
 
 #define CStateMonsterRestFunAbstract CStateMonsterRestFun<_Object>
 
-#define IMPULSE_TO_CORPSE 15.f
-#define MIN_DELAY 100
-#define TIME_IN_STATE 8000
+#define REST_FUN_IMPULSE_TO_CORPSE 15.f
+#define REST_FUN_MIN_DELAY 100
+#define REST_FUN_TIME_IN_STATE 8000
 
 TEMPLATE_SPECIALIZATION
 CStateMonsterRestFunAbstract::CStateMonsterRestFun(_Object* obj) : inherited(obj)
@@ -47,7 +47,7 @@ void CStateMonsterRestFunAbstract::execute()
 
 	object->set_state_sound(MonsterSound::eMonsterSoundIdle);
 
-	if ((dist < object->db().m_fDistToCorpse + 0.5f) && (time_last_hit + MIN_DELAY < Device.dwTimeGlobal))
+	if ((dist < object->db().m_fDistToCorpse + 0.5f) && (time_last_hit + REST_FUN_MIN_DELAY < Device.dwTimeGlobal))
 	{
 		CEntityAlive* corpse = const_cast<CEntityAlive*>(object->CorpseMan.get_corpse());
 		CPhysicsShellHolder* target = smart_cast<CPhysicsShellHolder*>(corpse);
@@ -66,7 +66,7 @@ void CStateMonsterRestFunAbstract::execute()
 			for (u32 i = 0; i < target->m_pPhysicsShell->Elements().size(); i++)
 			{
 				target->m_pPhysicsShell->Elements()[i]->applyImpulse(
-					dir, IMPULSE_TO_CORPSE * target->m_pPhysicsShell->getMass() /
+					dir, REST_FUN_IMPULSE_TO_CORPSE * target->m_pPhysicsShell->getMass() /
 							 target->m_pPhysicsShell->Elements().size());
 			}
 
@@ -86,7 +86,7 @@ bool CStateMonsterRestFunAbstract::check_completion()
 {
 	if (!object->CorpseMan.get_corpse())
 		return true;
-	if (time_state_started + TIME_IN_STATE < Device.dwTimeGlobal)
+	if (time_state_started + REST_FUN_TIME_IN_STATE < Device.dwTimeGlobal)
 		return true;
 	return false;
 }

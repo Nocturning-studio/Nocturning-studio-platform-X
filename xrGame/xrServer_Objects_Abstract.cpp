@@ -80,13 +80,6 @@ void CSE_Visual::FillProps(LPCSTR pref, PropItemVec& items)
 {
 	ISE_Abstract* abstract = smart_cast<ISE_Abstract*>(this);
 	VERIFY(abstract);
-	ChooseValue* V =
-		PHelper().CreateChoose(items, PrepareKey(pref, abstract->name(), "Model\\Visual"), &visual_name, smVisual);
-	V->OnChangeEvent.bind(this, &CSE_Visual::OnChangeVisual);
-	V = PHelper().CreateChoose(items, PrepareKey(pref, abstract->name(), "Model\\Animation"), &startup_animation,
-							   smSkeletonAnims, 0, (void*)*visual_name);
-	V->OnChangeEvent.bind(this, &CSE_Visual::OnChangeAnim);
-	PHelper().CreateFlag8(items, PrepareKey(pref, abstract->name(), "Model\\Obstacle"), &flags, flObstacle);
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -127,9 +120,6 @@ void CSE_Motion::FillProps(LPCSTR pref, PropItemVec& items)
 {
 	ISE_Abstract* abstract = smart_cast<ISE_Abstract*>(this);
 	VERIFY(abstract);
-	ChooseValue* V =
-		PHelper().CreateChoose(items, PrepareKey(pref, abstract->name(), "Motion"), &motion_name, smGameAnim);
-	V->OnChangeEvent.bind(this, &CSE_Motion::OnChangeMotion);
 }
 
 #pragma pack(pop, 4)
