@@ -255,9 +255,9 @@ template <typename implementation_type> class IReaderBase
 		return impl().elapsed() <= 0;
 	};
 
-	IC void r(void* p, int cnt)
+	IC void r(void* ptr, int cnt)
 	{
-		impl().r(p, cnt);
+		impl().r(ptr, cnt);
 	}
 
 	IC Fvector r_vec3()

@@ -324,32 +324,32 @@ template <class T> struct _vector3
 	}
 
 	// Direct vector3 from point P by dir D with length M
-	IC SelfRef mad(const Self& d, T m)
+	IC SelfRef mad(const Self& dir, T length)
 	{
-		x += d.x * m;
-		y += d.y * m;
-		z += d.z * m;
+		x += dir.x * length;
+		y += dir.y * length;
+		z += dir.z * length;
 		return *this;
 	}
-	IC SelfRef mad(const Self& p, const Self& d, T m)
+	IC SelfRef mad(const Self& point, const Self& dir, T length)
 	{
-		x = p.x + d.x * m;
-		y = p.y + d.y * m;
-		z = p.z + d.z * m;
+		x = point.x + dir.x * length;
+		y = point.y + dir.y * length;
+		z = point.z + dir.z * length;
 		return *this;
 	}
-	IC SelfRef mad(const Self& d, const Self& s)
+	IC SelfRef mad(const Self& dir, const Self& s)
 	{
-		x += d.x * s.x;
-		y += d.y * s.y;
-		z += d.z * s.z;
+		x += dir.x * s.x;
+		y += dir.y * s.y;
+		z += dir.z * s.z;
 		return *this;
 	}
-	IC SelfRef mad(const Self& p, const Self& d, const Self& s)
+	IC SelfRef mad(const Self& point, const Self& dir, const Self& s)
 	{
-		x = p.x + d.x * s.x;
-		y = p.y + d.y * s.y;
-		z = p.z + d.z * s.z;
+		x = point.x + dir.x * s.x;
+		y = point.y + dir.y * s.y;
+		z = point.z + dir.z * s.z;
 		return *this;
 	}
 
