@@ -71,6 +71,11 @@ template <class _Effector> void CPPEffectorCustomController<_Effector>::load(LPC
 		   &m_state.color_gray.b);
 	sscanf(pSettings->r_string(section, "color_add"), "%f,%f,%f", &m_state.color_add.r, &m_state.color_add.g,
 		   &m_state.color_add.b);
+
+	if (pSettings->line_exist(section, "radiation_intensity"))
+		m_state.radiation_intensity = pSettings->r_float(section, "radiation_intensity");
+	else
+		m_state.radiation_intensity = 0.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -67,7 +67,8 @@ void CPatternFunction::vfLoadEF(LPCSTR caFileName)
 	u32* m_dwaAtomicIndexes = xr_alloc<u32>(m_dwVariableCount);
 	ZeroMemory(m_dwaAtomicIndexes, m_dwVariableCount * sizeof(u32));
 
-	for (u32 i = 0; i < m_dwVariableCount; ++i)
+	u32 i = 0;
+	for (; i < m_dwVariableCount; ++i)
 	{
 		F->r(m_dwaAtomicFeatureRange + i, sizeof(u32));
 		if (i)

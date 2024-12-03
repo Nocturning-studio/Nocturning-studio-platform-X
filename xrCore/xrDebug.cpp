@@ -245,7 +245,7 @@ LONG WINAPI UnhandledFilter(struct _EXCEPTION_POINTERS* pExceptionInfo)
 			// work out a good place for the dump file
 			timestamp(t_stemp);
 			strcpy(szDumpPath, "logs\\");
-			strcat(szDumpPath, Core.ApplicationName);
+			strcat(szDumpPath, Core.ApplicationNameLog);
 			strcat(szDumpPath, "_");
 			strcat(szDumpPath, Core.UserName);
 			strcat(szDumpPath, "_");

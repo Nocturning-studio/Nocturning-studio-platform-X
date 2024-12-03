@@ -53,7 +53,7 @@ BOOL APIENTRY DllMain		(HANDLE module_handle, DWORD call_reason, LPVOID reserved
 		case DLL_PROCESS_ATTACH: {
 			g_temporary_stuff			= &trivial_encryptor::decode;
 
- 			Core._initialize			("xrSE_Factory",NULL,TRUE,"fsfactory.ltx");
+ 			Core._initialize("X-Ray Server Entities Factory", "xr_se_factory", NULL, TRUE, "fsfactory.ltx");
 			string_path					SYSTEM_LTX;
 			FS.update_path				(SYSTEM_LTX,"$game_config$","system.ltx");
 			pSettings					= xr_new<CInifile>(SYSTEM_LTX);

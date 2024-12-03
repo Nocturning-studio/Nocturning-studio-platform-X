@@ -24,6 +24,7 @@ void fix_texture_thm_name(LPSTR fn)
 				 0 == stricmp(_ext, ".bmp") || 0 == stricmp(_ext, ".ogm")))
 		*_ext = 0;
 }
+
 void CTextureDescrMngr::LoadLTX()
 {
 	string_path fname;

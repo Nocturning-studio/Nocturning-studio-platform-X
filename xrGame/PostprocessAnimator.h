@@ -163,6 +163,7 @@ class CPostprocessAnimator
 	bool m_bCyclic;
 	float m_start_time;
 	float f_length;
+	float m_radiation_intensity;
 
 	void Update(float tm);
 
@@ -179,6 +180,10 @@ class CPostprocessAnimator
 	virtual void Stop(float speed);
 	void SetDesiredFactor(float f, float sp);
 	void SetCurrentFactor(float f);
+	void SetRadiationIntensity(float f)
+	{
+		m_radiation_intensity = f;
+	};
 	void SetCyclic(bool b)
 	{
 		m_bCyclic = b;

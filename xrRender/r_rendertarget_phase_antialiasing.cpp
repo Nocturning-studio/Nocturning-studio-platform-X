@@ -38,7 +38,7 @@ void CRenderTarget::phase_antialiasing()
 
 	RCache.set_Geometry(g_combine);
 
-	u_setrt(rt_Generic_0, NULL, NULL, NULL);
+	u_setrt(rt_Generic_1, NULL, NULL, NULL);
 
 	RCache.set_Element(s_antialiasing->E[0]);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);

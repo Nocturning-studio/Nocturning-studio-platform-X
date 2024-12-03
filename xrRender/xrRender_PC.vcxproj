@@ -231,7 +231,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
@@ -304,7 +304,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
@@ -352,7 +352,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
@@ -402,7 +402,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
@@ -582,7 +582,7 @@
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
@@ -646,8 +646,10 @@
     <ClInclude Include="Blender_detail_still.h" />
     <ClInclude Include="Blender_Editor_Selection.h" />
     <ClInclude Include="Blender_Editor_Wire.h" />
+    <ClInclude Include="blender_effectors.h" />
     <ClInclude Include="Blender_Lm(EbB).h" />
     <ClInclude Include="Blender_Model_EbB.h" />
+    <ClInclude Include="Blender_output_to_screen.h" />
     <ClInclude Include="Blender_Particle.h" />
     <ClInclude Include="Blender_Screen_SET.h" />
     <ClInclude Include="Blender_tree.h" />
@@ -721,8 +723,10 @@
     <ClCompile Include="Blender_detail_still.cpp" />
     <ClCompile Include="Blender_Editor_Selection.cpp" />
     <ClCompile Include="Blender_Editor_Wire.cpp" />
+    <ClCompile Include="blender_effectors.cpp" />
     <ClCompile Include="Blender_Lm(EbB).cpp" />
     <ClCompile Include="Blender_Model_EbB.cpp" />
+    <ClCompile Include="Blender_output_to_screen.cpp" />
     <ClCompile Include="Blender_Particle.cpp" />
     <ClCompile Include="Blender_Screen_SET.cpp" />
     <ClCompile Include="Blender_tree.cpp" />
@@ -788,6 +792,7 @@
     <ClCompile Include="r_dsgraph_render_lods.cpp" />
     <ClCompile Include="r_occlusion.cpp" />
     <ClCompile Include="r_pixel_calculator.cpp" />
+    <ClCompile Include="r_rendertarget_output_to_screen.cpp" />
     <ClCompile Include="r_screenshot.cpp" />
     <ClCompile Include="r_sector.cpp" />
     <ClCompile Include="r_sector_traversal.cpp" />
@@ -858,7 +863,7 @@
     <ClCompile Include="r_rendertarget_phase_frame_overlay.cpp" />
     <ClCompile Include="r_rendertarget_phase_autoexposure.cpp" />
     <ClCompile Include="r_rendertarget_phase_occq.cpp" />
-    <ClCompile Include="r_rendertarget_phase_PP.cpp" />
+    <ClCompile Include="r_rendertarget_phase_effectors.cpp" />
     <ClCompile Include="r_rendertarget_phase_gbuffer.cpp" />
     <ClCompile Include="r_rendertarget_phase_smap_Direct.cpp" />
     <ClCompile Include="r_rendertarget_phase_smap_Spot.cpp" />

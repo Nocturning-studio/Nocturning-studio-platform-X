@@ -149,6 +149,7 @@ void CPseudoGigant::Load(LPCSTR section)
 	anim().accel_chain_test();
 #endif
 
+#pragma todo("Deathman to Deathman: Отрефакторить")
 	// Load psi postprocess --------------------------------------------------------
 	LPCSTR ppi_section = pSettings->r_string(section, "threaten_effector");
 	m_threaten_effector.ppi.duality.h = pSettings->r_float(ppi_section, "duality_h");

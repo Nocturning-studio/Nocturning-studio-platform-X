@@ -123,6 +123,7 @@ CGamePersistent::CGamePersistent(void)
 
 	Fvector3* DofValue = Console->GetFVectorPtr("r_dof");
 	SetBaseDof(*DofValue);
+	SetNightVisionState(false);
 }
 
 CGamePersistent::~CGamePersistent(void)
@@ -775,3 +776,4 @@ void CGamePersistent::UpdateDof()
 	(m_dof[0].y < m_dof[2].y) ? clamp(m_dof[1].y, m_dof[0].y, m_dof[2].y) : clamp(m_dof[1].y, m_dof[2].y, m_dof[0].y);
 	(m_dof[0].z < m_dof[2].z) ? clamp(m_dof[1].z, m_dof[0].z, m_dof[2].z) : clamp(m_dof[1].z, m_dof[2].z, m_dof[0].z);
 }
+

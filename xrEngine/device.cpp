@@ -123,38 +123,41 @@ void CRenderDevice::End(void)
 #endif
 }
 
-volatile u32 mt_Thread_marker = 0x12345678;
-void mt_Thread(void* ptr)
+void CRenderDevice::SecondaryThreadProc(void* context)
 {
-	gSecondaryThreadId = GetCurrentThreadId();
-
+	auto& device = *static_cast<CRenderDevice*>(context);
 	while (true)
 	{
-		// waiting for Device permission to execute
-		Device.mt_csEnter.lock();
-
-		if (Device.mt_bMustExit)
+		device.syncProcessFrame.Wait();
+		if (device.mt_bMustExit)
 		{
-			Device.mt_bMustExit = FALSE; // Important!!!
-			Device.mt_csEnter.unlock();	 // Important!!!
+			device.mt_bMustExit = FALSE;
+			device.syncThreadExit.Set();
 			return;
 		}
-		// we has granted permission to execute
-		mt_Thread_marker = Device.dwFrame;
 
-		for (fastdelegate::FastDelegate0<>& pit : Device.seqParallel)
+		for (u32 pit = 0; pit < device.seqParallel.size(); pit++)
+			device.seqParallel[pit]();
+
+		device.seqParallel.clear_not_free();
+		device.seqFrameMT.Process(rp_Frame);
+		device.syncFrameDone.Set();
+	}
+}
+
+void CRenderDevice::RenderThreadProc(void* context)
+{
+	auto& device = *static_cast<CRenderDevice*>(context);
+	while (true)
+	{
+		device.renderProcessFrame.Wait();
+		if (device.mt_bMustExit)
 		{
-			pit();
+			device.renderThreadExit.Set();
+			return;
 		}
-		Device.seqParallel.clear();
-		Device.seqFrameMT.Process(rp_Frame);
-
-		// now we give control to device - signals that we are ended our work
-		Device.mt_csEnter.unlock();
-		// waits for device signal to continue - to start again
-		Device.mt_csLeave.lock();
-		// returns sync signal to device
-		Device.mt_csLeave.unlock();
+		device.seqRender.Process(rp_Render);
+		device.renderFrameDone.Set();
 	}
 }
 
@@ -191,8 +194,7 @@ void CRenderDevice::Run()
 	BOOL bGotMsg;
 	Log("\nStarting engine...");
 
-	Msg("\nSpawning Threads:");
-	Msg("Spawning X-RAY Primary thread");
+	Msg("Setting main thread name: %s", "X-RAY Primary thread");
 	thread_name("X-RAY Primary thread");
 
 	// Startup timers and calculate timer delta
@@ -207,13 +209,9 @@ void CRenderDevice::Run()
 		Timer_MM_Delta = time_system - time_local;
 	}
 
-	// Start all threads
-	//	InitializeCriticalSection	(&mt_csEnter);
-	//	InitializeCriticalSection	(&mt_csLeave);
-	mt_csEnter.lock();
 	mt_bMustExit = FALSE;
-	Msg("Spawning X-RAY Secondary thread\n");
-	thread_spawn(mt_Thread, "X-RAY Secondary thread", 0, 0);
+	thread_spawn(SecondaryThreadProc, "X-RAY Secondary thread", 0, this);
+	thread_spawn(RenderThreadProc, "X-RAY Render thread", 0, this);
 
 	// Message cycle
 	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
@@ -271,11 +269,8 @@ void CRenderDevice::Run()
 				RCache.set_xform_project(mProject);
 				D3DXMatrixInverse((D3DXMATRIX*)&mInvFullTransform, 0, (D3DXMATRIX*)&mFullTransform);
 
-				// *** Resume threads
-				// Capture end point - thread must run only ONE cycle
-				// Release start point - allow thread to run
-				mt_csLeave.lock();
-				mt_csEnter.unlock();
+				syncProcessFrame.Set(); // allow secondary thread to do its job
+				
 				Sleep(0);
 
 #ifndef DEDICATED_SERVER
@@ -285,10 +280,13 @@ void CRenderDevice::Run()
 				{
 					if (Begin())
 					{
-						seqRender.Process(rp_Render);
+						renderProcessFrame.Set(); // allow render thread to do its job
+						renderFrameDone.Wait();	  // wait until render thread finish its job
+
 						if (psDeviceFlags.test(rsCameraPos) || psDeviceFlags.test(rsStatistic) ||
 							Statistic->errors.size())
 							Statistic->Show();
+
 						End();
 					}
 				}
@@ -296,20 +294,7 @@ void CRenderDevice::Run()
 				Statistic->RenderTOTAL_Real.FrameEnd();
 				Statistic->RenderTOTAL.accum = Statistic->RenderTOTAL_Real.accum;
 #endif
-				// *** Suspend threads
-				// Capture startup point
-				// Release end point - allow thread to wait for startup point
-				mt_csEnter.lock();
-				mt_csLeave.unlock();
-
-				// Ensure, that second thread gets chance to execute anyway
-				if (dwFrame != mt_Thread_marker)
-				{
-					for (u32 pit = 0; pit < Device.seqParallel.size(); pit++)
-						Device.seqParallel[pit]();
-					Device.seqParallel.clear_not_free();
-					seqFrameMT.Process(rp_Frame);
-				}
+				syncFrameDone.Wait();
 #ifdef DEDICATED_SERVER
 				u32 FrameEndTime = TimerGlobal.GetElapsed_ms();
 				u32 FrameTime = (FrameEndTime - FrameStartTime);
@@ -353,11 +338,12 @@ void CRenderDevice::Run()
 
 	// Stop Balance-Thread
 	mt_bMustExit = TRUE;
-	mt_csEnter.unlock();
+	renderProcessFrame.Set();
+	renderThreadExit.Wait();
+	syncProcessFrame.Set();
+	syncThreadExit.Wait();
 	while (mt_bMustExit)
 		Sleep(0);
-	//	DeleteCriticalSection	(&mt_csEnter);
-	//	DeleteCriticalSection	(&mt_csLeave);
 }
 
 void ProcessLoading(RP_FUNC* f);
@@ -379,8 +365,7 @@ void CRenderDevice::FrameMove()
 		// Timer
 		float fPreviousFrameTime = Timer.GetElapsed_sec();
 		Timer.Start(); // previous frame
-		fTimeDelta =
-			0.1f * fTimeDelta + 0.9f * fPreviousFrameTime; // smooth random system activity - worst case ~7% error
+		fTimeDelta = 0.1f * fTimeDelta + 0.9f * fPreviousFrameTime; // smooth random system activity - worst case ~7% error
 		if (fTimeDelta > .1f)
 			fTimeDelta = .1f; // limit to 15fps minimum
 
@@ -428,6 +413,7 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
 
 	if (bOn)
 	{
+#pragma todo("Deathman to Deathman: ƒобавить сюда проверку на разрешение отрисовку HUD")
 		if (!Paused())
 			bShowPauseString = TRUE;
 

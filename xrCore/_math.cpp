@@ -195,7 +195,8 @@ void Detect()
 	// Detect RDTSC Overhead
 	clk_overhead = 0;
 	u64 dummy = 0;
-	for (int i = 0; i < 256; i++)
+	int i = 0;
+	for (; i < 256; i++)
 	{
 		start = GetCLK();
 		clk_overhead += GetCLK() - start - dummy;
@@ -349,6 +350,7 @@ struct THREAD_STARTUP
 	char* name;
 	void* args;
 };
+
 void __cdecl thread_entry(void* _params)
 {
 	// initialize
@@ -365,6 +367,9 @@ void __cdecl thread_entry(void* _params)
 
 void thread_spawn(thread_t* entry, const char* name, unsigned stack, void* arglist)
 {
+	Msg("Spawning thread: %s", name);
+	Debug._initialize(false);
+
 	THREAD_STARTUP* startup = xr_new<THREAD_STARTUP>();
 	startup->entry = entry;
 	startup->name = (char*)name;

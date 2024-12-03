@@ -95,6 +95,8 @@ class ENGINE_API IGame_Persistent :
 	virtual void OnGameEnd();
 
 	virtual void UpdateGameType(){};
+	 
+	// Depth of field
 	virtual void GetCurrentDof(Fvector3& dof)
 	{
 		dof.set(-1.4f, 0.0f, 250.f);
@@ -103,6 +105,13 @@ class ENGINE_API IGame_Persistent :
 	virtual void SetPickableEffectorDOF(bool bSet){};
 	virtual void SetEffectorDOF(const Fvector& needed_dof){};
 	virtual void RestoreEffectorDOF(){};
+
+	// Night vision
+	virtual bool GetNightVisionState()
+	{
+		return false;
+	};
+	virtual void SetNightVisionState(bool state){};
 
 	virtual void RegisterModel(IRender_Visual* V)
 #ifndef _EDITOR

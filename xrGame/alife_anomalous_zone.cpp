@@ -92,7 +92,8 @@ void CSE_ALifeAnomalousZone::spawn_artefacts()
 	{
 		float fProbability = randF(1.f);
 		float fSum = 0.f;
-		for (u16 p = 0; p < n; ++p)
+		u16 p = 0;
+		for (; p < n; ++p)
 		{
 			fSum += m_weights[p].second;
 			if (fSum > fProbability)

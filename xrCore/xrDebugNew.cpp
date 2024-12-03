@@ -517,7 +517,7 @@ void save_mini_dump(_EXCEPTION_POINTERS* pExceptionInfo)
 			string64 t_stemp;
 
 			timestamp(t_stemp);
-			strcpy(szDumpPath, Core.ApplicationName);
+			strcpy(szDumpPath, Core.ApplicationNameLog);
 			strcat(szDumpPath, "_");
 			strcat(szDumpPath, Core.UserName);
 			strcat(szDumpPath, "_");

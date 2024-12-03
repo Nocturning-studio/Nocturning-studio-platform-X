@@ -30,7 +30,8 @@ template <LPCSTR caBaseNames[]> class CAniFVector
 	{
 		A.clear();
 		string256 S;
-		for (int j = 0; caBaseNames[j]; ++j)
+		int j = 0;
+		for (; caBaseNames[j]; ++j)
 			;
 		A.resize(j);
 		for (int i = 0; i < j; ++i)
@@ -54,7 +55,8 @@ template <class TYPE_NAME, LPCSTR caBaseNames[]> class CAniCollection
 	{
 		A.clear();
 		string256 S;
-		for (int j = 0; caBaseNames[j]; ++j)
+		int j = 0;
+		for (; caBaseNames[j]; ++j)
 			;
 		A.resize(j);
 		for (int i = 0; i < j; ++i)

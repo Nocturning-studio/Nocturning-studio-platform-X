@@ -4,6 +4,8 @@
 #include "xrMemory_align.h"
 #include "xrMemory_pure.h"
 
+#pragma warning(disable: 4456)
+
 #ifndef __BORLANDC__
 
 #ifndef DEBUG_MEMORY_MANAGER

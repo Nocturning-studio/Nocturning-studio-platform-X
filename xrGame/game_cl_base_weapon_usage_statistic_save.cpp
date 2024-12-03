@@ -191,7 +191,8 @@ void Weapon_Statistic::WriteLtx(CInifile& ini, LPCSTR sect)
 
 	//----------------------------------------------
 	u32 NumHits = 0;
-	for (u32 i = 0; i < m_Hits.size(); i++)
+	u32 i = 0;
+	for (; i < m_Hits.size(); i++)
 	{
 		HitData& Hit = m_Hits[i];
 		if (Hit.Completed)
@@ -229,7 +230,8 @@ void Weapon_Statistic::Write(FILE* pFile)
 	fwrite(m_Basket, 4, 3 * MAX_BASKET, pFile);
 	//----------------------------------------------
 	u32 NumHits = 0;
-	for (u32 i = 0; i < m_Hits.size(); i++)
+	u32 i = 0;
+	for (; i < m_Hits.size(); i++)
 	{
 		HitData& Hit = m_Hits[i];
 		if (Hit.Completed)

@@ -233,12 +233,12 @@ void CheckPrivilegySlowdown()
 #ifdef DEBUG
 	if (strstr(Core.Params, "-slowdown"))
 	{
-		thread_spawn(slowdownthread, "slowdown", 0, 0);
+		thread_spawn(slowdownthread, "Debug Slowdown thread", 0, 0);
 	}
 	if (strstr(Core.Params, "-slowdown2x"))
 	{
-		thread_spawn(slowdownthread, "slowdown", 0, 0);
-		thread_spawn(slowdownthread, "slowdown", 0, 0);
+		thread_spawn(slowdownthread, "Debug Slowdown thread 0", 0, 0);
+		thread_spawn(slowdownthread, "Debug Slowdown thread 1", 0, 0);
 	}
 #endif // DEBUG
 }
@@ -663,7 +663,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lp
 	g_temporary_stuff = &trivial_encryptor::decode;
 
 	compute_build_id();
-	Core._initialize("X-Ray Engine", NULL, TRUE, fsgame[0] ? fsgame : NULL);
+	Core._initialize("X-Ray Engine", "xray_engine", NULL, TRUE, fsgame[0] ? fsgame : NULL);
 	InitSettings();
 
 #ifndef DEDICATED_SERVER
@@ -1353,8 +1353,8 @@ u32 calc_progress_color(u32 idx, u32 total, int stage, int max_stage)
 	if (idx > (total / 2))
 		idx = total - idx;
 
-	double kk = (float(stage + 1) / double(max_stage)) * (total / 2.0f);
-	double f = 1 / (exp((double(idx) - kk) * 0.5f) + 1.0f);
+	float kk = (float(stage + 1) / float(max_stage)) * (total / 2.0f);
+	float f = 1 / (expf((float(idx) - kk) * 0.5f) + 1.0f);
 
 	return color_argb_f(f, 1.0f, 1.0f, 1.0f);
 }

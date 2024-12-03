@@ -97,7 +97,6 @@ void CRenderTarget::motion_blur_phase_save_frame()
 
 void CRenderTarget::phase_motion_blur()
 {
-	motion_blur_phase_combine();
 	motion_blur_phase_save_frame();
 }
 ///////////////////////////////////////////////////////////////////////////////////

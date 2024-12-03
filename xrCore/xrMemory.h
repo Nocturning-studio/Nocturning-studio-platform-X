@@ -1,6 +1,7 @@
 #ifndef xrMemoryH
 #define xrMemoryH
 #pragma once
+#pragma warning(disable: 4595)
 
 #include "memory_monitor.h"
 

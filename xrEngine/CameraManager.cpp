@@ -37,6 +37,7 @@ SPPInfo& SPPInfo::add(const SPPInfo& ppi)
 	color_base += ppi.color_base;
 	color_gray += ppi.color_gray;
 	color_add += ppi.color_add;
+	radiation_intensity = _max(radiation_intensity, ppi.radiation_intensity);
 
 	if (ppi.cm_tex1.size())
 	{
@@ -79,6 +80,7 @@ SPPInfo::SPPInfo()
 	color_add.set(0.f, 0.f, 0.f);
 	cm_influence = 0.0f;
 	cm_interpolate = 0.0f;
+	radiation_intensity = 0.0f;
 }
 void SPPInfo::normalize()
 {
@@ -114,7 +116,8 @@ SPPInfo& SPPInfo::lerp(const SPPInfo& def, const SPPInfo& to, float factor)
 	pp.duality.v += def.duality.v + (to.duality.v - def.duality.v) * factor;
 	pp.gray += def.gray + (to.gray - def.gray) * factor;
 	pp.blur += def.blur + (to.blur - def.blur) * factor;
-	pp.noise.intensity = to.noise.intensity; //	+ (to.noise.intensity	- def.noise.intensity)	* factor;
+	pp.noise.intensity += def.noise.intensity + (to.noise.intensity - def.noise.intensity) * factor; // to.noise.intensity; //	+ (to.noise.intensity
+																		// - def.noise.intensity)	* factor;
 	pp.noise.grain = to.noise.grain;		 //		+ (to.noise.grain		- def.noise.grain)		* factor;
 	pp.noise.fps = to.noise.fps;			 //		+ (to.noise.fps			- def.noise.fps)		* factor;
 
@@ -134,6 +137,8 @@ SPPInfo& SPPInfo::lerp(const SPPInfo& def, const SPPInfo& to, float factor)
 	pp.cm_tex2 = to.cm_tex2;
 	pp.cm_influence += def.cm_influence + (to.cm_influence - def.cm_influence) * factor;
 	pp.cm_interpolate += def.cm_interpolate + (to.cm_interpolate - def.cm_interpolate) * factor;
+
+	pp.radiation_intensity += def.radiation_intensity + (to.radiation_intensity - def.radiation_intensity) * factor;
 
 	return *this;
 }
@@ -469,6 +474,7 @@ void CCameraManager::ApplyDevice(float _viewport_near)
 		T->set_cm_imfluence(pp_affected.cm_influence);
 		T->set_cm_interpolate(pp_affected.cm_interpolate);
 		T->set_cm_textures(pp_affected.cm_tex1, pp_affected.cm_tex2);
+		T->set_radiation_intensity(pp_affected.radiation_intensity);
 	}
 }
 
@@ -488,6 +494,7 @@ void CCameraManager::ResetPP()
 	T->set_cm_imfluence(0.0f);
 	T->set_cm_interpolate(1.0f);
 	T->set_cm_textures("", "");
+	T->set_radiation_intensity(0.0f);
 }
 
 void CCameraManager::Dump()

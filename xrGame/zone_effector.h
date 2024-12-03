@@ -7,6 +7,7 @@ class CZoneEffector
 {
 	float r_min_perc;
 	float r_max_perc;
+	float m_radiation_intensity;
 	float radius;
 	float m_factor;
 	CPostprocessAnimatorLerp* m_pp_effector;

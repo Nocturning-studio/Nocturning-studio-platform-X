@@ -5,8 +5,6 @@
 #include "blenders\Blender_Recorder.h"
 #include "blenders\Blender.h"
 
-void fix_texture_name(LPSTR fn);
-
 void CBlender_Compile::sh_macro(BOOL Enabled, string32 Name, string32 Definition)
 {
 	macros.add(Enabled, Name, Definition);
@@ -64,7 +62,7 @@ u32 CBlender_Compile::i_Sampler(LPCSTR _name)
 	string256 name;
 	strcpy_s(name, _name);
 	//. andy	if (strext(name)) *strext(name)=0;
-	fix_texture_name(name);
+	Device.Resources->fix_texture_name(name);
 
 	// Find index
 	ref_constant C = ctable.get(name);
@@ -162,20 +160,20 @@ u32 CBlender_Compile::r_Sampler(LPCSTR _name, LPCSTR texture, bool b_ps1x_Projec
 	return dwStage;
 }
 
-void CBlender_Compile::r_Sampler_rtf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide)
+void CBlender_Compile::r_Sampler_rtf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
 {
-	r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
+	r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT, b_SRGB);
 }
 
-void CBlender_Compile::r_Sampler_clf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide)
+void CBlender_Compile::r_Sampler_clf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
 {
-	r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_LINEAR);
+	r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_LINEAR, b_SRGB);
 }
 
-void CBlender_Compile::r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide)
+void CBlender_Compile::r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
 {
 	u32 s = r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE,
-					  D3DTEXF_LINEAR);
+					  D3DTEXF_LINEAR, b_SRGB);
 	if (u32(-1) != s)
 		RS.SetSAMP(s, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
 }
@@ -185,9 +183,9 @@ void CBlender_Compile::r_Sampler_tex(LPCSTR name, LPCSTR texture)
 	r_Sampler(name, texture, false, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
 }
 
-void CBlender_Compile::r_Sampler_gaussian(LPCSTR name, LPCSTR texture)
+void CBlender_Compile::r_Sampler_gaussian(LPCSTR name, LPCSTR texture, bool b_SRGB)
 {
-	r_Sampler(name, texture, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_GAUSSIANQUAD);
+	r_Sampler(name, texture, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_GAUSSIANQUAD, b_SRGB);
 }
 
 void CBlender_Compile::r_End()

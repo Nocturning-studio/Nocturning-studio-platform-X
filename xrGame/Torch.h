@@ -61,6 +61,7 @@ class CTorch : public CInventoryItemObject
   protected:
 	bool m_bNightVisionEnabled;
 	bool m_bNightVisionOn;
+	bool m_bNightVisionPostprocessEnabled;
 
 	HUD_SOUND m_NightVisionOnSnd;
 	HUD_SOUND m_NightVisionOffSnd;

@@ -91,6 +91,7 @@ struct ENGINE_API SPPInfo
 	float cm_interpolate;
 	shared_str cm_tex1;
 	shared_str cm_tex2;
+	float radiation_intensity;
 
 	SPPInfo& add(const SPPInfo& ppi);
 	SPPInfo& sub(const SPPInfo& ppi);

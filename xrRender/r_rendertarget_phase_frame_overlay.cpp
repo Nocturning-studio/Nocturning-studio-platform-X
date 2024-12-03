@@ -58,7 +58,7 @@ void CRenderTarget::draw_overlays()
 	RCache.set_Geometry(g_combine);
 
 	// Set constants
-	RCache.set_c("enabled_overlays", GridEnabled, CinemaBordersEnabled, WatermarkEnabled, 0);
+	RCache.set_c("enabled_overlays", (float)GridEnabled, (float)CinemaBordersEnabled, (float)WatermarkEnabled, 0);
 
 	// Draw
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);

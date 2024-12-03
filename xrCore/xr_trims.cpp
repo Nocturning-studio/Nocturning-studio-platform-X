@@ -8,7 +8,8 @@ LPSTR _TrimLeft(LPSTR str)
 		p++;
 	if (p != str)
 	{
-		for (LPSTR t = str; *p; t++, p++)
+		LPSTR t = str;
+		for (; *p; t++, p++)
 			*t = *p;
 		*t = 0;
 	}

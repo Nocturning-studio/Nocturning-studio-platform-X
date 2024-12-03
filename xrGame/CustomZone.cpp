@@ -290,7 +290,8 @@ void CCustomZone::Load(LPCSTR section)
 		float total_probability = 0.f;
 
 		m_ArtefactSpawn.resize(m_wItemCount);
-		for (u16 i = 0; i < m_wItemCount; ++i)
+		u16 i = 0;
+		for (; i < m_wItemCount; ++i)
 		{
 			ARTEFACT_SPAWN& artefact_spawn = m_ArtefactSpawn[i];
 			artefact_spawn.section = _GetItem(l_caParameters, i << 1, l_caBuffer);

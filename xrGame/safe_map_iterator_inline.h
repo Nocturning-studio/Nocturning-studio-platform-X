@@ -119,7 +119,8 @@ template <typename _update_predicate> IC u32 CSSafeMapIterator::update(const _up
 	++m_cycle_count;
 	_iterator I = next();
 	VERIFY(I != m_objects.end());
-	for (u32 i = 0; (I != m_objects.end()) && !time_over() && predicate(I, m_cycle_count, true); ++i)
+	u32 i = 0;
+	for (; (I != m_objects.end()) && !time_over() && predicate(I, m_cycle_count, true); ++i)
 	{
 		update_next();
 		predicate(I, m_cycle_count);

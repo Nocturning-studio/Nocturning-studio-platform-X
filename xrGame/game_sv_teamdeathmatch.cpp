@@ -121,7 +121,8 @@ void game_sv_TeamDeathmatch::AutoBalanceTeams()
 	s16 MinTeam, MaxTeam;
 	u32 NumToMove;
 	u32 cnt = get_players_count(), l_teams[2] = {0, 0};
-	for (u32 it = 0; it < cnt; it++)
+	u32 it = 0;
+	for (; it < cnt; it++)
 	{
 		xrClientData* l_pC = (xrClientData*)m_server->client_Get(it);
 		game_PlayerState* ps = l_pC->ps;

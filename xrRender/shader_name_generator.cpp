@@ -5,10 +5,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "shader_name_generator.h"
+#include "../xrEngine/ResourceManager.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 extern u32 ps_r_material_quality;
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void fix_texture_name(LPSTR fn);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void generate_shader_name(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR VertexShaderName,
 						  LPCSTR PixelShaderName, BOOL bUseAlpha)
@@ -36,7 +35,7 @@ void generate_shader_name(CBlender_Compile& C, bool bIsHightQualityGeometry, LPC
 	strcpy_s(AlbedoTexture, sizeof(AlbedoTexture), *C.L_textures[0]);
 
 	// Add extension to texture  and chek for null
-	fix_texture_name(AlbedoTexture);
+	Device.Resources->fix_texture_name(AlbedoTexture);
 
 	// Check bump existing
 	ref_texture refAlbedoTexture;

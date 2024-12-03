@@ -619,7 +619,7 @@ void CScriptStorage::print_error(lua_State* L, int iErrorCode)
 void CScriptStorage::flush_log()
 {
 	string_path log_file_name;
-	strconcat(sizeof(log_file_name), log_file_name, Core.ApplicationName, "_", Core.UserName, "_lua.log");
+	strconcat(sizeof(log_file_name), log_file_name, Core.ApplicationNameLog, "_", Core.UserName, "_lua.log");
 	FS.update_path(log_file_name, "$logs$", log_file_name);
 	m_output.save_to(log_file_name);
 }

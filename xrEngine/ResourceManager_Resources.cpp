@@ -17,8 +17,6 @@
 #include "ShaderResourceTraits.h"
 #include "ShaderCompile.h"
 
-void fix_texture_name(LPSTR fn);
-
 //--------------------------------------------------------------------------------------------------------------
 SState* CResourceManager::_CreateState(SimulatorStates& state_code)
 {
@@ -295,6 +293,7 @@ void CResourceManager::DeleteGeom(const SGeometry* Geom)
 }
 
 //--------------------------------------------------------------------------------------------------------------
+#pragma todo("Deathman to Deathman: Вынести на второй поток")
 CTexture* CResourceManager::_CreateTexture(LPCSTR _Name)
 {
 	if (0 == xr_strcmp(_Name, "null"))
@@ -325,6 +324,7 @@ CTexture* CResourceManager::_CreateTexture(LPCSTR _Name)
 		return T;
 	}
 }
+
 void CResourceManager::_DeleteTexture(const CTexture* T)
 {
 	if (0 == (T->dwFlags & xr_resource_flagged::RF_REGISTERED))

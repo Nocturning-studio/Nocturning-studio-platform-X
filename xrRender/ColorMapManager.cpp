@@ -3,8 +3,8 @@
 
 ColorMapManager::ColorMapManager()
 {
-	m_CMap[0] = Device.Resources->_CreateTexture("$user$cmap0");
-	m_CMap[1] = Device.Resources->_CreateTexture("$user$cmap1");
+	m_CMap[0] = Device.Resources->_CreateTexture(r_colormap0);
+	m_CMap[1] = Device.Resources->_CreateTexture(r_colormap1);
 }
 
 void ColorMapManager::SetTextures(const shared_str& tex0, const shared_str& tex1)

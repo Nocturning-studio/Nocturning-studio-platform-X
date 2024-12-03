@@ -28,9 +28,10 @@ extern char g_application_path[256];
 
 //. extern xr_vector<shared_str>*	LogFile;
 
-void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, LPCSTR fs_fname)
+void xrCore::_initialize(LPCSTR _ApplicationName, LPCSTR _ApplicationNameLog, LogCallback cb, BOOL init_fs, LPCSTR fs_fname)
 {
 	strcpy_s(ApplicationName, _ApplicationName);
+	strcpy_s(ApplicationNameLog, _ApplicationNameLog);
 	if (0 == init_counter)
 	{
 #ifdef XRCORE_STATIC
