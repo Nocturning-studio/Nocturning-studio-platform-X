@@ -48,7 +48,9 @@ extern "C" {
 
 /* The OPENAL, ALAPI, and ALAPIENTRY macros are deprecated, but are included for applications porting code
    from AL 1.0 */
+#ifndef OPENAL
 #define OPENAL
+#endif
 #define ALAPI AL_API
 #define ALAPIENTRY AL_APIENTRY
 
