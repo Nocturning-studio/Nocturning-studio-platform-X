@@ -890,23 +890,23 @@
     <ClCompile Include="xrRender.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\xrCDB\xrCDB.vcxproj">
+    <ProjectReference Include="..\xrCDB\xrCDB.vcxproj">
       <Project>{a19b1df2-82ec-4364-8bdf-85d13a1c89b5}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\xrCore\xrCore.vcxproj">
+    <ProjectReference Include="..\xrCore\xrCore.vcxproj">
       <Project>{a0f7d1fb-59a7-4717-a7e4-96f37e91998e}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\xrParticles\xrParticles.vcxproj">
+    <ProjectReference Include="..\xrParticles\xrParticles.vcxproj">
       <Project>{94a1c366-3d19-48e6-8170-4adc2e70df97}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\xrCPU_Pipe\xrCPU_Pipe.vcxproj">
+    <ProjectReference Include="..\xrEngine\xrCPU_Pipe\xrCPU_Pipe.vcxproj">
       <Project>{ca0649dd-d089-423a-981c-46b57a884eb9}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\xrEngine.vcxproj">
+    <ProjectReference Include="..\xrEngine\xrEngine.vcxproj">
       <Project>{2578c6d8-660d-48ae-9322-7422f8664f06}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
