@@ -190,10 +190,10 @@ inline_ BOOL AABBTreeCollider::TriBoxOverlap(const Point& center, const Point& e
 	if (FCMax3(v0.z, v1.z, v2.z) < -extents.z)
 		return FALSE;
 #else
-	float min, max;
-	// Find min, max of the triangle in x-direction, and test for overlap in X
-	FINDMINMAX(v0.x, v1.x, v2.x, min, max);
-	if (min > extents.x || max < -extents.x)
+	float min_val, max_val;
+	// Find min_val, max_val of the triangle in x-direction, and test for overlap in X
+	FINDMINMAX(v0.x, v1.x, v2.x, min_val, max_val);
+	if (min_val > extents.x || max_val < -extents.x)
 		return FALSE;
 
 	// Same for Y
@@ -201,8 +201,8 @@ inline_ BOOL AABBTreeCollider::TriBoxOverlap(const Point& center, const Point& e
 	v1.y = mLeafVerts[1].y - center.y;
 	v2.y = mLeafVerts[2].y - center.y;
 
-	FINDMINMAX(v0.y, v1.y, v2.y, min, max);
-	if (min > extents.y || max < -extents.y)
+	FINDMINMAX(v0.y, v1.y, v2.y, min_val, max_val);
+	if (min_val > extents.y || max_val < -extents.y)
 		return FALSE;
 
 	// Same for Z
@@ -210,8 +210,8 @@ inline_ BOOL AABBTreeCollider::TriBoxOverlap(const Point& center, const Point& e
 	v1.z = mLeafVerts[1].z - center.z;
 	v2.z = mLeafVerts[2].z - center.z;
 
-	FINDMINMAX(v0.z, v1.z, v2.z, min, max);
-	if (min > extents.z || max < -extents.z)
+	FINDMINMAX(v0.z, v1.z, v2.z, min_val, max_val);
+	if (min_val > extents.z || max_val < -extents.z)
 		return FALSE;
 #endif
 	// 2) Test if the box intersects the plane of the triangle
@@ -272,18 +272,18 @@ inline_ BOOL OBBCollider::TriBoxOverlap()
 	if (FCMax3(v0.z, v1.z, v2.z) < -mBoxExtents.z)
 		return FALSE;
 #else
-	float min, max;
-	// Find min, max of the triangle in x-direction, and test for overlap in X
-	FINDMINMAX(v0.x, v1.x, v2.x, min, max);
-	if (min > mBoxExtents.x || max < -mBoxExtents.x)
+	float min_val, max_val;
+	// Find min_val, max_val of the triangle in x-direction, and test for overlap in X
+	FINDMINMAX(v0.x, v1.x, v2.x, min_val, max_val);
+	if (min_val > mBoxExtents.x || max_val < -mBoxExtents.x)
 		return FALSE;
 
-	FINDMINMAX(v0.y, v1.y, v2.y, min, max);
-	if (min > mBoxExtents.y || max < -mBoxExtents.y)
+	FINDMINMAX(v0.y, v1.y, v2.y, min_val, max_val);
+	if (min_val > mBoxExtents.y || max_val < -mBoxExtents.y)
 		return FALSE;
 
-	FINDMINMAX(v0.z, v1.z, v2.z, min, max);
-	if (min > mBoxExtents.z || max < -mBoxExtents.z)
+	FINDMINMAX(v0.z, v1.z, v2.z, min_val, max_val);
+	if (min_val > mBoxExtents.z || max_val < -mBoxExtents.z)
 		return FALSE;
 #endif
 	// 2) Test if the box intersects the plane of the triangle
@@ -355,10 +355,10 @@ inline_ BOOL AABBCollider::TriBoxOverlap()
 	if (FCMax3(v0.z, v1.z, v2.z) < -extents.z)
 		return FALSE;
 #else
-	float min, max;
-	// Find min, max of the triangle in x-direction, and test for overlap in X
-	FINDMINMAX(v0.x, v1.x, v2.x, min, max);
-	if (min > extents.x || max < -extents.x)
+	float min_val, max_val;
+	// Find min_val, max_val of the triangle in x-direction, and test for overlap in X
+	FINDMINMAX(v0.x, v1.x, v2.x, min_val, max_val);
+	if (min_val > extents.x || max_val < -extents.x)
 		return FALSE;
 
 	// Same for Y
@@ -366,8 +366,8 @@ inline_ BOOL AABBCollider::TriBoxOverlap()
 	v1.y = mLeafVerts[1].y - center.y;
 	v2.y = mLeafVerts[2].y - center.y;
 
-	FINDMINMAX(v0.y, v1.y, v2.y, min, max);
-	if (min > extents.y || max < -extents.y)
+	FINDMINMAX(v0.y, v1.y, v2.y, min_val, max_val);
+	if (min_val > extents.y || max_val < -extents.y)
 		return FALSE;
 
 	// Same for Z
@@ -375,8 +375,8 @@ inline_ BOOL AABBCollider::TriBoxOverlap()
 	v1.z = mLeafVerts[1].z - center.z;
 	v2.z = mLeafVerts[2].z - center.z;
 
-	FINDMINMAX(v0.z, v1.z, v2.z, min, max);
-	if (min > extents.z || max < -extents.z)
+	FINDMINMAX(v0.z, v1.z, v2.z, min_val, max_val);
+	if (min_val > extents.z || max_val < -extents.z)
 		return FALSE;
 #endif
 	// 2) Test if the box intersects the plane of the triangle
