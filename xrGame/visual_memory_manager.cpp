@@ -250,7 +250,7 @@ float CVisualMemoryManager::object_visible_distance(const CGameObject* game_obje
 
 	float distance = (1.f - alpha / fov) * (max_view_distance - min_view_distance) + min_view_distance;
 
-	return distance;
+	return (distance);
 }
 
 float CVisualMemoryManager::object_luminocity(const CGameObject* game_object) const
@@ -259,7 +259,7 @@ float CVisualMemoryManager::object_luminocity(const CGameObject* game_object) co
 		return (1.f);
 	float luminocity = const_cast<CGameObject*>(game_object)->ROS()->get_luminocity();
 	float power = logf(luminocity > .001f ? luminocity : .001f) * current_state().m_luminocity_factor;
-	return expf(power);
+	return (expf(power));
 }
 
 float CVisualMemoryManager::get_object_velocity(const CGameObject* game_object,

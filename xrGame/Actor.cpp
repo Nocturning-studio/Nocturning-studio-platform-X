@@ -937,6 +937,7 @@ void CActor::UpdateCL()
 			HUD().ShowCrosshair(pWeapon->use_crosshair());
 
 			bool bShowCrosshair = pWeapon->show_crosshair();
+
 			if (eacFirstEye != cam_active)
 				bShowCrosshair = true;
 

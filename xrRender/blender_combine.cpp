@@ -54,14 +54,13 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		jitter(C);
 		C.r_End();
 		break;
-	case 2: // combine
-		C.r_Pass("scene_combine_stage", "scene_combine_stage_pass_resolve_gamma", FALSE, FALSE, FALSE);
-		gbuffer(C);
-		C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
-		C.r_Sampler_rtf("s_image", r_RT_generic0);
+	case 2:
+		C.r_Pass("null", "scene_combine_stage_pass_postprocess", FALSE, FALSE, FALSE);
+		C.r_Sampler_rtf("s_image", r_RT_generic1);
+		C.r_Sampler_clf("s_autoexposure", r_RT_autoexposure_cur);
 		C.r_Sampler_clf("s_bloom", r_RT_bloom1);
 		C.r_Sampler_clf("s_bloom_blades", r_RT_bloom_blades1);
-		C.r_Sampler_clf("s_autoexposure", r_RT_autoexposure_cur);
+		C.r_Sampler_clf("s_light_accumulator", r_RT_Light_Accumulator);
 		jitter(C);
 		C.r_End();
 		break;

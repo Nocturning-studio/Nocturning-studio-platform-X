@@ -40,18 +40,7 @@
 //
 
 // -Pi/2 to  Pi/2 (quadrants IV,I)
-inline double asin1(double x)
-{
-	if (_abs(x) > 1.0f)
-	{
-		//	printf("Domain error in asin1 %lf\n", x);
-		x = (x > 0.f) ? 1.0f : -1.0f;
-	}
-	return angle_normalize(asin(x));
-}
-
-// -Pi/2 to  Pi/2 (quadrants IV,I)
-inline float asin1f(float x)
+inline float asin1(float x)
 {
 	if (_abs(x) > 1.0f)
 	{
@@ -62,18 +51,7 @@ inline float asin1f(float x)
 }
 
 //  Pi/2 to -Pi/2 (quadrants II,III)
-inline double asin2(double x)
-{
-	if (_abs(x) > 1.0)
-	{
-		//	printf("Domain error in asin2 %lf\n", x);
-		x = (x > 0) ? 1.0 : -1.0;
-	}
-	return angle_normalize(M_PI - asin(x));
-}
-
-//  Pi/2 to -Pi/2 (quadrants II,III)
-inline float asin2f(float x)
+inline float asin2(float x)
 {
 	if (_abs(x) > 1.0f)
 	{
@@ -84,18 +62,7 @@ inline float asin2f(float x)
 }
 
 //  0 to Pi   (quadrants I,II)
-inline double acos1(double x)
-{
-	if (_abs(x) > 1.0)
-	{
-		//	printf("Domain error in acos1 %lf\n", x);
-		x = (x > 0) ? 1.0 : -1.0;
-	}
-	return angle_normalize(acos(x));
-}
-
-//  0 to Pi   (quadrants I,II)
-inline float acos1f(float x)
+inline float acos1(float x)
 {
 	if (_abs(x) > 1.0f)
 	{
@@ -106,18 +73,7 @@ inline float acos1f(float x)
 }
 
 //  Pi to 2Pi (quadrants III,IV)
-inline double acos2(double x)
-{
-	if (_abs(x) > 1.0)
-	{
-		//	printf("Domain error in acos2 %lf\n", x);
-		x = (x > 0) ? 1.0 : -1.0;
-	}
-	return angle_normalize(-acos(x));
-}
-
-//  Pi to 2Pi (quadrants III,IV)
-inline float acos2f(float x)
+inline float acos2(float x)
 {
 	if (_abs(x) > 1.0f)
 	{
