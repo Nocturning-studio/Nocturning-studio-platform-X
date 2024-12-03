@@ -170,7 +170,7 @@ template <class T> struct _quaternion;
 #pragma pack(pop)
 
 // normalize angle (0..2PI)
-ICF float angle_normalize_alwaysf(float a)
+ICF float angle_normalize_always(float a)
 {
 	float div = a / PI_MUL_2;
 	int rnd = (div > 0) ? iFloor(div) : iCeil(div);
@@ -181,27 +181,7 @@ ICF float angle_normalize_alwaysf(float a)
 }
 
 // normalize angle (0..2PI)
-ICF double angle_normalize_always(double a)
-{
-	double div = a / PI_MUL_2;
-	int rnd = (div > 0) ? iFloor(div) : iCeil(div);
-	double frac = div - rnd;
-	if (frac < 0)
-		frac += 1.f;
-	return frac * PI_MUL_2;
-}
-
-// normalize angle (0..2PI)
-ICF float angle_normalizef(float a)
-{
-	if (a >= 0 && a <= PI_MUL_2)
-		return a;
-	else
-		return angle_normalize_alwaysf(a);
-}
-
-// normalize angle (0..2PI)
-ICF double angle_normalize(double a)
+ICF float angle_normalize(float a)
 {
 	if (a >= 0 && a <= PI_MUL_2)
 		return a;
@@ -210,46 +190,20 @@ ICF double angle_normalize(double a)
 }
 
 // -PI .. +PI
-ICF double angle_normalize_signed(double a)
+ICF float angle_normalize_signed(float a)
 {
 	if (a >= (-PI) && a <= PI)
 		return a;
-	double angle = angle_normalize_always(a);
-	if (angle > PI)
-		angle -= PI_MUL_2;
-	return angle;
-}
-
-ICF float angle_normalize_signedf(float a)
-{
-	if (a >= (-PI) && a <= PI)
-		return a;
-	float angle = angle_normalize_alwaysf(a);
+	float angle = angle_normalize_always(a);
 	if (angle > PI)
 		angle -= PI_MUL_2;
 	return angle;
 }
 
 // -PI..PI
-ICF double angle_difference_signed(double a, double b)
+ICF float angle_difference_signed(float a, float b)
 {
-	double diff = angle_normalize_signed(a) - angle_normalize_signed(b);
-	if (diff > 0)
-	{
-		if (diff > PI)
-			diff -= PI_MUL_2;
-	}
-	else
-	{
-		if (diff < -PI)
-			diff += PI_MUL_2;
-	}
-	return diff;
-}
-
-ICF float angle_difference_signedf(float a, float b)
-{
-	float diff = angle_normalize_signedf(a) - angle_normalize_signedf(b);
+	float diff = angle_normalize_signed(a) - angle_normalize_signed(b);
 	if (diff > 0)
 	{
 		if (diff > PI)
@@ -264,49 +218,13 @@ ICF float angle_difference_signedf(float a, float b)
 }
 
 // 0..PI
-ICF double angle_difference(double a, double b)
+ICF float angle_difference(float a, float b)
 {
 	return _abs(angle_difference_signed(a, b));
 }
 
-ICF float angle_differencef(float a, float b)
-{
-	return _abs(angle_difference_signedf(a, b));
-}
-
 // c=current, t=target, s=speed, dt=dt
-IC bool angle_lerp(double& c, double t, double s, double dt)
-{
-	double diff = t - c;
-	if (diff > 0)
-	{
-		if (diff > PI)
-			diff -= PI_MUL_2;
-	}
-	else
-	{
-		if (diff < -PI)
-			diff += PI_MUL_2;
-	}
-	double diff_a = _abs(diff);
-
-	if (diff_a < EPS_S)
-		return true;
-
-	double mot = s * dt;
-	if (mot > diff_a)
-		mot = diff_a;
-	c += (diff / diff_a) * mot;
-
-	if (c < 0)
-		c += PI_MUL_2;
-	else if (c > PI_MUL_2)
-		c -= PI_MUL_2;
-
-	return false;
-}
-
-IC bool angle_lerpf(float& c, float t, float s, float dt)
+IC bool angle_lerp(float& c, float t, float s, float dt)
 {
 	float diff = t - c;
 	if (diff > 0)
@@ -338,7 +256,7 @@ IC bool angle_lerpf(float& c, float t, float s, float dt)
 }
 
 // Just lerp :)	expects normalized angles in range [0..2PI)
-ICF float angle_lerpf(float A, float B, float f)
+ICF float angle_lerp(float A, float B, float f)
 {
 	float diff = B - A;
 	if (diff > PI)
@@ -349,60 +267,25 @@ ICF float angle_lerpf(float A, float B, float f)
 	return A + diff * f;
 }
 
-ICF double angle_lerp(double A, double B, double f)
+IC float angle_inertion(float src, float tgt, float speed, float clmp, float dt)
 {
-	double diff = B - A;
-	if (diff > PI)
-		diff -= PI_MUL_2;
-	else if (diff < -PI)
-		diff += PI_MUL_2;
-
-	return A + diff * f;
-}
-
-IC float angle_inertionf(float src, float tgt, float speed, float clmp, float dt)
-{
-	float a = angle_normalize_signedf(tgt);
-	angle_lerpf(src, a, speed, dt);
-	src = angle_normalize_signedf(src);
-	float dH = angle_difference_signedf(src, a);
+	float a = angle_normalize_signed(tgt);
+	angle_lerp(src, a, speed, dt);
+	src = angle_normalize_signed(src);
+	float dH = angle_difference_signed(src, a);
 	float dCH = clampr(dH, -clmp, clmp);
 	src -= dH - dCH;
 	return src;
 }
 
-IC double angle_inertion(double src, double tgt, double speed, double clmp, double dt)
-{
-	double a = angle_normalize_signed(tgt);
-	angle_lerp(src, a, speed, dt);
-	src = angle_normalize_signed(src);
-	double dH = angle_difference_signed(src, a);
-	double dCH = clampr(dH, -clmp, clmp);
-	src -= dH - dCH;
-	return src;
-}
-
-IC double angle_inertion_var(double src, double tgt, double min_speed, double max_speed, double clmp, double dt)
+IC float angle_inertion_var(float src, float tgt, float min_speed, float max_speed, float clmp, float dt)
 {
 	tgt = angle_normalize_signed(tgt);
 	src = angle_normalize_signed(src);
-	double speed = _abs((max_speed - min_speed) * angle_difference(tgt, src) / clmp) + min_speed;
+	float speed = _abs((max_speed - min_speed) * angle_difference(tgt, src) / clmp) + min_speed;
 	angle_lerp(src, tgt, speed, dt);
 	src = angle_normalize_signed(src);
-	double dH = angle_difference_signed(src, tgt);
-	double dCH = clampr(dH, -clmp, clmp);
-	src -= dH - dCH;
-	return src;
-}
-
-IC float angle_inertion_varf(float src, float tgt, float min_speed, float max_speed, float clmp, float dt)
-{
-	tgt = angle_normalize_signedf(tgt);
-	src = angle_normalize_signedf(src);
-	float speed = _abs((max_speed - min_speed) * angle_differencef(tgt, src) / clmp) + min_speed;
-	angle_lerpf(src, tgt, speed, dt);
-	src = angle_normalize_signedf(src);
-	float dH = angle_difference_signedf(src, tgt);
+	float dH = angle_difference_signed(src, tgt);
 	float dCH = clampr(dH, -clmp, clmp);
 	src -= dH - dCH;
 	return src;
