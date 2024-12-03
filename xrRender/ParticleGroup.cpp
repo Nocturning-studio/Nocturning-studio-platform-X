@@ -228,16 +228,16 @@ void CParticleGroup::SItem::StartFreeChild(CParticleEffect* emitter, LPCSTR nm, 
 }
 void CParticleGroup::SItem::Play()
 {
-	CParticleEffect* E = static_cast<CParticleEffect*>(_effect);
-	if (E)
-		E->Play();
+	CParticleEffect* PE = static_cast<CParticleEffect*>(_effect);
+	if (PE)
+		PE->Play();
 }
 void CParticleGroup::SItem::Stop(BOOL def_stop)
 {
 	// stop all effects
-	CParticleEffect* E = static_cast<CParticleEffect*>(_effect);
-	if (E)
-		E->Stop(def_stop);
+	CParticleEffect* PE = static_cast<CParticleEffect*>(_effect);
+	if (PE)
+		PE->Stop(def_stop);
 	VisualVecIt it;
 	for (it = _children_related.begin(); it != _children_related.end(); it++)
 		static_cast<CParticleEffect*>(*it)->Stop(def_stop);
@@ -256,14 +256,14 @@ void CParticleGroup::SItem::Stop(BOOL def_stop)
 }
 BOOL CParticleGroup::SItem::IsPlaying()
 {
-	CParticleEffect* E = static_cast<CParticleEffect*>(_effect);
-	return E ? E->IsPlaying() : FALSE;
+	CParticleEffect* PE = static_cast<CParticleEffect*>(_effect);
+	return PE ? PE->IsPlaying() : FALSE;
 }
 void CParticleGroup::SItem::UpdateParent(const Fmatrix& m, const Fvector& velocity, BOOL bXFORM)
 {
-	CParticleEffect* E = static_cast<CParticleEffect*>(_effect);
-	if (E)
-		E->UpdateParent(m, velocity, bXFORM);
+	CParticleEffect* PE = static_cast<CParticleEffect*>(_effect);
+	if (PE)
+		PE->UpdateParent(m, velocity, bXFORM);
 }
 //------------------------------------------------------------------------------
 void OnGroupParticleBirth(void* owner, u32 param, PAPI::Particle& m, u32 idx)
@@ -306,20 +306,20 @@ struct zero_vis_pred
 };
 void CParticleGroup::SItem::OnFrame(u32 u_dt, const CPGDef::SEffect& def, Fbox& box, bool& bPlaying)
 {
-	CParticleEffect* E = static_cast<CParticleEffect*>(_effect);
-	if (E)
+	CParticleEffect* PE = static_cast<CParticleEffect*>(_effect);
+	if (PE)
 	{
-		E->OnFrame(u_dt);
-		if (E->IsPlaying())
+		PE->OnFrame(u_dt);
+		if (PE->IsPlaying())
 		{
 			bPlaying = true;
-			if (E->vis.box.is_valid())
-				box.merge(E->vis.box);
+			if (PE->vis.box.is_valid())
+				box.merge(PE->vis.box);
 			if (def.m_Flags.is(CPGDef::SEffect::flOnPlayChild) && def.m_OnPlayChildName.size())
 			{
 				PAPI::Particle* particles;
 				u32 p_cnt;
-				PAPI::ParticleManager()->GetParticles(E->GetHandleEffect(), particles, p_cnt);
+				PAPI::ParticleManager()->GetParticles(PE->GetHandleEffect(), particles, p_cnt);
 				VERIFY(p_cnt == _children_related.size());
 				if (p_cnt)
 				{
@@ -343,21 +343,21 @@ void CParticleGroup::SItem::OnFrame(u32 u_dt, const CPGDef::SEffect& def, Fbox& 
 	{
 		for (it = _children_related.begin(); it != _children_related.end(); it++)
 		{
-			CParticleEffect* E = static_cast<CParticleEffect*>(*it);
-			if (E)
+			CParticleEffect* PEChildrenRelated = static_cast<CParticleEffect*>(*it);
+			if (PEChildrenRelated)
 			{
-				E->OnFrame(u_dt);
-				if (E->IsPlaying())
+				PEChildrenRelated->OnFrame(u_dt);
+				if (PEChildrenRelated->IsPlaying())
 				{
 					bPlaying = true;
-					if (E->vis.box.is_valid())
-						box.merge(E->vis.box);
+					if (PEChildrenRelated->vis.box.is_valid())
+						box.merge(PEChildrenRelated->vis.box);
 				}
 				else
 				{
 					if (def.m_Flags.is(CPGDef::SEffect::flOnPlayChildRewind))
 					{
-						E->Play();
+						PEChildrenRelated->Play();
 					}
 				}
 			}
@@ -368,15 +368,15 @@ void CParticleGroup::SItem::OnFrame(u32 u_dt, const CPGDef::SEffect& def, Fbox& 
 		u32 rem_cnt = 0;
 		for (it = _children_free.begin(); it != _children_free.end(); it++)
 		{
-			CParticleEffect* E = static_cast<CParticleEffect*>(*it);
-			if (E)
+			CParticleEffect* PEChildrenFree = static_cast<CParticleEffect*>(*it);
+			if (PEChildrenFree)
 			{
-				E->OnFrame(u_dt);
-				if (E->IsPlaying())
+				PEChildrenFree->OnFrame(u_dt);
+				if (PEChildrenFree->IsPlaying())
 				{
 					bPlaying = true;
-					if (E->vis.box.is_valid())
-						box.merge(E->vis.box);
+					if (PEChildrenFree->vis.box.is_valid())
+						box.merge(PEChildrenFree->vis.box);
 				}
 				else
 				{

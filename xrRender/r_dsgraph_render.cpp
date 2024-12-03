@@ -667,12 +667,12 @@ void R_dsgraph_structure::r_dsgraph_render_R1_box(IRender_Sector* _S, Fbox& BB, 
 		break;
 		default: {
 			// Renderable visual
-			ShaderElement* E = V->shader->E[sh]._get();
-			if (E)
+			ShaderElement* SElem = V->shader->E[sh]._get();
+			if (SElem)
 			{
-				for (u32 pass = 0; pass < E->passes.size(); pass++)
+				for (u32 pass = 0; pass < SElem->passes.size(); pass++)
 				{
-					RCache.set_Element(E, pass);
+					RCache.set_Element(SElem, pass);
 					V->Render(-1.f);
 				}
 			}

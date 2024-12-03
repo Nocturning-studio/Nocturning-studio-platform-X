@@ -205,12 +205,12 @@ void CHOM::Render_DB(CFrustum& base)
 
 		// Access to triangle vertices
 		CDB::TRI& t = m_pModel->get_tris()[it->id];
-		Fvector* v = m_pModel->get_verts();
+		Fvector* fvert = m_pModel->get_verts();
 		src.clear();
 		dst.clear();
-		src.push_back(v[t.verts[0]]);
-		src.push_back(v[t.verts[1]]);
-		src.push_back(v[t.verts[2]]);
+		src.push_back(fvert[t.verts[0]]);
+		src.push_back(fvert[t.verts[1]]);
+		src.push_back(fvert[t.verts[2]]);
 		sPoly* P = clip.ClipPoly(src, dst);
 		if (0 == P)
 		{
@@ -224,11 +224,11 @@ void CHOM::Render_DB(CFrustum& base)
 #endif
 		u32 pixels = 0;
 		int limit = int(P->size()) - 1;
-		for (int v = 1; v < limit; v++)
+		for (int vert_it = 1; vert_it < limit; vert_it++)
 		{
 			m_xform.transform(T.raster[0], (*P)[0]);
-			m_xform.transform(T.raster[1], (*P)[v + 0]);
-			m_xform.transform(T.raster[2], (*P)[v + 1]);
+			m_xform.transform(T.raster[1], (*P)[vert_it + 0]);
+			m_xform.transform(T.raster[2], (*P)[vert_it + 1]);
 			pixels += Raster.rasterize(&T);
 		}
 		if (0 == pixels)

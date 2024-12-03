@@ -1046,16 +1046,16 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec& allStrips, NvStripIn
 			bestNumHits = -1.0f;
 
 			// find best strip to add next, given the current cache
-			for (int i = 0; i < tempStrips2.size(); i++)
+			for (int tempStrips2Iterator = 0; tempStrips2Iterator < tempStrips2.size(); tempStrips2Iterator++)
 			{
-				if (tempStrips2[i]->visited)
+				if (tempStrips2[tempStrips2Iterator]->visited)
 					continue;
 
-				numHits = CalcNumHitsStrip(vcache, tempStrips2[i]);
+				numHits = CalcNumHitsStrip(vcache, tempStrips2[tempStrips2Iterator]);
 				if (numHits > bestNumHits)
 				{
 					bestNumHits = numHits;
-					bestIndex = i;
+					bestIndex = tempStrips2Iterator;
 				}
 			}
 
@@ -1213,7 +1213,7 @@ void NvStripifier::FindAllStrips(NvStripInfoVec& allStrips, NvFaceInfoVec& allFa
 								 int numSamples)
 {
 	// the experiments
-	int experimentId = 0;
+	int experimentIdGlobal = 0;
 	int stripId = 0;
 	bool done = false;
 
@@ -1258,37 +1258,37 @@ void NvStripifier::FindAllStrips(NvStripInfoVec& allStrips, NvFaceInfoVec& allFa
 			// build the strip off of this face's 0-1 edge
 			NvEdgeInfo* edge01 = FindEdgeInfo(allEdgeInfos, nextFace->m_v0, nextFace->m_v1);
 			NvStripInfo* strip01 =
-				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge01, true), stripId++, experimentId++);
+				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge01, true), stripId++, experimentIdGlobal++);
 			experiments[experimentIndex++].push_back(strip01);
 
 			// build the strip off of this face's 1-0 edge
 			NvEdgeInfo* edge10 = FindEdgeInfo(allEdgeInfos, nextFace->m_v0, nextFace->m_v1);
 			NvStripInfo* strip10 =
-				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge10, false), stripId++, experimentId++);
+				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge10, false), stripId++, experimentIdGlobal++);
 			experiments[experimentIndex++].push_back(strip10);
 
 			// build the strip off of this face's 1-2 edge
 			NvEdgeInfo* edge12 = FindEdgeInfo(allEdgeInfos, nextFace->m_v1, nextFace->m_v2);
 			NvStripInfo* strip12 =
-				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge12, true), stripId++, experimentId++);
+				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge12, true), stripId++, experimentIdGlobal++);
 			experiments[experimentIndex++].push_back(strip12);
 
 			// build the strip off of this face's 2-1 edge
 			NvEdgeInfo* edge21 = FindEdgeInfo(allEdgeInfos, nextFace->m_v1, nextFace->m_v2);
 			NvStripInfo* strip21 =
-				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge21, false), stripId++, experimentId++);
+				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge21, false), stripId++, experimentIdGlobal++);
 			experiments[experimentIndex++].push_back(strip21);
 
 			// build the strip off of this face's 2-0 edge
 			NvEdgeInfo* edge20 = FindEdgeInfo(allEdgeInfos, nextFace->m_v2, nextFace->m_v0);
 			NvStripInfo* strip20 =
-				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge20, true), stripId++, experimentId++);
+				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge20, true), stripId++, experimentIdGlobal++);
 			experiments[experimentIndex++].push_back(strip20);
 
 			// build the strip off of this face's 0-2 edge
 			NvEdgeInfo* edge02 = FindEdgeInfo(allEdgeInfos, nextFace->m_v2, nextFace->m_v0);
 			NvStripInfo* strip02 =
-				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge02, false), stripId++, experimentId++);
+				xr_new<NvStripInfo>(NvStripStartInfo(nextFace, edge02, false), stripId++, experimentIdGlobal++);
 			experiments[experimentIndex++].push_back(strip02);
 		}
 

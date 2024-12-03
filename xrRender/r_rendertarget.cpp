@@ -342,8 +342,8 @@ CRenderTarget::CRenderTarget()
 	g_bloom_filter.create(fvf_filter, RCache.Vertex.Buffer(), RCache.QuadIB);
 	s_bloom.create(b_bloom, "r\\bloom");
 
-	rt_Radiation_Noise0.create(r_RT_radiation_noise0, dwWidth * 0.25f, dwHeight * 0.25f, D3DFMT_L8);
-	rt_Radiation_Noise1.create(r_RT_radiation_noise1, dwWidth * 0.5f, dwHeight * 0.5f, D3DFMT_L8);
+	rt_Radiation_Noise0.create(r_RT_radiation_noise0, u32(dwWidth * 0.25f), u32(dwHeight * 0.25f), D3DFMT_L8);
+	rt_Radiation_Noise1.create(r_RT_radiation_noise1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_L8);
 	rt_Radiation_Noise2.create(r_RT_radiation_noise2, dwWidth, dwHeight, D3DFMT_L8);
 
 	// AO

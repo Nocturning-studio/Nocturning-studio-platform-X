@@ -315,12 +315,12 @@ _DDS: {
 		goto _DDS_2D;
 
 _DDS_CUBE: {
-	HRESULT const result = D3DXCreateCubeTextureFromFileInMemoryEx(
+	HRESULT const result_cube = D3DXCreateCubeTextureFromFileInMemoryEx(
 		HW.pDevice, S->pointer(), S->length(), D3DX_DEFAULT, IMG.MipLevels, 0, IMG.Format, D3DPOOL_DEFAULT,
 		D3DX_DEFAULT, D3DX_DEFAULT, 0, &IMG, 0, &pTextureCUBE);
 	FS.r_close(S);
 
-	if (FAILED(result))
+	if (FAILED(result_cube))
 	{
 		Msg("! Can't load texture '%s'", fn);
 		string_path temp;
@@ -344,12 +344,12 @@ _DDS_2D: {
 
 	// Load   SYS-MEM-surface, bound to device restrictions
 	IDirect3DTexture9* T_sysmem;
-	HRESULT const result = D3DXCreateTextureFromFileInMemoryEx(
+	HRESULT const result_2D = D3DXCreateTextureFromFileInMemoryEx(
 		HW.pDevice, S->pointer(), S->length(), D3DX_DEFAULT, D3DX_DEFAULT, IMG.MipLevels, 0, IMG.Format,
 		D3DPOOL_SYSTEMMEM, D3DX_DEFAULT, D3DX_DEFAULT, 0, &IMG, 0, &T_sysmem);
 	FS.r_close(S);
 
-	if (FAILED(result))
+	if (FAILED(result_2D))
 	{
 		Msg("! Can't load texture '%s'", fn);
 		string_path temp;

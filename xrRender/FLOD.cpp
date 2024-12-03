@@ -37,18 +37,18 @@ void FLOD::Load(LPCSTR N, IReader* data, u32 dwFlags)
 		data->r(facets[f].v, sizeof(facets[f].v));
 		_vertex* v = facets[f].v;
 
-		Fvector N, T;
-		N.set(0, 0, 0);
+		Fvector Normal, T;
+		Normal.set(0, 0, 0);
 		T.mknormal(v[0].v, v[1].v, v[2].v);
-		N.add(T);
+		Normal.add(T);
 		T.mknormal(v[1].v, v[2].v, v[3].v);
-		N.add(T);
+		Normal.add(T);
 		T.mknormal(v[2].v, v[3].v, v[0].v);
-		N.add(T);
+		Normal.add(T);
 		T.mknormal(v[3].v, v[0].v, v[1].v);
-		N.add(T);
-		N.div(4.f);
-		facets[f].N.normalize(N);
+		Normal.add(T);
+		Normal.div(4.f);
+		facets[f].N.normalize(Normal);
 		facets[f].N.invert();
 	}
 
