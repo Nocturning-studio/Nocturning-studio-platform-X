@@ -207,7 +207,7 @@ void CGameSpy_Browser::RefreshList_Full(bool Local, const char* FilterStr)
 			if (MainMenu())
 				MainMenu()->Show_CTMS_Dialog();
 
-			thread_spawn(RefreshInternetList, "GS Internet Refresh", 0, pRData);
+			thread_spawn(RefreshInternetList, "GameSpy Internet Refresh thread", 0, pRData);
 		}
 		if (error != sbe_noerror || !m_bAbleToConnectToMasterServer)
 		{

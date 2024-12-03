@@ -21,7 +21,7 @@ class CThread
 	}
 	void Start()
 	{
-		thread_spawn(startup, "FS-notify", 0, this);
+		thread_spawn(startup, "X-Ray File System notify thread", 0, this);
 	}
 	virtual void Execute() = 0;
 	void Terminate()

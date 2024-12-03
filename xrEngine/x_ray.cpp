@@ -233,12 +233,12 @@ void CheckPrivilegySlowdown()
 #ifdef DEBUG
 	if (strstr(Core.Params, "-slowdown"))
 	{
-		thread_spawn(slowdownthread, "slowdown", 0, 0);
+		thread_spawn(slowdownthread, "Debug Slowdown thread", 0, 0);
 	}
 	if (strstr(Core.Params, "-slowdown2x"))
 	{
-		thread_spawn(slowdownthread, "slowdown", 0, 0);
-		thread_spawn(slowdownthread, "slowdown", 0, 0);
+		thread_spawn(slowdownthread, "Debug Slowdown thread 0", 0, 0);
+		thread_spawn(slowdownthread, "Debug Slowdown thread 1", 0, 0);
 	}
 #endif // DEBUG
 }

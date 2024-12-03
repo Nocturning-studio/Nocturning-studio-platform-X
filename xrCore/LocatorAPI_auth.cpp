@@ -22,7 +22,7 @@ void CLocatorAPI::auth_generate(xr_vector<xr_string>& ignore, xr_vector<xr_strin
 if (std::thread::hardware_concurrency() <= 3)
 	FS.auth_runtime(_o);
 else
-	thread_spawn(auth_entry, "checksum", 0, _o);
+	thread_spawn(auth_entry, "X-Ray LocatorAPI Checksum thread", 0, _o);
 }
 
 u64 CLocatorAPI::auth_get()

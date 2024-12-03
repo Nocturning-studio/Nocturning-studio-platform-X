@@ -78,7 +78,7 @@ void MODEL::build(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc, vo
 #ifdef _EDITOR
 	build_internal(V, Vcnt, T, Tcnt, bc, bcp);
 #else
-	if (strstr(Core.Params, "-single_thread_cdb") || (std::thread::hardware_concurrency() <= 2))
+	if (strstr(Core.Params, "-single_thread_cdb") || (std::thread::hardware_concurrency() <= 3))
 	{
 		Msg("* xrCDB: Use single thread cform building");
 		build_internal(V, Vcnt, T, Tcnt, bc, bcp);
@@ -87,7 +87,7 @@ void MODEL::build(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc, vo
 	{
 		BTHREAD_params P = {this, V, Vcnt, T, Tcnt, bc, bcp};
 		Msg("* xrCDB: Use dedicated thread for cform building");
-		thread_spawn(build_thread, "CDB-construction", 0, &P);
+		thread_spawn(build_thread, "X-Ray CDB-construction thread", 0, &P);
 		while (S_INIT == status)
 			Sleep(5);
 	}
