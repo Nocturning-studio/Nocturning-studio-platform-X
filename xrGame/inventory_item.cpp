@@ -1102,10 +1102,10 @@ ALife::_TIME_ID CInventoryItem::TimePassedAfterIndependant() const
 		return 0;
 }
 
+#pragma todo("Dima to Andy : why CInventoryItem::CanTrade can be called for the item, which doesn't have owner?")
 bool CInventoryItem::CanTrade() const
 {
 	bool res = true;
-#pragma todo("Dima to Andy : why CInventoryItem::CanTrade can be called for the item, which doesn't have owner?")
 	if (m_pCurrentInventory)
 		res = inventory_owner().AllowItemToTrade(this, m_eItemPlace);
 

@@ -20,11 +20,11 @@ IC CSpaceRestrictionBase& CSpaceRestrictionBridge::object() const
 	return (*m_object);
 }
 
+#pragma todo("Dima to Dima : _Warning : this place can be optimized in case of a slowdown")
 template <typename T>
 IC u32 CSpaceRestrictionBridge::accessible_nearest(T& restriction, const Fvector& position, Fvector& result,
 												   bool out_restriction)
 {
-#pragma todo("Dima to Dima : _Warning : this place can be optimized in case of a slowdown")
 	VERIFY(initialized());
 	VERIFY(!restriction->border().empty());
 	VERIFY(!restriction->accessible_neighbour_border(restriction, out_restriction).empty());

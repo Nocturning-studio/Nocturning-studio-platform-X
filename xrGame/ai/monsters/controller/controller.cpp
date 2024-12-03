@@ -73,6 +73,7 @@ CController::~CController()
 	xr_delete(m_aura);
 }
 
+#pragma todo("Deathman to Deathman: Отрефакторить")
 void CController::Load(LPCSTR section)
 {
 	inherited::Load(section);
@@ -96,7 +97,6 @@ void CController::Load(LPCSTR section)
 	anim().AddReplacedAnim(&m_bDamaged, eAnimRun, eAnimRunDamaged);
 	anim().AddReplacedAnim(&m_bDamaged, eAnimWalkFwd, eAnimWalkDamaged);
 
-	#pragma todo("Deathman to Deathman: Отрефакторить")
 	// Load control postprocess --------------------------------------------------------
 	LPCSTR ppi_section = pSettings->r_string(section, "control_effector");
 	m_control_effector.ppi.duality.h = pSettings->r_float(ppi_section, "duality_h");

@@ -48,4 +48,5 @@ class IPureSchedulableObject
 {
   public:
 	virtual void update() = 0;
+	virtual ~IPureSchedulableObject() = default;
 };

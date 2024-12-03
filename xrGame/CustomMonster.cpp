@@ -490,8 +490,7 @@ void CCustomMonster::UpdateCL()
 
 	if (Local() && g_Alive())
 	{
-#pragma todo("Dima to All : this is FAKE, network is not supported here!")
-
+		//this is FAKE, network is not supported here
 		UpdatePositionAnimation();
 	}
 

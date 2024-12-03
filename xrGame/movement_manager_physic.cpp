@@ -165,7 +165,6 @@ void CMovementManager::move_along_path(CPHMovementControl* movement_control, Fve
 
 	if (dist_to_target < EPS_L)
 	{
-#pragma todo("Dima to ? : is this correct?")
 		detail().m_current_travel_point = detail().path().size() - 1;
 		m_speed = 0.f;
 		return;

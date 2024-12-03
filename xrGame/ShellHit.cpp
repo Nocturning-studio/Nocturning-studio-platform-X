@@ -10,21 +10,24 @@
 #include "PHElement.h"
 #include "PHShell.h"
 
+#pragma todo("Kosya to kosya:this code shold treat all hit types")
 void CPHShell::applyHit(const Fvector& pos, const Fvector& dir, float val, const u16 id, ALife::EHitType hit_type)
 {
 	if (id == u16(-1))
-		return; //
-#pragma todo("Kosya to kosya:this code shold treat all hit types")
+		return;
+
 	if (!m_pKinematics)
 	{
 		applyImpulseTrace(pos, dir, val);
 		return;
 	}
+
 	switch (hit_type)
 	{
 	case ALife::eHitTypeExplosion:
 		ExplosionHit(pos, dir, val, id);
 		break;
+
 	default:
 		applyImpulseTrace(pos, dir, val, id);
 	}

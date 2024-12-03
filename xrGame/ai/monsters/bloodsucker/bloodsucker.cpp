@@ -226,9 +226,9 @@ void CAI_Bloodsucker::reload(LPCSTR section)
 				MonsterSound::eCriticalPriority, u32(MonsterSound::eCaptureAllChannels), eAlien, "bip01_head");
 }
 
+#pragma todo("Deathman to Deathman: Отрефакторить")
 void CAI_Bloodsucker::LoadVampirePPEffector(LPCSTR section)
 {
-#pragma todo("Deathman to Deathman: Отрефакторить")
 	pp_vampire_effector.duality.h = pSettings->r_float(section, "duality_h");
 	pp_vampire_effector.duality.v = pSettings->r_float(section, "duality_v");
 	pp_vampire_effector.gray = pSettings->r_float(section, "gray");

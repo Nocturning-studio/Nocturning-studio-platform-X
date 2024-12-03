@@ -187,6 +187,7 @@ void ApplySpawnIniToPhysicShell(CInifile* ini, CPhysicsShell* physics_shell, boo
 	if (ini->section_exist("physics_common"))
 	{
 		fixed = fixed || (ini->line_exist("physics_common", "fixed_bones"));
+
 #pragma todo("not ignore static if non realy fixed! ")
 		fix_bones(ini->r_string("physics_common", "fixed_bones"), physics_shell);
 	}

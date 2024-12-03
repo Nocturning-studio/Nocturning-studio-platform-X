@@ -243,9 +243,6 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	if (!inherited::net_Spawn(DC))
 		return (FALSE);
 
-	#pragma todo("Deathman to Deathman: Хардкод")
-	bool b_r2 = true; //!!psDeviceFlags.test(rsR2);
-
 	CKinematics* K = smart_cast<CKinematics*>(Visual());
 	CInifile* pUserData = K->LL_UserData();
 	R_ASSERT3(pUserData, "Empty Torch user data!", torch->get_visual());
@@ -253,14 +250,14 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	guid_bone = K->LL_BoneID(pUserData->r_string("torch_definition", "guide_bone"));
 	VERIFY(guid_bone != BI_NONE);
 
-	Fcolor clr = pUserData->r_fcolor("torch_definition", (b_r2) ? "color_r2" : "color");
+	Fcolor clr = pUserData->r_fcolor("torch_definition", "color");
 	fBrightness = clr.intensity();
-	float range = pUserData->r_float("torch_definition", (b_r2) ? "range_r2" : "range");
+	float range = pUserData->r_float("torch_definition", "range");
 	light_render->set_color(clr);
 	light_render->set_range(range);
 
-	Fcolor clr_o = pUserData->r_fcolor("torch_definition", (b_r2) ? "omni_color_r2" : "omni_color");
-	float range_o = pUserData->r_float("torch_definition", (b_r2) ? "omni_range_r2" : "omni_range");
+	Fcolor clr_o = pUserData->r_fcolor("torch_definition", "omni_color");
+	float range_o = pUserData->r_float("torch_definition", "omni_range");
 	light_omni->set_color(clr_o);
 	light_omni->set_range(range_o);
 

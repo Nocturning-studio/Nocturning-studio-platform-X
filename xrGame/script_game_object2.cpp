@@ -186,7 +186,6 @@ void CScriptGameObject::Hit(CScriptHit* tpLuaHit)
 }
 
 #pragma todo("Dima to Dima : find out why user defined conversion operators work incorrect")
-
 CScriptGameObject::operator CObject*()
 {
 	return (&object());

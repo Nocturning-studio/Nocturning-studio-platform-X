@@ -448,9 +448,9 @@ LPCSTR CObjectHandlerPlanner::property2string(const _condition_type& id)
 }
 #endif
 
+#pragma todo("Dima to Dima : safe, but not optimal!")
 void CObjectHandlerPlanner::remove_evaluators(CObject* object)
 {
-#pragma todo("Dima to Dima : safe, but not optimal!")
 	for (;;)
 	{
 		EVALUATORS::iterator I = m_evaluators.lower_bound(uid(object->ID(), 0));
@@ -460,9 +460,9 @@ void CObjectHandlerPlanner::remove_evaluators(CObject* object)
 	}
 }
 
+#pragma todo("Dima to Dima : safe, but not optimal!")
 void CObjectHandlerPlanner::remove_operators(CObject* object)
 {
-#pragma todo("Dima to Dima : safe, but not optimal!")
 	for (;;)
 	{
 		OPERATOR_VECTOR::iterator I = std::lower_bound(m_operators.begin(), m_operators.end(), uid(object->ID(), 0));

@@ -643,9 +643,9 @@ u32 CUIStatic::GetTextAlign_script()
 	return static_cast<u32>(m_pLines->GetTextAlignment());
 }
 
+#pragma todo("Satan->Satan : need adaptation")
 void CUIStatic::Elipsis(const Frect& rect, EElipsisPosition elipsisPos)
 {
-#pragma todo("Satan->Satan : need adaptation")
 	// if (eepNone == elipsisPos) return;
 
 	// CUIStatic::Elipsis(m_sEdit, rect, elipsisPos, GetFont());

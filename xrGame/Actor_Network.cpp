@@ -734,7 +734,6 @@ void CActor::net_Destroy()
 	if (!g_dedicated_server)
 		Level().MapManager().RemoveMapLocationByObjectID(ID());
 
-#pragma todo("Dima to MadMax : do not comment inventory owner net_Destroy!!!")
 	CInventoryOwner::net_Destroy();
 	cam_UnsetLadder();
 	character_physics_support()->movement()->DestroyCharacter();

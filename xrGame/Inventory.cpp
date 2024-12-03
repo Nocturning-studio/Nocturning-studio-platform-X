@@ -292,7 +292,7 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate)
 		return false;
 	}
 
-	for (int i = 0; i < m_slots.size(); i++)
+	for (u32 i = 0; i < m_slots.size(); i++)
 		if (m_slots[i].m_pIItem == pIItem)
 		{
 			if (i == m_iActiveSlot)

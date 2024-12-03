@@ -1272,7 +1272,7 @@ class CCC_SetWeather : public IConsole_Command
 
 	void Execute(LPCSTR args) override
 	{
-		if (!strlen(args))
+		if (!strnlen_s(args, sizeof(args)))
 			return;
 		if (!g_pGameLevel)
 			return;
@@ -1292,7 +1292,7 @@ class CCC_SetWeatherFX : public IConsole_Command
 
 	void Execute(LPCSTR args) override
 	{
-		if (!strlen(args))
+		if (!strnlen_s(args, sizeof(args)))
 			return;
 		if (!g_pGameLevel)
 			return;

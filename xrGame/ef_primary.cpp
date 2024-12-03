@@ -235,27 +235,27 @@ float CPersonalIntelligenceFunction::ffGetValue()
 	}
 }
 
+#pragma todo("Dima to Dima : Implement relation function")
 float CPersonalRelationFunction::ffGetValue()
 {
-#pragma todo("Dima to Dima : Implement relation function")
 	return (0);
 }
 
+#pragma todo("Dima to Dima : Implement greed function")
 float CPersonalGreedFunction::ffGetValue()
 {
-#pragma todo("Dima to Dima : Implement greed function")
 	return (0);
 }
 
+#pragma todo("Dima to Dima : Implement aggressiveness function")
 float CPersonalAggressivenessFunction::ffGetValue()
 {
-#pragma todo("Dima to Dima : Implement aggressiveness function")
 	return (0);
 }
 
+#pragma todo("Dima to Dima : Implement enemy equipment cost function")
 float CEnemyEquipmentCostFunction::ffGetValue()
 {
-#pragma todo("Dima to Dima : Implement enemy equipment cost function")
 	return (0);
 }
 
@@ -280,9 +280,9 @@ float CEnemyRukzakWeightFunction::ffGetValue()
 	return (m_fLastValue);
 }
 
+#pragma todo("Dima to Dima : Implement enemy anomality function")
 float CEnemyAnomalityFunction::ffGetValue()
 {
-#pragma todo("Dima to Dima : Implement enemy anomality function")
 	return (0);
 }
 

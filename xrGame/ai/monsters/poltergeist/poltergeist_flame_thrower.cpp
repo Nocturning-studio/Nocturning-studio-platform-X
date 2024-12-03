@@ -19,6 +19,7 @@ CPolterFlame::~CPolterFlame()
 {
 }
 
+#pragma todo("Deathman to Deathman: Отрефакторить")
 void CPolterFlame::load(LPCSTR section)
 {
 	inherited::load(section);
@@ -51,7 +52,6 @@ void CPolterFlame::load(LPCSTR section)
 	m_scan_radius = pSettings->r_float(section, "flame_scan_radius");
 	read_delay(section, "flame_scan_delay_min_max", m_scan_delay_min, m_scan_delay_max);
 
-	#pragma todo("Deathman to Deathman: Отрефакторить")
 	// load scan effector
 	LPCSTR ppi_section = pSettings->r_string(section, "flame_scan_effector_section");
 	m_scan_effector_info.duality.h = pSettings->r_float(ppi_section, "duality_h");
