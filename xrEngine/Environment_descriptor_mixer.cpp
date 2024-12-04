@@ -15,6 +15,7 @@ void CEnvDescriptorMixer::destroy()
 {
 	sky_r_textures.clear();
 	sky_r_textures_env.clear();
+	lut_r_textures.clear();
 	clouds_r_textures.clear();
 
 	on_device_destroy();
@@ -22,6 +23,7 @@ void CEnvDescriptorMixer::destroy()
 	sky_texture.destroy();
 	sky_texture_env.destroy();
 	clouds_texture.destroy();
+	lut_texture.destroy();
 }
 
 void CEnvDescriptorMixer::clear()
@@ -41,6 +43,11 @@ void CEnvDescriptorMixer::clear()
 	clouds_r_textures.push_back(zero);
 	clouds_r_textures.push_back(zero);
 	clouds_r_textures.push_back(zero);
+
+	lut_r_textures.clear();
+	lut_r_textures.push_back(zero);
+	lut_r_textures.push_back(zero);
+	lut_r_textures.push_back(zero);
 }
 
 int get_ref_count(IUnknown* ii);
@@ -63,6 +70,10 @@ void CEnvDescriptorMixer::lerp(CEnvironment*, CEnvDescriptor& A, CEnvDescriptor&
 	clouds_r_textures.clear();
 	clouds_r_textures.push_back(mk_pair(0, A.clouds_texture));
 	clouds_r_textures.push_back(mk_pair(1, B.clouds_texture));
+
+	lut_r_textures.clear();
+	lut_r_textures.push_back(mk_pair(0, A.lut_texture));
+	lut_r_textures.push_back(mk_pair(1, B.lut_texture));
 
 	weight = f;
 

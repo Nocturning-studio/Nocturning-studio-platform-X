@@ -52,17 +52,8 @@ void CRenderTarget::phase_combine_postprocess()
 
 void CRenderTarget::phase_combine()
 {
-	bool _menu_pp = g_pGamePersistent ? g_pGamePersistent->OnRenderPPUI_query() : false;
-
 	u32 Offset = 0;
 	Fvector2 p0, p1;
-
-	//*** exposure-pipeline
-	u32 gpu_id = Device.dwFrame % 2;
-	{
-		t_LUM_src->surface_set(rt_LUM_pool[gpu_id * 2 + 0]->pSurface);
-		t_LUM_dest->surface_set(rt_LUM_pool[gpu_id * 2 + 1]->pSurface);
-	}
 
 	// low/hi RTs
 	u_setrt(rt_Generic_0, 0, 0, HW.pBaseZB);
@@ -70,71 +61,70 @@ void CRenderTarget::phase_combine()
 	RCache.set_Stencil(FALSE);
 
 	// Draw full-screen quad textured with our scene image
-	if (!_menu_pp)
+	// draw skybox
+	RCache.set_ColorWriteEnable();
+	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
+	g_pGamePersistent->Environment().RenderSky();
+	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
+
+	RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
+	if (RImplementation.o.nvstencil)
 	{
-		// draw skybox
+		u_stencil_optimize(FALSE);
 		RCache.set_ColorWriteEnable();
-		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
-		g_pGamePersistent->Environment().RenderSky();
-		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
-
-		RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
-		if (RImplementation.o.nvstencil)
-		{
-			u_stencil_optimize(FALSE);
-			RCache.set_ColorWriteEnable();
-		}
-
-		// Compute params
-		CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
-		const float minamb = 0.001f;
-		Fvector4 ambclr = {_max(sRgbToLinear(envdesc->ambient.x), minamb), _max(sRgbToLinear(envdesc->ambient.y), minamb), _max(sRgbToLinear(envdesc->ambient.z), minamb), ps_r_ao_brightness};
-		Fvector4 envclr = {sRgbToLinear(envdesc->hemi_color.x), sRgbToLinear(envdesc->hemi_color.y), sRgbToLinear(envdesc->hemi_color.z), envdesc->weight};
-
-		//----------------------
-		// Start combine stage
-		//----------------------
-
-		// Fill VB
-		float _w = float(Device.dwWidth);
-		float _h = float(Device.dwHeight);
-		p0.set(.5f / _w, .5f / _h);
-		p1.set((_w + .5f) / _w, (_h + .5f) / _h);
-
-		// Fill vertex buffer
-		Fvector4* pv = (Fvector4*)RCache.Vertex.Lock(4, g_combine_VP->vb_stride, Offset);
-		pv->set(hclip(EPS, _w), hclip(_h + EPS, _h), p0.x, p1.y);
-		pv++;
-		pv->set(hclip(EPS, _w), hclip(EPS, _h), p0.x, p0.y);
-		pv++;
-		pv->set(hclip(_w + EPS, _w), hclip(_h + EPS, _h), p1.x, p1.y);
-		pv++;
-		pv->set(hclip(_w + EPS, _w), hclip(EPS, _h), p1.x, p0.y);
-		pv++;
-		RCache.Vertex.Unlock(4, g_combine_VP->vb_stride);
-
-		// Setup textures
-		IDirect3DBaseTexture9* e0 = _menu_pp ? 0 : envdesc->sky_r_textures_env[0].second->surface_get();
-		t_envmap_0->surface_set(e0);
-		_RELEASE(e0);
-
-		IDirect3DBaseTexture9* e1 = _menu_pp ? 0 : envdesc->sky_r_textures_env[1].second->surface_get();
-		t_envmap_1->surface_set(e1);
-		_RELEASE(e1);
-
-		// Draw
-		RCache.set_Element(s_combine->E[1]);
-
-		RCache.set_Geometry(g_combine_VP);
-
-		Fvector4 debug_mode = {(float)ps_r_debug_render, 0, 0, 0};
-		RCache.set_c("debug_mode", debug_mode);
-
-		RCache.set_c("ambient_color", ambclr);
-
-		RCache.set_c("env_color", envclr);
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
+
+	// Compute params
+	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
+	const float minamb = 0.001f;
+	Fvector4 ambclr = {_max(sRgbToLinear(envdesc->ambient.x), minamb), _max(sRgbToLinear(envdesc->ambient.y), minamb),
+					   _max(sRgbToLinear(envdesc->ambient.z), minamb), ps_r_ao_brightness};
+	Fvector4 envclr = {sRgbToLinear(envdesc->hemi_color.x), sRgbToLinear(envdesc->hemi_color.y),
+					   sRgbToLinear(envdesc->hemi_color.z), envdesc->weight};
+
+	//----------------------
+	// Start combine stage
+	//----------------------
+
+	// Fill VB
+	float _w = float(Device.dwWidth);
+	float _h = float(Device.dwHeight);
+	p0.set(.5f / _w, .5f / _h);
+	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
+
+	// Fill vertex buffer
+	Fvector4* pv = (Fvector4*)RCache.Vertex.Lock(4, g_combine_VP->vb_stride, Offset);
+	pv->set(hclip(EPS, _w), hclip(_h + EPS, _h), p0.x, p1.y);
+	pv++;
+	pv->set(hclip(EPS, _w), hclip(EPS, _h), p0.x, p0.y);
+	pv++;
+	pv->set(hclip(_w + EPS, _w), hclip(_h + EPS, _h), p1.x, p1.y);
+	pv++;
+	pv->set(hclip(_w + EPS, _w), hclip(EPS, _h), p1.x, p0.y);
+	pv++;
+	RCache.Vertex.Unlock(4, g_combine_VP->vb_stride);
+
+	// Setup textures
+	IDirect3DBaseTexture9* e0 = envdesc->sky_r_textures_env[0].second->surface_get();
+	t_envmap_0->surface_set(e0);
+	_RELEASE(e0);
+
+	IDirect3DBaseTexture9* e1 = envdesc->sky_r_textures_env[1].second->surface_get();
+	t_envmap_1->surface_set(e1);
+	_RELEASE(e1);
+
+	// Draw
+	RCache.set_Element(s_combine->E[1]);
+
+	RCache.set_Geometry(g_combine_VP);
+
+	Fvector4 debug_mode = {(float)ps_r_debug_render, 0, 0, 0};
+	RCache.set_c("debug_mode", debug_mode);
+
+	RCache.set_c("ambient_color", ambclr);
+
+	RCache.set_c("env_color", envclr);
+	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
 	// Forward rendering
 #ifndef MASTER_GOLD
@@ -152,35 +142,6 @@ void CRenderTarget::phase_combine()
 
 		if (g_pGamePersistent)
 			g_pGamePersistent->OnRenderPPUI_main(); // PP-UI
-	}
-
-	#pragma todo("Deathman to All: Реализовать через текстуру в низком разрешении")
-	//if (g_pGamePersistent && (g_pGamePersistent->Environment().CurrentEnv->fog_density > 0.5f))
-		//phase_fog_scattering();
-
-	// Perform blooming filter and distortion if needed
-	RCache.set_Stencil(FALSE);
-
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
-
-	// Distortion filter
-	{
-		phase_create_distortion_mask();
-
-		if (g_pGamePersistent)
-			g_pGamePersistent->OnRenderPPUI_PP();
-
-		phase_distortion();
-	}
-
-	//	Re-adapt autoexposure
-	RCache.set_Stencil(FALSE);
-
-	//*** exposure-pipeline-clear
-	{
-		std::swap(rt_LUM_pool[gpu_id * 2 + 0], rt_LUM_pool[gpu_id * 2 + 1]);
-		t_LUM_src->surface_set(NULL);
-		t_LUM_dest->surface_set(NULL);
 	}
 
 #ifdef DEBUG

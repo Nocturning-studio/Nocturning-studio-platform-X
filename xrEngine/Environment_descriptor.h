@@ -9,10 +9,12 @@ class ENGINE_API CEnvDescriptor
 	shared_str sky_texture_name;
 	shared_str sky_texture_env_name;
 	shared_str clouds_texture_name;
+	shared_str lut_texture_name;
 
 	ref_texture sky_texture;
 	ref_texture sky_texture_env;
 	ref_texture clouds_texture;
+	ref_texture lut_texture;
 
 	Fvector4 clouds_color;
 	Fvector3 sky_color;

@@ -25,6 +25,8 @@ void CBlender_effectors::Compile(CBlender_Compile& C)
 		C.r_Sampler_clf("s_noise0", r_RT_radiation_noise0);
 		C.r_Sampler_clf("s_noise1", r_RT_radiation_noise1);
 		C.r_Sampler_clf("s_noise2", r_RT_radiation_noise2);
+		C.r_Sampler_clf("s_lut0", r_T_LUTs0);
+		C.r_Sampler_clf("s_lut1", r_T_LUTs1);
 		C.r_End();
 		break;
 	case 1:

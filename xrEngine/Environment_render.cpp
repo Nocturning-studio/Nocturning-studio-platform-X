@@ -247,6 +247,9 @@ void CEnvironment::OnDeviceDestroy()
 	tsky0->surface_set(NULL);
 	tsky1->surface_set(NULL);
 
+	tlut0->surface_set(NULL);
+	tlut1->surface_set(NULL);
+
 	sh_2sky.destroy();
 	sh_2geom.destroy();
 	clouds_sh.destroy();

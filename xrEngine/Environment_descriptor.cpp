@@ -70,8 +70,10 @@ void CEnvDescriptor::load(CEnvironment& environment, CInifile& config)
 	sscanf(m_identifier.c_str(), "%d:%d:%d", &tm.x, &tm.y, &tm.z);
 	R_ASSERT3((tm.x >= 0) && (tm.x < 24) && (tm.y >= 0) && (tm.y < 60) && (tm.z >= 0) && (tm.z < 60),
 			  "Incorrect weather time", m_identifier.c_str());
+
 	exec_time = tm.x * 3600.f + tm.y * 60.f + tm.z;
 	exec_time_loaded = exec_time;
+
 	string_path st, st_env;
 	strcpy(st, config.r_string(m_identifier.c_str(), "sky_texture"));
 	strconcat(sizeof(st_env), st_env, st, "#small");
@@ -79,6 +81,12 @@ void CEnvDescriptor::load(CEnvironment& environment, CInifile& config)
 	sky_texture_env_name = st_env;
 	clouds_texture_name = config.r_string(m_identifier.c_str(), "clouds_texture");
 	LPCSTR cldclr = config.r_string(m_identifier.c_str(), "clouds_color");
+
+	if (config.line_exist(m_identifier.c_str(), "lut_texture"))
+		lut_texture_name = config.r_string(m_identifier.c_str(), "lut_texture");
+	else
+		lut_texture_name = "lut/lut_neutral";
+
 	float multiplier = 0, save = 0;
 	sscanf(cldclr, "%f,%f,%f,%f,%f", &clouds_color.x, &clouds_color.y, &clouds_color.z, &clouds_color.w, &multiplier);
 	save = clouds_color.w;
@@ -184,6 +192,8 @@ void CEnvDescriptor::on_device_create()
 		sky_texture_env.create(sky_texture_env_name.c_str());
 	if (clouds_texture_name.size())
 		clouds_texture.create(clouds_texture_name.c_str());
+	if (lut_texture_name.size())
+		lut_texture.create(lut_texture_name.c_str());
 }
 
 void CEnvDescriptor::on_device_destroy()
@@ -191,6 +201,7 @@ void CEnvDescriptor::on_device_destroy()
 	sky_texture.destroy();
 	sky_texture_env.destroy();
 	clouds_texture.destroy();
+	lut_texture.destroy();
 }
 
 CEnvDescriptor* CEnvironment::create_descriptor(shared_str const& identifier, CInifile* config)

@@ -393,6 +393,9 @@ CRenderTarget::CRenderTarget()
 
 		t_envmap_0.create(r_T_envs0);
 		t_envmap_1.create(r_T_envs1);
+
+		t_LUT_0.create(r_T_LUTs0);
+		t_LUT_1.create(r_T_LUTs1);
 	}
 
 	// Build textures
@@ -550,11 +553,19 @@ CRenderTarget::~CRenderTarget()
 #ifdef DEBUG
 	_SHOW_REF("t_envmap_0 - #small", t_envmap_0->pSurface);
 	_SHOW_REF("t_envmap_1 - #small", t_envmap_1->pSurface);
+
+	_SHOW_REF("t_LUT_0", t_LUT_0->pSurface);
+	_SHOW_REF("t_LUT_1", t_LUT_1->pSurface);
 #endif // DEBUG
 	t_envmap_0->surface_set(NULL);
 	t_envmap_1->surface_set(NULL);
 	t_envmap_0.destroy();
 	t_envmap_1.destroy();
+
+	t_LUT_0->surface_set(NULL);
+	t_LUT_1->surface_set(NULL);
+	t_LUT_0.destroy();
+	t_LUT_1.destroy();
 
 	_RELEASE(rt_smap_ZB);
 

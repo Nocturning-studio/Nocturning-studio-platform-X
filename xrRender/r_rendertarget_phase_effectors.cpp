@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "r_rendertarget.h"
+#include "..\xrEngine\igame_persistent.h"
+#include "..\xrEngine\environment.h"
 
 void CRenderTarget::u_calc_tc_duality_ss(Fvector2& r0, Fvector2& r1, Fvector2& l0, Fvector2& l1)
 {
@@ -268,8 +270,17 @@ void CRenderTarget::phase_effectors()
 	pv++;
 	RCache.Vertex.Unlock(4, g_effectors.stride());
 
+	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
+	IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
+	t_LUT_0->surface_set(e0);
+	_RELEASE(e0);
+
+	IDirect3DBaseTexture9* e1 = envdesc->lut_r_textures[1].second->surface_get();
+	t_LUT_1->surface_set(e1);
+	_RELEASE(e1);
+
 	// Actual rendering
-	RCache.set_c("c_colormap", param_color_map_influence, param_color_map_interpolate, 0, 0);
+	RCache.set_c("c_colormap", param_color_map_influence, param_color_map_interpolate, 0, envdesc->weight);
 	RCache.set_c("c_brightness", color_get_R(p_brightness) / 255.f, color_get_G(p_brightness) / 255.f, color_get_B(p_brightness) / 255.f, param_noise);
 
 	RCache.set_Geometry(g_effectors);

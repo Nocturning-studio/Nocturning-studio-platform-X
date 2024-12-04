@@ -74,6 +74,9 @@ CEnvironment::CEnvironment() : CurrentEnv(0), m_ambients_config(0)
 	tsky0 = Device.Resources->_CreateTexture("$user$sky0");
 	tsky1 = Device.Resources->_CreateTexture("$user$sky1");
 
+	tlut0 = Device.Resources->_CreateTexture("$user$lut_s0");
+	tlut1 = Device.Resources->_CreateTexture("$user$lut_s1");
+
 	string_path file_name;
 	m_ambients_config =
 		xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\ambients.ltx"), TRUE, TRUE, FALSE);
@@ -480,6 +483,7 @@ void CEnvironment::OnFrame()
 	CurrentEnv->sky_r_textures.push_back(mk_pair(2, autoexposure));
 	CurrentEnv->sky_r_textures_env.push_back(mk_pair(2, autoexposure));
 	CurrentEnv->clouds_r_textures.push_back(mk_pair(2, autoexposure));
+	CurrentEnv->lut_r_textures.push_back(mk_pair(2, autoexposure));
 
 	//. Setup skybox textures, somewhat ugly
 	IDirect3DBaseTexture9* e0 = CurrentEnv->sky_r_textures[0].second->surface_get();
@@ -489,6 +493,14 @@ void CEnvironment::OnFrame()
 	_RELEASE(e0);
 	tsky1->surface_set(e1);
 	_RELEASE(e1);
+
+	IDirect3DBaseTexture9* lut0 = CurrentEnv->lut_r_textures[0].second->surface_get();
+	IDirect3DBaseTexture9* lut1 = CurrentEnv->lut_r_textures[1].second->surface_get();
+
+	tlut0->surface_set(lut0);
+	_RELEASE(lut0);
+	tlut1->surface_set(lut1);
+	_RELEASE(lut1);
 
 	PerlinNoise1D->SetFrequency(wind_gust_factor * MAX_NOISE_FREQ);
 	wind_strength_factor = clampr(PerlinNoise1D->GetContinious(Device.fTimeGlobal) + 0.5f, 0.f, 1.f);

@@ -96,6 +96,9 @@ class CRenderTarget : public IRender_Target
 	ref_texture t_envmap_0; // env-0
 	ref_texture t_envmap_1; // env-1
 
+	ref_texture t_LUT_0; // lut-0
+	ref_texture t_LUT_1; // lut-1
+
 	ref_rt rt_Motion_Blur_Saved_Frame;
 
 	// smap
@@ -255,6 +258,10 @@ class CRenderTarget : public IRender_Target
 	void phase_ao();
 
 	void phase_autoexposure();
+
+	void phase_autoexposure_pipeline_start();
+
+	void phase_autoexposure_pipeline_clear();
 
 	void phase_combine_postprocess();
 

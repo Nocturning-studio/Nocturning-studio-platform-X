@@ -312,3 +312,26 @@ void CRenderTarget::phase_autoexposure()
 	// Cleanup states
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
 }
+
+void CRenderTarget::phase_autoexposure_pipeline_start()
+{
+	//*** exposure-pipeline
+	u32 gpu_id = Device.dwFrame % 2;
+	t_LUM_src->surface_set(rt_LUM_pool[gpu_id * 2 + 0]->pSurface);
+	t_LUM_dest->surface_set(rt_LUM_pool[gpu_id * 2 + 1]->pSurface);
+}
+
+void CRenderTarget::phase_autoexposure_pipeline_clear()
+{
+	u32 gpu_id = Device.dwFrame % 2;
+
+	//	Re-adapt autoexposure
+	RCache.set_Stencil(FALSE);
+
+	//*** exposure-pipeline-clear
+	{
+		std::swap(rt_LUM_pool[gpu_id * 2 + 0], rt_LUM_pool[gpu_id * 2 + 1]);
+		t_LUM_src->surface_set(NULL);
+		t_LUM_dest->surface_set(NULL);
+	}
+}
