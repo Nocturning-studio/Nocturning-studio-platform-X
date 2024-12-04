@@ -820,13 +820,10 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 
 		m_sun_cascades[cascade_ind].xform = cull_xform;
 
-		#pragma todo("Deathman to Deathman: если лимит меньше чем разрешение карты теней то пространство, за пределами этого лимита рендерится черным (Пресловутый баг с черной рамкой на границе каскада)")
-		//s32 limit = RImplementation.o.smapsize - 1;
-		s32 limit = RImplementation.o.smapsize;
 		sun->X.D.minX = 0;
-		sun->X.D.maxX = limit;
+		sun->X.D.maxX = RImplementation.o.smapsize;
 		sun->X.D.minY = 0;
-		sun->X.D.maxY = limit;
+		sun->X.D.maxY = RImplementation.o.smapsize;
 
 		// full-xform
 		FPU::m24r();
