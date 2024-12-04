@@ -299,6 +299,7 @@ void CRender::Render()
 
 	//******* Main render :: PART-0	-- first
 	// level, SPLIT
+	Device.Statistic->RenderCALC_GBuffer.Begin();
 	Target->enable_anisotropy_filtering();
 
 	Target->create_gbuffer();
@@ -315,7 +316,7 @@ void CRender::Render()
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
 
 	Target->disable_anisotropy_filtering();
-
+	Device.Statistic->RenderCALC_GBuffer.End();
 	//******* Occlusion testing of volume-limited light-sources
 	Target->phase_occq();
 
@@ -450,10 +451,19 @@ void CRender::Render()
 	// Postprocess
 	Device.Statistic->RenderCALC_POSTPROCESS.Begin();
 
+	Target->phase_autoexposure_pipeline_start();
+
 	Target->phase_combine();
 
 	// Generic0 -> Generic1
 	Target->phase_antialiasing();
+
+	Target->phase_create_distortion_mask();
+
+	if (g_pGamePersistent)
+		g_pGamePersistent->OnRenderPPUI_PP();
+
+	Target->phase_distortion();
 
 	if (ps_r_postprocess_flags.test(RFLAG_BLOOM))
 		Target->phase_bloom();
@@ -469,8 +479,8 @@ void CRender::Render()
 		Target->phase_depth_of_field();
 
 	// Generic1 -> Generic0 -> Generic1
-	if (ps_r_postprocess_flags.test(RFLAG_BARREL_BLUR))
-		Target->phase_barrel_blur();
+	//if (ps_r_postprocess_flags.test(RFLAG_BARREL_BLUR))
+	//	Target->phase_barrel_blur();
 
 	if (ps_render_flags.test(RFLAG_LENS_FLARES))
 		g_pGamePersistent->Environment().RenderFlares();
@@ -484,6 +494,8 @@ void CRender::Render()
 	Device.Statistic->RenderCALC_POSTPROCESS.End();
 
 	Target->phase_output_to_screen();
+
+	Target->phase_autoexposure_pipeline_clear();
 
 	VERIFY(0 == mapDistort.size());
 

@@ -26,7 +26,7 @@ void CBlender_distortion::Compile(CBlender_Compile& C)
 	case 0:
 		C.r_Pass("null", "postprocess_stage_distortion", FALSE, FALSE, FALSE);
 		gbuffer(C);
-		C.r_Sampler_rtf("s_image", r_RT_generic0);
+		C.r_Sampler_rtf("s_image", r_RT_generic1);
 		C.r_Sampler_clf("s_distort", r_RT_distortion_mask);
 		jitter(C);
 		C.r_End();

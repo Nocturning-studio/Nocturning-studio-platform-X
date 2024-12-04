@@ -119,6 +119,7 @@ void CStats::Show()
 		RenderCALC_HOM.FrameEnd();
 		RenderCALC_SUN.FrameEnd();
 		RenderCALC_LIGHTS.FrameEnd();
+		RenderCALC_GBuffer.FrameEnd();
 		RenderCALC_AO.FrameEnd();
 		RenderCALC_POSTPROCESS.FrameEnd();
 		RenderDUMP.FrameEnd();
@@ -278,6 +279,7 @@ void CStats::Show()
 		F.OutNext("*** RENDER:  %2.2fms", RenderTOTAL.result);
 		F.OutNext("R_CALC:      %2.2fms, %2.1f%%", RenderCALC.result, PPP(RenderCALC.result));
 		F.OutNext("  HOM:       %2.2fms, %d", RenderCALC_HOM.result, RenderCALC_HOM.count);
+		F.OutNext("  GBuffer:       %2.2fms, %d", RenderCALC_GBuffer.result, RenderCALC_GBuffer.count);
 		F.OutNext("  SMAP SUN:  %2.2fms, %d", RenderCALC_SUN.result, RenderCALC_SUN.count);
 		F.OutNext("  SMAP Lights: %2.2fms, %d", RenderCALC_LIGHTS.result, RenderCALC_LIGHTS.count);
 		F.OutNext("  AO:        %2.2fms, %d", RenderCALC_AO.result, RenderCALC_AO.count);
@@ -443,6 +445,7 @@ void CStats::Show()
 		RenderCALC_HOM.FrameStart();
 		RenderCALC_SUN.FrameStart();
 		RenderCALC_LIGHTS.FrameStart();
+		RenderCALC_GBuffer.FrameStart();
 		RenderCALC_AO.FrameStart();
 		RenderCALC_POSTPROCESS.FrameStart();
 		RenderDUMP.FrameStart();

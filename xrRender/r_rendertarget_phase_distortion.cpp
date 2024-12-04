@@ -18,7 +18,7 @@ void CRenderTarget::phase_create_distortion_mask()
 
 void CRenderTarget::phase_distortion()
 {
-	u_setrt(rt_Generic_0, NULL, NULL, NULL);
+	u_setrt(rt_Generic_1, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
