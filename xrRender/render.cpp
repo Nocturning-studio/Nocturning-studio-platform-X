@@ -149,7 +149,7 @@ void CRender::CheckHWRenderSupporting()
 // update with vid_restart
 void CRender::update_options()
 {
-	o.smapsize = 1536;
+	o.smapsize = 1024;
 
 	o.intz = (HW.support((D3DFORMAT)MAKEFOURCC('I', 'N', 'T', 'Z'), D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL));
 	if (o.intz)
@@ -567,7 +567,6 @@ void CRender::rmNormal()
 //////////////////////////////////////////////////////////////////////
 CRender::CRender() : m_bFirstFrameAfterReset(false)
 {
-#pragma todo("Deathman to ALL: –ешить проблему перезагрузки библиотеки компил€тора при компил€ции шейдеров")
 	LPCSTR CompilerName = "D3DCompiler_43.dll";
 	Msg("Loading d3d compiler DLL: %s", CompilerName);
 	hCompiler = LoadLibrary(CompilerName);
