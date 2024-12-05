@@ -85,7 +85,7 @@ void CEnvDescriptor::load(CEnvironment& environment, CInifile& config)
 	if (config.line_exist(m_identifier.c_str(), "lut_texture"))
 		lut_texture_name = config.r_string(m_identifier.c_str(), "lut_texture");
 	else
-		lut_texture_name = "lut/lut_neutral";
+		lut_texture_name = "lut\\lut_neutral";
 
 	float multiplier = 0, save = 0;
 	sscanf(cldclr, "%f,%f,%f,%f,%f", &clouds_color.x, &clouds_color.y, &clouds_color.z, &clouds_color.w, &multiplier);
