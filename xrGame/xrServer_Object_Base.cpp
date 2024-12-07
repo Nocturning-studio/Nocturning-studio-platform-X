@@ -116,7 +116,7 @@ CSE_Abstract::CSE_Abstract(LPCSTR caSection)
 		FS.update_path(file_name, "$game_config$", pSettings->r_string(caSection, "custom_data"));
 		if (!FS.exist(file_name))
 		{
-			Msg("! cannot open config file %s", file_name);
+			DbgMsg("! cannot open config file %s", file_name);
 		}
 		else
 		{
@@ -199,7 +199,7 @@ void CSE_Abstract::Spawn_Write(NET_Packet& tNetPacket, BOOL bLocal)
 	u16 client_data_size = (u16)client_data.size(); // не может быть больше 256 байт
 	tNetPacket.w_u16(client_data_size);
 	//	Msg							("SERVER:saving:save:%d bytes:%d:%s",client_data_size,ID,s_name_replace ?
-	//s_name_replace : "");
+	// s_name_replace : "");
 	if (client_data_size > 0)
 	{
 		tNetPacket.w(&*client_data.begin(), client_data_size);
@@ -275,7 +275,7 @@ BOOL CSE_Abstract::Spawn_Read(NET_Packet& tNetPacket)
 		if (client_data_size > 0)
 		{
 			//			Msg					("SERVER:loading:load:%d bytes:%d:%s",client_data_size,ID,s_name_replace ?
-			//s_name_replace : "");
+			// s_name_replace : "");
 			client_data.resize(client_data_size);
 			tNetPacket.r(&*client_data.begin(), client_data_size);
 		}
@@ -327,7 +327,7 @@ void CSE_Abstract::load(NET_Packet& tNetPacket)
 	{
 #ifdef DEBUG
 //		Msg						("SERVER:loading:load:%d bytes:%d:%s",client_data_size,ID,s_name_replace ?
-//s_name_replace : "");
+// s_name_replace : "");
 #endif // DEBUG
 		client_data.resize(client_data_size);
 		tNetPacket.r(&*client_data.begin(), client_data_size);
@@ -401,15 +401,15 @@ void CSE_Abstract::FillProps(LPCSTR pref, PropItemVec& items)
 
 	//	LPCSTR						gcs = pSettings->r_string(s_name,"GroupControlSection");
 	//	PHelper().CreateChoose		(items,PrepareKey(pref,*s_name,"Spawn\\group control"), &m_spawn_control,
-	//smSpawnItem,	0,	(void*)gcs,	16);
+	// smSpawnItem,	0,	(void*)gcs,	16);
 	PHelper().CreateFlag32(items, PrepareKey(pref, *s_name, "Spawn\\enabled"), &m_spawn_flags, flSpawnEnabled);
 //	PHelper().CreateFloat		(items,PrepareKey(pref,*s_name,"Spawn\\probability"), &m_spawn_probability,
-//0.f,			1.f); 	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\spawn on surge only"),
-//&m_spawn_flags,			flSpawnOnSurgeOnly); 	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\spawn
-//if destroyed only"),	&m_spawn_flags,			flSpawnIfDestroyedOnly); 	PHelper().CreateFlag32
-//(items,PrepareKey(pref,*s_name,"Spawn\\spawn infinite count"),		&m_spawn_flags,			flSpawnInfiniteCount);
-//	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\auto destroy on spawn"),		&m_spawn_flags,
-//flSpawnDestroyOnSpawn);
+// 0.f,			1.f); 	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\spawn on surge only"),
+//&m_spawn_flags,			flSpawnOnSurgeOnly); 	PHelper().CreateFlag32
+//(items,PrepareKey(pref,*s_name,"Spawn\\spawn if destroyed only"),	&m_spawn_flags,			flSpawnIfDestroyedOnly);
+// PHelper().CreateFlag32 (items,PrepareKey(pref,*s_name,"Spawn\\spawn infinite count"),		&m_spawn_flags,
+//flSpawnInfiniteCount); 	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\auto destroy on spawn"),
+//&m_spawn_flags, flSpawnDestroyOnSpawn);
 #endif // DEBUG
 #endif // XRGAME_EXPORTS
 }
