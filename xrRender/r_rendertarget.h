@@ -265,6 +265,8 @@ class CRenderTarget : public IRender_Target
 
 	void phase_combine_postprocess();
 
+	void phase_apply_volumetric();
+
 	void phase_combine();
 
 	void calc_screen_space_reflections();
@@ -294,6 +296,9 @@ class CRenderTarget : public IRender_Target
 	void phase_effectors_pass_generate_noise1();
 	void phase_effectors_pass_generate_noise2();
 	void phase_effectors_pass_night_vision();
+	void phase_effectors_pass_lut();
+	void phase_effectors_pass_combine();
+	void phase_effectors_pass_resolve_gamma();
 	void phase_effectors();
 
 	void phase_output_to_screen();

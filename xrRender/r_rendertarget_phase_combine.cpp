@@ -2,8 +2,6 @@
 #include "..\xrEngine\igame_persistent.h"
 #include "..\xrEngine\environment.h"
 
-#define STENCIL_CULL 0
-
 void CRenderTarget::phase_combine_postprocess()
 {
 	u_setrt(rt_Generic_0, NULL, NULL, NULL);
@@ -50,13 +48,56 @@ void CRenderTarget::phase_combine_postprocess()
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
+void CRenderTarget::phase_apply_volumetric()
+{
+	u_setrt(rt_Generic_0, NULL, NULL, NULL);
+
+	RCache.set_CullMode(CULL_NONE);
+	RCache.set_Stencil(FALSE);
+
+	// Constants
+	u32 Offset = 0;
+	u32 C = color_rgba(0, 0, 0, 255);
+
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
+
+	float d_Z = EPS_S;
+	float d_W = 1.f;
+
+	Fvector2 p0, p1;
+	p0.set(0.5f / w, 0.5f / h);
+	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
+
+	// Fill vertex buffer
+	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
+	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
+	pv++;
+	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
+	pv++;
+	pv->set(w, h, d_Z, d_W, C, p1.x, p1.y);
+	pv++;
+	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
+	pv++;
+	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+
+	// Set pass
+	RCache.set_Element(s_combine->E[3]);
+
+	// Set geometry
+	RCache.set_Geometry(g_combine);
+
+	// Draw
+	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+}
+
 void CRenderTarget::phase_combine()
 {
 	u32 Offset = 0;
 	Fvector2 p0, p1;
 
 	// low/hi RTs
-	u_setrt(rt_Generic_0, 0, 0, HW.pBaseZB);
+	u_setrt(rt_Generic_1, 0, 0, HW.pBaseZB);
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
 
@@ -131,7 +172,7 @@ void CRenderTarget::phase_combine()
 	if (ps_r_debug_render == 0)
 #endif
 	{
-		u_setrt(rt_Generic_0, rt_GBuffer_2, NULL, HW.pBaseZB); // LDR RT
+		u_setrt(rt_Generic_1, rt_GBuffer_2, NULL, HW.pBaseZB); // LDR RT
 
 		RCache.set_CullMode(CULL_CCW);
 		RCache.set_Stencil(FALSE);
@@ -143,6 +184,8 @@ void CRenderTarget::phase_combine()
 		if (g_pGamePersistent)
 			g_pGamePersistent->OnRenderPPUI_main(); // PP-UI
 	}
+
+	phase_apply_volumetric();
 
 #ifdef DEBUG
 	RCache.set_CullMode(CULL_CCW);

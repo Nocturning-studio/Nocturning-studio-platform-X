@@ -29,7 +29,6 @@ void CBlender_accum_spot::Compile(CBlender_Compile& C)
 		gbuffer(C);
 		//C.r_Sampler_clw("s_material", r_material);
 		C.r_Sampler("s_lmap", C.L_textures[0], false, D3DTADDRESS_CLAMP);
-		C.r_Sampler_clf("s_brdf_lut", "vfx\\vfx_brdf_lut");
 		C.r_End();
 		break;
 	case SE_L_NORMAL: // normal
@@ -41,7 +40,6 @@ void CBlender_accum_spot::Compile(CBlender_Compile& C)
 		//C.r_Sampler_clw("s_material", r_material);
 		C.r_Sampler("s_lmap", C.L_textures[0], false, D3DTADDRESS_CLAMP);
 		C.r_Sampler_clf("s_smap", r_RT_smap_depth);
-		C.r_Sampler_clf("s_brdf_lut", "vfx\\vfx_brdf_lut");
 		jitter(C);
 		C.r_End();
 		break;
@@ -53,7 +51,6 @@ void CBlender_accum_spot::Compile(CBlender_Compile& C)
 		//C.r_Sampler_clw("s_material", r_material);
 		C.r_Sampler("s_lmap", C.L_textures[0], false, D3DTADDRESS_CLAMP);
 		C.r_Sampler_clf("s_smap", r_RT_smap_depth);
-		C.r_Sampler_clf("s_brdf_lut", "vfx\\vfx_brdf_lut");
 		jitter(C);
 		C.r_End();
 		break;
@@ -65,7 +62,6 @@ void CBlender_accum_spot::Compile(CBlender_Compile& C)
 		//C.r_Sampler_clw("s_material", r_material);
 		C.r_Sampler_clf("s_lmap", r_RT_smap_surf); // diff here
 		C.r_Sampler_clf("s_smap", r_RT_smap_depth);
-		C.r_Sampler_clf("s_brdf_lut", "vfx\\vfx_brdf_lut");
 		jitter(C);
 		C.r_End();
 		break;

@@ -64,5 +64,12 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		jitter(C);
 		C.r_End();
 		break;
+	case 3:
+		C.r_Pass("null", "scene_combine_stage_apply_volumetric", FALSE, FALSE, FALSE);
+		C.r_Sampler_rtf("s_image", r_RT_generic1);
+		C.r_Sampler_clf("s_light_accumulator", r_RT_Light_Accumulator);
+		jitter(C);
+		C.r_End();
+		break;
 	}
 }

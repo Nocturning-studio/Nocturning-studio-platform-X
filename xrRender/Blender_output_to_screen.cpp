@@ -21,7 +21,7 @@ void CBlender_output_to_screen::Compile(CBlender_Compile& C)
 	{
 	case 0:
 		C.r_Pass("null", "output_to_screen_stage", FALSE, FALSE, FALSE);
-		C.r_Sampler_rtf("s_image", r_RT_generic1);
+		C.r_Sampler_rtf("s_image", r_RT_generic0);
 		C.r_End();
 		break;
 	}

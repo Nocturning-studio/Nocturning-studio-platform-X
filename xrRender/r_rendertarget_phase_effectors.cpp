@@ -225,19 +225,8 @@ void CRenderTarget::phase_effectors_pass_night_vision()
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
-void CRenderTarget::phase_effectors()
+void CRenderTarget::phase_effectors_pass_combine()
 {
-	if (g_pGamePersistent)
-	{
-		if (g_pGamePersistent->GetNightVisionState())
-			phase_effectors_pass_night_vision();
-	}
-
-	// get radiation particle intersection with camera matrix
-	phase_effectors_pass_generate_noise0();
-	phase_effectors_pass_generate_noise1();
-	phase_effectors_pass_generate_noise2();
-
 	// combination/postprocess
 	u_setrt(rt_Generic_1, NULL, NULL, NULL);
 
@@ -270,6 +259,49 @@ void CRenderTarget::phase_effectors()
 	pv++;
 	RCache.Vertex.Unlock(4, g_effectors.stride());
 
+	// Actual rendering
+	RCache.set_c("c_colormap", param_color_map_influence, param_color_map_interpolate, 0, 0);
+	RCache.set_c("c_brightness", color_get_R(p_brightness) / 255.f, color_get_G(p_brightness) / 255.f,
+				 color_get_B(p_brightness) / 255.f, param_noise);
+
+	RCache.set_Geometry(g_effectors);
+
+	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+}
+
+void CRenderTarget::phase_effectors_pass_resolve_gamma()
+{
+	u_setrt(rt_Generic_0, NULL, NULL, NULL);
+
+	RCache.set_CullMode(CULL_NONE);
+	RCache.set_Stencil(FALSE);
+
+	// Constants
+	u32 Offset = 0;
+	u32 C = color_rgba(0, 0, 0, 255);
+
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
+
+	float d_Z = EPS_S;
+	float d_W = 1.f;
+
+	Fvector2 p0, p1;
+	p0.set(0.5f / w, 0.5f / h);
+	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
+
+	// Fill vertex buffer
+	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
+	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
+	pv++;
+	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
+	pv++;
+	pv->set(w, h, d_Z, d_W, C, p1.x, p1.y);
+	pv++;
+	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
+	pv++;
+	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+
 	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
 	IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
 	t_LUT_0->surface_set(e0);
@@ -279,11 +311,87 @@ void CRenderTarget::phase_effectors()
 	t_LUT_1->surface_set(e1);
 	_RELEASE(e1);
 
-	// Actual rendering
-	RCache.set_c("c_colormap", param_color_map_influence, param_color_map_interpolate, 0, envdesc->weight);
-	RCache.set_c("c_brightness", color_get_R(p_brightness) / 255.f, color_get_G(p_brightness) / 255.f, color_get_B(p_brightness) / 255.f, param_noise);
+	// Set pass
+	RCache.set_Element(s_effectors->E[3]);
 
-	RCache.set_Geometry(g_effectors);
+	// Set geometry
+	RCache.set_Geometry(g_combine);
 
+	// Draw
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+}
+
+void CRenderTarget::phase_effectors_pass_lut()
+{
+	u_setrt(rt_Generic_1, NULL, NULL, NULL);
+
+	RCache.set_CullMode(CULL_NONE);
+	RCache.set_Stencil(FALSE);
+
+	// Constants
+	u32 Offset = 0;
+	u32 C = color_rgba(0, 0, 0, 255);
+
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
+
+	float d_Z = EPS_S;
+	float d_W = 1.f;
+
+	Fvector2 p0, p1;
+	p0.set(0.5f / w, 0.5f / h);
+	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
+
+	// Fill vertex buffer
+	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
+	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
+	pv++;
+	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
+	pv++;
+	pv->set(w, h, d_Z, d_W, C, p1.x, p1.y);
+	pv++;
+	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
+	pv++;
+	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+
+	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
+	IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
+	t_LUT_0->surface_set(e0);
+	_RELEASE(e0);
+
+	IDirect3DBaseTexture9* e1 = envdesc->lut_r_textures[1].second->surface_get();
+	t_LUT_1->surface_set(e1);
+	_RELEASE(e1);
+
+	// Set pass
+	RCache.set_Element(s_effectors->E[4]);
+
+	RCache.set_c("c_lut_params", envdesc->weight, 0, 0, 0);
+
+	// Set geometry
+	RCache.set_Geometry(g_combine);
+
+	// Draw
+	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+}
+
+void CRenderTarget::phase_effectors()
+{
+	//Generic_0 -> Generic_0!
+	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())
+		phase_effectors_pass_night_vision();
+
+	//Radiation
+	phase_effectors_pass_generate_noise0();
+	phase_effectors_pass_generate_noise1();
+	phase_effectors_pass_generate_noise2();
+
+	//"Postprocess" params and colormapping (Generic_0 -> Generic_1)
+	phase_effectors_pass_combine();
+
+	//Generic_1 -> Generic_0
+	phase_effectors_pass_resolve_gamma();
+
+	//Generic_0 -> Generic_1
+	phase_effectors_pass_lut();
 }

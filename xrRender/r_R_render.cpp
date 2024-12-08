@@ -493,6 +493,9 @@ void CRender::Render()
 
 	Device.Statistic->RenderCALC_POSTPROCESS.End();
 
+	// Generic1 -> Generic0
+	Target->draw_overlays();
+
 	Target->phase_output_to_screen();
 
 	Target->phase_autoexposure_pipeline_clear();
