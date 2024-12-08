@@ -315,7 +315,7 @@ static class cl_pos_decompress_params : public R_constant_setup
 	{
 		float VertTan = -1.0f * tanf(deg2rad(Device.fFOV / 2.0f));
 		float HorzTan = -VertTan / Device.fASPECT;
-		RCache.set_c(C, HorzTan, VertTan, VIEWPORT_NEAR, g_pGamePersistent->Environment().CurrentEnv->far_plane);
+		RCache.set_c(C, HorzTan, VertTan, (2.0f * HorzTan) / (float)Device.dwWidth, (2.0f * VertTan) / (float)Device.dwHeight);
 	}
 } binder_pos_decompress_params;
 
