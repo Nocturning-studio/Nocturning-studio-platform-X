@@ -28,7 +28,8 @@ int psSoundCacheSizeMB = 16;
 float psTimeFactor = 1.0f;
 
 float psDbgEAXRoom = EAXLISTENER_DEFAULTROOM;
-float psDbgEAXRoomHF = EAXLISTENER_DEFAULTROOMHF;
+//float psDbgEAXRoomHF = EAXLISTENER_DEFAULTROOMHF;
+float psDbgEAXRoomHF = -2000.0f;
 float psDbgEAXRoomRolloff = EAXLISTENER_DEFAULTROOMROLLOFFFACTOR;
 float psDbgEAXDecayTime = EAXLISTENER_DEFAULTDECAYTIME;
 float psDbgEAXDecayHFRatio = EAXLISTENER_DEFAULTDECAYHFRATIO;
@@ -524,7 +525,7 @@ void CSoundRender_Core::env_apply()
 		pEmitter->set_position(pParams->position);
 	}
 
-	bListenerMoved = TRUE;
+	//bListenerMoved = TRUE;
 }
 
 void CSoundRender_Core::update_listener(const Fvector& P, const Fvector& D, const Fvector& N, float dt)
@@ -580,7 +581,7 @@ void CSoundRender_Core::i_eax_listener_set(CSound_environment* _E)
 
 void CSoundRender_Core::i_eax_listener_set()
 {
-	Msg("\nEnv radius - %f", fEnvironmentRadius);
+	//Msg("\nEnv radius - %f", fEnvironmentRadius);
 
 	float SaturatedEnvRadius = fEnvironmentRadius / 100.0f;
 	clamp(SaturatedEnvRadius, 0.0f, 1.0f);
@@ -590,11 +591,11 @@ void CSoundRender_Core::i_eax_listener_set()
 	EAXLISTENERPROPERTIES ep;
 
 	// room effect level at low frequencies
-	float RoomFactor = (float)fEnvironmentRadius;
-	RoomFactor = RoomFactor * 75.0f;
+	long RoomFactor = (long)fEnvironmentRadius;
+	RoomFactor = RoomFactor * 75;
 	RoomFactor = -RoomFactor;
 	//clamp(RoomFactor, (long)EAXLISTENER_MINROOM, (long)EAXLISTENER_MAXROOM);
-	Msg("Room factor - %f", RoomFactor);
+	//Msg("Room factor - %f", (float)RoomFactor);
 	//RoomFactor = psDbgEAXRoom;
 	ep.lRoom = RoomFactor;
 
@@ -607,13 +608,13 @@ void CSoundRender_Core::i_eax_listener_set()
 	// reverberation decay time at low frequencies
 	float DecayTime = fEnvironmentRadius / 10.0f;
 	clamp(DecayTime, (float)EAXLISTENER_MINDECAYTIME, (float)EAXLISTENER_MAXDECAYTIME);
-	Msg("DecayTime - %f", DecayTime);
+	//Msg("DecayTime - %f", DecayTime);
 	//DecayTime = psDbgEAXDecayTime;
 	ep.flDecayTime = DecayTime;	// psDbgEAXDecayTime;	
 
 	// high-frequency to low-frequency decay time ratio
 	float DecayHFRatio = SaturatedEnvRadius / 2.0f;
-	Msg("DecayHFRatio - %f", DecayHFRatio);
+	//Msg("DecayHFRatio - %f", DecayHFRatio);
 	//DecayHFRatio = psDbgEAXDecayHFRatio;
 	ep.flDecayHFRatio = DecayHFRatio;			 
 
@@ -623,7 +624,7 @@ void CSoundRender_Core::i_eax_listener_set()
 	// initial reflection delay time
 	float ReflectionDelay = SaturatedEnvRadius / 2.5f;
 	clamp(ReflectionDelay, (float)EAXLISTENER_MINREFLECTIONSDELAY, (float)EAXLISTENER_MAXREFLECTIONSDELAY);
-	Msg("ReflectionDelay - %f", ReflectionDelay);
+	//Msg("ReflectionDelay - %f", ReflectionDelay);
 	//ReflectionDelay = psDbgEAXReflectionsDelay;
 	ep.flReflectionsDelay = ReflectionDelay;				
 
@@ -633,7 +634,7 @@ void CSoundRender_Core::i_eax_listener_set()
 	// late reverberation delay time relative to initial reflection
 	float ReverbDelay = SaturatedEnvRadius / 10.0f;
 	clamp(ReverbDelay, (float)EAXLISTENER_MINREVERBDELAY, (float)EAXLISTENER_MAXREVERBDELAY);
-	Msg("ReverbDelay - %f", ReverbDelay);
+	//Msg("ReverbDelay - %f", ReverbDelay);
 	// ReverbDelay = psDbgEAXReverbDelay;
 	ep.flReverbDelay = ReverbDelay;
 
@@ -647,7 +648,7 @@ void CSoundRender_Core::i_eax_listener_set()
 
 	// environment diffusion
 	float EnvironmentDiffusion = InvSaturatedEnvRadius;
-	Msg("EnvironmentDiffusion - %f", EnvironmentDiffusion);
+	//Msg("EnvironmentDiffusion - %f", EnvironmentDiffusion);
 	//EnvironmentDiffusion = psDbgEAXEnvironmentDiffusion; 
 	ep.flEnvironmentDiffusion = EnvironmentDiffusion;
 

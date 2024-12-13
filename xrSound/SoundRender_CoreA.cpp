@@ -238,6 +238,10 @@ void CSoundRender_CoreA::update_listener(const Fvector& P, const Fvector& D, con
 		Listener.position.set(P);
 		bListenerMoved = TRUE;
 	}
+	else
+	{
+		bListenerMoved = FALSE;
+	}
 
 	Listener.orientation[0].set(D.x, D.y, -D.z);
 	Listener.orientation[1].set(N.x, N.y, -N.z);
