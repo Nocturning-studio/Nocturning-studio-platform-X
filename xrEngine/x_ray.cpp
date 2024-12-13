@@ -45,6 +45,8 @@ static int start_day = 24;	  // Was 31
 static int start_month = 8;	  // Was January
 static int start_year = 2022; // Was 1999
 
+extern CRenderDevice Device;
+
 #ifdef NDEBUG
 namespace std
 {
@@ -211,7 +213,6 @@ void execUserScript()
 }
 void slowdownthread(void*)
 {
-	//	Sleep		(30*1000);
 	for (;;)
 	{
 		if (Device.Statistic->fFPS < 30)
@@ -850,7 +851,7 @@ CApplication::CApplication()
 
 	Console->Show();
 
-	Discord.Init();
+	DiscordAPI.Init();
 
 	// App Title
 	app_title[0] = '\0';
@@ -874,8 +875,6 @@ CApplication::~CApplication()
 	Engine.Event.Handler_Detach(eStart, this);
 	Engine.Event.Handler_Detach(eQuit, this);
 }
-
-extern CRenderDevice Device;
 
 void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 {
@@ -1051,7 +1050,7 @@ void CApplication::OnFrame()
 		g_pGameLevel->SoundEvent_Dispatch();
 
 	if (!g_dedicated_server)
-		Discord.Update();
+		DiscordAPI.Update();
 }
 
 void CApplication::Level_Append(LPCSTR folder)

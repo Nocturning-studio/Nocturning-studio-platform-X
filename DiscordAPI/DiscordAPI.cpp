@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "DiscordAPI.h"
 /////////////////////////////////////////////////////////////////////
-DISCORDAPI_API CDiscordAPI Discord;
+DISCORDAPI_API CDiscordAPI DiscordAPI;
 /////////////////////////////////////////////////////////////////////
 CDiscordAPI::~CDiscordAPI()
 {
@@ -15,7 +15,8 @@ CDiscordAPI::~CDiscordAPI()
 
 void CDiscordAPI::Init()
 {
-	Msg("Initialising DiscordAPI...");
+	Msg("\n");
+	Msg("Initializing DiscordAPI...");
 	auto ResultSDK_ = discord::Core::Create(m_AppID, DiscordCreateFlags_NoRequireDiscord, &m_DiscordCore);
 
 	if (!m_DiscordCore)
