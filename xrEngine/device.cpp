@@ -211,7 +211,7 @@ void CRenderDevice::Run()
 
 	mt_bMustExit = FALSE;
 	thread_spawn(SecondaryThreadProc, "X-RAY Secondary thread", 0, this);
-	thread_spawn(RenderThreadProc, "X-RAY Render thread", 0, this);
+	//thread_spawn(RenderThreadProc, "X-RAY Render thread", 0, this);
 
 	// Message cycle
 	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
@@ -280,8 +280,9 @@ void CRenderDevice::Run()
 				{
 					if (Begin())
 					{
-						renderProcessFrame.Set(); // allow render thread to do its job
-						renderFrameDone.Wait();	  // wait until render thread finish its job
+						//renderProcessFrame.Set(); // allow render thread to do its job
+						//renderFrameDone.Wait();	  // wait until render thread finish its job
+						seqRender.Process(rp_Render);
 
 						if (psDeviceFlags.test(rsCameraPos) || psDeviceFlags.test(rsStatistic) ||
 							Statistic->errors.size())
@@ -338,8 +339,8 @@ void CRenderDevice::Run()
 
 	// Stop Balance-Thread
 	mt_bMustExit = TRUE;
-	renderProcessFrame.Set();
-	renderThreadExit.Wait();
+	//renderProcessFrame.Set();
+	//renderThreadExit.Wait();
 	syncProcessFrame.Set();
 	syncThreadExit.Wait();
 	while (mt_bMustExit)
@@ -482,4 +483,16 @@ void CRenderDevice::OnWM_Activate(WPARAM wParam, LPARAM lParam)
 			ShowCursor(TRUE);
 		}
 	}
+}
+
+void CRenderDevice::time_factor(const float& time_factor)
+{
+	Timer.time_factor(time_factor);
+	TimerGlobal.time_factor(time_factor);
+}
+
+IC const float& CRenderDevice::time_factor() const
+{
+	VERIFY(Timer.time_factor() == TimerGlobal.time_factor());
+	return (Timer.time_factor());
 }
