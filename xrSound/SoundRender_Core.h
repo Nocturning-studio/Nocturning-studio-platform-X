@@ -31,11 +31,16 @@ class CSoundRender_Core : public CSound_manager_interface
 	BOOL bEAX; // Boolean variable to indicate presence of EAX Extension
 	BOOL bDeferredEAX;
 	BOOL bReady;
+	BOOL bDevicePaused;
 
 	CTimer Timer;
 	float fTimer_Value;
 	float fTimer_Delta;
+	float fTime_Factor;
 	sound_event* Handler;
+
+	float fEnvironmentRadius;
+	float fFogDensity;
 
   protected:
 	// Collider
@@ -105,6 +110,7 @@ class CSoundRender_Core : public CSound_manager_interface
 	// eax listener
 	void i_eax_commit_setting();
 	void i_eax_listener_set(CSound_environment* E);
+	void i_eax_listener_set();
 	void i_eax_listener_get(CSound_environment* E);
 
   public:
@@ -139,6 +145,21 @@ class CSoundRender_Core : public CSound_manager_interface
 	void env_load();
 	void env_unload();
 	void env_apply();
+
+	void set_device_pause_state(bool paused)
+	{
+		bDevicePaused = paused;
+	};
+
+	void set_environment_radius(float radius)
+	{
+		fEnvironmentRadius = radius;
+	};
+
+	virtual void set_environment_fog_density(float density)
+	{
+		fFogDensity = density;
+	};
 };
 extern CSoundRender_Core* SoundRender;
 #endif

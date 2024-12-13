@@ -257,7 +257,6 @@
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\third-party\dll\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\third-party\dll\soft_oal.dll" "$(OutDir)soft_oal.dll"
 copy /Y "$(SolutionDir)\third-party\dll\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -343,7 +342,6 @@ copy /Y "$(SolutionDir)\third-party\dll\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</C
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\third-party\dll\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\third-party\dll\soft_oal.dll" "$(OutDir)soft_oal.dll"
 copy /Y "$(SolutionDir)\third-party\dll\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -391,7 +389,6 @@ copy /Y "$(SolutionDir)\third-party\dll\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</C
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\third-party\dll\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\third-party\dll\soft_oal.dll" "$(OutDir)soft_oal.dll"
 copy /Y "$(SolutionDir)\third-party\dll\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -438,7 +435,6 @@ copy /Y "$(SolutionDir)\third-party\dll\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</C
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\third-party\dll\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\third-party\dll\soft_oal.dll" "$(OutDir)soft_oal.dll"
 copy /Y "$(SolutionDir)\third-party\dll\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -619,7 +615,6 @@ copy /Y "$(SolutionDir)\third-party\dll\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</C
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\third-party\dll\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\third-party\dll\soft_oal.dll" "$(OutDir)soft_oal.dll"
 copy /Y "$(SolutionDir)\third-party\dll\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

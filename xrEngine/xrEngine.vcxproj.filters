@@ -154,6 +154,9 @@
     <Filter Include="Game API\Environment\Hemisphere">
       <UniqueIdentifier>{a0a981e9-3342-4843-8de4-f900f0c05969}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game API\Sound Environment">
+      <UniqueIdentifier>{4344e60a-1d70-41a3-908e-6dba4316c117}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_d3d_extensions.h">
@@ -557,6 +560,9 @@
     </ClInclude>
     <ClInclude Include="ShaderMacros.h">
       <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound_environment.h">
+      <Filter>Game API\Sound Environment</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -967,6 +973,9 @@
     </ClCompile>
     <ClCompile Include="ShaderMacros.cpp">
       <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound_environment.cpp">
+      <Filter>Game API\Sound Environment</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

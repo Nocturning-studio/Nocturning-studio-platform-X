@@ -164,7 +164,8 @@ void CSoundRender_TargetA::fill_parameters()
 	}
 
 	VERIFY2(pEmitter, SE->source()->file_name());
-	float _pitch = pEmitter->p_source.freq;
+#pragma todo(Deathman to Deathman: Добавить поле)
+	float _pitch = pEmitter->p_source.freq * psTimeFactor;
 	clamp(_pitch, EPS_L, 2.f);
 	if (!fsimilar(_pitch, cache_pitch))
 	{

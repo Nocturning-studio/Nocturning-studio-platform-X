@@ -78,21 +78,14 @@ CEnvironment::CEnvironment() : CurrentEnv(0), m_ambients_config(0)
 	tlut1 = Device.Resources->_CreateTexture("$user$lut_s1");
 
 	string_path file_name;
-	m_ambients_config =
-		xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\ambients.ltx"), TRUE, TRUE, FALSE);
-	m_sound_channels_config = xr_new<CInifile>(
-		FS.update_path(file_name, "$game_config$", "environment\\sound_channels.ltx"), TRUE, TRUE, FALSE);
-	m_effects_config =
-		xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\effects.ltx"), TRUE, TRUE, FALSE);
-	m_suns_config =
-		xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\suns.ltx"), TRUE, TRUE, FALSE);
-	m_thunderbolt_collections_config = xr_new<CInifile>(
-		FS.update_path(file_name, "$game_config$", "environment\\thunderbolt_collections.ltx"), TRUE, TRUE, FALSE);
-	m_thunderbolts_config = xr_new<CInifile>(
-		FS.update_path(file_name, "$game_config$", "environment\\thunderbolts.ltx"), TRUE, TRUE, FALSE);
+	m_ambients_config = xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\ambients.ltx"), TRUE, TRUE, FALSE);
+	m_sound_channels_config = xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\sound_channels.ltx"), TRUE, TRUE, FALSE);
+	m_effects_config = xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\effects.ltx"), TRUE, TRUE, FALSE);
+	m_suns_config = xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\suns.ltx"), TRUE, TRUE, FALSE);
+	m_thunderbolt_collections_config = xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\thunderbolt_collections.ltx"), TRUE, TRUE, FALSE);
+	m_thunderbolts_config = xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\thunderbolts.ltx"), TRUE, TRUE, FALSE);
+	CInifile* config = xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\environment.ltx"), TRUE, TRUE, FALSE);
 
-	CInifile* config =
-		xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\environment.ltx"), TRUE, TRUE, FALSE);
 	// params
 	p_var_alt = deg2rad(config->r_float("environment", "altitude"));
 	p_var_long = deg2rad(config->r_float("environment", "delta_longitude"));
@@ -175,6 +168,7 @@ float CEnvironment::TimeWeight(float val, float min_t, float max_t)
 	return weight;
 }
 
+#pragma todo("Deathman to Deathman: Сделать setenvtime для одиночной игры")
 // Kondr48: ������� ��������� �������
 void CEnvironment::ChangeGameTime(float game_time)
 {
@@ -521,7 +515,6 @@ void CEnvironment::OnFrame()
 		D3DRS_FOGCOLOR, color_rgba_f(CurrentEnv->fog_color.x, CurrentEnv->fog_color.y, CurrentEnv->fog_color.z, 0)));
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_FOGDENSITY, CurrentEnv->fog_density));
 	*/
-	sound_env_fog_density = CurrentEnv->fog_density;
 }
 
 void CEnvironment::calculate_dynamic_sun_dir()

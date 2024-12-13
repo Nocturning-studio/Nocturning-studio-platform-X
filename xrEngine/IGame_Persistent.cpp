@@ -30,6 +30,7 @@ IGame_Persistent::IGame_Persistent()
 	m_pMainMenu = NULL;
 
 	pEnvironment = xr_new<CEnvironment>();
+	pSoundEnvironment = xr_new<CSoundEnvironment>();
 }
 
 IGame_Persistent::~IGame_Persistent()
@@ -40,6 +41,7 @@ IGame_Persistent::~IGame_Persistent()
 	Device.seqAppActivate.Remove(this);
 	Device.seqAppDeactivate.Remove(this);
 	xr_delete(pEnvironment);
+	xr_delete(pSoundEnvironment);
 }
 
 void IGame_Persistent::OnAppActivate()
@@ -152,7 +154,10 @@ void IGame_Persistent::OnFrame()
 {
 #ifndef DEDICATED_SERVER
 	if (!Device.Paused() || Device.dwPrecacheFrame)
+	{
 		Environment().OnFrame();
+		SoundEnvironment().Update();
+	}
 #endif
 
 #ifndef _EDITOR
@@ -183,6 +188,8 @@ void IGame_Persistent::OnFrame()
 		psi->PSI_internal_delete();
 	}
 #endif
+
+	::Sound->set_device_pause_state(Device.Paused());
 }
 
 void IGame_Persistent::destroy_particles(const bool& all_particles)

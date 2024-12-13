@@ -353,6 +353,7 @@ class CCC_TimeFactor : public IConsole_Command
 		float time_factor = (float)atof(args);
 		clamp(time_factor, .000000000000001f, 100000000.f);
 		Device.time_factor(time_factor);
+		psTimeFactor = time_factor;
 	}
 };
 #endif // MASTER_GOLD

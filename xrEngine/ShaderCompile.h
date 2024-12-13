@@ -161,9 +161,9 @@ T* CResourceManager::CreateShader(const char* _name, CShaderMacros& _macros)
 	sprintf_s(c_entry, sizeof c_entry, "main");
 	sprintf_s(c_target, sizeof c_target, "%s_%u_%u", ext, HW.Caps.raster_major, HW.Caps.raster_minor);
 
-#ifdef DEBUG_SHADER_COMPILATION
+//#ifdef DEBUG_SHADER_COMPILATION
 	Msg("* Compiling shader: target=%s, source=%s.%s", c_target, _name, ext);
-#endif
+//#endif
 
 #ifdef DEBUG_SHADER_COMPILATION
 	print_macros(_macros);

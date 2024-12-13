@@ -766,6 +766,18 @@ void CCC_Register()
 	CMD4(CCC_Integer, "snd_targets", &psSoundTargets, 4, 32);
 	CMD4(CCC_Integer, "snd_cache_size", &psSoundCacheSizeMB, 4, 32);
 
+	CMD4(CCC_Float, "snd_dbg_eax_room", &psDbgEAXRoom, -10000, 0);
+	CMD4(CCC_Float, "snd_dbg_eax_room_hf", &psDbgEAXRoomHF, -10000.0f, 0);
+	CMD4(CCC_Float, "snd_dbg_eax_room_rolloff", &psDbgEAXRoomRolloff, 0.0f, 10.0f);
+	CMD4(CCC_Float, "snd_dbg_eax_decay_time", &psDbgEAXDecayTime, 0.1f, 20.0f);
+	CMD4(CCC_Float, "snd_dbg_eax_decay_hf_ratio", &psDbgEAXDecayHFRatio, 0.1f, 2.0f);
+	CMD4(CCC_Float, "snd_dbg_eax_reflections", &psDbgEAXReflections, -10000.0f, 1000);
+	CMD4(CCC_Float, "snd_dbg_eax_reflections_delay", &psDbgEAXReflectionsDelay, 0.0f, 0.3f);
+	CMD4(CCC_Float, "snd_dbg_eax_reverb", &psDbgEAXReverb, -10000, 2000);
+	CMD4(CCC_Float, "snd_dbg_eax_reverb_delay", &psDbgEAXReverbDelay, 0.0f, 0.1f);
+	CMD4(CCC_Float, "snd_dbg_eax_environment_size", &psDbgEAXEnvironmentSize, 1.0f, 100.0f);
+	CMD4(CCC_Float, "snd_dbg_eax_environment_diffusion", &psDbgEAXEnvironmentDiffusion, 0.0f, 1.0f);
+
 #ifdef DEBUG
 	CMD3(CCC_Mask, "snd_stats", &g_stats_flags, st_sound);
 	CMD3(CCC_Mask, "snd_stats_min_dist", &g_stats_flags, st_sound_min_dist);

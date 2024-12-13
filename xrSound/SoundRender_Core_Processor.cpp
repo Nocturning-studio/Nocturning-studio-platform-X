@@ -25,6 +25,7 @@ void CSoundRender_Core::update(const Fvector& P, const Fvector& D, const Fvector
 		return;
 	bLocked = TRUE;
 
+	Timer.time_factor(psTimeFactor);
 	float new_tm = Timer.GetElapsed_sec();
 	fTimer_Delta = new_tm - fTimer_Value;
 	float dt_sec = fTimer_Delta;
@@ -103,17 +104,18 @@ void CSoundRender_Core::update(const Fvector& P, const Fvector& D, const Fvector
 			s_targets_defer[it]->fill_parameters();
 	}
 
+#pragma todo(Deathman to Deathman: Доделать Dynamic EAX и вырезать или скомбинировать EAX на коробках)
 	// update EAX
-	if (psSoundFlags.test(ss_EAX) && bEAX)
+	if (psSoundFlags.test(ss_EAX) && bEAX && !bDevicePaused && bListenerMoved)
 	{
-		if (bListenerMoved)
-		{
-			bListenerMoved = FALSE;
-			e_target = *get_environment(P);
-		}
-		e_current.lerp(e_current, e_target, dt_sec);
+		//if (bListenerMoved)
+		//{
+		//	bListenerMoved = FALSE;
+		//	e_target = *get_environment(P);
+		//}
+		//e_current.lerp(e_current, e_target, dt_sec);
 
-		i_eax_listener_set(&e_current);
+		i_eax_listener_set();
 		i_eax_commit_setting();
 	}
 

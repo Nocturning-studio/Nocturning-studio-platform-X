@@ -33,8 +33,19 @@ XRSOUND_API extern int psSoundTargets;
 XRSOUND_API extern int psSoundCacheSizeMB;
 XRSOUND_API extern xr_token* snd_devices_token;
 XRSOUND_API extern u32 snd_device_id;
+XRSOUND_API extern float psTimeFactor;
 
-XRSOUND_API extern float sound_env_fog_density;
+XRSOUND_API extern float psDbgEAXRoom;
+XRSOUND_API extern float psDbgEAXRoomHF;
+XRSOUND_API extern float psDbgEAXRoomRolloff;
+XRSOUND_API extern float psDbgEAXDecayTime;
+XRSOUND_API extern float psDbgEAXDecayHFRatio;
+XRSOUND_API extern float psDbgEAXReflections;
+XRSOUND_API extern float psDbgEAXReflectionsDelay;
+XRSOUND_API extern float psDbgEAXReverb;
+XRSOUND_API extern float psDbgEAXReverbDelay;
+XRSOUND_API extern float psDbgEAXEnvironmentSize;
+XRSOUND_API extern float psDbgEAXEnvironmentDiffusion;
 
 // Flags
 enum
@@ -344,6 +355,11 @@ class XRSOUND_API CSound_manager_interface
 
 	virtual void object_relcase(CObject* obj) = 0;
 	virtual const Fvector& listener_position() = 0;
+
+	virtual void set_device_pause_state(bool paused) = 0;
+
+	virtual void set_environment_radius(float radius) = 0;
+	virtual void set_environment_fog_density(float density) = 0;
 };
 extern XRSOUND_API CSound_manager_interface* Sound;
 
