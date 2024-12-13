@@ -14,13 +14,20 @@
 #include "render.h"
 #include "CustomHUD.h"
 #include "IGame_Persistent.h"
-
-CDemoRecord* xrDemoRecord = 0;
-CDemoRecord::force_position CDemoRecord::g_position = {false, {0, 0, 0}};
 //////////////////////////////////////////////////////////////////////
 #ifdef DEBUG
 #define DEBUG_DEMO_RECORD
 #endif
+//////////////////////////////////////////////////////////////////////
+CDemoRecord* xrDemoRecord = 0;
+CDemoRecord::force_position CDemoRecord::g_position = {false, {0, 0, 0}};
+//////////////////////////////////////////////////////////////////////
+void CDemoRecord::update_whith_timescale(Fvector& v, const Fvector& v_delta)
+{
+	VERIFY(!fis_zero(Device.time_factor()));
+	float scale = 1.f / Device.time_factor();
+	v.mad(v, v_delta, scale);
+}
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -628,69 +635,76 @@ void CDemoRecord::IR_OnKeyboardPress(int dik)
 
 void CDemoRecord::IR_OnKeyboardHold(int dik)
 {
+	Fvector vT_delta{}, vR_delta{};
 	switch (dik)
 	{
 	case DIK_A:
 	case DIK_NUMPAD1:
 	case DIK_LEFT:
-		m_vT.x -= 1.0f;
+		vT_delta.x -= 1.0f;
 		break; // Slide Left
 	case DIK_D:
 	case DIK_NUMPAD3:
 	case DIK_RIGHT:
-		m_vT.x += 1.0f;
+		vT_delta.x += 1.0f;
 		break; // Slide Right
 	case DIK_S:
-		m_vT.y -= 1.0f;
+		vT_delta.y -= 1.0f;
 		break; // Slide Down
 	case DIK_W:
-		m_vT.y += 1.0f;
+		vT_delta.y += 1.0f;
 		break; // Slide Up
 	// rotate
 	case DIK_NUMPAD2:
-		m_vR.x -= 1.0f;
+		vR_delta.x -= 1.0f;
 		break; // Pitch Down
 	case DIK_NUMPAD8:
-		m_vR.x += 1.0f;
+		vR_delta.x += 1.0f;
 		break; // Pitch Up
 	case DIK_E:
 	case DIK_NUMPAD6:
-		m_vR.y += 1.0f;
+		vR_delta.y += 1.0f;
 		break; // Turn Left
 	case DIK_Q:
 	case DIK_NUMPAD4:
-		m_vR.y -= 1.0f;
+		vR_delta.y -= 1.0f;
 		break; // Turn Right
 	case DIK_NUMPAD9:
-		m_vR.z -= 2.0f;
+		vR_delta.z -= 2.0f;
 		break; // Turn Right
 	case DIK_NUMPAD7:
-		m_vR.z += 2.0f;
+		vR_delta.z += 2.0f;
 		break; // Turn Right
 	}
+	update_whith_timescale(m_vT, vT_delta);
+	update_whith_timescale(m_vR, vR_delta);
 }
 
 void CDemoRecord::IR_OnMouseMove(int dx, int dy)
 {
 	float scale = .5f; // psMouseSens;
+	Fvector vR_delta{};
 	if (dx || dy)
 	{
-		m_vR.y += float(dx) * scale;													// heading
-		m_vR.x += ((psMouseInvert.test(1)) ? -1 : 1) * float(dy) * scale * (3.f / 4.f); // pitch
+		vR_delta.y += float(dx) * scale;												// heading
+		vR_delta.x += ((psMouseInvert.test(1)) ? -1 : 1) * float(dy) * scale * (3.f / 4.f); // pitch
 	}
+	update_whith_timescale(m_vR, vR_delta);
 }
 
 void CDemoRecord::IR_OnMouseHold(int btn)
 {
+	Fvector vT_delta{};
 	switch (btn)
 	{
 	case 0:
-		m_vT.z += 1.0f;
+		vT_delta.z += 1.0f;
 		break; // Move Backward
 	case 1:
-		m_vT.z -= 1.0f;
+		vT_delta.z -= 1.0f;
 		break; // Move Forward
 	}
+	update_whith_timescale(m_vT, vT_delta);
 }
 
 void CDemoRecord::ChangeDepthOfField(int direction)

@@ -65,6 +65,7 @@ class ENGINE_API CDemoRecord : public CEffectorCam, public IInputReceiver
 	void ShowInputInfo();
 
   public:
+	void update_whith_timescale(Fvector& v, const Fvector& v_delta);
 	CDemoRecord(const char* name, float life_time = 60 * 60 * 1000);
 	virtual ~CDemoRecord();
 
