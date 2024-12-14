@@ -5,6 +5,9 @@
 #include "stdafx.h"
 #include "DiscordAPI.h"
 /////////////////////////////////////////////////////////////////////
+#pragma todo(Deathman to Deathman : Проверить функциональность)
+#pragma todo(Deathman to Deathman : Добавить скриптовую систему достижений и интеграцию ее в DiscordAPI)
+/////////////////////////////////////////////////////////////////////
 DISCORDAPI_API CDiscordAPI DiscordAPI;
 /////////////////////////////////////////////////////////////////////
 CDiscordAPI::~CDiscordAPI()
@@ -15,8 +18,7 @@ CDiscordAPI::~CDiscordAPI()
 
 void CDiscordAPI::Init()
 {
-	Msg("\n");
-	Msg("Initializing DiscordAPI...");
+	Msg("\nInitializing DiscordAPI...");
 	auto ResultSDK_ = discord::Core::Create(m_AppID, DiscordCreateFlags_NoRequireDiscord, &m_DiscordCore);
 
 	if (!m_DiscordCore)

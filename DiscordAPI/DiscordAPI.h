@@ -36,6 +36,7 @@ class DISCORDAPI_API CDiscordAPI
   public:
 	void Init();
 	void AssotiateError(int ErrorCode);
+
 	void Update();
 	void UpdateActivity();
 	void SetPhase(const xr_string& phase);
