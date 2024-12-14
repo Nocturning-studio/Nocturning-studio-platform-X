@@ -126,12 +126,13 @@ void CUIOptionsManager::UndoGroup(const char* group)
 	}
 }
 
+#pragma todo(Deathman to Deathman: Исправить snd_restart)
 void CUIOptionsManager::OptionsPostAccept()
 {
 	if (m_b_vid_restart)
 		Console->Execute("vid_restart");
-	if (m_b_snd_restart)
-		Console->Execute("snd_restart");
+	//if (m_b_snd_restart)
+	//	Console->Execute("snd_restart");
 
 	m_b_vid_restart = false;
 	m_b_snd_restart = false;

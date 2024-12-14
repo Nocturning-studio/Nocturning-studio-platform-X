@@ -26,6 +26,7 @@ XRSOUND_API extern float psSoundVFactor;
 XRSOUND_API extern float psSoundVMusic;
 XRSOUND_API extern float psSoundVWeaponShooting;
 XRSOUND_API extern float psSoundVAmbient;
+//XRSOUND_API extern float psSoundVAmbientDynamicMultiplier;
 XRSOUND_API extern float psSoundRolloff;
 XRSOUND_API extern float psSoundOcclusionScale;
 XRSOUND_API extern Flags32 psSoundFlags;
@@ -50,8 +51,7 @@ XRSOUND_API extern float psDbgEAXEnvironmentDiffusion;
 // Flags
 enum
 {
-	ss_Hardware = (1ul << 1ul), //!< Use hardware mixing only
-	ss_EAX = (1ul << 2ul),		//!< Use eax
+	ss_EAX = (1ul << 1ul),		//!< Use eax
 	ss_forcedword = u32(-1)
 };
 
@@ -360,6 +360,7 @@ class XRSOUND_API CSound_manager_interface
 
 	virtual void set_environment_radius(float radius) = 0;
 	virtual void set_environment_fog_density(float density) = 0;
+	virtual void set_need_update_environment(bool needToUpdate) = 0;
 };
 extern XRSOUND_API CSound_manager_interface* Sound;
 

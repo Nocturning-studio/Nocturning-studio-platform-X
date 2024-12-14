@@ -10,13 +10,18 @@ class ENGINE_API CSoundEnvironment;
 class ENGINE_API CSoundEnvironment
 {
 private:
-	float m_fEnvironmentRadius;
-	Fvector m_fPositionPrev;
+	float m_EnvironmentRadius;
+	u32 m_LastUpdatedFrame;
+
+	Fvector m_PositionPrev;
+	float m_FogDensityPrev;
+	float m_EnvironmentRadiusPrev;
 
 public:
 	void __stdcall MT_CALC();
 	void CalcAverageEnvironmentRadius();
 	void Update();
+	bool NeedUpdate();
 
 	float GetEnvironmentVolume();
 

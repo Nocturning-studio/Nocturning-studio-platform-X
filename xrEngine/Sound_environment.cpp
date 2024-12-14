@@ -20,6 +20,8 @@
 ///////////////////////////////////////////////////////////////////////////////////
 #define DIRECTIONS_COUNT 21
 #define PI 3.14159265358979323846f
+
+#define SKIP_UPDATE_FRAMES_COUNT 30
 ///////////////////////////////////////////////////////////////////////////////////
 static const Fvector3 HemisphereDirectionsArray[DIRECTIONS_COUNT] = 
 {
@@ -48,8 +50,10 @@ static const Fvector3 HemisphereDirectionsArray[DIRECTIONS_COUNT] =
 ///////////////////////////////////////////////////////////////////////////////////
 CSoundEnvironment::CSoundEnvironment()
 {
-	m_fEnvironmentRadius = -1.0f;
-	m_fPositionPrev = {0, 0, 0};
+	m_EnvironmentRadius = -1.0f;
+	m_PositionPrev = {0, 0, 0};
+	m_LastUpdatedFrame = 0;
+	m_FogDensityPrev = 0.0f;
 }
 
 CSoundEnvironment::~CSoundEnvironment()
@@ -79,7 +83,7 @@ void CSoundEnvironment::CalcAverageEnvironmentRadius()
 		AverageIntersectionDistance += SampleRayQuaryResult.range / DIRECTIONS_COUNT;
 	}
 
-	m_fEnvironmentRadius = AverageIntersectionDistance;
+	m_EnvironmentRadius = AverageIntersectionDistance;
 }
 
 /*----------------------------------------
@@ -88,18 +92,36 @@ X-Ray Secondary thread
 ----------------------------------------*/
 void __stdcall CSoundEnvironment::MT_CALC()
 {
-	if (!Device.vCameraPosition.similar(m_fPositionPrev))
-		CalcAverageEnvironmentRadius();
+	CalcAverageEnvironmentRadius();
 }
 
 void CSoundEnvironment::Update()
 {
-	Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(this, &CSoundEnvironment::MT_CALC));
-	m_fPositionPrev = Device.vCameraPosition;
+	bool bNeedToUpdate = NeedUpdate();
+	if (bNeedToUpdate)
+	{
+		Msg("bNeedToUpdate");
+		Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(this, &CSoundEnvironment::MT_CALC));
 
-	::Sound->set_environment_radius(m_fEnvironmentRadius);
+		::Sound->set_environment_radius(m_EnvironmentRadius);
 
+		float FogDensity = g_pGamePersistent->Environment().CurrentEnv->fog_density;
+		::Sound->set_environment_fog_density(FogDensity);
+
+		m_PositionPrev = Device.vCameraPosition;
+		m_LastUpdatedFrame = Device.dwFrame;
+		m_FogDensityPrev = FogDensity;
+	}
+	::Sound->set_need_update_environment(bNeedToUpdate);
+}
+
+bool CSoundEnvironment::NeedUpdate()
+{
 	float FogDensity = g_pGamePersistent->Environment().CurrentEnv->fog_density;
-	::Sound->set_environment_fog_density(FogDensity);
+	if (Device.dwFrame > (m_LastUpdatedFrame + SKIP_UPDATE_FRAMES_COUNT))
+		if (!(Device.vCameraPosition.similar(m_PositionPrev)) || !(FogDensity == m_FogDensityPrev))
+			return true;
+
+	return false;
 }
 ///////////////////////////////////////////////////////////////////////////////////

@@ -11,7 +11,7 @@
 #pragma warning(pop)
 
 int psSoundTargets = 16;
-Flags32 psSoundFlags = {ss_Hardware | ss_EAX};
+Flags32 psSoundFlags = {ss_EAX};
 float psSoundOcclusionScale = 0.5f;
 float psSoundCull = 0.01f;
 float psSoundRolloff = 0.75f;
@@ -23,6 +23,7 @@ float psSoundVMaster = 1.0f;
 float psSoundVMusic = 0.7f;
 float psSoundVWeaponShooting = 0.7f;
 float psSoundVAmbient = 1.0f;
+//float psSoundVAmbientDynamicMultiplier = 1.0f;
 int psSoundCacheSizeMB = 16;
 
 float psTimeFactor = 1.0f;
@@ -65,6 +66,10 @@ CSoundRender_Core::CSoundRender_Core()
 	fTimer_Delta = 0.0f;
 	fTime_Factor = 1.0f;
 	m_iPauseCounter = 1;
+	bDevicePaused = FALSE;
+	fFogDensity = 0.0f;
+	fEnvironmentRadius = 0.0f;
+	bNeedToUpdateEnvironment = FALSE;
 }
 
 CSoundRender_Core::~CSoundRender_Core()
@@ -525,7 +530,7 @@ void CSoundRender_Core::env_apply()
 		pEmitter->set_position(pParams->position);
 	}
 
-	//bListenerMoved = TRUE;
+	bListenerMoved = TRUE;
 }
 
 void CSoundRender_Core::update_listener(const Fvector& P, const Fvector& D, const Fvector& N, float dt)
@@ -581,12 +586,18 @@ void CSoundRender_Core::i_eax_listener_set(CSound_environment* _E)
 
 void CSoundRender_Core::i_eax_listener_set()
 {
-	//Msg("\nEnv radius - %f", fEnvironmentRadius);
+	Msg("\nEnv radius - %f", fEnvironmentRadius);
 
 	float SaturatedEnvRadius = fEnvironmentRadius / 100.0f;
 	clamp(SaturatedEnvRadius, 0.0f, 1.0f);
 
+	Msg("SaturatedEnvRadius - %f", SaturatedEnvRadius);
+
+	//psSoundVAmbientDynamicMultiplier *= SaturatedEnvRadius;
+
 	float InvSaturatedEnvRadius = 1.0f - SaturatedEnvRadius;
+
+	Msg("InvSaturatedEnvRadius - %f", InvSaturatedEnvRadius);
 
 	EAXLISTENERPROPERTIES ep;
 
@@ -595,12 +606,18 @@ void CSoundRender_Core::i_eax_listener_set()
 	RoomFactor = RoomFactor * 75;
 	RoomFactor = -RoomFactor;
 	//clamp(RoomFactor, (long)EAXLISTENER_MINROOM, (long)EAXLISTENER_MAXROOM);
-	//Msg("Room factor - %f", (float)RoomFactor);
+	Msg("Room factor - %f", (float)RoomFactor);
 	//RoomFactor = psDbgEAXRoom;
 	ep.lRoom = RoomFactor;
 
 	// room effect high-frequency level re. low frequency level
-	ep.lRoomHF = (long)psDbgEAXRoomHF; 
+	float RoomHF = InvSaturatedEnvRadius;
+	RoomHF *= 5000.0f;
+	clamp(RoomHF, 2000.0f, 10000.0f);
+	RoomHF = -RoomHF;
+	Msg("RoomHF - %f", RoomHF);
+	//RoomHF = (long)psDbgEAXRoomHF;
+	ep.lRoomHF = (long)RoomFactor; 
 
 	// like DS3D flRolloffFactor but for room effect
 	ep.flRoomRolloffFactor = psDbgEAXRoomRolloff;			

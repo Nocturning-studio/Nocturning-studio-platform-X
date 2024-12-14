@@ -282,7 +282,7 @@ BOOL CSoundRender_Emitter::update_culling(float dt)
 			fade_scale *= psSoundVWeaponShooting;
 
 		if (owner_data->g_type == SOUND_TYPE_WORLD_AMBIENT)
-			fade_scale *= psSoundVAmbient;
+			fade_scale *= psSoundVAmbient;// * psSoundVAmbientDynamicMultiplier;
 
 		fade_volume += dt * 10.f * fade_scale;
 
@@ -307,7 +307,7 @@ BOOL CSoundRender_Emitter::update_culling(float dt)
 		smooth_volume *= psSoundVWeaponShooting;
 
 	if (owner_data->g_type == SOUND_TYPE_WORLD_AMBIENT)
-		smooth_volume *= psSoundVAmbient;
+		smooth_volume *= psSoundVAmbient;// * psSoundVAmbientDynamicMultiplier;
 
 	if (smooth_volume < psSoundCull)
 		return FALSE; // allow volume to go up

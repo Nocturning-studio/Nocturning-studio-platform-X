@@ -39,6 +39,7 @@ class CSoundRender_Core : public CSound_manager_interface
 	float fTime_Factor;
 	sound_event* Handler;
 
+	bool bNeedToUpdateEnvironment;
 	float fEnvironmentRadius;
 	float fFogDensity;
 
@@ -159,6 +160,11 @@ class CSoundRender_Core : public CSound_manager_interface
 	virtual void set_environment_fog_density(float density)
 	{
 		fFogDensity = density;
+	};
+
+	virtual void set_need_update_environment(bool needToUpdate)
+	{
+		bNeedToUpdateEnvironment = needToUpdate;
 	};
 };
 extern CSoundRender_Core* SoundRender;
