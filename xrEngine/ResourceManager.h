@@ -202,6 +202,7 @@ class ENGINE_API CResourceManager
 	template <typename T> T& GetShaderMap();
 	template <typename T> T* FindShader(const char* _name);
 	template <typename T> T* RegisterShader(const char* _name);
+	template <typename T> HRESULT ReadShaderCache(string_path name, T*& result);
 	template <typename T>
 	HRESULT CompileShader(LPCSTR name, LPCSTR ext, LPCSTR src, UINT size, LPCSTR target, LPCSTR entry,
 						  CShaderMacros& macros, T*& result);

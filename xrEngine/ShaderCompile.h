@@ -143,7 +143,9 @@ T* CResourceManager::CreateShader(const char* _name, CShaderMacros& _macros)
 
 	// if the shader is already exist, return it
 	T* sh = FindShader<T>(name);
-	if (sh) return sh;
+
+	if (sh) 
+		return sh;
 
 	// create a new shader
 	sh = RegisterShader<T>(name);
@@ -161,9 +163,9 @@ T* CResourceManager::CreateShader(const char* _name, CShaderMacros& _macros)
 	sprintf_s(c_entry, sizeof c_entry, "main");
 	sprintf_s(c_target, sizeof c_target, "%s_%u_%u", ext, HW.Caps.raster_major, HW.Caps.raster_minor);
 
-//#ifdef DEBUG_SHADER_COMPILATION
+#ifdef DEBUG_SHADER_COMPILATION
 	Msg("* Compiling shader: target=%s, source=%s.%s", c_target, _name, ext);
-//#endif
+#endif
 
 #ifdef DEBUG_SHADER_COMPILATION
 	print_macros(_macros);
@@ -171,7 +173,6 @@ T* CResourceManager::CreateShader(const char* _name, CShaderMacros& _macros)
 
 	// compile and create
 	HRESULT _hr = CompileShader(_name, ext, (LPCSTR)file->pointer(), file->length(), c_target, c_entry, macros, (T*&)sh);
-	R_ASSERT(!FAILED(_hr));
 
 	FS.r_close(file);
 
@@ -179,6 +180,32 @@ T* CResourceManager::CreateShader(const char* _name, CShaderMacros& _macros)
 }
 
 #include <boost/crc.hpp>
+
+template <typename T>
+HRESULT CResourceManager::ReadShaderCache(string_path name, T*& result)
+{
+	IReader* file = FS.r_open(name);
+	HRESULT cache_result = NULL;
+
+	if (file->length() > 4)
+	{
+		u32 crc = 0;
+		crc = file->r_u32();
+
+		boost::crc_32_type processor;
+		processor.process_block(file->pointer(), ((char*)file->pointer()) + file->elapsed());
+		u32 const real_crc = processor.checksum();
+
+		if (real_crc == crc)
+		{
+			cache_result = ReflectShader((DWORD*)file->pointer(), file->elapsed(), result);
+		}
+	}
+
+	file->close();
+
+	return cache_result;
+}
 
 template<typename T>
 HRESULT CResourceManager::CompileShader(
@@ -191,9 +218,21 @@ HRESULT CResourceManager::CompileShader(
 	CShaderMacros&	macros,
 	T*&				result)
 {
+	HRESULT _result = NULL;
 	string_path cache_dest;
 	sprintf_s(cache_dest, sizeof cache_dest, "shaders_cache\\%s%s.%s\\%s", ::Render->getShaderPath(), name, ext, macros.get_name().c_str());
 	FS.update_path(cache_dest, "$app_data_root$", cache_dest);
+
+	//Try to find and read cache file
+	if (FS.exist(cache_dest))
+	{
+		_result = ReadShaderCache(cache_dest, result);
+
+		if (FAILED(_result))
+			Msg("! Cache file broken for shader: %s", cache_dest);
+		else
+			return _result;
+	}
 
 #ifdef DEBUG_SHADER_COMPILATION
 	Msg("*   cache: %s.%s", cache_dest, ext);
@@ -206,21 +245,21 @@ HRESULT CResourceManager::CompileShader(
 	
 	u32 flags = D3DXSHADER_PACKMATRIX_ROWMAJOR | D3DXSHADER_OPTIMIZATION_LEVEL3;
 	
-	HRESULT _result = D3DXCompileShader(src, size, &macros.get_macros()[0], &Includer, entry, target, flags, &pShaderBuf, &pErrorBuf, &pConstants);
+	_result = D3DXCompileShader(src, size, &macros.get_macros()[0], &Includer, entry, target, flags, &pShaderBuf, &pErrorBuf, &pConstants);
 	
 	if (SUCCEEDED(_result))
 	{
-		IWriter* file			= FS.w_open(cache_dest);
+		IWriter* file = FS.w_open(cache_dest);
 
-		boost::crc_32_type		processor;
-		processor.process_block	( pShaderBuf->GetBufferPointer(), ((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize() );
-		u32 const crc			= processor.checksum( );
+		boost::crc_32_type processor;
+		processor.process_block(pShaderBuf->GetBufferPointer(), ((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize());
+		u32 const crc = processor.checksum();
 
-		file->w_u32				(crc);
-		file->w					(pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
-		FS.w_close				(file);
+		file->w_u32(crc);
+		file->w(pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
+		FS.w_close(file);
 
-		_result					= ReflectShader((DWORD*)pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize(), result);
+		_result = ReflectShader((DWORD*)pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize(), result);
 
 		if (FAILED(_result))
 		{
@@ -239,8 +278,8 @@ HRESULT CResourceManager::CompileShader(
 			ID3DXBuffer* pDisasm = 0;
 			D3DXDisassembleShader((DWORD*)pShaderBuf->GetBufferPointer(), TRUE, 0, &pDisasm);
 			string_path disasm_dest;
-			sprintf_s(disasm_dest, sizeof disasm_dest, "shaders_disasm\\%s%s.%s\\%s.html", 
-				::Render->getShaderPath(), name, ext, macros.get_name().c_str());
+			sprintf_s(disasm_dest, sizeof disasm_dest, "shaders_disasm\\%s%s.%s\\%s.html", ::Render->getShaderPath(),
+					  name, ext, macros.get_name().c_str());
 			IWriter* W = FS.w_open("$app_data_root$", disasm_dest);
 			W->w(pDisasm->GetBufferPointer(), pDisasm->GetBufferSize());
 			FS.w_close(W);
