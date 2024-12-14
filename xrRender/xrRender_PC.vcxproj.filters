@@ -91,9 +91,6 @@
     <Filter Include="Blenders\Postprocess stage">
       <UniqueIdentifier>{ebfa012d-91b1-43d7-9030-8a3b34316da3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blenders\Postprocess stage\Ambient occlusion">
-      <UniqueIdentifier>{7c5ba608-773e-42cf-8f5f-5852122dcecc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Blenders\Postprocess stage\Bloom">
       <UniqueIdentifier>{66d09db0-23d8-443b-be96-1037bcfa55d0}</UniqueIdentifier>
     </Filter>
@@ -156,6 +153,9 @@
     </Filter>
     <Filter Include="Blenders\Output to screen stage">
       <UniqueIdentifier>{ba8794b8-d398-4582-84a5-b2f9894a9c4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blenders\Ambient occlusion stage">
+      <UniqueIdentifier>{7c5ba608-773e-42cf-8f5f-5852122dcecc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -349,7 +349,7 @@
       <Filter>Blenders\Postprocess stage\Contrast adaptive sharpening</Filter>
     </ClInclude>
     <ClInclude Include="Blender_ambient_occlusion.h">
-      <Filter>Blenders\Postprocess stage\Ambient occlusion</Filter>
+      <Filter>Blenders\Ambient occlusion stage</Filter>
     </ClInclude>
     <ClInclude Include="Blender_reflections.h">
       <Filter>Blenders\Reflections stage</Filter>
@@ -702,7 +702,7 @@
       <Filter>Blenders\Postprocess stage\Contrast adaptive sharpening</Filter>
     </ClCompile>
     <ClCompile Include="Blender_ambient_occlusion.cpp">
-      <Filter>Blenders\Postprocess stage\Ambient occlusion</Filter>
+      <Filter>Blenders\Ambient occlusion stage</Filter>
     </ClCompile>
     <ClCompile Include="r_rendertarget_phase_ao.cpp">
       <Filter>Rendertargets\Render stages\Ambient occlusion</Filter>
