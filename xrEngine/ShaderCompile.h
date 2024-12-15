@@ -218,14 +218,16 @@ HRESULT CResourceManager::CompileShader(
 	CShaderMacros&	macros,
 	T*&				result)
 {
-#ifdef MASTER_GOLD
-	bool bUseShaderCache = !strstr(Core.Params, "-do_not_use_shader_cache");
-	bool bDisassebleShader = strstr(Core.Params, "-save_disassembled_shaders");
-	bool bWarningsAsErrors = strstr(Core.Params, "-shader_warnings_as_errors");
-#else
 	bool bUseShaderCache = false;
 	bool bDisassebleShader = true;
-	bool bWarningsAsErrors = true;
+	bool bWarningsAsErrors = false;
+	bool bErrorsAsWarnings = false;
+
+#ifdef MASTER_GOLD
+	bUseShaderCache = !strstr(Core.Params, "-do_not_use_shader_cache");
+	bDisassebleShader = strstr(Core.Params, "-save_disassembled_shaders");
+	bWarningsAsErrors = strstr(Core.Params, "-shader_warnings_as_errors");
+	bErrorsAsWarnings = strstr(Core.Params, "-shader_errors_as_warnings");
 #endif
 
 	HRESULT _result = NULL;
@@ -253,7 +255,11 @@ HRESULT CResourceManager::CompileShader(
 	ID3DXBuffer*		pErrorBuf = NULL;
 	ID3DXConstantTable* pConstants	= NULL;
 	
-	u32 flags = D3DXSHADER_PACKMATRIX_ROWMAJOR | D3DXSHADER_OPTIMIZATION_LEVEL3;
+	u32 flags = D3DXSHADER_PACKMATRIX_ROWMAJOR | D3DXSHADER_PREFER_FLOW_CONTROL | D3DXSHADER_OPTIMIZATION_LEVEL3
+		#ifndef MASTER_GOLD
+				| D3DXSHADER_DEBUG
+		#endif
+		;
 	
 	_result = D3DXCompileShader(src, size, &macros.get_macros()[0], &Includer, entry, target, flags, &pShaderBuf, &pErrorBuf, &pConstants);
 	
@@ -300,17 +306,14 @@ HRESULT CResourceManager::CompileShader(
 
 	if (pErrorBuf && !FAILED(_result))
 	{
-		std::string warning = make_string ("");
-
-		warning = make_string("\n~ Warning:\nShader: %s\nType: %s\nTarget: %s\nError:\n", name, target, ext, code);
+		std::string warning = make_string ("\n~ Warning:\n~ Shader: %s\n~ Type: %s\n~ Target: %s\n~ Error:\n", name, ext, target, code);
 
 		warning += message;
 
 		Log(warning.c_str());
 		FlushLog();
 
-		if (bWarningsAsErrors)
-			CHECK_OR_EXIT(true, warning);
+		CHECK_OR_EXIT(!bWarningsAsErrors, warning);
 	}
 
 	if (FAILED(_result))
@@ -320,14 +323,14 @@ HRESULT CResourceManager::CompileShader(
 #ifdef MASTER_GOLD
 		error = make_string("An error occurred during the shader compilation process.\nReport the problem to the developer, error:\nShader file: %s\nShader type: %s\nShader target: %s\nError: %s\n", name, ext, target, code);
 #else
-		error = make_string("! Can't compile shader %s\nfile: %s, target: %s\n", code, name, ext, target);
+		error = make_string("\n! Error:\n! Shader: %s\n! Type: %s\n! Target: %s\n! Error:\n", name, ext, target, code);
 #endif
 		error += message;
 
 		Log(error.c_str());
 		FlushLog();
 
-		CHECK_OR_EXIT(true, error);
+		CHECK_OR_EXIT(bErrorsAsWarnings, error);
 	}
 
 	return _result;
