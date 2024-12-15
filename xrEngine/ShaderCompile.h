@@ -218,13 +218,23 @@ HRESULT CResourceManager::CompileShader(
 	CShaderMacros&	macros,
 	T*&				result)
 {
+#ifdef MASTER_GOLD
+	bool bUseShaderCache = !strstr(Core.Params, "-do_not_use_shader_cache");
+	bool bDisassebleShader = strstr(Core.Params, "-save_disassembled_shaders");
+	bool bWarningsAsErrors = strstr(Core.Params, "-shader_warnings_as_errors");
+#else
+	bool bUseShaderCache = false;
+	bool bDisassebleShader = true;
+	bool bWarningsAsErrors = true;
+#endif
+
 	HRESULT _result = NULL;
 	string_path cache_dest;
 	sprintf_s(cache_dest, sizeof cache_dest, "shaders_cache\\%s%s.%s\\%s", ::Render->getShaderPath(), name, ext, macros.get_name().c_str());
 	FS.update_path(cache_dest, "$app_data_root$", cache_dest);
 
 	//Try to find and read cache file
-	if (FS.exist(cache_dest))
+	if (FS.exist(cache_dest) && bUseShaderCache)
 	{
 		_result = ReadShaderCache(cache_dest, result);
 
@@ -249,15 +259,19 @@ HRESULT CResourceManager::CompileShader(
 	
 	if (SUCCEEDED(_result))
 	{
-		IWriter* file = FS.w_open(cache_dest);
+		if (bUseShaderCache)
+		{
+			IWriter* file = FS.w_open(cache_dest);
 
-		boost::crc_32_type processor;
-		processor.process_block(pShaderBuf->GetBufferPointer(), ((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize());
-		u32 const crc = processor.checksum();
+			boost::crc_32_type processor;
+			processor.process_block(pShaderBuf->GetBufferPointer(),
+									((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize());
+			u32 const crc = processor.checksum();
 
-		file->w_u32(crc);
-		file->w(pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
-		FS.w_close(file);
+			file->w_u32(crc);
+			file->w(pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
+			FS.w_close(file);
+		}
 
 		_result = ReflectShader((DWORD*)pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize(), result);
 
@@ -267,38 +281,53 @@ HRESULT CResourceManager::CompileShader(
 			R_ASSERT(NULL);
 		}
 
-#ifdef MASTER_GOLD
-		bool disasm = strstr(Core.Params, "-disasm") ? true : false;
-#else
-		bool disasm = true;
-#endif
-
-		if (disasm)
+		if (bDisassebleShader)
 		{
 			ID3DXBuffer* pDisasm = 0;
 			D3DXDisassembleShader((DWORD*)pShaderBuf->GetBufferPointer(), TRUE, 0, &pDisasm);
 			string_path disasm_dest;
-			sprintf_s(disasm_dest, sizeof disasm_dest, "shaders_disasm\\%s%s.%s\\%s.html", ::Render->getShaderPath(),
-					  name, ext, macros.get_name().c_str());
+			sprintf_s(disasm_dest, sizeof disasm_dest, "shaders_disasm\\%s%s.%s\\%s.html", ::Render->getShaderPath(), name, ext, macros.get_name().c_str());
 			IWriter* W = FS.w_open("$app_data_root$", disasm_dest);
 			W->w(pDisasm->GetBufferPointer(), pDisasm->GetBufferSize());
 			FS.w_close(W);
 			_RELEASE(pDisasm);
 		}
 	}
-	else
+
+	string16 code;
+	sprintf_s(code, sizeof code, "", _result);
+	std::string message = std::string(pErrorBuf ? (char*)pErrorBuf->GetBufferPointer() : "");
+
+	if (pErrorBuf && !FAILED(_result))
 	{
-		string16 code;
-		sprintf_s(code, sizeof code, "hr=0x%08x", _result);
+		std::string warning = make_string ("");
 
-		std::string message = std::string(pErrorBuf ? (char*)pErrorBuf->GetBufferPointer() : "");
+		warning = make_string("\n~ Warning:\nShader: %s\nType: %s\nTarget: %s\nError:\n", name, target, ext, code);
 
-		std::string error = make_string("!Can't compile shader %s\nfile: %s.%s, target: %s\n", code, name, ext, target);
+		warning += message;
+
+		Log(warning.c_str());
+		FlushLog();
+
+		if (bWarningsAsErrors)
+			CHECK_OR_EXIT(true, warning);
+	}
+
+	if (FAILED(_result))
+	{
+		std::string error = make_string("");
+
+#ifdef MASTER_GOLD
+		error = make_string("An error occurred during the shader compilation process.\nReport the problem to the developer, error:\nShader file: %s\nShader type: %s\nShader target: %s\nError: %s\n", name, ext, target, code);
+#else
+		error = make_string("! Can't compile shader %s\nfile: %s, target: %s\n", code, name, ext, target);
+#endif
 		error += message;
 
 		Log(error.c_str());
 		FlushLog();
-		CHECK_OR_EXIT(!FAILED(_result), error);
+
+		CHECK_OR_EXIT(true, error);
 	}
 
 	return _result;
