@@ -586,18 +586,18 @@ void CSoundRender_Core::i_eax_listener_set(CSound_environment* _E)
 
 void CSoundRender_Core::i_eax_listener_set()
 {
-	Msg("\nEnv radius - %f", fEnvironmentRadius);
+	//Msg("\nEnv radius - %f", fEnvironmentRadius);
 
 	float SaturatedEnvRadius = fEnvironmentRadius / 100.0f;
 	clamp(SaturatedEnvRadius, 0.0f, 1.0f);
 
-	Msg("SaturatedEnvRadius - %f", SaturatedEnvRadius);
+	//Msg("SaturatedEnvRadius - %f", SaturatedEnvRadius);
 
 	//psSoundVAmbientDynamicMultiplier *= SaturatedEnvRadius;
 
 	float InvSaturatedEnvRadius = 1.0f - SaturatedEnvRadius;
 
-	Msg("InvSaturatedEnvRadius - %f", InvSaturatedEnvRadius);
+	//Msg("InvSaturatedEnvRadius - %f", InvSaturatedEnvRadius);
 
 	EAXLISTENERPROPERTIES ep;
 
@@ -606,7 +606,7 @@ void CSoundRender_Core::i_eax_listener_set()
 	RoomFactor = RoomFactor * 75;
 	RoomFactor = -RoomFactor;
 	//clamp(RoomFactor, (long)EAXLISTENER_MINROOM, (long)EAXLISTENER_MAXROOM);
-	Msg("Room factor - %f", (float)RoomFactor);
+	//Msg("Room factor - %f", (float)RoomFactor);
 	//RoomFactor = psDbgEAXRoom;
 	ep.lRoom = RoomFactor;
 
@@ -615,7 +615,7 @@ void CSoundRender_Core::i_eax_listener_set()
 	RoomHF *= 5000.0f;
 	clamp(RoomHF, 2000.0f, 10000.0f);
 	RoomHF = -RoomHF;
-	Msg("RoomHF - %f", RoomHF);
+	//Msg("RoomHF - %f", RoomHF);
 	//RoomHF = (long)psDbgEAXRoomHF;
 	ep.lRoomHF = (long)RoomFactor; 
 
