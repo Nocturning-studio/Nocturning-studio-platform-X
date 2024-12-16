@@ -216,6 +216,8 @@ CShaderMacros CRender::FetchShaderMacros()
 
 	macros.add("SUN_SHAFTS_QUALITY", c_sun_shafts_quality);
 
+	macros.add(ps_r_shading_flags.test(RFLAG_ADVANCED_SHADING), "USE_ADVANCED_SHADING", "1");
+
 	return macros;
 }
 //////////////////////////////////////////////////////////////////////////

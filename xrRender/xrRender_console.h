@@ -164,6 +164,12 @@ enum
 	RFLAG_SUN_SHAFTS = (1 << 5)
 };
 
+extern ECORE_API Flags32 ps_r_shading_flags;
+enum
+{
+	RFLAG_ADVANCED_SHADING = (1 << 0)
+};
+
 extern ECORE_API Flags32 ps_r_postprocess_flags;
 enum
 {

@@ -263,9 +263,11 @@ CRenderTarget::CRenderTarget()
 
 	// G-Buffer
 	{
-		rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+		rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 		rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
-		rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+
+		if (ps_r_shading_flags.test(RFLAG_ADVANCED_SHADING))
+			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 	}
 
 	rt_Light_Accumulator.create(r_RT_Light_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
@@ -348,7 +350,7 @@ CRenderTarget::CRenderTarget()
 
 	// AO
 	// Create rendertarget
-	rt_ao.create(r_RT_ao, dwWidth, dwHeight, D3DFMT_L8);
+	rt_ao.create(r_RT_ao, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
 	// Create shader resource
 	s_ambient_occlusion.create(b_ambient_occlusion, "r\\ambient_occlusion");
