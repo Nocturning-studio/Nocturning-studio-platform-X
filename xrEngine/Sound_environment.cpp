@@ -100,7 +100,6 @@ void CSoundEnvironment::Update()
 	bool bNeedToUpdate = NeedUpdate();
 	if (bNeedToUpdate)
 	{
-		Msg("bNeedToUpdate");
 		Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(this, &CSoundEnvironment::MT_CALC));
 
 		::Sound->set_environment_radius(m_EnvironmentRadius);
@@ -117,10 +116,13 @@ void CSoundEnvironment::Update()
 
 bool CSoundEnvironment::NeedUpdate()
 {
-	float FogDensity = g_pGamePersistent->Environment().CurrentEnv->fog_density;
-	if (Device.dwFrame > (m_LastUpdatedFrame + SKIP_UPDATE_FRAMES_COUNT))
-		if (!(Device.vCameraPosition.similar(m_PositionPrev)) || !(FogDensity == m_FogDensityPrev))
-			return true;
+	if (psSoundFlags.test(ss_EAX))
+	{
+		float FogDensity = g_pGamePersistent->Environment().CurrentEnv->fog_density;
+		if (Device.dwFrame > (m_LastUpdatedFrame + SKIP_UPDATE_FRAMES_COUNT))
+			if (!(Device.vCameraPosition.similar(m_PositionPrev)) || !(FogDensity == m_FogDensityPrev))
+				return true;
+	}
 
 	return false;
 }
