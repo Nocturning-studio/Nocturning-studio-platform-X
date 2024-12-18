@@ -45,7 +45,7 @@
 #include <zmouse.h>
 #include <limits.h>
 #include <stdio.h>
-#include "../minizip/zip.h"
+#include <minizip/zip.h>
 
 struct _IMAGELIST { }; // unresolved typeref token
 
