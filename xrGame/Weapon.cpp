@@ -1641,11 +1641,13 @@ float CWeapon::Weight()
 	}
 	return res;
 }
+
+#pragma todo(Deathman to Deathman: Вернуть при полной переделке оружия)
 void CWeapon::Hide()
 {
-	if (IsGameTypeSingle())
-		SwitchState(eHiding);
-	else
+	//if (IsGameTypeSingle())
+	//	SwitchState(eHiding);
+	//else
 		SwitchState(eHidden);
 
 	OnZoomOut();
