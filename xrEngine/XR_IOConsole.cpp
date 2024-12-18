@@ -266,15 +266,10 @@ void CConsole::OnScreenResolutionChanged()
 void CConsole::OnRender()
 {
 	if (!bVisible)
-	{
 		return;
-	}
 
 	if (!m_hShader_back)
-	{
-		// m_hShader_back = xr_new< FactoryPtr<IUIShader> >();
-		m_hShader_back.create("hud\\default", "ui\\ui_console"); // "ui\\ui_empty"
-	}
+		m_hShader_back.create("debug\\console", "ui\\ui_console");
 
 	if (!pFont)
 	{
@@ -289,8 +284,7 @@ void CConsole::OnRender()
 	}
 
 	bool bGame = false;
-	if ((g_pGameLevel && g_pGameLevel->bReady) ||
-		(g_pGamePersistent && g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive()))
+	if ((g_pGameLevel && g_pGameLevel->bReady) || (g_pGamePersistent && g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive()))
 	{
 		bGame = true;
 	}
