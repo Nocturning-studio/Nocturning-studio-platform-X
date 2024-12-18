@@ -177,8 +177,8 @@ void CRenderTarget::phase_combine()
 		RCache.set_CullMode(CULL_CCW);
 		RCache.set_Stencil(FALSE);
 		RCache.set_ColorWriteEnable();
-		if (g_pGamePersistent)
-			g_pGamePersistent->Environment().RenderClouds();
+		//if (g_pGamePersistent)
+		//	g_pGamePersistent->Environment().RenderClouds();
 		RImplementation.render_forward();
 
 		if (g_pGamePersistent)
