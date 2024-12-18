@@ -516,6 +516,7 @@ void CRender::render_forward()
 		r_pmask(false, true); // enable priority "1"
 		phase = PHASE_NORMAL;
 		render_main(Device.mFullTransform, false);	   //
+
 		Target->enable_anisotropy_filtering();
 
 		if (psDeviceFlags.test(rsWireframe))
@@ -528,6 +529,8 @@ void CRender::render_forward()
 			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
 
 		Target->disable_anisotropy_filtering();
-		g_pGamePersistent->Environment().RenderLast(); // rain/thunder-bolts
+
+		g_pGamePersistent->Environment().RenderThunderbolt();
+		g_pGamePersistent->Environment().RenderRain();
 	}
 }

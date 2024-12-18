@@ -200,7 +200,17 @@ void CEnvironment::RenderFlares()
 	eff_LensFlare->Render(FALSE, TRUE, TRUE);
 }
 
-void CEnvironment::RenderLast()
+void CEnvironment::RenderThunderbolt()
+{
+#ifndef _EDITOR
+	if (0 == g_pGameLevel)
+		return;
+#endif
+	// 2
+	eff_Thunderbolt->Render();
+}
+
+void CEnvironment::RenderRain()
 {
 #ifndef _EDITOR
 	if (0 == g_pGameLevel)
@@ -208,7 +218,6 @@ void CEnvironment::RenderLast()
 #endif
 	// 2
 	eff_Rain->Render();
-	eff_Thunderbolt->Render();
 }
 
 void CEnvironment::OnDeviceCreate()

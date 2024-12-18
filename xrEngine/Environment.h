@@ -138,6 +138,10 @@ class ENGINE_API CEnvironment
 	void RenderFlares();
 	void RenderLast();
 
+	void RenderThunderbolt();
+
+	void RenderRain();
+
 	bool SetWeatherFX(shared_str name);
 	bool StartWeatherFXFromTime(shared_str name, float time);
 	bool IsWFXPlaying()
