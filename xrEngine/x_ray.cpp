@@ -1023,9 +1023,9 @@ void CApplication::LoadTitleInt(LPCSTR str)
 	Log(app_title);
 
 	if (g_pGamePersistent->GameType() == 1 && strstr(Core.Params, "alife"))
-		max_load_stage = 17;
+		max_load_stage = 26;
 	else
-		max_load_stage = 14;
+		max_load_stage = 16;
 
 	LoadDraw();
 }
