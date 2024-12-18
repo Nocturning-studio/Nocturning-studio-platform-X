@@ -11,7 +11,7 @@
 #pragma warning(pop)
 
 int psSoundTargets = 16;
-Flags32 psSoundFlags = {ss_EAX};
+Flags32 psSoundFlags = { NULL };
 float psSoundOcclusionScale = 0.5f;
 float psSoundCull = 0.01f;
 float psSoundRolloff = 0.75f;
@@ -363,6 +363,9 @@ void CSoundRender_Core::play(ref_sound& S, CObject* O, u32 flags, float delay)
 	else
 		i_play(&S, flags & sm_Looped, delay);
 
+	if (flags & sm_NoPitch)
+		S._feedback()->set_pitch_using(false);
+
 	if (flags & sm_2D || S._handle()->channels_num() == 2)
 		S._feedback()->switch_to_2D();
 }
@@ -387,6 +390,9 @@ void CSoundRender_Core::play_no_feedback(ref_sound& S, CObject* O, u32 flags, fl
 
 	if (flags & sm_2D || S._handle()->channels_num() == 2)
 		S._feedback()->switch_to_2D();
+
+	if (flags & sm_NoPitch)
+		S._feedback()->set_pitch_using(false);
 
 	if (pos)
 		S._feedback()->set_position(*pos);
@@ -416,6 +422,9 @@ void CSoundRender_Core::play_at_pos(ref_sound& S, CObject* O, const Fvector& pos
 		i_play(&S, flags & sm_Looped, delay);
 
 	S._feedback()->set_position(pos);
+
+	if (flags & sm_NoPitch)
+		S._feedback()->set_pitch_using(false);
 
 	if (flags & sm_2D || S._handle()->channels_num() == 2)
 		S._feedback()->switch_to_2D();

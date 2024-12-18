@@ -75,6 +75,7 @@ enum
 {
 	sm_Looped = (1ul << 0ul), //!< Looped
 	sm_2D = (1ul << 1ul),	  //!< 2D mode
+	sm_NoPitch = (1ul << 2ul),
 	sm_forcedword = u32(-1),
 };
 
@@ -197,6 +198,7 @@ struct ref_sound
 	IC void set_frequency(float freq);
 	IC void set_range(float min, float max);
 	IC void set_volume(float vol);
+	IC void set_pitch_using(bool use_pitch);
 	IC void set_priority(float vol);
 
 	IC const CSound_params* get_params();
@@ -237,6 +239,7 @@ class XRSOUND_API CSound_params
 	float min_distance;
 	float max_distance;
 	float max_ai_distance;
+	bool use_pitch;
 };
 
 /// definition (Sound Interface)
@@ -250,6 +253,7 @@ class XRSOUND_API CSound_emitter
 	virtual void set_frequency(float freq) = 0;
 	virtual void set_range(float min, float max) = 0;
 	virtual void set_volume(float vol) = 0;
+	virtual void set_pitch_using(bool use_pitch) = 0;
 	virtual void set_priority(float vol) = 0;
 	virtual void stop(BOOL bDeffered) = 0;
 	virtual const CSound_params* get_params() = 0;
