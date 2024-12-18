@@ -489,10 +489,18 @@ void CRenderDevice::time_factor(const float& time_factor)
 {
 	Timer.time_factor(time_factor);
 	TimerGlobal.time_factor(time_factor);
+	psTimeFactor = time_factor;
 }
 
 IC const float& CRenderDevice::time_factor() const
 {
 	VERIFY(Timer.time_factor() == TimerGlobal.time_factor());
 	return (Timer.time_factor());
+}
+
+void CRenderDevice::stop_time()
+{
+	Timer.time_factor(0.00001f);
+	TimerGlobal.time_factor(0.00001f);
+	psTimeFactor = 0.00001f;
 }

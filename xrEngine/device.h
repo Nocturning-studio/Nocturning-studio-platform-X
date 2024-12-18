@@ -181,6 +181,8 @@ public:
 
 	IC const float& time_factor() const;
 
+	void stop_time();
+
 	// Multi-threading
 	std::recursive_mutex mt_csEnter;
 	std::recursive_mutex mt_csLeave;

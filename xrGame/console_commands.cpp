@@ -4,6 +4,7 @@
 #include "../xrEngine/customhud.h"
 #include "../xrEngine/fdemorecord.h"
 #include "../xrEngine/fdemoplay.h"
+#include "../xrEngine/cphotomode.h"
 #include "xrMessages.h"
 #include "xrserver.h"
 #include "level.h"
@@ -351,9 +352,8 @@ class CCC_TimeFactor : public IConsole_Command
 	virtual void Execute(LPCSTR args)
 	{
 		float time_factor = (float)atof(args);
-		clamp(time_factor, .000000000000001f, 100000000.f);
+		clamp(time_factor, 0.00001f, 100000000.0f);
 		Device.time_factor(time_factor);
-		psTimeFactor = time_factor;
 	}
 };
 #endif // MASTER_GOLD
@@ -416,6 +416,24 @@ class CCC_DemoPlay : public IConsole_Command
 			FS.update_path(fn, "$game_saves$", fn);
 			g_pGameLevel->Cameras().AddCamEffector(xr_new<CDemoPlay>(fn, 1.0f, loops));
 		}
+	}
+};
+
+class CCC_Photo_Mode : public IConsole_Command
+{
+  public:
+	CCC_Photo_Mode(LPCSTR N) : IConsole_Command(N){};
+	virtual void Execute(LPCSTR args)
+	{
+#ifdef MASTER_GOLD
+		if (GameID() != GAME_SINGLE)
+		{
+			Msg("For this game type photo mode is disabled.");
+			return;
+		};
+#endif
+		Console->Hide();
+		g_pGameLevel->Cameras().AddCamEffector(xr_new<CPhotoMode>());
 	}
 };
 
@@ -1742,6 +1760,8 @@ void CCC_RegisterCommands()
 	// Demo
 	CMD1(CCC_DemoPlay, "demo_play");
 	CMD1(CCC_DemoRecord, "demo_record");
+
+	CMD1(CCC_Photo_Mode, "photo_mode");
 
 #ifndef MASTER_GOLD
 	// ai

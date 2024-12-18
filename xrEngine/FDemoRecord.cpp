@@ -65,8 +65,11 @@ CDemoRecord::CDemoRecord(const char* name, float life_time) : CEffectorCam(cefDe
 
 		m_fFov = Device.fFOV;
 
+		m_vGlobalDepthOfFieldParameters.set(0, 0, 0);
+
 		if (g_pGamePersistent)
 			g_pGamePersistent->GetCurrentDof(m_vGlobalDepthOfFieldParameters);
+
 		m_bAutofocusEnabled = false;
 		m_bGridEnabled = false;
 		m_bBordersEnabled = false;
@@ -128,13 +131,13 @@ CDemoRecord::~CDemoRecord()
 }
 
 //								+X,				-X,				+Y,				-Y,			+Z,				-Z
-static Fvector cmNorm[6] = {{0.f, 1.f, 0.f}, {0.f, 1.f, 0.f}, {0.f, 0.f, -1.f},
+Fvector CDemoRecord::cmNorm[6] = {{0.f, 1.f, 0.f}, {0.f, 1.f, 0.f}, {0.f, 0.f, -1.f},
 							{0.f, 0.f, 1.f}, {0.f, 1.f, 0.f}, {0.f, 1.f, 0.f}};
-static Fvector cmDir[6] = {{1.f, 0.f, 0.f},	 {-1.f, 0.f, 0.f}, {0.f, 1.f, 0.f},
+Fvector CDemoRecord::cmDir[6] = {{1.f, 0.f, 0.f},  {-1.f, 0.f, 0.f}, {0.f, 1.f, 0.f},
 						   {0.f, -1.f, 0.f}, {0.f, 0.f, 1.f},  {0.f, 0.f, -1.f}};
 
-static Flags32 s_hud_flag = {0};
-static Flags32 s_dev_flags = {0};
+Flags32 CDemoRecord::s_hud_flag = {0};
+Flags32 CDemoRecord::s_dev_flags = {0};
 
 void CDemoRecord::MakeScreenshotFace()
 {

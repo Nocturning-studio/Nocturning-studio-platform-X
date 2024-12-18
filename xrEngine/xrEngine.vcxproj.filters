@@ -157,6 +157,9 @@
     <Filter Include="Game API\Sound Environment">
       <UniqueIdentifier>{4344e60a-1d70-41a3-908e-6dba4316c117}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game API\Demo\Photo mode">
+      <UniqueIdentifier>{227abcdc-449a-4663-a476-96aca17ddd7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_d3d_extensions.h">
@@ -563,6 +566,9 @@
     </ClInclude>
     <ClInclude Include="Sound_environment.h">
       <Filter>Game API\Sound Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="CPhotoMode.h">
+      <Filter>Game API\Demo\Photo mode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -976,6 +982,9 @@
     </ClCompile>
     <ClCompile Include="Sound_environment.cpp">
       <Filter>Game API\Sound Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="CPhotoMode.cpp">
+      <Filter>Game API\Demo\Photo mode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
