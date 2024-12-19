@@ -61,7 +61,7 @@ extern ENGINE_API CInifile* pGameIni;
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
-//#pragma comment(lib, "DiscordAPI.lib")
+//#pragma comment(lib, "xrDiscordAPI.lib")
 
 #ifndef DEBUG
 #define LUABIND_NO_ERROR_CHECKING

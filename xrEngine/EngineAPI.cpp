@@ -77,7 +77,7 @@ void CEngineAPI::Initialize(void)
 		}
 	}
 
-	LPCSTR DiscordAPI_name = "DiscordAPI.dll";
+	LPCSTR DiscordAPI_name = "xrDiscordAPI.dll";
 	Log("Loading DLL:", DiscordAPI_name);
 	hDiscordAPI = LoadLibrary(DiscordAPI_name);
 	R_ASSERT2(DiscordAPI_name, "! Can't load discord api");

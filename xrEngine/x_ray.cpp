@@ -20,7 +20,7 @@
 #include "CopyProtection.h"
 #include "Text_Console.h"
 #include <process.h>
-#include "../DiscordAPI/DiscordAPI.h"
+#include "../xrDiscordAPI/DiscordAPI.h"
 
 //---------------------------------------------------------------------
 ENGINE_API CInifile* pGameIni = NULL;
