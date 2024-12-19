@@ -157,15 +157,15 @@
     <Filter Include="Blenders\Ambient occlusion stage">
       <UniqueIdentifier>{7c5ba608-773e-42cf-8f5f-5852122dcecc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Render Console">
+      <UniqueIdentifier>{25048830-d3aa-4387-b01b-a2a0cdbac8ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl_intersect.h">
       <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>Kernel</Filter>
-    </ClInclude>
-    <ClInclude Include="xrRender_console.h">
       <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="render.h">
@@ -384,12 +384,12 @@
     <ClInclude Include="Blender_output_to_screen.h">
       <Filter>Blenders\Output to screen stage</Filter>
     </ClInclude>
+    <ClInclude Include="xrRender_console.h">
+      <Filter>Render Console</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Kernel</Filter>
-    </ClCompile>
-    <ClCompile Include="xrRender_console.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="xrRender.cpp">
@@ -745,6 +745,9 @@
     </ClCompile>
     <ClCompile Include="Blender_output_to_screen.cpp">
       <Filter>Blenders\Output to screen stage</Filter>
+    </ClCompile>
+    <ClCompile Include="xrRender_console.cpp">
+      <Filter>Render Console</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
