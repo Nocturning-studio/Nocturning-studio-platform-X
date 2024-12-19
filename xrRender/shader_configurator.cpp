@@ -40,20 +40,27 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	ref_texture refAlbedoTexture;
 	refAlbedoTexture.create(AlbedoTexture);
 	bool bUseBump = refAlbedoTexture.bump_exist();
-
+	bool DisableBump = !!(ps_r_material_quality == 0);
 	// Get bump map texture
-	if (bUseBump)
+	if (!DisableBump)
 	{
-		strcpy_s(BumpTexture, sizeof(BumpTexture), refAlbedoTexture.bump_get().c_str());
+		if (bUseBump)
+		{
+			strcpy_s(BumpTexture, sizeof(BumpTexture), refAlbedoTexture.bump_get().c_str());
+		}
+		else
+		{
+			// If bump not connected - try find unconnected texture with similar name
+			strcpy_s(BumpTexture, sizeof(BumpTexture), AlbedoTexture);
+			strconcat(sizeof(BumpTexture), BumpTexture, BumpTexture, "_bump");
+
+			if (FS.exist(Dummy, "$game_textures$", BumpTexture, ".dds"))
+				bUseBump = true;
+		}
 	}
 	else
 	{
-		//If bump not connected - try find unconnected texture with similar name
-		strcpy_s(BumpTexture, sizeof(BumpTexture), AlbedoTexture);
-		strconcat(sizeof(BumpTexture), BumpTexture, BumpTexture, "_bump");
-
-		if (FS.exist(Dummy, "$game_textures$", BumpTexture, ".dds"))
-			bUseBump = true;
+		bUseBump = false;
 	}
 
 	// Get bump decompression map
@@ -74,19 +81,22 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	{
 		strcpy_s(DetailAlbedoTexture, sizeof(DetailAlbedoTexture), C.detail_texture);
 
-		// Get bump for detail texture
-		strcpy_s(DetailBumpTexture, sizeof(DetailBumpTexture), DetailAlbedoTexture);
-
-		// Checking for existance
-		if (FS.exist(Dummy, "$game_textures$", DetailBumpTexture, ".dds"))
+		if (!DisableBump)
 		{
-			bUseDetailBump = true;
+			// Get bump for detail texture
+			strcpy_s(DetailBumpTexture, sizeof(DetailBumpTexture), DetailAlbedoTexture);
 
-			strconcat(sizeof(DetailBumpTexture), DetailBumpTexture, DetailBumpTexture, "_bump");
+			// Checking for existance
+			if (FS.exist(Dummy, "$game_textures$", DetailBumpTexture, ".dds"))
+			{
+				bUseDetailBump = true;
 
-			// Get bump decompression map for detail texture
-			strcpy_s(DetailBumpCorrectionTexture, sizeof(DetailBumpCorrectionTexture), DetailBumpTexture);
-			strconcat(sizeof(DetailBumpCorrectionTexture), DetailBumpCorrectionTexture, DetailBumpCorrectionTexture,"#");
+				strconcat(sizeof(DetailBumpTexture), DetailBumpTexture, DetailBumpTexture, "_bump");
+
+				// Get bump decompression map for detail texture
+				strcpy_s(DetailBumpCorrectionTexture, sizeof(DetailBumpCorrectionTexture), DetailBumpTexture);
+				strconcat(sizeof(DetailBumpCorrectionTexture), DetailBumpCorrectionTexture, DetailBumpCorrectionTexture, "#");
+			}
 		}
 	}
 
@@ -120,74 +130,84 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	// Create shader with alpha testing if need
 	C.sh_macro(bUseAlpha, "USE_ALPHA_TEST", "1");
 
-	// Get BakedAO texture
-	string_path BakedAOTexture;
 	bool bUseBakedAO = false;
-	strcpy_s(BakedAOTexture, sizeof(BakedAOTexture), AlbedoTexture);
-	strconcat(sizeof(BakedAOTexture), BakedAOTexture, BakedAOTexture, "_ao");
-	if (FS.exist(Dummy, "$game_textures$", BakedAOTexture, ".dds"))
-		bUseBakedAO = true;
-	C.sh_macro(bUseBakedAO, "USE_BAKED_AO", "1");
+	string_path BakedAOTexture;
 
-	// Get normal texture
-	string_path CustomNormalTexture;
 	bool bUseCustomNormal = false;
-	strcpy_s(CustomNormalTexture, sizeof(CustomNormalTexture), AlbedoTexture);
-	strconcat(sizeof(CustomNormalTexture), CustomNormalTexture, CustomNormalTexture, "_normal");
-	if (FS.exist(Dummy, "$game_textures$", CustomNormalTexture, ".dds"))
-		bUseCustomNormal = true;
-	C.sh_macro(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
+	string_path CustomNormalTexture;
 
-	// Get roughness texture
-	string_path CustomRoughnessTexture;
 	bool bUseCustomRoughness = false;
-	strcpy_s(CustomRoughnessTexture, sizeof(CustomRoughnessTexture), AlbedoTexture);
-	strconcat(sizeof(CustomRoughnessTexture), CustomRoughnessTexture, CustomRoughnessTexture, "_roughness");
-	if (FS.exist(Dummy, "$game_textures$", CustomRoughnessTexture, ".dds"))
-		bUseCustomRoughness = true;
-	C.sh_macro(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
+	string_path CustomRoughnessTexture;
 
-	// Get metallness texture
-	string_path CustomMetallnessTexture;
 	bool bUseCustomMetallness = false;
-	strcpy_s(CustomMetallnessTexture, sizeof(CustomMetallnessTexture), AlbedoTexture);
-	strconcat(sizeof(CustomMetallnessTexture), CustomMetallnessTexture, CustomMetallnessTexture, "_metallness");
-	if (FS.exist(Dummy, "$game_textures$", CustomMetallnessTexture, ".dds"))
-		bUseCustomMetallness = true;
-	C.sh_macro(bUseCustomMetallness, "USE_CUSTOM_METALLNESS", "1");
+	string_path CustomMetallnessTexture;
 
-	// Get subsurface power texture
-	string_path CustomSubsurfaceTexture;
 	bool bUseCustomSubsurface = false;
-	strcpy_s(CustomSubsurfaceTexture, sizeof(CustomSubsurfaceTexture), AlbedoTexture);
-	strconcat(sizeof(CustomSubsurfaceTexture), CustomSubsurfaceTexture, CustomSubsurfaceTexture, "_subsurface");
-	if (FS.exist(Dummy, "$game_textures$", CustomSubsurfaceTexture, ".dds"))
-		bUseCustomSubsurface = true;
-	C.sh_macro(bUseCustomSubsurface, "USE_CUSTOM_SUBSURFACE", "1");
+	string_path CustomSubsurfaceTexture;
 
-	// Get emissive power texture
-	string_path CustomEmissiveTexture;
 	bool bUseCustomEmissive = false;
-	strcpy_s(CustomEmissiveTexture, sizeof(CustomEmissiveTexture), AlbedoTexture);
-	strconcat(sizeof(CustomEmissiveTexture), CustomEmissiveTexture, CustomEmissiveTexture, "_emissive");
-	if (FS.exist(Dummy, "$game_textures$", CustomEmissiveTexture, ".dds"))
-		bUseCustomEmissive = true;
-	C.sh_macro(bUseCustomEmissive, "USE_CUSTOM_EMISSIVE", "1");
+	string_path CustomEmissiveTexture;
 
-	// Get displacement texture
-	string_path CustomDisplacementTexture;
 	bool bUseCustomDisplacement = false;
-	strcpy_s(CustomDisplacementTexture, sizeof(CustomDisplacementTexture), AlbedoTexture);
-	strconcat(sizeof(CustomDisplacementTexture), CustomDisplacementTexture, CustomDisplacementTexture, "_displacement");
-	if (FS.exist(Dummy, "$game_textures$", CustomDisplacementTexture, ".dds"))
-		bUseCustomDisplacement = true;
-	C.sh_macro(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
+	string_path CustomDisplacementTexture;
+
+	if (!DisableBump)
+	{
+		// Get BakedAO texture
+		strcpy_s(BakedAOTexture, sizeof(BakedAOTexture), AlbedoTexture);
+		strconcat(sizeof(BakedAOTexture), BakedAOTexture, BakedAOTexture, "_ao");
+		if (FS.exist(Dummy, "$game_textures$", BakedAOTexture, ".dds"))
+			bUseBakedAO = true;
+		C.sh_macro(bUseBakedAO, "USE_BAKED_AO", "1");
+
+		// Get normal texture
+		strcpy_s(CustomNormalTexture, sizeof(CustomNormalTexture), AlbedoTexture);
+		strconcat(sizeof(CustomNormalTexture), CustomNormalTexture, CustomNormalTexture, "_normal");
+		if (FS.exist(Dummy, "$game_textures$", CustomNormalTexture, ".dds"))
+			bUseCustomNormal = true;
+		C.sh_macro(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
+
+		// Get roughness texture
+		strcpy_s(CustomRoughnessTexture, sizeof(CustomRoughnessTexture), AlbedoTexture);
+		strconcat(sizeof(CustomRoughnessTexture), CustomRoughnessTexture, CustomRoughnessTexture, "_roughness");
+		if (FS.exist(Dummy, "$game_textures$", CustomRoughnessTexture, ".dds"))
+			bUseCustomRoughness = true;
+		C.sh_macro(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
+
+		// Get metallness texture
+		strcpy_s(CustomMetallnessTexture, sizeof(CustomMetallnessTexture), AlbedoTexture);
+		strconcat(sizeof(CustomMetallnessTexture), CustomMetallnessTexture, CustomMetallnessTexture, "_metallness");
+		if (FS.exist(Dummy, "$game_textures$", CustomMetallnessTexture, ".dds"))
+			bUseCustomMetallness = true;
+		C.sh_macro(bUseCustomMetallness, "USE_CUSTOM_METALLNESS", "1");
+
+		// Get subsurface power texture
+		strcpy_s(CustomSubsurfaceTexture, sizeof(CustomSubsurfaceTexture), AlbedoTexture);
+		strconcat(sizeof(CustomSubsurfaceTexture), CustomSubsurfaceTexture, CustomSubsurfaceTexture, "_subsurface");
+		if (FS.exist(Dummy, "$game_textures$", CustomSubsurfaceTexture, ".dds"))
+			bUseCustomSubsurface = true;
+		C.sh_macro(bUseCustomSubsurface, "USE_CUSTOM_SUBSURFACE", "1");
+
+		// Get emissive power texture
+		strcpy_s(CustomEmissiveTexture, sizeof(CustomEmissiveTexture), AlbedoTexture);
+		strconcat(sizeof(CustomEmissiveTexture), CustomEmissiveTexture, CustomEmissiveTexture, "_emissive");
+		if (FS.exist(Dummy, "$game_textures$", CustomEmissiveTexture, ".dds"))
+			bUseCustomEmissive = true;
+		C.sh_macro(bUseCustomEmissive, "USE_CUSTOM_EMISSIVE", "1");
+
+		// Get displacement texture
+		strcpy_s(CustomDisplacementTexture, sizeof(CustomDisplacementTexture), AlbedoTexture);
+		strconcat(sizeof(CustomDisplacementTexture), CustomDisplacementTexture, CustomDisplacementTexture, "_displacement");
+		if (FS.exist(Dummy, "$game_textures$", CustomDisplacementTexture, ".dds"))
+			bUseCustomDisplacement = true;
+		C.sh_macro(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
+	}
 
 	C.sh_macro(bUseBump, "USE_BUMP", "1");
 
 	// Create shader with normal mapping or displacement if need
 	int BumpType = 0;
-	if (bIsHightQualityGeometry)
+	if (bIsHightQualityGeometry && !DisableBump)
 	{
 		if (ps_r_material_quality == 1 || !bUseBump)
 			BumpType = 1; // normal

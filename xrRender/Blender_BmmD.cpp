@@ -97,15 +97,19 @@ void CBlender_BmmD::Compile(CBlender_Compile& C)
 		C.r_Sampler("s_dt_b", oB_Name, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 		C.r_Sampler("s_dt_a", oA_Name, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 
-		C.r_Sampler("s_dn_r", strconcat(sizeof(mask), mask, oR_Name, "_bump"));
-		C.r_Sampler("s_dn_g", strconcat(sizeof(mask), mask, oG_Name, "_bump"));
-		C.r_Sampler("s_dn_b", strconcat(sizeof(mask), mask, oB_Name, "_bump"));
-		C.r_Sampler("s_dn_a", strconcat(sizeof(mask), mask, oA_Name, "_bump"));
+		if (ps_r_material_quality > 0)
+		{
+			C.r_Sampler("s_dn_r", strconcat(sizeof(mask), mask, oR_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+			C.r_Sampler("s_dn_g", strconcat(sizeof(mask), mask, oG_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+			C.r_Sampler("s_dn_b", strconcat(sizeof(mask), mask, oB_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+			C.r_Sampler("s_dn_a", strconcat(sizeof(mask), mask, oA_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
 
-		C.r_Sampler("s_dn_rX", strconcat(sizeof(mask), mask, oR_Name, "_bump#"));
-		C.r_Sampler("s_dn_gX", strconcat(sizeof(mask), mask, oG_Name, "_bump#"));
-		C.r_Sampler("s_dn_bX", strconcat(sizeof(mask), mask, oB_Name, "_bump#"));
-		C.r_Sampler("s_dn_aX", strconcat(sizeof(mask), mask, oA_Name, "_bump#"));
+			C.r_Sampler("s_dn_rX", strconcat(sizeof(mask), mask, oR_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+			C.r_Sampler("s_dn_gX", strconcat(sizeof(mask), mask, oG_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+			C.r_Sampler("s_dn_bX", strconcat(sizeof(mask), mask, oB_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+			C.r_Sampler("s_dn_aX", strconcat(sizeof(mask), mask, oA_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+		}
+
 		C.r_End();
 		break;
 	case SE_NORMAL_LQ: // deffer

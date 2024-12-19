@@ -8,16 +8,38 @@
 // Render common tokens
 /*-------------------------------------------------------------------------------*/
 u32 ps_Preset = 3;
-xr_token qpreset_token[] = {{"Minimum", 0}, {"Low", 1},		{"Default", 2}, {"High", 3},
-							{"Maximum", 4}, {"Extreme", 5}, {"Ultra", 6},	{0, 0}};
+xr_token qpreset_token[] = 
+{
+	{"Minimum", 0}, 
+	{"Low", 1},		
+	{"Default", 2}, 
+	{"High", 3},
+	{"Maximum", 4}, 
+	{"Extreme", 5}, 
+	{"Ultra", 6},	
+	{0, 0}
+};
 
 u32 ps_EffPreset = 2;
-xr_token qeffpreset_token[] = {
-	{"st_opt_eff_disabled", 0}, {"st_opt_eff_default", 1}, {"st_opt_eff_cinematic", 2}, {0, 0}};
+xr_token qeffpreset_token[] = 
+{
+	{"st_opt_eff_disabled", 0}, 
+	{"st_opt_eff_default", 1}, 
+	{"st_opt_eff_cinematic", 2}, 
+	{0, 0}
+};
 
 u32 ps_r_cubemap_size = 2048;
-xr_token cubemap_size_token[] = {{"1024", 1024}, {"2048", 2048}, {"3072", 3072}, 
-					   {"4096", 4096}, {"6144", 6144}, {"8192", 8192}, {0, 0}};
+xr_token cubemap_size_token[] = 
+{
+	{"1024", 1024}, 
+	{"2048", 2048}, 
+	{"3072", 3072}, 
+	{"4096", 4096}, 
+	{"6144", 6144}, 
+	{"8192", 8192}, 
+	{0, 0}
+};
 
 /*
 u32 ps_r1_aa = 0;
@@ -45,53 +67,104 @@ xr_token r1_aa_transluency_token[] = {
 */
 
 u32 ps_vignette_mode = 2;
-xr_token vignette_mode_token[] = {{"st_opt_disabled", 0}, {"st_opt_static", 1}, {"st_opt_dynamic", 2}, {0, 0}};
+xr_token vignette_mode_token[] = 
+{
+	{"st_opt_disabled", 0}, 
+	{"st_opt_static", 1}, 
+	{"st_opt_dynamic", 2}, 
+	{0, 0}
+};
 
-Flags32 ps_r_ls_flags = {};
+Flags32 ps_r_ls_flags = { NULL };
 
 /*-------------------------------------------------------------------------------*/
 // R2a/R2/R2.5 specific tokens
 /*-------------------------------------------------------------------------------*/
 u32 ps_r_ao_quality = 2;
-xr_token ao_quality_token[] = {{"st_opt_low", 1}, {"st_opt_medium", 2}, /*{"st_opt_high", 3},*/ {0, 0}};
+xr_token ao_quality_token[] = 
+{
+	{"st_opt_low", 1}, 
+	{"st_opt_medium", 2}, 
+	/*{"st_opt_high", 3},*/ 
+	{0, 0}
+};
 
 u32 ps_r_bloom_quality = 2;
-xr_token bloom_quality_token[] = {
-	{"st_opt_low", 1}, {"st_opt_medium", 2}, {"st_opt_high", 3}, {"st_opt_ultra", 4}, {0, 0}};
+xr_token bloom_quality_token[] = 
+{
+	{"st_opt_low", 1}, 
+	{"st_opt_medium", 2}, 
+	{"st_opt_high", 3}, 
+	{"st_opt_ultra", 4}, 
+	{0, 0}
+};
 
 u32 ps_r_shadow_filtering = 2;
-xr_token shadow_filter_token[] = {
-	{"st_opt_disable", 0}, {"st_opt_min", 1}, {"st_opt_mid", 2}, {"st_opt_max", 3}, {0, 0}};
+xr_token shadow_filter_token[] = 
+{
+	{"st_opt_disable", 0}, 
+	{"st_opt_min", 1}, 
+	{"st_opt_mid", 2}, 
+	{"st_opt_max", 3}, 
+	{0, 0}
+};
 
 u32 ps_r_sun_shafts_quality = 2;
-xr_token qsun_shafts_token[] = {
-	{"st_opt_low", 1}, {"st_opt_medium", 2}, {"st_opt_high", 3}, {0, 0}};
+xr_token qsun_shafts_token[] = 
+{
+	{"st_opt_low", 1}, 
+	{"st_opt_medium", 2}, 
+	{"st_opt_high", 3}, 
+	{0, 0}
+};
 
 u32 ps_r_material_quality = 1;
-xr_token material_quality_token[] = {{"st_opt_low", 1}, {"st_opt_medium", 2}, {"st_opt_high", 3}, {"st_opt_ultra", 4}, {0, 0}};
+xr_token material_quality_token[] = 
+{
+	{"st_opt_disable", 0}, 
+	{"st_opt_low", 1}, 
+	{"st_opt_medium", 2}, 
+	{"st_opt_high", 3}, 
+	{"st_opt_ultra", 4}, 
+	{0, 0}
+};
 
 u32 ps_r_dof_quality = 2;
-xr_token dof_quality_token[] = {
-	{"st_opt_low", 1}, {"st_opt_medium", 2}, {"st_opt_high", 3}, {"st_opt_ultra", 4}, {0, 0}};
+xr_token dof_quality_token[] = 
+{
+	{"st_opt_low", 1}, 
+	{"st_opt_medium", 2}, 
+	{"st_opt_high", 3}, 
+	{"st_opt_ultra", 4}, 
+	{0, 0}
+};
 
 u32 ps_r_debug_render = 0;
-xr_token debug_render_token[] = {{"disabled", 0},
-								 {"gbuffer_albedo", 1},
-								 {"gbuffer_position", 2},
-								 {"gbuffer_normal", 3},
-								 {"gbuffer_roughness", 4},
-								 {"gbuffer_matallness", 5},
-								 {"gbuffer_subsurface", 6},
-								 {"gbuffer_emissive", 7},
-								 {"gbuffer_lightmap_ao", 8},
-								 {"gbuffer_baked_ao", 9},
-								 {"direct_light", 10},
-								 {"indirect_light", 11},
-								 {"real_time_ao", 12},
-								 {0, 0}};
+xr_token debug_render_token[] = 
+{
+	{"disabled", 0},
+	{"gbuffer_albedo", 1},
+	{"gbuffer_position", 2},
+	{"gbuffer_normal", 3},
+	{"gbuffer_roughness", 4},
+	{"gbuffer_matallness", 5},
+	{"gbuffer_subsurface", 6},
+	{"gbuffer_emissive", 7},
+	{"gbuffer_lightmap_ao", 8},
+	{"gbuffer_baked_ao", 9},
+	{"direct_light", 10},
+	{"indirect_light", 11},
+	{"real_time_ao", 12},
+	{0, 0}
+};
 
 u32 ps_r_rt_format = 1;
-xr_token ps_rt_format[] = {{"st_opt_rgba_32", 1}, {"st_opt_rgba_64", 2}, {0, 0}};
+xr_token ps_rt_format[] = 
+{
+	{"st_opt_rgba_32", 1}, 
+	{"st_opt_rgba_64", 2}, 
+	{0, 0}
+};
 
 /*-------------------------------------------------------------------------------*/
 // Render common values
