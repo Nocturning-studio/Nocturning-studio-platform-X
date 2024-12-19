@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "shader_name_generator.h"
+#include "shader_configurator.h"
 
 #include "blender_BmmD.h"
 #include "blender_deffer_flat.h"

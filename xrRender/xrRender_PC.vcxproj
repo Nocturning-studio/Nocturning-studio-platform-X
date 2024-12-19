@@ -51,7 +51,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'" Label="Configuration">
@@ -678,7 +678,7 @@
     <ClInclude Include="r_occlusion.h" />
     <ClInclude Include="r_pixel_calculator.h" />
     <ClInclude Include="r_sector.h" />
-    <ClInclude Include="shader_name_generator.h" />
+    <ClInclude Include="shader_configurator.h" />
     <ClInclude Include="VertexCache.h" />
     <ClInclude Include="WallmarksEngine.h" />
     <ClInclude Include="xrRender_console.h" />
@@ -798,7 +798,7 @@
     <ClCompile Include="r_sector_traversal.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tga.cpp" />
-    <ClCompile Include="shader_name_generator.cpp" />
+    <ClCompile Include="shader_configurator.cpp" />
     <ClCompile Include="VertexCache.cpp" />
     <ClCompile Include="WallmarksEngine.cpp" />
     <ClCompile Include="xrRender_console.cpp" />

@@ -59,7 +59,7 @@ void CBlender_BmmD::Load(IReader& fs, u16 version)
 }
 
 //////////////////////////////////////////////////////////////////////////
-#include "shader_name_generator.h"
+#include "shader_configurator.h"
 void CBlender_BmmD::Compile(CBlender_Compile& C)
 {
 	IBlender::Compile(C);

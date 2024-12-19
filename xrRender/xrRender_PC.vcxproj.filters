@@ -321,7 +321,7 @@
     <ClInclude Include="Blender_depth_of_field.h">
       <Filter>Blenders\Postprocess stage\Depth of field</Filter>
     </ClInclude>
-    <ClInclude Include="shader_name_generator.h">
+    <ClInclude Include="shader_configurator.h">
       <Filter>Blenders\GBuffer stage</Filter>
     </ClInclude>
     <ClInclude Include="Blender_Particle.h">
@@ -608,7 +608,7 @@
     <ClCompile Include="Blender_depth_of_field.cpp">
       <Filter>Blenders\Postprocess stage\Depth of field</Filter>
     </ClCompile>
-    <ClCompile Include="shader_name_generator.cpp">
+    <ClCompile Include="shader_configurator.cpp">
       <Filter>Blenders\GBuffer stage</Filter>
     </ClCompile>
     <ClCompile Include="Blender_Particle.cpp">

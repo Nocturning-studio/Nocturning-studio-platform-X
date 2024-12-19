@@ -33,7 +33,7 @@ void CBlender_Detail_Still::Load(IReader& fs, u16 version)
 }
 
 //////////////////////////////////////////////////////////////////////////
-#include "shader_name_generator.h"
+#include "shader_configurator.h"
 void CBlender_Detail_Still::Compile(CBlender_Compile& C)
 {
 	IBlender::Compile(C);
@@ -41,10 +41,10 @@ void CBlender_Detail_Still::Compile(CBlender_Compile& C)
 	switch (C.iElement)
 	{
 	case SE_NORMAL_HQ: // deffer wave
-		generate_shader_name(C, false, "detail_object_animated", "detail_object", false);
+		configure_shader(C, false, "detail_object_animated", "detail_object", false);
 		break;
 	case SE_NORMAL_LQ: // deffer still
-		generate_shader_name(C, false, "detail_object", "detail_object", false);
+		configure_shader(C, false, "detail_object", "detail_object", false);
 		break;
 	}
 }

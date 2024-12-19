@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include "shader_name_generator.h"
+#include "shader_configurator.h"
 #include "Blender_deffer_model.h"
 
 CBlender_deffer_model::CBlender_deffer_model()
@@ -79,10 +79,10 @@ void CBlender_deffer_model::Compile(CBlender_Compile& C)
 		switch (C.iElement)
 		{
 		case SE_NORMAL_HQ: // deffer
-			generate_shader_name(C, true, "dynamic_mesh", "static_mesh", bAref);
+			configure_shader(C, true, "dynamic_mesh", "static_mesh", bAref);
 			break;
 		case SE_NORMAL_LQ: // deffer
-			generate_shader_name(C, false, "dynamic_mesh", "static_mesh", bAref);
+			configure_shader(C, false, "dynamic_mesh", "static_mesh", bAref);
 			break;
 		case SE_SHADOW: // smap
 			if (bAref)

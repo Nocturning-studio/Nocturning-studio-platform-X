@@ -45,7 +45,7 @@ void CBlender_Model_EbB::Load(IReader& fs, u16 version)
 	}
 }
 
-#include "shader_name_generator.h"
+#include "shader_configurator.h"
 void CBlender_Model_EbB::Compile(CBlender_Compile& C)
 {
 	IBlender::Compile(C);
@@ -74,10 +74,10 @@ void CBlender_Model_EbB::Compile(CBlender_Compile& C)
 		switch (C.iElement)
 		{
 		case SE_NORMAL_HQ: // deffer
-			generate_shader_name(C, true, "dynamic_mesh", "static_mesh", false);
+			configure_shader(C, true, "dynamic_mesh", "static_mesh", false);
 			break;
 		case SE_NORMAL_LQ: // deffer
-			generate_shader_name(C, false, "dynamic_mesh", "static_mesh", false);
+			configure_shader(C, false, "dynamic_mesh", "static_mesh", false);
 			break;
 		case SE_SHADOW: // smap
 			C.r_Pass("shadow_direct_dynamic_mesh", "shadow_direct_static_mesh", FALSE, TRUE, TRUE, FALSE);

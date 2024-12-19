@@ -39,7 +39,7 @@ void CBlender_Tree::Load(IReader& fs, u16 version)
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-#include "shader_name_generator.h"
+#include "shader_configurator.h"
 void CBlender_Tree::Compile(CBlender_Compile& C)
 {
 	IBlender::Compile(C);
@@ -56,10 +56,10 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 	switch (C.iElement)
 	{
 	case SE_NORMAL_HQ: // deffer
-		generate_shader_name(C, true, tvs, "static_mesh", oBlend.value);
+		configure_shader(C, true, tvs, "static_mesh", oBlend.value);
 		break;
 	case SE_NORMAL_LQ: // deffer
-		generate_shader_name(C, false, tvs, "static_mesh", oBlend.value);
+		configure_shader(C, false, tvs, "static_mesh", oBlend.value);
 		break;
 	case SE_SHADOW: // smap-spot
 		if (oBlend.value)

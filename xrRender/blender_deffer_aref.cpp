@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include "shader_name_generator.h"
+#include "shader_configurator.h"
 #include "Blender_deffer_aref.h"
 
 CBlender_deffer_aref::CBlender_deffer_aref(bool _lmapped) : lmapped(_lmapped)
@@ -76,10 +76,10 @@ void CBlender_deffer_aref::Compile(CBlender_Compile& C)
 		switch (C.iElement)
 		{
 		case SE_NORMAL_HQ: // deffer
-			generate_shader_name(C, true, "static_mesh", "static_mesh", true);
+			configure_shader(C, true, "static_mesh", "static_mesh", true);
 			break;
 		case SE_NORMAL_LQ: // deffer
-			generate_shader_name(C, false, "static_mesh", "static_mesh", true);
+			configure_shader(C, false, "static_mesh", "static_mesh", true);
 			break;
 		case SE_SHADOW: // smap
 			C.r_Pass("shadow_direct_static_mesh_alphatest", "shadow_direct_static_mesh_alphatest", FALSE);

@@ -4,13 +4,12 @@
 // Nocturning studio for NS Project X
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "shader_name_generator.h"
+#include "shader_configurator.h"
 #include "../xrEngine/ResourceManager.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 extern u32 ps_r_material_quality;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void generate_shader_name(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR VertexShaderName,
-						  LPCSTR PixelShaderName, BOOL bUseAlpha)
+void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR VertexShaderName, LPCSTR PixelShaderName, BOOL bUseAlpha)
 {
 	// Output shader names
 	string_path NewPixelShaderName;
