@@ -633,19 +633,13 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lp
 
 	// SetThreadAffinityMask(GetCurrentThread(), 1);
 	// SetThreadAffinityMask(GetCurrentThread(), 0x0F);
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+	//SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 	// SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 	Sleep(0);
 
 	// Title window
 	logoWindow = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_STARTUP), 0, logDlgProc);
-	SetWindowPos(logoWindow,
-#ifndef DEBUG
-				 HWND_TOPMOST,
-#else
-				  HWND_NOTOPMOST,
-#endif // NDEBUG
-				 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+	SetWindowPos(logoWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 
 	// AVI
 	g_bIntroFinished = TRUE;
