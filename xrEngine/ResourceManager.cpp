@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #pragma hdrstop
 
+#include <ppl.h>
+
 #pragma warning(disable : 4995)
 #include <d3dx9.h>
 #pragma warning(default : 4995)
@@ -262,27 +264,19 @@ void CResourceManager::Delete(const Shader* S)
 	Msg("! ERROR: Failed to find complete shader");
 }
 
-void __stdcall CResourceManager::ProcessUpload()
-{
-	Msg("* Texture loading, size = %d", m_textures.size());
-
-	CTimer timer;
-	timer.Start();
-
-	for (map_TextureIt t = m_textures.begin(); t != m_textures.end(); t++)
-	{
-		t->second->Load();
-	}
-
-	Msg("* Phase time: %d ms", timer.GetElapsed_ms());
-}
-
 void CResourceManager::DeferredUpload()
 {
 	if (!Device.b_is_Ready)
 		return;
 
-	Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(this, &CResourceManager::ProcessUpload));
+	Msg("* Texture loading, size = %d", m_textures.size());
+
+	CTimer timer;
+	timer.Start();
+
+	concurrency::parallel_for_each(m_textures.begin(), m_textures.end(), [](auto& iterator){iterator.second->Load();});
+
+	Msg("* Phase time: %d ms", timer.GetElapsed_ms());
 }
 
 void CResourceManager::DeferredUnload()
@@ -295,10 +289,7 @@ void CResourceManager::DeferredUnload()
 	CTimer timer;
 	timer.Start();
 
-	for (map_TextureIt t = m_textures.begin(); t != m_textures.end(); t++)
-	{
-		t->second->Unload();
-	}
+	concurrency::parallel_for_each(m_textures.begin(), m_textures.end(), [](auto& iterator){iterator.second->Unload();});
 
 	Msg("* Phase time: %d ms", timer.GetElapsed_ms());
 }
