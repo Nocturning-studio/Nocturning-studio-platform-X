@@ -12,155 +12,98 @@
 */
 #include "stdafx.h"
 #include "ThreadUtil.h"
-
+#include <Windows.h>
 namespace Threading
 {
-void SetThreadNameImpl(pcstr name)
+
+ThreadId GetCurrThreadId()
 {
-	string256 fullName;
-	strconcat(sizeof(fullName), fullName, (const char*)"X-Ray ", name);
+	return GetCurrentThreadId();
+}
 
-	using SetThreadDescriptionProc = decltype(&SetThreadDescription);
-	static auto kernelHandle = GetModuleHandleA("kernel32.dll");
-	static auto setThreadDescription =
-		reinterpret_cast<SetThreadDescriptionProc>(GetProcAddress(kernelHandle, "SetThreadDescription"));
+ThreadHandle GetCurrentThreadHandle()
+{
+	return GetCurrentThread();
+}
 
-	if (setThreadDescription)
+void SetThreadName(ThreadHandle threadHandle, pcstr name)
+{
+	const DWORD MSVC_EXCEPTION = 0x406D1388;
+	DWORD threadId = threadHandle != NULL ? GetThreadId(threadHandle) : DWORD(-1);
+
+	struct SThreadNameInfo
 	{
-		wchar_t buf[256];
-		mbstowcs(buf, fullName, 256);
+		DWORD dwType;
+		LPCSTR szName;
+		DWORD dwThreadID;
+		DWORD dwFlags;
+	};
 
-		setThreadDescription(GetCurrentThread(), buf);
+	SThreadNameInfo info;
+	info.dwType = 0x1000;
+	info.szName = name;
+	info.dwThreadID = threadId;
+	info.dwFlags = 0;
+
+	__try
+	{
+		RaiseException(MSVC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (ULONG_PTR*)&info);
 	}
-	else
-		__try
-		{
-			constexpr DWORD MSVC_EXCEPTION = 0x406D1388;
-
-			struct SThreadNameInfo
-			{
-				DWORD dwType{0x1000};
-				LPCSTR szName{};
-				DWORD dwThreadID{DWORD(-1)};
-				DWORD dwFlags{};
-			};
-
-			SThreadNameInfo info;
-			info.szName = fullName;
-
-			RaiseException(MSVC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR*)&info);
-		}
-		__except (EXCEPTION_CONTINUE_EXECUTION)
-		{
-		}
-}
-
-void SetCurrentThreadName(cpcstr name)
-{
-	SetThreadNameImpl(name);
-#ifdef TRACY_ENABLE
-	tracy::SetThreadName(name);
-#endif
-}
-
-priority_level GetCurrentThreadPriorityLevel()
-{
-	switch (GetThreadPriority(GetCurrentThread()))
+	__except (EXCEPTION_CONTINUE_EXECUTION)
 	{
-	case THREAD_PRIORITY_IDLE:
-		return priority_level::idle;
-	case THREAD_PRIORITY_LOWEST:
-		return priority_level::lowest;
-	case THREAD_PRIORITY_BELOW_NORMAL:
-		return priority_level::below_normal;
-	default:
-	case THREAD_PRIORITY_NORMAL:
-		return priority_level::normal;
-	case THREAD_PRIORITY_ABOVE_NORMAL:
-		return priority_level::above_normal;
-	case THREAD_PRIORITY_HIGHEST:
-		return priority_level::highest;
-	case THREAD_PRIORITY_TIME_CRITICAL:
-		return priority_level::time_critical;
 	}
 }
 
-priority_class GetCurrentProcessPriorityClass()
+u32 __stdcall ThreadEntry(void* params)
 {
-	switch (GetPriorityClass(GetCurrentProcess()))
-	{
-	case IDLE_PRIORITY_CLASS:
-		return priority_class::idle;
-	case BELOW_NORMAL_PRIORITY_CLASS:
-		return priority_class::below_normal;
-	default:
-	case NORMAL_PRIORITY_CLASS:
-		return priority_class::normal;
-	case ABOVE_NORMAL_PRIORITY_CLASS:
-		return priority_class::above_normal;
-	case HIGH_PRIORITY_CLASS:
-		return priority_class::high;
-	case REALTIME_PRIORITY_CLASS:
-		return priority_class::realtime;
-	}
+	SThreadStartupInfo* args = (SThreadStartupInfo*)params;
+	SetThreadName(NULL, args->threadName);
+	EntryFuncType entry = args->entryFunc;
+	void* arglist = args->argList;
+	xr_delete(args);
+	_initialize_cpu_thread();
+
+	// call
+	entry(arglist);
+
+	return 0;
 }
 
-void SetCurrentThreadPriorityLevel(priority_level prio)
+bool SpawnThread(EntryFuncType entry, pcstr name, u32 stack, void* arglist)
 {
-	int nPriority;
-	switch (prio)
+	OPTICK_THREAD(name);
+	OPTICK_FRAME(name);
+
+	Debug._initialize(false);
+
+	SThreadStartupInfo* info = xr_new<SThreadStartupInfo>();
+	info->threadName = name;
+	info->entryFunc = entry;
+	info->argList = arglist;
+	ThreadHandle threadHandle = (ThreadHandle)_beginthreadex(NULL, stack, ThreadEntry, info, CREATE_SUSPENDED, NULL);
+
+	if (!threadHandle)
 	{
-	case priority_level::idle:
-		nPriority = THREAD_PRIORITY_IDLE;
-		break;
-	case priority_level::lowest:
-		nPriority = THREAD_PRIORITY_LOWEST;
-		break;
-	case priority_level::below_normal:
-		nPriority = THREAD_PRIORITY_BELOW_NORMAL;
-		break;
-	default:
-	case priority_level::normal:
-		nPriority = THREAD_PRIORITY_NORMAL;
-		break;
-	case priority_level::above_normal:
-		nPriority = THREAD_PRIORITY_ABOVE_NORMAL;
-		break;
-	case priority_level::highest:
-		nPriority = THREAD_PRIORITY_HIGHEST;
-		break;
-	case priority_level::time_critical:
-		nPriority = THREAD_PRIORITY_TIME_CRITICAL;
-		break;
+		xr_string errMsg = Debug.error2string(GetLastError());
+		Msg("SpawnThread: can't create thread '%s'. Error Msg: '%s'", name, errMsg.c_str());
+		return false;
 	}
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+
+	ResumeThread(threadHandle);
+	return true;
 }
 
-void SetCurrentProcessPriorityClass(priority_class cls)
+void WaitThread(ThreadHandle& threadHandle)
 {
-	DWORD dwPriorityClass;
-	switch (cls)
+	WaitForSingleObject(threadHandle, INFINITE);
+}
+
+void CloseThreadHandle(ThreadHandle& threadHandle)
+{
+	if (threadHandle)
 	{
-	case priority_class::idle:
-		dwPriorityClass = IDLE_PRIORITY_CLASS;
-		break;
-	case priority_class::below_normal:
-		dwPriorityClass = BELOW_NORMAL_PRIORITY_CLASS;
-		break;
-	default:
-	case priority_class::normal:
-		dwPriorityClass = NORMAL_PRIORITY_CLASS;
-		break;
-	case priority_class::above_normal:
-		dwPriorityClass = ABOVE_NORMAL_PRIORITY_CLASS;
-		break;
-	case priority_class::high:
-		dwPriorityClass = HIGH_PRIORITY_CLASS;
-		break;
-	case priority_class::realtime:
-		dwPriorityClass = REALTIME_PRIORITY_CLASS;
-		break;
+		CloseHandle(threadHandle);
+		threadHandle = nullptr;
 	}
-	SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
 }
 } // namespace Threading

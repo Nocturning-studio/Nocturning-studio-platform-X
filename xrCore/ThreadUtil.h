@@ -12,62 +12,34 @@
 */
 #pragma once
 
-#include "xrCore.h"
-
 #include <process.h>
-
-#include <thread>
 
 namespace Threading
 {
-enum class priority_class
+
+using ThreadHandle = HANDLE;
+using ThreadId = u32;
+using EntryFuncType = void (*)(void*);
+
+struct SThreadStartupInfo
 {
-	idle,
-	below_normal,
-	normal,
-	above_normal,
-	high,
-	realtime,
+	pcstr threadName;
+	EntryFuncType entryFunc;
+	void* argList;
 };
 
-enum class priority_level
-{
-	idle,
-	lowest,
-	below_normal,
-	normal,
-	above_normal,
-	highest,
-	time_critical,
-};
+//////////////////////////////////////////////////////////////
 
-XRCORE_API priority_level GetCurrentThreadPriorityLevel();
-XRCORE_API priority_class GetCurrentProcessPriorityClass();
+XRCORE_API ThreadId GetCurrThreadId();
 
-XRCORE_API void SetCurrentThreadPriorityLevel(priority_level prio);
-XRCORE_API void SetCurrentProcessPriorityClass(priority_class cls);
+XRCORE_API ThreadHandle GetCurrentThreadHandle();
 
-XRCORE_API void SetCurrentThreadName(cpcstr name);
+XRCORE_API void SetThreadName(ThreadHandle threadHandle, pcstr name);
 
-template <typename Invocable, typename... Args>
-[[nodiscard]] std::thread RunThread(cpcstr name, Invocable&& invocable, Args&&... args)
-{
-	return std::move(std::thread{[name](Invocable&& invocable2, Args&&... args2) {
-									 SetCurrentThreadName(name);
-									 _initialize_cpu_thread();
-									 std::invoke(std::move(invocable2), std::move(args2)...);
-								 },
-								 std::forward<Invocable>(invocable), std::forward<Args>(args)...});
-}
+XRCORE_API bool SpawnThread(EntryFuncType entry, pcstr name, u32 stack, void* arglist);
 
-//template <typename... Args> void SpawnThread(Args&&... args)
-//{
-//	RunThread(std::forward<Args>(args)...).detach();
-//}
+XRCORE_API void WaitThread(ThreadHandle& threadHandle);
 
-template <typename Invocable, typename... Args> 
-void SpawnThread(Invocable&& invocable, cpcstr name, Args&&... args)
-{
-	RunThread(name, invocable, std::forward<Args>(args)...).detach();
-}
+XRCORE_API void CloseThreadHandle(ThreadHandle& threadHandle);
+
 } // namespace Threading
