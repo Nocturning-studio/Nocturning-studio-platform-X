@@ -118,7 +118,7 @@ void xrCore::_initialize(LPCSTR _ApplicationName, LPCSTR _ApplicationNameLog, Lo
 #endif
 #endif
 		FS._initialize(flags, 0, fs_fname);
-		Msg("X-Ray Engine v0.4 (NS Edited)");
+		Msg("X-Ray Engine v1.0 (NS Edited)");
 		Msg("Build ID: %d", build_id);
 		Msg("Build date: %s", build_date);
 
