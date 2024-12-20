@@ -8,6 +8,8 @@
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::phase_wallmarks()
 {
+	OPTICK_EVENT("CRenderTarget::phase_wallmarks");
+
 	// Targets
 	RCache.set_RT(NULL, 2);
 	RCache.set_RT(NULL, 1);

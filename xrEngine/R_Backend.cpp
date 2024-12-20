@@ -6,6 +6,8 @@ ENGINE_API CBackend RCache;
 // Create Quad-IB
 void CBackend::CreateQuadIB()
 {
+	OPTICK_EVENT("CBackend::CreateQuadIB");
+
 	const u32 dwTriCount = 4 * 1024;
 	const u32 dwIdxCount = dwTriCount * 2 * 3;
 	u16* Indices = 0;
@@ -36,6 +38,8 @@ void CBackend::CreateQuadIB()
 // Device dependance
 void CBackend::OnDeviceCreate()
 {
+	OPTICK_EVENT("CBackend::OnDeviceCreate");
+
 	CreateQuadIB();
 
 	// streams
@@ -48,6 +52,8 @@ void CBackend::OnDeviceCreate()
 
 void CBackend::OnDeviceDestroy()
 {
+	OPTICK_EVENT("CBackend::OnDeviceDestroy");
+
 	// streams
 	Index.Destroy();
 	Vertex.Destroy();

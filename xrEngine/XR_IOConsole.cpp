@@ -265,6 +265,8 @@ void CConsole::OnScreenResolutionChanged()
 
 void CConsole::OnRender()
 {
+	OPTICK_EVENT("CConsole::OnRender");
+
 	if (!bVisible)
 		return;
 

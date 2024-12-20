@@ -5,6 +5,8 @@
 
 void CRenderTarget::phase_bloom()
 {
+	OPTICK_EVENT("CRenderTarget::phase_bloom");
+
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
 

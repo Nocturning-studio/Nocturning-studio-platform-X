@@ -12,10 +12,15 @@ extern int psSkeletonUpdate;
 // BoneInstance methods
 void CBlendInstance::construct()
 {
+	OPTICK_EVENT("CBlendInstance::construct");
+
 	ZeroMemory(this, sizeof(*this));
 }
+
 void CBlendInstance::blend_add(CBlend* H)
 {
+	OPTICK_EVENT("CBlendInstance::blend_add");
+
 	if (Blend.size() == MAX_BLENDED)
 	{
 		if (H->fall_at_end)
@@ -29,8 +34,11 @@ void CBlendInstance::blend_add(CBlend* H)
 	VERIFY(Blend.size() < MAX_BLENDED);
 	Blend.push_back(H);
 }
+
 void CBlendInstance::blend_remove(CBlend* H)
 {
+	OPTICK_EVENT("CBlendInstance::blend_remove");
+
 	CBlend** I = std::find(Blend.begin(), Blend.end(), H);
 	if (I != Blend.end())
 		Blend.erase(I);
@@ -39,22 +47,33 @@ void CBlendInstance::blend_remove(CBlend* H)
 // Motion control
 void CKinematicsAnimated::Bone_Motion_Start(CBoneData* bd, CBlend* handle)
 {
+	OPTICK_EVENT("CKinematicsAnimated::Bone_Motion_Start");
+
 	LL_GetBlendInstance(bd->GetSelfID()).blend_add(handle);
 	for (vecBonesIt I = bd->children.begin(); I != bd->children.end(); I++)
 		Bone_Motion_Start(*I, handle);
 }
+
 void CKinematicsAnimated::Bone_Motion_Stop(CBoneData* bd, CBlend* handle)
 {
+	OPTICK_EVENT("CKinematicsAnimated::Bone_Motion_Stop");
+
 	LL_GetBlendInstance(bd->GetSelfID()).blend_remove(handle);
 	for (vecBonesIt I = bd->children.begin(); I != bd->children.end(); I++)
 		Bone_Motion_Stop(*I, handle);
 }
+
 void CKinematicsAnimated::Bone_Motion_Start_IM(CBoneData* bd, CBlend* handle)
 {
+	OPTICK_EVENT("CKinematicsAnimated::Bone_Motion_Start_IM");
+
 	LL_GetBlendInstance(bd->GetSelfID()).blend_add(handle);
 }
+
 void CKinematicsAnimated::Bone_Motion_Stop_IM(CBoneData* bd, CBlend* handle)
 {
+	OPTICK_EVENT("CKinematicsAnimated::Bone_Motion_Stop_IM");
+
 	LL_GetBlendInstance(bd->GetSelfID()).blend_remove(handle);
 }
 
@@ -91,6 +110,8 @@ LPCSTR CKinematicsAnimated::LL_MotionDefName_dbg	(LPVOID ptr)
 //////////////////////////////////////////////////////////////////////
 MotionID CKinematicsAnimated::LL_MotionID(LPCSTR B)
 {
+	OPTICK_EVENT("CKinematicsAnimated::LL_MotionID");
+
 	MotionID motion_ID;
 	for (int k = int(m_Motions.size()) - 1; k >= 0; --k)
 	{
@@ -104,10 +125,14 @@ MotionID CKinematicsAnimated::LL_MotionID(LPCSTR B)
 	}
 	return motion_ID;
 }
+
 u16 CKinematicsAnimated::LL_PartID(LPCSTR B)
 {
+	OPTICK_EVENT("CKinematicsAnimated::LL_PartID");
+
 	if (0 == m_Partition)
 		return BI_NONE;
+
 	for (u16 id = 0; id < MAX_PARTS; id++)
 	{
 		CPartDef& P = (*m_Partition)[id];
@@ -116,13 +141,17 @@ u16 CKinematicsAnimated::LL_PartID(LPCSTR B)
 		if (0 == stricmp(B, *P.Name))
 			return id;
 	}
+
 	return BI_NONE;
 }
 
 // cycles
 MotionID CKinematicsAnimated::ID_Cycle_Safe(LPCSTR N)
 {
+	OPTICK_EVENT("CKinematicsAnimated::ID_Cycle_Safe");
+
 	MotionID motion_ID;
+
 	for (int k = int(m_Motions.size()) - 1; k >= 0; --k)
 	{
 		shared_motions* s_mots = &m_Motions[k].motions;
@@ -133,17 +162,25 @@ MotionID CKinematicsAnimated::ID_Cycle_Safe(LPCSTR N)
 			break;
 		}
 	}
+
 	return motion_ID;
 }
+
 MotionID CKinematicsAnimated::ID_Cycle(shared_str N)
 {
+	OPTICK_EVENT("CKinematicsAnimated::ID_Cycle");
+
 	MotionID motion_ID = ID_Cycle_Safe(N);
 	R_ASSERT3(motion_ID.valid(), "! MODEL: can't find cycle: ", N.c_str());
 	return motion_ID;
 }
+
 MotionID CKinematicsAnimated::ID_Cycle_Safe(shared_str N)
 {
+	OPTICK_EVENT("CKinematicsAnimated::ID_Cycle_Safe");
+
 	MotionID motion_ID;
+
 	for (int k = int(m_Motions.size()) - 1; k >= 0; --k)
 	{
 		shared_motions* s_mots = &m_Motions[k].motions;
@@ -154,16 +191,24 @@ MotionID CKinematicsAnimated::ID_Cycle_Safe(shared_str N)
 			break;
 		}
 	}
+
 	return motion_ID;
 }
+
 MotionID CKinematicsAnimated::ID_Cycle(LPCSTR N)
 {
+	OPTICK_EVENT("CKinematicsAnimated::ID_Cycle_Safe");
+
 	MotionID motion_ID = ID_Cycle_Safe(N);
+
 	R_ASSERT3(motion_ID.valid(), "! MODEL: can't find cycle: ", N);
+
 	return motion_ID;
 }
 void CKinematicsAnimated::LL_FadeCycle(u16 part, float falloff, u8 mask_channel /*= (1<<0)*/)
 {
+	OPTICK_EVENT("CKinematicsAnimated::LL_FadeCycle");
+
 	BlendSVec& Blend = blend_cycles[part];
 
 	for (u32 I = 0; I < Blend.size(); I++)
@@ -177,8 +222,11 @@ void CKinematicsAnimated::LL_FadeCycle(u16 part, float falloff, u8 mask_channel 
 			B.playing = FALSE; // callback не должен приходить!
 	}
 }
+
 void CKinematicsAnimated::LL_CloseCycle(u16 part, u8 mask_channel /*= (1<<0)*/)
 {
+	OPTICK_EVENT("CKinematicsAnimated::LL_CloseCycle");
+
 	if (BI_NONE == part)
 		return;
 	if (part >= MAX_PARTS)
@@ -208,6 +256,8 @@ void CKinematicsAnimated::IBlendSetup(CBlend& B, u16 part, u8 channel, MotionID 
 									  float blendAccrue, float blendFalloff, float Speed, BOOL noloop,
 									  PlayCallback Callback, LPVOID CallbackParam)
 {
+	OPTICK_EVENT("CKinematicsAnimated::IBlendSetup");
+
 	VERIFY(B.channel < MAX_CHANNELS);
 	// Setup blend params
 	if (bMixing)
@@ -237,9 +287,12 @@ void CKinematicsAnimated::IBlendSetup(CBlend& B, u16 part, u8 channel, MotionID 
 	B.channel = channel;
 	B.fall_at_end = B.stop_at_end && (channel != 0);
 }
+
 void CKinematicsAnimated::IFXBlendSetup(CBlend& B, MotionID motion_ID, float blendAccrue, float blendFalloff,
 										float Power, float Speed, u16 bone)
 {
+	OPTICK_EVENT("CKinematicsAnimated::IFXBlendSetup");
+
 	B.blend = CBlend::eAccrue;
 	B.blendAmount = EPS_S;
 	B.blendAccrue = blendAccrue;
@@ -264,6 +317,8 @@ CBlend* CKinematicsAnimated::LL_PlayCycle(u16 part, MotionID motion_ID, BOOL bMi
 										  float blendFalloff, float Speed, BOOL noloop, PlayCallback Callback,
 										  LPVOID CallbackParam, u8 channel /*=0*/)
 {
+	OPTICK_EVENT("CKinematicsAnimated::LL_PlayCycle");
+
 	// validate and unroll
 	if (!motion_ID.valid())
 		return 0;
@@ -302,18 +357,24 @@ CBlend* CKinematicsAnimated::LL_PlayCycle(u16 part, MotionID motion_ID, BOOL bMi
 	blend_cycles[part].push_back(B);
 	return B;
 }
+
 CBlend* CKinematicsAnimated::LL_PlayCycle(u16 part, MotionID motion_ID, BOOL bMixIn, PlayCallback Callback,
 										  LPVOID CallbackParam, u8 channel /*=0*/)
 {
+	OPTICK_EVENT("CKinematicsAnimated::LL_PlayCycle");
+
 	VERIFY(motion_ID.valid());
 	CMotionDef* m_def = m_Motions[motion_ID.slot].motions.motion_def(motion_ID.idx);
 	VERIFY(m_def);
 	return LL_PlayCycle(part, motion_ID, bMixIn, m_def->Accrue(), m_def->Falloff(), m_def->Speed(), m_def->StopAtEnd(),
 						Callback, CallbackParam, channel);
 }
+
 CBlend* CKinematicsAnimated::PlayCycle(LPCSTR N, BOOL bMixIn, PlayCallback Callback, LPVOID CallbackParam,
 									   u8 channel /*= 0*/)
 {
+	OPTICK_EVENT("CKinematicsAnimated::LL_PlayCycle");
+
 	MotionID motion_ID = ID_Cycle(N);
 	if (motion_ID.valid())
 		return PlayCycle(motion_ID, bMixIn, Callback, CallbackParam, channel);
@@ -323,9 +384,12 @@ CBlend* CKinematicsAnimated::PlayCycle(LPCSTR N, BOOL bMixIn, PlayCallback Callb
 		return 0;
 	}
 }
+
 CBlend* CKinematicsAnimated::PlayCycle(MotionID motion_ID, BOOL bMixIn, PlayCallback Callback, LPVOID CallbackParam,
 									   u8 channel /*= 0*/)
 {
+	OPTICK_EVENT("CKinematicsAnimated::LL_PlayCycle");
+
 	VERIFY(motion_ID.valid());
 	CMotionDef* m_def = m_Motions[motion_ID.slot].motions.motion_def(motion_ID.idx);
 	VERIFY(m_def);
@@ -336,6 +400,8 @@ CBlend* CKinematicsAnimated::PlayCycle(MotionID motion_ID, BOOL bMixIn, PlayCall
 // fx'es
 MotionID CKinematicsAnimated::ID_FX_Safe(LPCSTR N)
 {
+	OPTICK_EVENT("CKinematicsAnimated::ID_FX_Safe");
+
 	MotionID motion_ID;
 	for (int k = int(m_Motions.size()) - 1; k >= 0; --k)
 	{
@@ -349,22 +415,31 @@ MotionID CKinematicsAnimated::ID_FX_Safe(LPCSTR N)
 	}
 	return motion_ID;
 }
+
 MotionID CKinematicsAnimated::ID_FX(LPCSTR N)
 {
+	OPTICK_EVENT("CKinematicsAnimated::ID_FX");
+
 	MotionID motion_ID = ID_FX_Safe(N);
 	R_ASSERT3(motion_ID.valid(), "! MODEL: can't find FX: ", N);
 	return motion_ID;
 }
+
 CBlend* CKinematicsAnimated::PlayFX(MotionID motion_ID, float power_scale)
 {
+	OPTICK_EVENT("CKinematicsAnimated::PlayFX");
+
 	VERIFY(motion_ID.valid());
 	CMotionDef* m_def = m_Motions[motion_ID.slot].motions.motion_def(motion_ID.idx);
 	VERIFY(m_def);
 	return LL_PlayFX(m_def->bone_or_part, motion_ID, m_def->Accrue(), m_def->Falloff(), m_def->Speed(),
 					 m_def->Power() * power_scale);
 }
+
 CBlend* CKinematicsAnimated::PlayFX(LPCSTR N, float power_scale)
 {
+	OPTICK_EVENT("CKinematicsAnimated::PlayFX");
+
 	MotionID motion_ID = ID_FX(N);
 	return PlayFX(motion_ID, power_scale);
 }
@@ -374,6 +449,8 @@ CBlend* CKinematicsAnimated::PlayFX(LPCSTR N, float power_scale)
 CBlend* CKinematicsAnimated::LL_PlayFX(u16 bone, MotionID motion_ID, float blendAccrue, float blendFalloff, float Speed,
 									   float Power)
 {
+	OPTICK_EVENT("CKinematicsAnimated::LL_PlayFX");
+
 	if (!motion_ID.valid())
 		return 0;
 	if (blend_fx.size() >= MAX_BLENDED)
@@ -392,6 +469,8 @@ CBlend* CKinematicsAnimated::LL_PlayFX(u16 bone, MotionID motion_ID, float blend
 
 void CKinematicsAnimated::DestroyCycle(CBlend& B)
 {
+	OPTICK_EVENT("CKinematicsAnimated::DestroyCycle");
+
 	B.blend = CBlend::eFREE_SLOT;
 	CPartDef& P = m_Partition->part(B.bone_or_part);
 	for (u32 i = 0; i < P.bones.size(); i++)
@@ -400,14 +479,19 @@ void CKinematicsAnimated::DestroyCycle(CBlend& B)
 
 IC void UpdateBlendTime(CBlend& B, float dt)
 {
+	OPTICK_EVENT("CKinematicsAnimated::UpdateBlendTime");
+
 	if (B.playing)
 	{
 		B.timeCurrent += dt * B.speed; // stop@end - time is not going
 	}
 }
+
 // returns true if play time out
 IC bool UpdatePlayBlend(CBlend& B, float dt)
 {
+	OPTICK_EVENT("CKinematicsAnimated::UpdatePlayBlend");
+
 	B.blendAmount += dt * B.blendAccrue * B.blendPower;
 
 	if (B.blendAmount > B.blendPower)
@@ -425,13 +509,19 @@ IC bool UpdatePlayBlend(CBlend& B, float dt)
 
 	return false;
 }
+
 IC bool UpdateFalloffBlend(CBlend& B, float dt)
 {
+	OPTICK_EVENT("CKinematicsAnimated::UpdateFalloffBlend");
+
 	B.blendAmount -= dt * B.blendFalloff * B.blendPower;
 	return B.blendAmount <= 0;
 }
+
 void CKinematicsAnimated::UpdateTracks()
 {
+	OPTICK_EVENT("CKinematicsAnimated::UpdateTracks");
+
 	_DBG_SINGLE_USE_MARKER;
 	if (Update_LastTime == Device.dwTimeGlobal)
 		return;
@@ -556,6 +646,8 @@ void CKinematicsAnimated::UpdateTracks()
 
 void CKinematicsAnimated::Release()
 {
+	OPTICK_EVENT("CKinematicsAnimated::Release");
+
 	// xr_free bones
 	//.	for (u32 i=0; i<bones->size(); i++)
 	//.	{
@@ -574,11 +666,15 @@ void CKinematicsAnimated::Release()
 
 CKinematicsAnimated::~CKinematicsAnimated()
 {
+	OPTICK_EVENT("CKinematicsAnimated::~CKinematicsAnimated");
+
 	IBoneInstances_Destroy();
 }
 
 void CKinematicsAnimated::IBoneInstances_Create()
 {
+	OPTICK_EVENT("CKinematicsAnimated::IBoneInstances_Create");
+
 	inherited::IBoneInstances_Create();
 	u32 size = bones->size();
 	blend_instances = xr_alloc<CBlendInstance>(size);
@@ -588,6 +684,8 @@ void CKinematicsAnimated::IBoneInstances_Create()
 
 void CKinematicsAnimated::IBoneInstances_Destroy()
 {
+	OPTICK_EVENT("CKinematicsAnimated::IBoneInstances_Destroy");
+
 	inherited::IBoneInstances_Destroy();
 	if (blend_instances)
 	{
@@ -599,6 +697,8 @@ void CKinematicsAnimated::IBoneInstances_Destroy()
 #define PCOPY(a) a = pFrom->a
 void CKinematicsAnimated::Copy(IRender_Visual* P)
 {
+	OPTICK_EVENT("CKinematicsAnimated::Copy");
+
 	inherited::Copy(P);
 
 	CKinematicsAnimated* pFrom = (CKinematicsAnimated*)P;
@@ -610,6 +710,8 @@ void CKinematicsAnimated::Copy(IRender_Visual* P)
 
 void CKinematicsAnimated::Spawn()
 {
+	OPTICK_EVENT("CKinematicsAnimated::Spawn");
+
 	inherited::Spawn();
 
 	IBlend_Startup();
@@ -617,17 +719,26 @@ void CKinematicsAnimated::Spawn()
 	for (u32 i = 0; i < bones->size(); i++)
 		blend_instances[i].construct();
 }
+
 void CKinematicsAnimated::ChannelFactorsStartup()
 {
+	OPTICK_EVENT("CKinematicsAnimated::ChannelFactorsStartup");
+
 	for (u8 i = 0; MAX_CHANNELS > i; ++i)
 		channel_factors[i] = 1.f;
 }
+
 void CKinematicsAnimated::LL_SetChannelFactor(u16 channel, float factor)
 {
+	OPTICK_EVENT("CKinematicsAnimated::LL_SetChannelFactor");
+
 	channel_factors[channel] = factor;
 }
+
 void CKinematicsAnimated::IBlend_Startup()
 {
+	OPTICK_EVENT("CKinematicsAnimated::IBlend_Startup");
+
 	_DBG_SINGLE_USE_MARKER;
 	CBlend B;
 	ZeroMemory(&B, sizeof(B));
@@ -645,6 +756,8 @@ void CKinematicsAnimated::IBlend_Startup()
 
 CBlend* CKinematicsAnimated::IBlend_Create()
 {
+	OPTICK_EVENT("CKinematicsAnimated::IBlend_Create");
+
 	UpdateTracks();
 	_DBG_SINGLE_USE_MARKER;
 	CBlend *I = blend_pool.begin(), *E = blend_pool.end();
@@ -654,8 +767,11 @@ CBlend* CKinematicsAnimated::IBlend_Create()
 	FATAL("Too many blended motions requisted");
 	return 0;
 }
+
 void CKinematicsAnimated::Load(const char* N, IReader* data, u32 dwFlags)
 {
+	OPTICK_EVENT("CKinematicsAnimated::Load");
+
 	inherited::Load(N, data, dwFlags);
 
 	// Globals
@@ -1124,6 +1240,8 @@ IC void MixChannels(CKey& Result, const CKey* R, const float* BA, int b_count)
 void CKinematicsAnimated::CLBone(const CBoneData* bd, CBoneInstance& BONE_INST, const Fmatrix* parent,
 								 const CBlendInstance::BlendSVec& Blend, u8 channel_mask /*= (1<<0)*/)
 {
+	OPTICK_EVENT("CKinematicsAnimated::CLBone");
+
 	u16 SelfID = bd->GetSelfID();
 	if (LL_GetBoneVisible(SelfID))
 	{
@@ -1271,12 +1389,16 @@ void CKinematicsAnimated::CLBone(const CBoneData* bd, CBoneInstance& BONE_INST, 
 
 void CKinematicsAnimated::Bone_GetAnimPos(Fmatrix& pos, u16 id, u8 mask_channel, bool ignore_callbacks)
 {
+	OPTICK_EVENT("CKinematicsAnimated::Bone_GetAnimPos");
+
 	CBoneInstance bi = LL_GetBoneInstance(id);
 	BoneChain_Calculate(&LL_GetData(id), bi, mask_channel, ignore_callbacks);
 	pos.set(bi.mTransform);
 }
 void CKinematicsAnimated::Bone_Calculate(CBoneData* bd, Fmatrix* parent)
 {
+	OPTICK_EVENT("CKinematicsAnimated::Bone_Calculate");
+
 	u16 SelfID = bd->GetSelfID();
 	CBlendInstance& BLEND_INST = LL_GetBlendInstance(SelfID);
 	CBoneInstance& BONE_INST = LL_GetBoneInstance(SelfID);
@@ -1289,6 +1411,8 @@ void CKinematicsAnimated::Bone_Calculate(CBoneData* bd, Fmatrix* parent)
 void CKinematicsAnimated::BoneChain_Calculate(const CBoneData* bd, CBoneInstance& bi, u8 mask_channel,
 											  bool ignore_callbacks)
 {
+	OPTICK_EVENT("CKinematicsAnimated::BoneChain_Calculate");
+
 	u16 SelfID = bd->GetSelfID();
 	CBlendInstance& BLEND_INST = LL_GetBlendInstance(SelfID);
 	CBlendInstance::BlendSVec& Blend = BLEND_INST.blend_vector();
@@ -1320,14 +1444,19 @@ void CKinematicsAnimated::BoneChain_Calculate(const CBoneData* bd, CBoneInstance
 	bi.Callback_overwrite = ow;
 	//
 }
+
 void CKinematicsAnimated::OnCalculateBones()
 {
+	OPTICK_EVENT("CKinematicsAnimated::OnCalculateBones");
+
 	UpdateTracks();
 }
 
 #ifdef _EDITOR
 MotionID CKinematicsAnimated::ID_Motion(LPCSTR N, u16 slot)
 {
+	OPTICK_EVENT("CKinematicsAnimated::ID_Motion");
+
 	MotionID motion_ID;
 	if (slot < MAX_ANIM_SLOT)
 	{

@@ -4,6 +4,8 @@
 
 void r_pixel_calculator::begin()
 {
+	OPTICK_EVENT("r_pixel_calculator::begin");
+
 	rt.create("$user$test", rt_dimensions, rt_dimensions, HW.Caps.fTarget);
 	R_CHK(HW.pDevice->CreateDepthStencilSurface(rt_dimensions, rt_dimensions, HW.Caps.fDepth, D3DMULTISAMPLE_NONE, 0,
 												TRUE, &zb, NULL));
@@ -16,6 +18,8 @@ void r_pixel_calculator::begin()
 
 void r_pixel_calculator::end()
 {
+	OPTICK_EVENT("r_pixel_calculator::end");
+
 	Device.End();
 
 	RCache.set_RT(HW.pBaseRT);
@@ -33,6 +37,8 @@ static Fvector cmDir[6] = {{1.f, 0.f, 0.f},	 {-1.f, 0.f, 0.f}, {0.f, 1.f, 0.f},
 
 r_aabb_ssa r_pixel_calculator::calculate(IRender_Visual* V)
 {
+	OPTICK_EVENT("r_pixel_calculator::calculate");
+
 	r_aabb_ssa result = {0};
 	float area = float(_sqr(rt_dimensions));
 
@@ -77,8 +83,10 @@ r_aabb_ssa r_pixel_calculator::calculate(IRender_Visual* V)
 	return result;
 }
 
-void r_pixel_calculator ::run()
+void r_pixel_calculator::run()
 {
+	OPTICK_EVENT("r_pixel_calculator::run");
+
 	begin();
 	for (u32 it = 0; it < RImplementation.Visuals.size(); it++)
 	{

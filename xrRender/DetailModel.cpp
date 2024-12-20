@@ -8,6 +8,8 @@ CDetail::~CDetail()
 
 void CDetail::Unload()
 {
+	OPTICK_EVENT("CDetail::Unload");
+
 	if (vertices)
 	{
 		xr_free(vertices);
@@ -23,6 +25,8 @@ void CDetail::Unload()
 
 void CDetail::transfer(Fmatrix& mXform, fvfVertexOut* vDest, u32 C, u16* iDest, u32 iOffset)
 {
+	OPTICK_EVENT("CDetail::transfer");
+
 	// Transfer vertices
 	{
 		CDetail::fvfVertexIn *srcIt = vertices, *srcEnd = vertices + number_vertices;
@@ -53,6 +57,8 @@ void CDetail::transfer(Fmatrix& mXform, fvfVertexOut* vDest, u32 C, u16* iDest, 
 
 void CDetail::transfer(Fmatrix& mXform, fvfVertexOut* vDest, u32 C, u16* iDest, u32 iOffset, float du, float dv)
 {
+	OPTICK_EVENT("CDetail::transfer");
+
 	// Transfer vertices
 	{
 		CDetail::fvfVertexIn *srcIt = vertices, *srcEnd = vertices + number_vertices;
@@ -83,6 +89,8 @@ void CDetail::transfer(Fmatrix& mXform, fvfVertexOut* vDest, u32 C, u16* iDest, 
 
 void CDetail::Load(IReader* S)
 {
+	OPTICK_EVENT("CDetail::Load");
+
 	// Shader
 	string256 fnT, fnS;
 	S->r_stringZ(fnS, sizeof(fnS));
@@ -129,6 +137,8 @@ void CDetail::Load(IReader* S)
 
 void CDetail::Optimize()
 {
+	OPTICK_EVENT("CDetail::Optimize");
+
 	xr_vector<u16> vec_indices, vec_permute;
 	const int cache = HW.Caps.geometry.dwVertexCache;
 

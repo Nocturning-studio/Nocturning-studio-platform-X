@@ -37,6 +37,8 @@ short QC(float v)
 
 void CDetailManager::hw_Load()
 {
+	OPTICK_EVENT("CDetailManager::hw_Load");
+
 	// Analyze batch-size
 	hw_BatchSize = (u32(HW.Caps.geometry.dwRegisters) - c_hdr) / c_size;
 	clamp(hw_BatchSize, (u32)0, (u32)64);
@@ -126,6 +128,8 @@ void CDetailManager::hw_Load()
 
 void CDetailManager::hw_Unload()
 {
+	OPTICK_EVENT("CDetailManager::hw_Unload");
+
 	// Destroy VS/VB/IB
 	hw_Geom.destroy();
 	_RELEASE(hw_IB);
@@ -134,6 +138,8 @@ void CDetailManager::hw_Unload()
 
 void CDetailManager::hw_Render()
 {
+	OPTICK_EVENT("CDetailManager::hw_Render");
+
 	// Render-prepare
 	Fvector4 dir1, dir2;
 	float tm_rot1 = (PI_MUL_2 * Device.fTimeGlobal / swing_current.rot1);
@@ -164,8 +170,11 @@ void CDetailManager::hw_Render()
 	RCache.set_c(&*hwc_s_xform, Device.mFullTransform);
 	hw_Render_dump(&*hwc_s_array, 0, 1, c_hdr);
 }
+
 void CDetailManager::hw_Render_dump(ref_constant x_array, u32 var_id, u32 lod_id, u32 c_offset)
 {
+	OPTICK_EVENT("CDetailManager::hw_Render_dump");
+
 	Device.Statistic->RenderDUMP_DT_Count = 0;
 
 	// Matrices and offsets

@@ -52,6 +52,8 @@ void CRenderTarget::motion_blur_phase_combine()
 
 void CRenderTarget::motion_blur_phase_save_frame()
 {
+	OPTICK_EVENT("CRenderTarget::motion_blur_phase_save_frame");
+
 	u_setrt(rt_Motion_Blur_Saved_Frame, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
@@ -97,6 +99,8 @@ void CRenderTarget::motion_blur_phase_save_frame()
 
 void CRenderTarget::phase_motion_blur()
 {
+	OPTICK_EVENT("CRenderTarget::phase_motion_blur");
+
 	motion_blur_phase_save_frame();
 }
 ///////////////////////////////////////////////////////////////////////////////////

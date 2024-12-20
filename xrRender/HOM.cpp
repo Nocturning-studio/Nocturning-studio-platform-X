@@ -10,6 +10,8 @@ float psOSSR = .001f;
 
 void __stdcall CHOM::MT_RENDER()
 {
+	OPTICK_EVENT("CHOM::MT_RENDER");
+
 	MT.Enter();
 	bool b_main_menu_is_active = (g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive());
 	if (MT_frame_rendered != Device.dwFrame && !b_main_menu_is_active)
@@ -28,6 +30,8 @@ void __stdcall CHOM::MT_RENDER()
 
 CHOM::CHOM()
 {
+	OPTICK_EVENT("CHOM::CHOM");
+
 	bEnabled = FALSE;
 	m_pModel = 0;
 	m_pTris = 0;
@@ -38,6 +42,8 @@ CHOM::CHOM()
 
 CHOM::~CHOM()
 {
+	OPTICK_EVENT("CHOM::~CHOM");
+
 #ifdef DEBUG
 	Device.seqRender.Remove(this);
 #endif
@@ -63,6 +69,8 @@ IC float Area(Fvector& v0, Fvector& v1, Fvector& v2)
 
 void CHOM::Load()
 {
+	OPTICK_EVENT("CHOM::Load");
+
 	// Find and open file
 	string_path fName;
 	FS.update_path(fName, "$level$", "level.hom");
@@ -122,6 +130,8 @@ void CHOM::Load()
 
 void CHOM::Unload()
 {
+	OPTICK_EVENT("CHOM::Unload");
+
 	xr_delete(m_pModel);
 	xr_free(m_pTris);
 	bEnabled = FALSE;
@@ -155,6 +165,8 @@ class pred_fb
 
 void CHOM::Render_DB(CFrustum& base)
 {
+	OPTICK_EVENT("CHOM::Render_DB");
+
 	// Query DB
 	xrc.frustum_options(0);
 	xrc.frustum_query(m_pModel, base);
@@ -241,6 +253,8 @@ void CHOM::Render_DB(CFrustum& base)
 
 void CHOM::Render(CFrustum& base)
 {
+	OPTICK_EVENT("CHOM::Render");
+
 	if (!bEnabled)
 		return;
 
@@ -263,6 +277,7 @@ ICF BOOL xform_b0(Fvector2& min, Fvector2& max, float& minz, Fmatrix& X, float _
 	minz = 0.f + z * iw;
 	return FALSE;
 }
+
 ICF BOOL xform_b1(Fvector2& min, Fvector2& max, float& minz, Fmatrix& X, float _x, float _y, float _z)
 {
 	float t;
@@ -285,6 +300,7 @@ ICF BOOL xform_b1(Fvector2& min, Fvector2& max, float& minz, Fmatrix& X, float _
 		minz = t;
 	return FALSE;
 }
+
 IC BOOL _visible(Fbox& B, Fmatrix& m_xform_01)
 {
 	// Find min/max points of xformed-box
@@ -311,6 +327,8 @@ IC BOOL _visible(Fbox& B, Fmatrix& m_xform_01)
 
 BOOL CHOM::visible(Fbox3& B)
 {
+	OPTICK_EVENT("CHOM::visible");
+
 	if (!bEnabled)
 		return TRUE;
 	if (B.contains(Device.vCameraPosition))
@@ -320,6 +338,8 @@ BOOL CHOM::visible(Fbox3& B)
 
 BOOL CHOM::visible(Fbox2& B, float depth)
 {
+	OPTICK_EVENT("CHOM::visible");
+
 	if (!bEnabled)
 		return TRUE;
 	return Raster.test(B.min.x, B.min.y, B.max.x, B.max.y, depth);
@@ -327,6 +347,8 @@ BOOL CHOM::visible(Fbox2& B, float depth)
 
 BOOL CHOM::visible(vis_data& vis)
 {
+	OPTICK_EVENT("CHOM::visible");
+
 	if (Device.dwFrame < vis.hom_frame)
 		return TRUE; // not at this time :)
 	if (!bEnabled)
@@ -365,6 +387,8 @@ BOOL CHOM::visible(vis_data& vis)
 
 BOOL CHOM::visible(sPoly& P)
 {
+	OPTICK_EVENT("CHOM::visible");
+
 	if (!bEnabled)
 		return TRUE;
 
@@ -382,17 +406,23 @@ BOOL CHOM::visible(sPoly& P)
 
 void CHOM::Disable()
 {
+	OPTICK_EVENT("CHOM::Disable");
+
 	bEnabled = FALSE;
 }
 
 void CHOM::Enable()
 {
+	OPTICK_EVENT("CHOM::Enable");
+
 	bEnabled = m_pModel ? TRUE : FALSE;
 }
 
 #ifdef DEBUG
 void CHOM::OnRender()
 {
+	OPTICK_EVENT("CHOM::OnRender");
+
 	if (psDeviceFlags.is(rsOcclusionDraw))
 	{
 		if (m_pModel)
@@ -446,6 +476,8 @@ void CHOM::OnRender()
 }
 void CHOM::stats()
 {
+	OPTICK_EVENT("CHOM::stats");
+
 	if (m_pModel)
 	{
 		CGameFont& F = *Device.Statistic->Font();

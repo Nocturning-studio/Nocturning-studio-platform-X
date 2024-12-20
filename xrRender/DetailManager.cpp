@@ -94,6 +94,8 @@ void dump	(CDetailManager::vis_list& lst)
 */
 void CDetailManager::Load()
 {
+	OPTICK_EVENT("CDetailManager::Load");
+
 	// Open file stream
 	if (!FS.exist("$level$", "level.details"))
 	{
@@ -158,6 +160,8 @@ void CDetailManager::Load()
 #endif
 void CDetailManager::Unload()
 {
+	OPTICK_EVENT("CDetailManager::Unload");
+
 	if (UseVS())
 		hw_Unload();
 	else
@@ -179,6 +183,8 @@ extern ECORE_API float r_ssaDISCARD;
 
 void CDetailManager::UpdateVisibleM()
 {
+	OPTICK_EVENT("CDetailManager::UpdateVisibleM");
+
 	Fvector EYE = Device.vCameraPosition;
 
 	CFrustum View;
@@ -290,6 +296,8 @@ void CDetailManager::UpdateVisibleM()
 
 void CDetailManager::Render()
 {
+	OPTICK_EVENT("CDetailManager::Render");
+
 #ifndef _EDITOR
 	if (0 == dtFS)
 		return;
@@ -318,6 +326,8 @@ void CDetailManager::Render()
 
 void __stdcall CDetailManager::MT_CALC()
 {
+	OPTICK_EVENT("CDetailManager::MT_CALC");
+
 #ifndef _EDITOR
 	if (0 == RImplementation.Details)
 		return; // possibly deleted

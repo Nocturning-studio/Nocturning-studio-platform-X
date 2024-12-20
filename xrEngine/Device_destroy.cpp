@@ -6,6 +6,8 @@
 
 void CRenderDevice::_Destroy(BOOL bKeepTextures)
 {
+	OPTICK_EVENT("CRenderDevice::_Destroy");
+
 	DU.OnDeviceDestroy();
 	m_WireShader.destroy();
 	m_SelectionShader.destroy();
@@ -22,6 +24,8 @@ void CRenderDevice::_Destroy(BOOL bKeepTextures)
 
 void CRenderDevice::Destroy(void)
 {
+	OPTICK_EVENT("CRenderDevice::Destroy");
+
 	if (!b_is_Ready)
 		return;
 
@@ -54,6 +58,8 @@ void CRenderDevice::Destroy(void)
 #include "CustomHUD.h"
 void CRenderDevice::Reset(bool precache)
 {
+	OPTICK_EVENT("CRenderDevice::Reset");
+
 #ifdef DEBUG
 	_SHOW_REF("*ref -CRenderDevice::ResetTotal: DeviceREF:", HW.pDevice);
 #endif // DEBUG

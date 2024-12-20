@@ -4,6 +4,8 @@
 
 void CRenderTarget::phase_combine_postprocess()
 {
+	OPTICK_EVENT("CRenderTarget::phase_combine_postprocess");
+
 	u_setrt(rt_Generic_0, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
@@ -50,6 +52,8 @@ void CRenderTarget::phase_combine_postprocess()
 
 void CRenderTarget::phase_apply_volumetric()
 {
+	OPTICK_EVENT("CRenderTarget::phase_apply_volumetric");
+
 	u_setrt(rt_Generic_0, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
@@ -93,6 +97,8 @@ void CRenderTarget::phase_apply_volumetric()
 
 void CRenderTarget::phase_combine()
 {
+	OPTICK_EVENT("CRenderTarget::phase_combine");
+
 	u32 Offset = 0;
 	Fvector2 p0, p1;
 

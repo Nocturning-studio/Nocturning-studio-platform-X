@@ -7,18 +7,24 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::enable_anisotropy_filtering()
 {
+	OPTICK_EVENT("CRenderTarget::enable_anisotropy_filtering");
+
 	for (u32 i = 0; i < HW.Caps.raster.dwStages; i++)
 		CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, ps_r_tf_Anisotropic));
 }
 
 void CRenderTarget::disable_anisotropy_filtering()
 {
+	OPTICK_EVENT("CRenderTarget::disable_anisotropy_filtering");
+
 	for (u32 i = 0; i < HW.Caps.raster.dwStages; i++)
 		CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, 1));
 }
 
 void CRenderTarget::clear_gbuffer()
 {
+	OPTICK_EVENT("CRenderTarget::clear_gbuffer");
+
 	if (ps_r_shading_flags.test(RFLAG_ADVANCED_SHADING))
 		u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_GBuffer_3, HW.pBaseZB);
 	else
@@ -29,6 +35,8 @@ void CRenderTarget::clear_gbuffer()
 
 void CRenderTarget::create_gbuffer()
 {
+	OPTICK_EVENT("CRenderTarget::create_gbuffer");
+
 	if (ps_r_shading_flags.test(RFLAG_ADVANCED_SHADING))
 		u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_GBuffer_3, HW.pBaseZB);
 	else

@@ -3,12 +3,16 @@
 
 void CBackend::dbg_DP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 vBase, u32 pc)
 {
+	OPTICK_EVENT("CBackend::dbg_DP");
+
 	RCache.set_Geometry(geom);
 	RCache.Render(pt, vBase, pc);
 }
 
 void CBackend::dbg_DIP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC)
 {
+	OPTICK_EVENT("CBackend::dbg_DIP");
+
 	RCache.set_Geometry(geom);
 	RCache.Render(pt, baseV, startV, countV, startI, PC);
 }
@@ -17,12 +21,16 @@ void CBackend::dbg_DIP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 baseV, u32 startV
 
 void CBackend::dbg_Draw(D3DPRIMITIVETYPE T, FVF::L* pVerts, int vcnt, u16* pIdx, int pcnt)
 {
+	OPTICK_EVENT("CBackend::dbg_Draw");
+
 	OnFrameEnd();
 	CHK_DX(HW.pDevice->SetFVF(FVF::F_L));
 	CHK_DX(HW.pDevice->DrawIndexedPrimitiveUP(T, 0, vcnt, pcnt, pIdx, D3DFMT_INDEX16, pVerts, sizeof(FVF::L)));
 }
 void CBackend::dbg_Draw(D3DPRIMITIVETYPE T, FVF::L* pVerts, int pcnt)
 {
+	OPTICK_EVENT("CBackend::dbg_Draw");
+
 	OnFrameEnd();
 	CHK_DX(HW.pDevice->SetFVF(FVF::F_L));
 	CHK_DX(HW.pDevice->DrawPrimitiveUP(T, pcnt, pVerts, sizeof(FVF::L)));
@@ -31,6 +39,8 @@ void CBackend::dbg_Draw(D3DPRIMITIVETYPE T, FVF::L* pVerts, int pcnt)
 #define RGBA_GETALPHA(rgb) ((rgb) >> 24)
 void CBackend::dbg_DrawOBB(Fmatrix& T, Fvector& half_dim, u32 C)
 {
+	OPTICK_EVENT("CBackend::dbg_DrawOBB");
+
 	Fmatrix mL2W_Transform, mScaleTransform;
 
 	mScaleTransform.scale(half_dim);
@@ -52,6 +62,8 @@ void CBackend::dbg_DrawOBB(Fmatrix& T, Fvector& half_dim, u32 C)
 }
 void CBackend::dbg_DrawTRI(Fmatrix& T, Fvector& p1, Fvector& p2, Fvector& p3, u32 C)
 {
+	OPTICK_EVENT("CBackend::dbg_DrawTRI");
+
 	FVF::L tri[3];
 	tri[0].p = p1;
 	tri[0].color = C;
@@ -65,6 +77,8 @@ void CBackend::dbg_DrawTRI(Fmatrix& T, Fvector& p1, Fvector& p2, Fvector& p3, u3
 }
 void CBackend::dbg_DrawLINE(Fmatrix& T, Fvector& p1, Fvector& p2, u32 C)
 {
+	OPTICK_EVENT("CBackend::dbg_DrawLINE");
+
 	FVF::L line[2];
 	line[0].p = p1;
 	line[0].color = C;
@@ -76,6 +90,8 @@ void CBackend::dbg_DrawLINE(Fmatrix& T, Fvector& p1, Fvector& p2, u32 C)
 }
 void CBackend::dbg_DrawEllipse(Fmatrix& T, u32 C)
 {
+	OPTICK_EVENT("CBackend::dbg_DrawEllipse");
+
 	float gVertices[] = {
 		0.0000f,  0.0000f,	1.0000f,  0.0000f,	0.3827f,  0.9239f,	-0.1464f, 0.3536f,	0.9239f,  -0.2706f, 0.2706f,
 		0.9239f,  -0.3536f, 0.1464f,  0.9239f,	-0.3827f, 0.0000f,	0.9239f,  -0.3536f, -0.1464f, 0.9239f,	-0.2706f,

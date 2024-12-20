@@ -8,6 +8,8 @@
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::phase_create_distortion_mask()
 {
+	OPTICK_EVENT("CRenderTarget::phase_create_distortion_mask");
+
 	u_setrt(rt_Distortion_Mask, 0, 0, HW.pBaseZB); // Now RT is a distortion mask
 	RCache.set_CullMode(CULL_CCW);
 	RCache.set_Stencil(FALSE);
@@ -18,6 +20,8 @@ void CRenderTarget::phase_create_distortion_mask()
 
 void CRenderTarget::phase_distortion()
 {
+	OPTICK_EVENT("CRenderTarget::phase_distortion");
+
 	u_setrt(rt_Generic_1, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);

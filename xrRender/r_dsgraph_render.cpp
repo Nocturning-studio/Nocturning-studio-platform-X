@@ -292,6 +292,8 @@ void sort_tlist_mat(xr_vector<mapMatrixTextures::TNode*, render_alloc<mapMatrixT
 
 void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 {
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_graph");
+
 	Device.Statistic->RenderDUMP.Begin();
 
 	// **************************************************** NORMAL
@@ -452,6 +454,8 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 // HUD render
 void R_dsgraph_structure::r_dsgraph_render_hud()
 {
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_hud");
+
 	ENGINE_API extern float psHUD_FOV;
 
 	// Change projection
@@ -479,6 +483,8 @@ void R_dsgraph_structure::r_dsgraph_render_hud()
 // strict-sorted render
 void R_dsgraph_structure::r_dsgraph_render_sorted()
 {
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_sorted");
+
 	// Sorted (back to front)
 	mapSorted.traverseRL(sorted_L1);
 	mapSorted.clear();
@@ -488,6 +494,8 @@ void R_dsgraph_structure::r_dsgraph_render_sorted()
 // strict-sorted render
 void R_dsgraph_structure::r_dsgraph_render_emissive()
 {
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_emissive");
+
 	// Sorted (back to front)
 	mapEmissive.traverseLR(sorted_L1);
 	mapEmissive.clear();
@@ -497,6 +505,8 @@ void R_dsgraph_structure::r_dsgraph_render_emissive()
 // strict-sorted render
 void R_dsgraph_structure::r_dsgraph_render_wmarks()
 {
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_wmarks");
+
 	// Sorted (back to front)
 	mapWmark.traverseLR(sorted_L1);
 	mapWmark.clear();
@@ -506,6 +516,8 @@ void R_dsgraph_structure::r_dsgraph_render_wmarks()
 // strict-sorted render
 void R_dsgraph_structure::r_dsgraph_render_distort()
 {
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_distort");
+
 	// Sorted (back to front)
 	mapDistort.traverseRL(sorted_L1);
 	mapDistort.clear();
@@ -516,6 +528,8 @@ void R_dsgraph_structure::r_dsgraph_render_distort()
 void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, Fmatrix& mCombined, Fvector& _cop,
 													BOOL _dynamic, BOOL _precise_portals)
 {
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_subspace");
+
 	CFrustum temp;
 	temp.CreateFromMatrix(mCombined, FRUSTUM_P_ALL);
 	r_dsgraph_render_subspace(_sector, &temp, mCombined, _cop, _dynamic, _precise_portals);
@@ -525,6 +539,8 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, Fma
 void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFrustum* _frustum, Fmatrix& mCombined,
 													Fvector& _cop, BOOL _dynamic, BOOL _precise_portals)
 {
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_subspace");
+
 	VERIFY(_sector);
 	RImplementation.marker++; // !!! critical here
 
@@ -612,6 +628,8 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 
 void R_dsgraph_structure::r_dsgraph_render_R1_box(IRender_Sector* _S, Fbox& BB, int sh)
 {
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_R1_box");
+
 	CSector* S = (CSector*)_S;
 	lstVisuals.clear();
 	lstVisuals.push_back(S->root());

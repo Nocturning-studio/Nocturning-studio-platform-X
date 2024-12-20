@@ -10,4 +10,9 @@
 // Windows Header Files:
 #include <windows.h>
 
+#ifdef ENABLE_PROFILING
+#include <optick/optick.h>
+#pragma comment(lib, "OptickCore.lib")
+#endif
+
 // TODO: reference additional headers your program requires here

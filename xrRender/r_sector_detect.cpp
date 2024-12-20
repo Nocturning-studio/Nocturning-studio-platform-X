@@ -3,6 +3,8 @@
 
 int CRender::translateSector(IRender_Sector* pSector)
 {
+	OPTICK_EVENT("CRender::translateSector");
+
 	if (!pSector)
 		return -1;
 
@@ -22,6 +24,8 @@ int CRender::translateSector(IRender_Sector* pSector)
 
 IRender_Sector* CRender::detectSector(const Fvector& P)
 {
+	OPTICK_EVENT("CRender::detectSector");
+
 	IRender_Sector* S = NULL;
 	Fvector dir;
 	Sectors_xrc.ray_options(CDB::OPT_ONLYNEAREST);
@@ -38,6 +42,8 @@ IRender_Sector* CRender::detectSector(const Fvector& P)
 
 IRender_Sector* CRender::detectSector(const Fvector& P, Fvector& dir)
 {
+	OPTICK_EVENT("CRender::detectSector");
+
 	// Portals model
 	int id1 = -1;
 	float range1 = 500.f;

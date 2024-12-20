@@ -653,6 +653,40 @@ class CCC_DR_UsePoints : public CCC_Integer
 	virtual void Save(IWriter* F){};
 };
 
+class CCC_Profiler : public IConsole_Command
+{
+	bool start_profile = false;
+
+  public:
+	CCC_Profiler(LPCSTR N) : IConsole_Command(N){};
+	virtual void Execute(LPCSTR args)
+	{
+#ifdef ENABLE_PROFILING
+		if (!start_profile)
+		{
+			// OPTICK_SET_MEMORY_ALLOCATOR(
+			//        [](size_t size) -> void * { return operator new(size); },
+			//        [](void *p) { operator delete(p); },
+			//        []() { /* Do some TLS initialization here if needed */ }
+			//);
+			OPTICK_START_CAPTURE(Optick::Mode::Type(Optick::Mode::INSTRUMENTATION | Optick::Mode::TAGS |
+													Optick::Mode::AUTOSAMPLING | Optick::Mode::SWITCH_CONTEXT |
+													Optick::Mode::IO | Optick::Mode::SYS_CALLS |
+													Optick::Mode::OTHER_PROCESSES));
+			start_profile = true;
+		}
+		else
+		{
+			OPTICK_STOP_CAPTURE();
+			shared_str str;
+			str.sprintf("%s.opt", args);
+			OPTICK_SAVE_CAPTURE(str.c_str());
+			// OPTICK_SHUTDOWN();
+			start_profile = false;
+		}
+#endif
+	}
+};
 //-----------------------------------------------------------------------
 ENGINE_API float psHUD_FOV = 0.45f;
 
@@ -679,6 +713,10 @@ void CCC_Register()
 	CMD1(CCC_Disconnect, "disconnect");
 	CMD1(CCC_SaveCFG, "cfg_save");
 	CMD1(CCC_LoadCFG, "cfg_load");
+
+#ifdef ENABLE_PROFILING
+	CMD1(CCC_Profiler, "profiler_switch");
+#endif
 
 #ifdef DEBUG
 	//	CMD1(CCC_Crash,		"crash"					);

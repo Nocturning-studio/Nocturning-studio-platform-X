@@ -13,6 +13,8 @@ IC bool pred_sp_sort(ISpatial* _1, ISpatial* _2)
 
 void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals)
 {
+	OPTICK_EVENT("CRender::render_main");
+
 	marker++;
 
 	// Calculate sector(s) and their objects
@@ -152,6 +154,8 @@ void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals)
 
 void CRender::render_menu()
 {
+	OPTICK_EVENT("CRender::render_menu");
+
 	//	Globals
 	RCache.set_CullMode(CULL_CCW);
 	RCache.set_Stencil(FALSE);
@@ -201,6 +205,8 @@ void CRender::render_menu()
 extern u32 g_r;
 void CRender::Render()
 {
+	OPTICK_EVENT("CRender::Render");
+
 	Device.Statistic->RenderCALC.Begin();
 	g_r = 1;
 	VERIFY(0 == mapDistort.size());
@@ -507,6 +513,8 @@ void CRender::Render()
 
 void CRender::render_forward()
 {
+	OPTICK_EVENT("CRender::render_forward");
+
 	VERIFY(0 == mapDistort.size());
 
 	//******* Main render - second order geometry (the one, that doesn't support deffering)

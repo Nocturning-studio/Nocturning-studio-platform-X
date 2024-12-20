@@ -3,6 +3,8 @@
 
 void CDetailManager::cache_Initialize()
 {
+	OPTICK_EVENT("CDetailManager::cache_Initialize");
+
 	// Centroid
 	cache_cx = 0;
 	cache_cz = 0;
@@ -32,6 +34,8 @@ void CDetailManager::cache_Initialize()
 
 CDetailManager::Slot* CDetailManager::cache_Query(int r_x, int r_z)
 {
+	OPTICK_EVENT("CDetailManager::cache_Query");
+
 	int gx = w2cg_X(r_x + cache_cx);
 	VERIFY(gx >= 0 && gx < dm_cache_line);
 	int gz = w2cg_Z(r_z + cache_cz);
@@ -41,6 +45,8 @@ CDetailManager::Slot* CDetailManager::cache_Query(int r_x, int r_z)
 
 void CDetailManager::cache_Task(int gx, int gz, Slot* D)
 {
+	OPTICK_EVENT("CDetailManager::cache_Task");
+
 	int sx = cg2w_X(gx);
 	int sz = cg2w_Z(gz);
 	DetailSlot& DS = QueryDB(sx, sz);
@@ -75,6 +81,8 @@ void CDetailManager::cache_Task(int gx, int gz, Slot* D)
 
 BOOL CDetailManager::cache_Validate()
 {
+	OPTICK_EVENT("CDetailManager::cache_Validate");
+
 	for (int z = 0; z < dm_cache_line; z++)
 	{
 		for (int x = 0; x < dm_cache_line; x++)
@@ -94,6 +102,8 @@ BOOL CDetailManager::cache_Validate()
 
 void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 {
+	OPTICK_EVENT("CDetailManager::cache_Update");
+
 	bool bNeedMegaUpdate = (cache_cx != v_x) || (cache_cz != v_z);
 	// *****	Cache shift
 	while (cache_cx != v_x)
@@ -228,6 +238,8 @@ void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 
 DetailSlot& CDetailManager::QueryDB(int sx, int sz)
 {
+	OPTICK_EVENT("CDetailManager::QueryDB");
+
 	int db_x = sx + dtH.offs_x;
 	int db_z = sz + dtH.offs_z;
 	if ((db_x >= 0) && (db_x < int(dtH.size_x)) && (db_z >= 0) && (db_z < int(dtH.size_z)))

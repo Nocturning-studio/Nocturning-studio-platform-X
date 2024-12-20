@@ -19,6 +19,8 @@ struct v_filter_autoexposure
 
 void CRenderTarget::phase_autoexposure()
 {
+	OPTICK_EVENT("CRenderTarget::phase_autoexposure");
+
 	u32 Offset = 0;
 	float eps = EPS_S;
 
@@ -315,6 +317,8 @@ void CRenderTarget::phase_autoexposure()
 
 void CRenderTarget::phase_autoexposure_pipeline_start()
 {
+	OPTICK_EVENT("CRenderTarget::phase_autoexposure_pipeline_start");
+
 	//*** exposure-pipeline
 	u32 gpu_id = Device.dwFrame % 2;
 	t_LUM_src->surface_set(rt_LUM_pool[gpu_id * 2 + 0]->pSurface);
@@ -323,6 +327,8 @@ void CRenderTarget::phase_autoexposure_pipeline_start()
 
 void CRenderTarget::phase_autoexposure_pipeline_clear()
 {
+	OPTICK_EVENT("CRenderTarget::phase_autoexposure_pipeline_clear");
+
 	u32 gpu_id = Device.dwFrame % 2;
 
 	//	Re-adapt autoexposure

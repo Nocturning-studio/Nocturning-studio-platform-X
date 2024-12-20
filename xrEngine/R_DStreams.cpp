@@ -13,6 +13,8 @@ int rsDIB_Size = 1024 * 4;
 
 void _VertexStream::Create()
 {
+	OPTICK_EVENT("_VertexStream::Create");
+
 	Device.Resources->Evict();
 
 	mSize = rsDVB_Size * 1024;
@@ -27,12 +29,16 @@ void _VertexStream::Create()
 
 void _VertexStream::Destroy()
 {
+	OPTICK_EVENT("_VertexStream::Destroy");
+
 	_RELEASE(pVB);
 	_clear();
 }
 
 void* _VertexStream::Lock(u32 vl_Count, u32 Stride, u32& vOffset)
 {
+	OPTICK_EVENT("_VertexStream::Lock");
+
 #ifdef DEBUG
 	PGO(Msg("PGO:VB_LOCK:%d", vl_Count));
 	VERIFY(0 == dbg_lock);
@@ -73,6 +79,8 @@ void* _VertexStream::Lock(u32 vl_Count, u32 Stride, u32& vOffset)
 
 void _VertexStream::Unlock(u32 Count, u32 Stride)
 {
+	OPTICK_EVENT("_VertexStream::Unlock");
+
 #ifdef DEBUG
 	PGO(Msg("PGO:VB_UNLOCK:%d", Count));
 	VERIFY(1 == dbg_lock);
@@ -86,11 +94,15 @@ void _VertexStream::Unlock(u32 Count, u32 Stride)
 
 void _VertexStream::reset_begin()
 {
+	OPTICK_EVENT("_VertexStream::reset_begin");
+
 	old_pVB = pVB;
 	Destroy();
 }
 void _VertexStream::reset_end()
 {
+	OPTICK_EVENT("_VertexStream::reset_end");
+
 	Create();
 	// old_pVB				= NULL;
 }
@@ -98,6 +110,8 @@ void _VertexStream::reset_end()
 //////////////////////////////////////////////////////////////////////////
 void _IndexStream::Create()
 {
+	OPTICK_EVENT("_IndexStream::Create");
+
 	Device.Resources->Evict();
 
 	mSize = rsDIB_Size * 1024;
@@ -113,13 +127,16 @@ void _IndexStream::Create()
 
 void _IndexStream::Destroy()
 {
+	OPTICK_EVENT("_IndexStream::Destroy");
+
 	_RELEASE(pIB);
 	_clear();
 }
 
 u16* _IndexStream::Lock(u32 Count, u32& vOffset)
 {
-	PGO(Msg("PGO:IB_LOCK:%d", Count));
+	OPTICK_EVENT("_IndexStream::Lock");
+
 	vOffset = 0;
 	BYTE* pLockedData = 0;
 
@@ -146,7 +163,8 @@ u16* _IndexStream::Lock(u32 Count, u32& vOffset)
 
 void _IndexStream::Unlock(u32 RealCount)
 {
-	PGO(Msg("PGO:IB_UNLOCK:%d", RealCount));
+	OPTICK_EVENT("_IndexStream ::Unlock");
+
 	mPosition += RealCount;
 	VERIFY(pIB);
 	pIB->Unlock();
@@ -154,11 +172,15 @@ void _IndexStream::Unlock(u32 RealCount)
 
 void _IndexStream::reset_begin()
 {
+	OPTICK_EVENT("_IndexStream::reset_begin");
+
 	old_pIB = pIB;
 	Destroy();
 }
 void _IndexStream::reset_end()
 {
+	OPTICK_EVENT("_IndexStream::reset_end");
+
 	Create();
 	// old_pIB				= NULL;
 }

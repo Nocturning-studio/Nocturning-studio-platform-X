@@ -7,6 +7,8 @@
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::phase_depth_of_field()
 {
+	OPTICK_EVENT("CRenderTarget::phase_depth_of_field");
+
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
 

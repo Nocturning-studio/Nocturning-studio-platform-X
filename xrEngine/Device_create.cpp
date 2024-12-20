@@ -6,6 +6,8 @@
 
 void CRenderDevice::_SetupStates()
 {
+	OPTICK_EVENT("CRenderDevice::_SetupStates");
+
 	// General Render States
 	mView.identity();
 	mProject.identity();
@@ -59,6 +61,8 @@ void CRenderDevice::_SetupStates()
 
 void CRenderDevice::_Create(LPCSTR shName)
 {
+	OPTICK_EVENT("CRenderDevice::_Create");
+
 	Memory.mem_compact();
 
 	// after creation
@@ -84,6 +88,8 @@ void CRenderDevice::_Create(LPCSTR shName)
 
 void CRenderDevice::Create()
 {
+	OPTICK_EVENT("CRenderDevice::Create");
+
 	if (b_is_Ready)
 		return; // prevent double call
 	Statistic = xr_new<CStats>();

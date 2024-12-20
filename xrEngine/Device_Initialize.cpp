@@ -5,6 +5,8 @@ extern LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 void CRenderDevice::Initialize()
 {
+	OPTICK_EVENT("CRenderDevice::Initialize");
+
 	Msg("Initializing Render Device...");
 	TimerGlobal.Start();
 	TimerMM.Start();

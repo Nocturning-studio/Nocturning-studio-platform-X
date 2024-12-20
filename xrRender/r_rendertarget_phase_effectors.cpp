@@ -45,6 +45,8 @@ struct TL_2c3uv
 
 void CRenderTarget::phase_effectors_pass_generate_noise0()
 {
+	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_generate_noise0");
+
 	u_setrt(rt_Radiation_Noise0, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
@@ -92,7 +94,7 @@ void CRenderTarget::phase_effectors_pass_generate_noise0()
 
 void CRenderTarget::phase_effectors_pass_generate_noise1()
 {
-	u_setrt(rt_Radiation_Noise1, NULL, NULL, NULL);
+	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_generate_noise1");
 
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
@@ -138,6 +140,8 @@ void CRenderTarget::phase_effectors_pass_generate_noise1()
 
 void CRenderTarget::phase_effectors_pass_generate_noise2()
 {
+	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_generate_noise2");
+
 	u_setrt(rt_Radiation_Noise2, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
@@ -184,6 +188,8 @@ void CRenderTarget::phase_effectors_pass_generate_noise2()
 
 void CRenderTarget::phase_effectors_pass_night_vision()
 {
+	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_night_vision");
+
 	u_setrt(rt_Generic_0, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
@@ -227,6 +233,8 @@ void CRenderTarget::phase_effectors_pass_night_vision()
 
 void CRenderTarget::phase_effectors_pass_combine()
 {
+	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_combine");
+
 	// combination/postprocess
 	u_setrt(rt_Generic_1, NULL, NULL, NULL);
 
@@ -271,6 +279,8 @@ void CRenderTarget::phase_effectors_pass_combine()
 
 void CRenderTarget::phase_effectors_pass_resolve_gamma()
 {
+	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_resolve_gamma");
+
 	u_setrt(rt_Generic_0, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
@@ -323,6 +333,8 @@ void CRenderTarget::phase_effectors_pass_resolve_gamma()
 
 void CRenderTarget::phase_effectors_pass_lut()
 {
+	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_lut");
+
 	u_setrt(rt_Generic_1, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
@@ -377,6 +389,8 @@ void CRenderTarget::phase_effectors_pass_lut()
 
 void CRenderTarget::phase_effectors()
 {
+	OPTICK_EVENT("CRenderTarget::phase_effectors");
+
 	//Generic_0 -> Generic_0!
 	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())
 		phase_effectors_pass_night_vision();

@@ -59,6 +59,8 @@ CWallmarksEngine::CWallmarksEngine()
 	: lock(MUTEX_PROFILE_ID(CWallmarksEngine))
 #endif // PROFILE_CRITICAL_SECTIONS
 {
+	OPTICK_EVENT("CWallmarksEngine::CWallmarksEngine");
+
 	static_pool.reserve(256);
 	marks.reserve(256);
 	hGeom.create(FVF::F_LIT, RCache.Vertex.Buffer(), NULL);
@@ -66,12 +68,16 @@ CWallmarksEngine::CWallmarksEngine()
 
 CWallmarksEngine::~CWallmarksEngine()
 {
+	OPTICK_EVENT("CWallmarksEngine::CWallmarksEngine");
+
 	clear();
 	hGeom.destroy();
 }
 
 void CWallmarksEngine::clear()
 {
+	OPTICK_EVENT("CWallmarksEngine::clear");
+
 	{
 		for (WMSlotVecIt p_it = marks.begin(); p_it != marks.end(); p_it++)
 		{
@@ -91,6 +97,8 @@ void CWallmarksEngine::clear()
 // allocate
 CWallmarksEngine::static_wallmark* CWallmarksEngine::static_wm_allocate()
 {
+	OPTICK_EVENT("CWallmarksEngine::static_wm_allocate");
+
 	static_wallmark* W = 0;
 	if (static_pool.empty())
 		W = xr_new<static_wallmark>();
@@ -104,14 +112,20 @@ CWallmarksEngine::static_wallmark* CWallmarksEngine::static_wm_allocate()
 	W->verts.clear();
 	return W;
 }
+
 // destroy
 void CWallmarksEngine::static_wm_destroy(CWallmarksEngine::static_wallmark* W)
 {
+	OPTICK_EVENT("CWallmarksEngine::static_wm_destroy");
+
 	static_pool.push_back(W);
 }
+
 // render
 void CWallmarksEngine::static_wm_render(CWallmarksEngine::static_wallmark* W, FVF::LIT*& V)
 {
+	OPTICK_EVENT("CWallmarksEngine::static_wm_render");
+
 	float a = 1 - (W->ttl / ps_r_WallmarkTTL);
 	int aC = iFloor(a * 255.f);
 	clamp(aC, 0, 255);
@@ -125,9 +139,12 @@ void CWallmarksEngine::static_wm_render(CWallmarksEngine::static_wallmark* W, FV
 		V->t.set(S->t);
 	}
 }
+
 //--------------------------------------------------------------------------------
 void CWallmarksEngine::RecurseTri(u32 t, Fmatrix& mView, CWallmarksEngine::static_wallmark& W)
 {
+	OPTICK_EVENT("CWallmarksEngine::RecurseTri");
+
 	CDB::TRI* T = sml_collector.getT() + t;
 	if (T->dummy)
 		return;
@@ -190,6 +207,8 @@ void CWallmarksEngine::RecurseTri(u32 t, Fmatrix& mView, CWallmarksEngine::stati
 
 void CWallmarksEngine::BuildMatrix(Fmatrix& mView, float invsz, const Fvector& from)
 {
+	OPTICK_EVENT("CWallmarksEngine::BuildMatrix");
+
 	// build projection
 	Fmatrix mScale;
 	Fvector at, up, right, y;
@@ -207,6 +226,8 @@ void CWallmarksEngine::BuildMatrix(Fmatrix& mView, float invsz, const Fvector& f
 void CWallmarksEngine::AddWallmark_internal(CDB::TRI* pTri, const Fvector* pVerts, const Fvector& contact_point,
 											ref_shader hShader, float sz)
 {
+	OPTICK_EVENT("CWallmarksEngine::AddWallmark_internal");
+
 	// query for polygons in bounding box
 	// calculate adjacency
 	{
@@ -299,6 +320,8 @@ void CWallmarksEngine::AddWallmark_internal(CDB::TRI* pTri, const Fvector* pVert
 void CWallmarksEngine::AddStaticWallmark(CDB::TRI* pTri, const Fvector* pVerts, const Fvector& contact_point,
 										 ref_shader hShader, float sz)
 {
+	OPTICK_EVENT("CWallmarksEngine::AddStaticWallmark");
+
 	// optimization cheat: don't allow wallmarks more than 50 m from viewer/actor
 	if (contact_point.distance_to_sqr(Device.vCameraPosition) > _sqr(100.f))
 		return;
@@ -312,6 +335,8 @@ void CWallmarksEngine::AddStaticWallmark(CDB::TRI* pTri, const Fvector* pVerts, 
 void CWallmarksEngine::AddSkeletonWallmark(const Fmatrix* xf, CKinematics* obj, ref_shader& sh, const Fvector& start,
 										   const Fvector& dir, float size)
 {
+	OPTICK_EVENT("CWallmarksEngine::AddSkeletonWallmark");
+
 	if (::RImplementation.phase != CRender::PHASE_NORMAL)
 		return;
 	// optimization cheat: don't allow wallmarks more than 50 m from viewer/actor
@@ -326,6 +351,8 @@ void CWallmarksEngine::AddSkeletonWallmark(const Fmatrix* xf, CKinematics* obj, 
 
 void CWallmarksEngine::AddSkeletonWallmark(intrusive_ptr<CSkeletonWallmark> wm)
 {
+	OPTICK_EVENT("CWallmarksEngine::AddSkeletonWallmark");
+
 	if (0 == g_r || ::RImplementation.phase != CRender::PHASE_NORMAL)
 		return;
 
@@ -373,6 +400,8 @@ ICF void FlushStream(ref_geom hGeom, ref_shader shader, u32& w_offset, FVF::LIT*
 
 void CWallmarksEngine::Render()
 {
+	OPTICK_EVENT("CWallmarksEngine::Render");
+
 	//	if (marks.empty())			return;
 	// Projection and xform
 	float _43 = Device.mProject._43;

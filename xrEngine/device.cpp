@@ -39,6 +39,8 @@ ENGINE_API bool IsSecondaryThread()
 BOOL CRenderDevice::Begin()
 {
 #ifndef DEDICATED_SERVER
+	OPTICK_EVENT("CRenderDevice::Begin");
+
 	HW.Validate();
 	HRESULT _hr = HW.pDevice->TestCooperativeLevel();
 	if (FAILED(_hr))
@@ -78,10 +80,12 @@ void CRenderDevice::Clear()
 
 extern void CheckPrivilegySlowdown();
 #include "resourcemanager.h"
+#include <optick/optick.h>
 
 void CRenderDevice::End(void)
 {
 #ifndef DEDICATED_SERVER
+	OPTICK_EVENT("CRenderDevice::End");
 
 	VERIFY(HW.pDevice);
 
@@ -125,6 +129,9 @@ void CRenderDevice::End(void)
 
 void CRenderDevice::SecondaryThreadProc(void* context)
 {
+	OPTICK_THREAD("X-Ray Secondary Thread");
+	OPTICK_FRAME("CRenderDevice::SecondaryThreadProc()");
+
 	auto& device = *static_cast<CRenderDevice*>(context);
 	while (true)
 	{
@@ -147,6 +154,9 @@ void CRenderDevice::SecondaryThreadProc(void* context)
 
 void CRenderDevice::RenderThreadProc(void* context)
 {
+	OPTICK_THREAD("X-Ray Render Thread");
+	OPTICK_FRAME("CRenderDevice::SecondaryThreadProc()");
+
 	auto& device = *static_cast<CRenderDevice*>(context);
 	while (true)
 	{
@@ -164,6 +174,8 @@ void CRenderDevice::RenderThreadProc(void* context)
 #include "igame_level.h"
 void CRenderDevice::PreCache(u32 amount)
 {
+	OPTICK_EVENT("CRenderDevice::PreCache");
+
 	if (HW.Caps.bForceGPU_REF)
 		amount = 0;
 #ifdef DEDICATED_SERVER
@@ -194,8 +206,10 @@ void CRenderDevice::Run()
 	BOOL bGotMsg;
 	Log("\nStarting engine...");
 
-	Msg("Setting main thread name: %s", "X-RAY Primary thread");
-	thread_name("X-RAY Primary thread");
+	LPCSTR MainThreadName = "X-RAY Primary thread";
+	Msg("Setting main thread name: %s", MainThreadName);
+	thread_name(MainThreadName);
+	OPTICK_THREAD(MainThreadName);
 
 	// Startup timers and calculate timer delta
 	dwTimeGlobal = 0;
@@ -222,6 +236,8 @@ void CRenderDevice::Run()
 
 	while (WM_QUIT != msg.message)
 	{
+		OPTICK_EVENT("CRenderDevice::Run(): Game cycle iteration");
+
 		bGotMsg = PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE);
 		if (bGotMsg)
 		{
@@ -350,6 +366,8 @@ void CRenderDevice::Run()
 void ProcessLoading(RP_FUNC* f);
 void CRenderDevice::FrameMove()
 {
+	OPTICK_EVENT("CRenderDevice::FrameMove");
+
 	dwFrame++;
 
 	dwTimeContinual = TimerMM.GetElapsed_ms();
@@ -400,6 +418,8 @@ ENGINE_API BOOL bShowPauseString = TRUE;
 
 void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
 {
+	OPTICK_EVENT("CRenderDevice::Pause");
+
 	static int snd_emitters_ = -1;
 
 	if (g_bBenchmark)
@@ -462,6 +482,8 @@ BOOL CRenderDevice::Paused()
 
 void CRenderDevice::OnWM_Activate(WPARAM wParam, LPARAM lParam)
 {
+	OPTICK_EVENT("CRenderDevice::OnWM_Activate");
+
 	u16 fActive = LOWORD(wParam);
 	BOOL fMinimized = (BOOL)HIWORD(wParam);
 	BOOL bActive = ((fActive != WA_INACTIVE) && (!fMinimized)) ? TRUE : FALSE;

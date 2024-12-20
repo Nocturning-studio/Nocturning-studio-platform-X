@@ -34,6 +34,8 @@ ICF float CalcSSA(float& distSQ, Fvector& C, float R)
 
 void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvector& Center)
 {
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_dynamic");
+
 	CRender& RI = RImplementation;
 
 	if (pVisual->vis.marker == RI.marker)
@@ -185,6 +187,8 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 
 void R_dsgraph_structure::r_dsgraph_insert_static(IRender_Visual* pVisual)
 {
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_static");
+
 	CRender& RI = RImplementation;
 
 	if (pVisual->vis.marker == RI.marker)
@@ -307,6 +311,8 @@ void R_dsgraph_structure::r_dsgraph_insert_static(IRender_Visual* pVisual)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CRender::add_leafs_Dynamic(IRender_Visual* pVisual)
 {
+	OPTICK_EVENT("R_dsgraph_structure::add_leafs_Dynamic");
+
 	if (0 == pVisual)
 		return;
 
@@ -384,6 +390,8 @@ void CRender::add_leafs_Dynamic(IRender_Visual* pVisual)
 
 void CRender::add_leafs_Static(IRender_Visual* pVisual)
 {
+	OPTICK_EVENT("R_dsgraph_structure::add_leafs_Static");
+
 	if (!HOM.visible(pVisual->vis))
 		return;
 
@@ -472,6 +480,8 @@ void CRender::add_leafs_Static(IRender_Visual* pVisual)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 BOOL CRender::add_Dynamic(IRender_Visual* pVisual, u32 planes)
 {
+	OPTICK_EVENT("CRender::add_Dynamic");
+
 	// Check frustum visibility and calculate distance to visual's center
 	Fvector Tpos; // transformed position
 	EFC_Visible VIS;
@@ -585,6 +595,8 @@ BOOL CRender::add_Dynamic(IRender_Visual* pVisual, u32 planes)
 
 void CRender::add_Static(IRender_Visual* pVisual, u32 planes)
 {
+	OPTICK_EVENT("CRender::add_Static");
+
 	// Check frustum visibility and calculate distance to visual's center
 	EFC_Visible VIS;
 	vis_data& vis = pVisual->vis;

@@ -7,6 +7,8 @@
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::draw_overlays()
 {
+	OPTICK_EVENT("CRenderTarget::draw_overlays");
+
 	int GridEnabled = 0;
 	int CinemaBordersEnabled = 0;
 	int WatermarkEnabled = 0;

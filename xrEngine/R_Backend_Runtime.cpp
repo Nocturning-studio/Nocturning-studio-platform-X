@@ -10,6 +10,8 @@
 
 void CBackend::OnFrameEnd()
 {
+	OPTICK_EVENT("CBackend::OnFrameEnd");
+
 #ifndef DEDICATED_SERVER
 	for (u32 stage = 0; stage < HW.Caps.raster.dwStages; stage++)
 		CHK_DX(HW.pDevice->SetTexture(0, 0));
@@ -23,6 +25,8 @@ void CBackend::OnFrameEnd()
 
 void CBackend::OnFrameBegin()
 {
+	OPTICK_EVENT("CBackend::OnFrameBegin");
+
 #ifndef DEDICATED_SERVER
 	PGO(Msg("PGO:*****frame[%d]*****", Device.dwFrame));
 	Memory.mem_fill(&stat, 0, sizeof(stat));
@@ -34,6 +38,8 @@ void CBackend::OnFrameBegin()
 
 void CBackend::Invalidate()
 {
+	OPTICK_EVENT("CBackend::Invalidate");
+
 	pRT[0] = NULL;
 	pRT[1] = NULL;
 	pRT[2] = NULL;
@@ -68,6 +74,8 @@ void CBackend::Invalidate()
 
 void CBackend::set_ClipPlanes(u32 _enable, Fplane* _planes /*=NULL */, u32 count /* =0*/)
 {
+	OPTICK_EVENT("CBackend::set_ClipPlanes");
+
 	if (0 == HW.Caps.geometry.dwClipPlanes)
 		return;
 	if (!_enable)
@@ -101,6 +109,8 @@ void CBackend::set_ClipPlanes(u32 _enable, Fplane* _planes /*=NULL */, u32 count
 #ifndef DEDICATED_SREVER
 void CBackend::set_ClipPlanes(u32 _enable, Fmatrix* _xform /*=NULL */, u32 fmask /* =0xff */)
 {
+	OPTICK_EVENT("CBackend::set_ClipPlanes");
+
 	if (0 == HW.Caps.geometry.dwClipPlanes)
 		return;
 	if (!_enable)
@@ -116,6 +126,8 @@ void CBackend::set_ClipPlanes(u32 _enable, Fmatrix* _xform /*=NULL */, u32 fmask
 
 void CBackend::set_Textures(STextureList* _T)
 {
+	OPTICK_EVENT("CBackend::set_Textures");
+
 	if (T == _T)
 		return;
 	T = _T;

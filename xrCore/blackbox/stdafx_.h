@@ -25,6 +25,11 @@ long atol(const char* nptr);
 
 }; // namespace BlackBox
 
+#ifdef ENABLE_PROFILING
+#include <optick/optick.h>
+#pragma comment(lib, "OptickCore.lib")
+#endif
+
 #ifdef _EDITOR
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #endif // _EDITOR

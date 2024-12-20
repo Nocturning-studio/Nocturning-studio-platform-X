@@ -2,6 +2,8 @@
 
 void CRenderDevice::overdrawBegin()
 {
+	OPTICK_EVENT("CRenderDevice::overdrawBegin");
+
 	// Turn stenciling
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_STENCILENABLE, TRUE));
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_ALWAYS));
@@ -25,6 +27,8 @@ void CRenderDevice::overdrawBegin()
 
 void CRenderDevice::overdrawEnd()
 {
+	OPTICK_EVENT("CRenderDevice::overdrawEnd");
+
 	// Set up the stencil states
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP));
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP));

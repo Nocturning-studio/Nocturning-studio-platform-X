@@ -10,6 +10,8 @@ const u32 cullfragments = 4;
 
 void light::vis_prepare()
 {
+	OPTICK_EVENT("light::vis_prepare");
+
 	//	. test is sheduled for future	= keep old result
 	//	. test time comes :)
 	//		. camera inside light volume	= visible,	shedule for 'small' interval
@@ -54,6 +56,8 @@ void light::vis_prepare()
 
 void light::vis_update()
 {
+	OPTICK_EVENT("light::vis_update");
+
 	//	. not pending	->>> return (early out)
 	//	. test-result:	visible:
 	//		. shedule for 'large' interval

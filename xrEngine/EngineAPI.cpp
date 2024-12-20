@@ -15,6 +15,7 @@ CEngineAPI::CEngineAPI()
 	hGame = 0;
 	hRender = 0;
 	hTuner = 0;
+	hOptick = 0;
 	pCreate = 0;
 	pDestroy = 0;
 	tune_pause = dummy;
@@ -77,6 +78,17 @@ void CEngineAPI::Initialize(void)
 		}
 	}
 
+#ifdef ENABLE_PROFILING
+		LPCSTR g_name = "OptickCore.dll";
+		Log("Loading DLL:", g_name);
+		hOptick = LoadLibrary(g_name);
+		if (0 == hOptick)
+		{
+			R_CHK(GetLastError());
+			Msg("Optick is not installed");
+		}
+#endif
+
 	LPCSTR DiscordAPI_name = "xrDiscordAPI.dll";
 	Log("Loading DLL:", DiscordAPI_name);
 	hDiscordAPI = LoadLibrary(DiscordAPI_name);
@@ -94,6 +106,11 @@ void CEngineAPI::Destroy(void)
 	{
 		FreeLibrary(hRender);
 		hRender = 0;
+	}
+	if (hOptick)
+	{
+		FreeLibrary(hOptick);
+		hOptick = 0;
 	}
 	if (hDiscordAPI)
 	{

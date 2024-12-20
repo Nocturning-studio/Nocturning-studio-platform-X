@@ -43,6 +43,8 @@ IC bool InterpolateAndDither(float* alpha255, u32 x, u32 y, u32 sx, u32 sy, u32 
 
 void CDetailManager::cache_Decompress(Slot* S)
 {
+	OPTICK_EVENT("CDetailManager::cache_Decompress");
+
 	VERIFY(S);
 	Slot& D = *S;
 	D.type = stReady;

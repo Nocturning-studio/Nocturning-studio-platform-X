@@ -28,6 +28,8 @@ IDirect3DStateBlock9* dwDebugSB = 0;
 
 void CHW::Reset(HWND hwnd)
 {
+	OPTICK_EVENT("CHW::Reset");
+
 #ifdef DEBUG
 	_RELEASE(dwDebugSB);
 #endif
@@ -74,6 +76,8 @@ xr_token* vid_mode_token = NULL;
 
 void CHW::CreateD3D()
 {
+	OPTICK_EVENT("CHW::CreateD3D");
+
 #ifndef DEDICATED_SERVER
 	LPCSTR _name = "d3d9.dll";
 #else
@@ -98,6 +102,8 @@ void CHW::CreateD3D()
 
 void CHW::DestroyD3D()
 {
+	OPTICK_EVENT("CHW::DestroyD3D");
+
 	_RELEASE(this->pD3D);
 	FreeLibrary(hD3D9);
 }
@@ -131,6 +137,8 @@ D3DFORMAT CHW::selectDepthStencil(D3DFORMAT fTarget)
 
 void CHW::DestroyDevice()
 {
+	OPTICK_EVENT("CHW::DestroyDevice");
+
 	_SHOW_REF("refCount:pBaseZB", pBaseZB);
 	_RELEASE(pBaseZB);
 
@@ -152,8 +160,11 @@ void CHW::DestroyDevice()
 	free_vid_mode_list();
 #endif
 }
+
 void CHW::selectResolution(u32& dwWidth, u32& dwHeight, BOOL bWindowed)
 {
+	OPTICK_EVENT("CHW::selectResolution");
+
 	fill_vid_mode_list(this);
 #ifdef DEDICATED_SERVER
 	dwWidth = 640;
@@ -185,6 +196,8 @@ void CHW::selectResolution(u32& dwWidth, u32& dwHeight, BOOL bWindowed)
 
 void CHW::CreateDevice(HWND m_hWnd)
 {
+	OPTICK_EVENT("CHW::CreateDevice");
+
 	CreateD3D();
 
 	// General - select adapter and device
@@ -373,6 +386,8 @@ void CHW::CreateDevice(HWND m_hWnd)
 
 u32 CHW::selectPresentInterval()
 {
+	OPTICK_EVENT("CHW::selectPresentInterval");
+
 	D3DCAPS9 caps;
 	pD3D->GetDeviceCaps(DevAdapter, DevT, &caps);
 
@@ -388,6 +403,8 @@ u32 CHW::selectPresentInterval()
 
 u32 CHW::selectGPU()
 {
+	OPTICK_EVENT("CHW::selectGPU");
+
 	if (Caps.bForceGPU_SW)
 		return D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 
@@ -413,6 +430,8 @@ u32 CHW::selectGPU()
 
 u32 CHW::selectRefresh(u32 dwWidth, u32 dwHeight, D3DFORMAT fmt)
 {
+	OPTICK_EVENT("CHW::selectRefresh");
+
 	if (psDeviceFlags.is(rsRefresh60hz))
 		return D3DPRESENT_RATE_DEFAULT;
 	else
@@ -435,6 +454,8 @@ u32 CHW::selectRefresh(u32 dwWidth, u32 dwHeight, D3DFORMAT fmt)
 
 BOOL CHW::support(D3DFORMAT fmt, DWORD type, DWORD usage)
 {
+	OPTICK_EVENT("CHW::support");
+
 	HRESULT hr = pD3D->CheckDeviceFormat(DevAdapter, DevT, Caps.fTarget, usage, (D3DRESOURCETYPE)type, fmt);
 	if (FAILED(hr))
 		return FALSE;
@@ -444,6 +465,8 @@ BOOL CHW::support(D3DFORMAT fmt, DWORD type, DWORD usage)
 
 void CHW::updateWindowProps(HWND m_hWnd)
 {
+	OPTICK_EVENT("CHW::updateWindowProps");
+
 #ifndef DEDICATED_SERVER
 	BOOL bWindowed = !psDeviceFlags.is(rsFullscreen);
 #else

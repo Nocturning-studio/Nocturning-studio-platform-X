@@ -8,6 +8,8 @@
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::phase_antialiasing()
 {
+	OPTICK_EVENT("CRenderTarget::phase_antialiasing");
+
 	u32 Offset = 0;
 	u32 C = color_rgba(0, 0, 0, 255);
 

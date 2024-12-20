@@ -7,17 +7,23 @@ const u32 vs_size = 3000;
 
 void CDetailManager::soft_Load()
 {
+	OPTICK_EVENT("CDetailManager::soft_Load");
+
 	// Vertex Stream
 	soft_Geom.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
 }
 
 void CDetailManager::soft_Unload()
 {
+	OPTICK_EVENT("CDetailManager::soft_Unload");
+
 	soft_Geom.destroy();
 }
 
 void CDetailManager::soft_Render()
 {
+	OPTICK_EVENT("CDetailManager::soft_Render");
+
 	// Render itself
 	// float	fPhaseRange	= PI/16;
 	// float	fPhaseX		= _sin(Device.fTimeGlobal*0.1f)	*fPhaseRange;

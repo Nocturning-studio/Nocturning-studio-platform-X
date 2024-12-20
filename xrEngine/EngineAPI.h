@@ -50,6 +50,7 @@ class ENGINE_API CEngineAPI
 	HMODULE hRender;
 	HMODULE hTuner;
 	HMODULE hDiscordAPI;
+	HMODULE hOptick;
 
   public:
 	Factory_Create* pCreate;

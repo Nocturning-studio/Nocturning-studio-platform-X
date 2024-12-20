@@ -21,6 +21,7 @@
 #include "Text_Console.h"
 #include <process.h>
 #include "../xrDiscordAPI/DiscordAPI.h"
+#include <optick/optick.h>
 
 //---------------------------------------------------------------------
 ENGINE_API CInifile* pGameIni = NULL;
@@ -820,6 +821,8 @@ void _InitializeFont(CGameFont*& F, LPCSTR section, u32 flags)
 
 CApplication::CApplication()
 {
+	OPTICK_EVENT("CApplication::CApplication");
+
 	ll_dwReference = 0;
 
 	// events
@@ -853,6 +856,8 @@ CApplication::CApplication()
 
 CApplication::~CApplication()
 {
+	OPTICK_EVENT("CApplication::~CApplication");
+
 	Console->Hide();
 
 	// font
@@ -872,6 +877,8 @@ CApplication::~CApplication()
 
 void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 {
+	OPTICK_EVENT("CApplication::OnEvent");
+
 	if (E == eQuit)
 	{
 		PostQuitMessage(0);
@@ -946,6 +953,8 @@ extern ENGINE_API BOOL g_appLoaded = FALSE;
 
 void CApplication::LoadBegin()
 {
+	OPTICK_EVENT("CApplication::LoadBegin");
+
 	ll_dwReference++;
 	if (1 == ll_dwReference)
 	{
@@ -965,7 +974,10 @@ void CApplication::LoadBegin()
 
 void CApplication::LoadEnd()
 {
+	OPTICK_EVENT("CApplication::LoadEnd");
+
 	ll_dwReference--;
+
 	if (0 == ll_dwReference)
 	{
 		g_pGamePersistent->LoadTitle("st_loading_end");
@@ -979,6 +991,8 @@ void CApplication::LoadEnd()
 
 void CApplication::destroy_loading_shaders()
 {
+	OPTICK_EVENT("CApplication::destroy_loading_shaders");
+
 	hLevelLogo.destroy();
 	sh_progress.destroy();
 	//.	::Sound->mute			(false);
@@ -988,8 +1002,11 @@ u32 calc_progress_color(u32, u32, int, int);
 
 void CApplication::LoadDraw()
 {
+	OPTICK_EVENT("CApplication::LoadDraw");
+
 	if (g_appLoaded)
 		return;
+
 	Device.dwFrame += 1;
 
 	if (!Device.Begin())
@@ -1005,6 +1022,8 @@ void CApplication::LoadDraw()
 
 void CApplication::LoadTitleInt(LPCSTR str)
 {
+	OPTICK_EVENT("CApplication::LoadTitleInt");
+
 	load_stage++;
 
 	VERIFY(ll_dwReference);
@@ -1030,6 +1049,8 @@ void CApplication::LoadSwitch()
 
 void CApplication::SetLoadLogo(ref_shader NewLoadLogo)
 {
+	OPTICK_EVENT("CApplication::SetLoadLogo");
+
 		hLevelLogo = NewLoadLogo;
 	//	R_ASSERT(0);
 };
@@ -1037,9 +1058,12 @@ void CApplication::SetLoadLogo(ref_shader NewLoadLogo)
 // Sequential
 void CApplication::OnFrame()
 {
+	OPTICK_EVENT("CApplication::OnFrame");
+
 	Engine.Event.OnFrame();
 	g_SpatialSpace->update();
 	g_SpatialSpacePhysic->update();
+
 	if (g_pGameLevel)
 		g_pGameLevel->SoundEvent_Dispatch();
 
@@ -1049,6 +1073,8 @@ void CApplication::OnFrame()
 
 void CApplication::Level_Append(LPCSTR folder)
 {
+	OPTICK_EVENT("CApplication::Level_Append");
+
 	string_path N1, N2, N3, N4;
 	strconcat(sizeof(N1), N1, folder, "level");
 	strconcat(sizeof(N2), N2, folder, "level.ltx");
@@ -1065,6 +1091,8 @@ void CApplication::Level_Append(LPCSTR folder)
 
 void CApplication::Level_Scan()
 {
+	OPTICK_EVENT("CApplication::Level_Scan");
+
 #pragma todo("container is created in stack!")
 	xr_vector<char*>* folder = FS.file_list_open("$game_levels$", FS_ListFolders | FS_RootOnly);
 	R_ASSERT(folder && folder->size());
@@ -1089,6 +1117,8 @@ void CApplication::Level_Scan()
 
 void CApplication::Level_Set(u32 L)
 {
+	OPTICK_EVENT("CApplication::Level_Set");
+
 	if (L >= Levels.size())
 		return;
 	Level_Current = L;
@@ -1106,6 +1136,8 @@ void CApplication::Level_Set(u32 L)
 
 int CApplication::Level_ID(LPCSTR name)
 {
+	OPTICK_EVENT("CApplication::Level_ID");
+
 	char buffer[256];
 	strconcat(sizeof(buffer), buffer, name, "\\");
 	for (u32 I = 0; I < Levels.size(); I++)
@@ -1212,6 +1244,8 @@ void doBenchmark(LPCSTR name)
 #pragma optimize("g", off)
 void CApplication::load_draw_internal()
 {
+	OPTICK_EVENT("CApplication::load_draw_internal");
+
 	if (!sh_progress)
 	{
 		CHK_DX(HW.pDevice->Clear(0, 0, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 0, 0, 0), 1, 0));

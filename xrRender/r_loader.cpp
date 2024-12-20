@@ -16,6 +16,8 @@
 
 void CRender::level_Load(IReader* fs)
 {
+	OPTICK_EVENT("CRender::level_Load");
+
 	R_ASSERT(0 != g_pGameLevel);
 	R_ASSERT(!b_loaded);
 
@@ -110,6 +112,8 @@ void CRender::level_Load(IReader* fs)
 
 void CRender::level_Unload()
 {
+	OPTICK_EVENT("CRender::level_Unload");
+
 	if (0 == g_pGameLevel)
 		return;
 	if (!b_loaded)
@@ -188,6 +192,8 @@ void CRender::level_Unload()
 
 void CRender::LoadBuffers(CStreamReader* base_fs, BOOL _alternative)
 {
+	OPTICK_EVENT("CRender::LoadBuffers");
+
 	R_ASSERT2(base_fs, "Could not load geometry. File not found.");
 	Device.Resources->Evict();
 	u32 dwUsage = D3DUSAGE_WRITEONLY;
@@ -261,6 +267,8 @@ void CRender::LoadBuffers(CStreamReader* base_fs, BOOL _alternative)
 
 void CRender::LoadVisuals(IReader* fs)
 {
+	OPTICK_EVENT("CRender::LoadVisuals");
+
 	IReader* chunk = 0;
 	u32 index = 0;
 	IRender_Visual* V = 0;
@@ -280,6 +288,8 @@ void CRender::LoadVisuals(IReader* fs)
 
 void CRender::LoadLights(IReader* fs)
 {
+	OPTICK_EVENT("CRender::LoadLights");
+
 	// lights
 	Lights.Load(fs);
 }
@@ -293,6 +303,8 @@ struct b_portal
 
 void CRender::LoadSectors(IReader* fs)
 {
+	OPTICK_EVENT("CRender::LoadSectors");
+
 	// allocate memory for portals
 	u32 size = fs->find_chunk(fsL_PORTALS);
 	R_ASSERT(0 == size % sizeof(b_portal));
@@ -359,6 +371,8 @@ void CRender::LoadSectors(IReader* fs)
 
 void CRender::LoadSWIs(CStreamReader* base_fs)
 {
+	OPTICK_EVENT("CRender::LoadSWIs");
+
 	// allocate memory for portals
 	if (base_fs->find_chunk(fsL_SWIS))
 	{

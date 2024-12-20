@@ -8,6 +8,11 @@
 #include "xrCore.h"
 #include "xrCore_platform.h"
 
+#ifdef ENABLE_PROFILING
+#include <optick/optick.h>
+#pragma comment(lib, "OptickCore.lib")
+#endif
+
 #endif
 
 #pragma hdrstop

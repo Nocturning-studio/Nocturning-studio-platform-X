@@ -3,6 +3,8 @@
 
 void CRenderTarget::phase_output_to_screen()
 {
+	OPTICK_EVENT("CRenderTarget::phase_output_to_screen");
+
 	u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, NULL, NULL, HW.pBaseZB);
 
 	RCache.set_CullMode(CULL_NONE);

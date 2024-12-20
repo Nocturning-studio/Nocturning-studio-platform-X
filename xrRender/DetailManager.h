@@ -207,6 +207,8 @@ class CDetailManager
 	void __stdcall MT_CALC();
 	ICF void MT_SYNC()
 	{
+		OPTICK_EVENT("CDetailManager::MT_SYNC");
+
 		if (m_frame_calc == Device.dwFrame)
 			return;
 

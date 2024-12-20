@@ -3,6 +3,8 @@
 
 void CRenderTarget::phase_accumulator()
 {
+	OPTICK_EVENT("CRenderTarget::phase_accumulator");
+
 	// Targets
 	if (dwAccumulatorClearMark == Device.dwFrame)
 	{
