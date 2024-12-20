@@ -811,7 +811,6 @@
     <ClInclude Include="r_dsgraph_structure.h" />
     <ClInclude Include="r_dsgraph_types.h" />
     <ClInclude Include="r_occlusion.h" />
-    <ClInclude Include="r_pixel_calculator.h" />
     <ClInclude Include="r_sector.h" />
     <ClInclude Include="shader_configurator.h" />
     <ClInclude Include="VertexCache.h" />
@@ -932,7 +931,6 @@
     <ClCompile Include="r_dsgraph_render.cpp" />
     <ClCompile Include="r_dsgraph_render_lods.cpp" />
     <ClCompile Include="r_occlusion.cpp" />
-    <ClCompile Include="r_pixel_calculator.cpp" />
     <ClCompile Include="r_rendertarget_output_to_screen.cpp" />
     <ClCompile Include="r_screenshot.cpp" />
     <ClCompile Include="r_sector.cpp" />
@@ -1017,7 +1015,6 @@
     <ClCompile Include="r_R_render.cpp" />
     <ClCompile Include="r_R_sun.cpp" />
     <ClCompile Include="r_sector_detect.cpp" />
-    <ClCompile Include="r_test_hw.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

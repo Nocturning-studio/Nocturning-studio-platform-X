@@ -516,22 +516,6 @@ class CCC_EffPreset : public CCC_Token
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////
-#include "r_pixel_calculator.h"
-///////////////////////////////////////////////////////////////////////////////////
-class CCC_BuildSSA : public IConsole_Command
-{
-  public:
-	CCC_BuildSSA(LPCSTR N) : IConsole_Command(N)
-	{
-		bEmptyArgsHandled = TRUE;
-	};
-	virtual void Execute(LPCSTR args)
-	{
-		r_pixel_calculator c;
-		c.run();
-	}
-};
-///////////////////////////////////////////////////////////////////////////////////
 class CCC_DofFar : public CCC_Float
 {
   public:
@@ -820,8 +804,6 @@ void xrRender_initconsole()
 	CMD3(CCC_Token, "r_debug_render", &ps_r_debug_render, debug_render_token);
 
 	CMD3(CCC_Token, "r_rt_format", &ps_r_rt_format, ps_rt_format);
-
-	CMD1(CCC_BuildSSA, "build_ssa");
 
 	CMD4(CCC_Float, "r_ssa_lod_a", &ps_r_ssaLOD_A, 16, 96);
 	CMD4(CCC_Float, "r_ssa_lod_b", &ps_r_ssaLOD_B, 32, 64);
