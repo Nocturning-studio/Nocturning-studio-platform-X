@@ -876,13 +876,13 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 
 		sun->X.D.transluent = FALSE;
 
-		if (bSpecial || (cascade_ind < m_sun_cascades.size() - 1))
-		{
-			sun->X.D.transluent = TRUE;
-			Target->phase_smap_direct_tsh(sun, SE_SUN_FAR);
-			r_dsgraph_render_graph(1); // normal level, secondary priority
-			r_dsgraph_render_sorted(); // strict-sorted geoms
-		}
+		//if (bSpecial || (cascade_ind < m_sun_cascades.size() - 1))
+		//{
+		//	sun->X.D.transluent = TRUE;
+		//	Target->phase_smap_direct_tsh(sun, SE_SUN_FAR);
+		//	r_dsgraph_render_graph(1); // normal level, secondary priority
+		//	r_dsgraph_render_sorted(); // strict-sorted geoms
+		//}
 	}
 
 	// End SMAP-render
