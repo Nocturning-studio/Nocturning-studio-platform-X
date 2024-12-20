@@ -1393,6 +1393,7 @@
     <ClInclude Include="SubAlloc.hpp" />
     <ClInclude Include="Task.hpp" />
     <ClInclude Include="TaskManager.hpp" />
+    <ClInclude Include="Threading.h" />
     <ClInclude Include="ThreadUtil.h" />
     <ClInclude Include="vector.h" />
     <ClInclude Include="xrCore.h" />

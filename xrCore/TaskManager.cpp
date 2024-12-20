@@ -180,6 +180,7 @@ void TaskManager::task_worker_entry(void* this_ptr)
 	TaskManager& self = *static_cast<TaskManager*>(this_ptr);
 	self.TaskWorkerStart();
 }
+
 void TaskManager::TaskWorkerStart()
 {
 	TaskWorker worker;
@@ -242,6 +243,7 @@ void TaskManager::ExecuteTask(Task& task)
 	task.Execute();
 	FinalizeTask(task);
 }
+
 void TaskManager::FinalizeTask(Task& task)
 {
 	for (Task* it = &task;; it = it->m_parent)
@@ -254,6 +256,7 @@ void TaskManager::FinalizeTask(Task& task)
 			break;
 	}
 }
+
 Task* TaskManager::AllocateTask()
 {
 	allocatedTasks.fetch_add(1, std::memory_order_relaxed);
@@ -274,6 +277,7 @@ void TaskManager::PushTask(Task& task)
 	worker->event.Set();
 	pushedTasks.fetch_add(1, std::memory_order_relaxed);
 }
+
 void TaskManager::Wait(const Task& task)
 {
 	while (!task.IsFinished())
@@ -300,28 +304,33 @@ bool TaskManager::ExecuteOneTask()
 	}
 	return false;
 }
+
 Task& TaskManager::CreateTask(pcstr name, const Task::TaskFunc& taskFunc, size_t dataSize /*= 0*/,
 							  void* data /*= nullptr*/)
 {
 	return *new (AllocateTask()) Task(name, taskFunc, data, dataSize);
 }
+
 Task& TaskManager::CreateTask(pcstr name, const Task::OnFinishFunc& onFinishCallback, const Task::TaskFunc& taskFunc,
 							  size_t dataSize /*= 0*/, void* data /*= nullptr*/)
 {
 	return *new (AllocateTask()) Task(name, taskFunc, onFinishCallback, data, dataSize);
 }
+
 Task& TaskManager::CreateTask(Task& parent, pcstr name, const Task::TaskFunc& taskFunc, size_t dataSize /*= 0*/,
 							  void* data /*= nullptr*/)
 {
 	IncrementTaskJobsCounter(parent);
 	return *new (AllocateTask()) Task(name, taskFunc, data, dataSize, &parent);
 }
+
 Task& TaskManager::CreateTask(Task& parent, pcstr name, const Task::OnFinishFunc& onFinishCallback,
 							  const Task::TaskFunc& taskFunc, size_t dataSize /*= 0*/, void* data /*= nullptr*/)
 {
 	IncrementTaskJobsCounter(parent);
 	return *new (AllocateTask()) Task(name, taskFunc, onFinishCallback, data, dataSize, &parent);
 }
+
 Task& TaskManager::AddTask(pcstr name, const Task::TaskFunc& taskFunc, size_t dataSize /*= 0*/,
 						   void* data /*= nullptr*/)
 {
@@ -329,6 +338,7 @@ Task& TaskManager::AddTask(pcstr name, const Task::TaskFunc& taskFunc, size_t da
 	PushTask(task);
 	return task;
 }
+
 Task& TaskManager::AddTask(pcstr name, const Task::OnFinishFunc& onFinishCallback, const Task::TaskFunc& taskFunc,
 						   size_t dataSize /*= 0*/, void* data /*= nullptr*/)
 {
@@ -336,6 +346,7 @@ Task& TaskManager::AddTask(pcstr name, const Task::OnFinishFunc& onFinishCallbac
 	PushTask(task);
 	return task;
 }
+
 Task& TaskManager::AddTask(Task& parent, pcstr name, const Task::TaskFunc& taskFunc, size_t dataSize /*= 0*/,
 						   void* data /*= nullptr*/)
 {
@@ -343,6 +354,7 @@ Task& TaskManager::AddTask(Task& parent, pcstr name, const Task::TaskFunc& taskF
 	PushTask(task);
 	return task;
 }
+
 Task& TaskManager::AddTask(Task& parent, pcstr name, const Task::OnFinishFunc& onFinishCallback,
 						   const Task::TaskFunc& taskFunc, size_t dataSize /*= 0*/, void* data /*= nullptr*/)
 {
@@ -350,12 +362,14 @@ Task& TaskManager::AddTask(Task& parent, pcstr name, const Task::OnFinishFunc& o
 	PushTask(task);
 	return task;
 }
+
 TaskWorker* TaskManager::GetWorkerForWorkload()
 {
 	const auto idx = currentWorker.fetch_add(1, std::memory_order_relaxed);
 	TaskWorker* queue = workers[idx % workersCount.load(std::memory_order_relaxed)];
 	return queue;
 }
+
 TaskWorker* TaskManager::GetWorkerToStealFrom(TaskWorker* thief)
 {
 	while (true)
@@ -368,18 +382,22 @@ TaskWorker* TaskManager::GetWorkerToStealFrom(TaskWorker* thief)
 			return worker;
 	}
 }
+
 size_t TaskManager::GetWorkersCount() const
 {
 	return workersCount.load(std::memory_order_relaxed) + OTHER_THREADS_COUNT;
 }
+
 size_t TaskManager::GetAllocatedCount() const
 {
 	return allocatedTasks.load(std::memory_order_relaxed);
 }
+
 size_t TaskManager::GetPushedCount() const
 {
 	return pushedTasks.load(std::memory_order_relaxed);
 }
+
 size_t TaskManager::GetFinishedCount() const
 {
 	return finishedTasks.load(std::memory_order_relaxed);

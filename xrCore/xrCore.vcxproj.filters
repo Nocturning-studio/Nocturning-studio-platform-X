@@ -604,6 +604,9 @@
     <ClInclude Include="Noncopyable.hpp">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="Threading.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xrCore.rc">
