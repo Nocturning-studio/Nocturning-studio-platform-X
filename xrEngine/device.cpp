@@ -130,7 +130,7 @@ void CRenderDevice::End(void)
 void CRenderDevice::SecondaryThreadProc(void* context)
 {
 	OPTICK_THREAD("X-Ray Secondary Thread");
-	OPTICK_FRAME("CRenderDevice::SecondaryThreadProc()");
+	OPTICK_FRAME("X-Ray Secondary Thread");
 
 	auto& device = *static_cast<CRenderDevice*>(context);
 	while (true)
