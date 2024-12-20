@@ -160,6 +160,12 @@
     <Filter Include="Render Console">
       <UniqueIdentifier>{25048830-d3aa-4387-b01b-a2a0cdbac8ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Dynamic scene graph">
+      <UniqueIdentifier>{4b70cd42-a15c-4cf4-a4ea-a369d7c7e543}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Render pipeline">
+      <UniqueIdentifier>{fe8ea627-ce82-4380-8edb-1145c56ad896}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl_intersect.h">
@@ -172,15 +178,6 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="r_types.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="r_dsgraph_structure.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="r_dsgraph_types.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="r_pixel_calculator.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="doug_lea_memory_allocator.h">
@@ -387,6 +384,12 @@
     <ClInclude Include="xrRender_console.h">
       <Filter>Render Console</Filter>
     </ClInclude>
+    <ClInclude Include="r_dsgraph_structure.h">
+      <Filter>Core\Dynamic scene graph</Filter>
+    </ClInclude>
+    <ClInclude Include="r_dsgraph_types.h">
+      <Filter>Core\Dynamic scene graph</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -404,34 +407,7 @@
     <ClCompile Include="r_loader.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="r_R_calculate.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="r_R_lights.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="r_R_render.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="r_R_sun.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="r_sector_detect.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="r_test_hw.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="r_dsgraph_build.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="r_dsgraph_render.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="r_dsgraph_render_lods.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="r_pixel_calculator.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="doug_lea_memory_allocator.c">
@@ -748,6 +724,27 @@
     </ClCompile>
     <ClCompile Include="xrRender_console.cpp">
       <Filter>Render Console</Filter>
+    </ClCompile>
+    <ClCompile Include="r_dsgraph_build.cpp">
+      <Filter>Core\Dynamic scene graph</Filter>
+    </ClCompile>
+    <ClCompile Include="r_dsgraph_render.cpp">
+      <Filter>Core\Dynamic scene graph</Filter>
+    </ClCompile>
+    <ClCompile Include="r_dsgraph_render_lods.cpp">
+      <Filter>Core\Dynamic scene graph</Filter>
+    </ClCompile>
+    <ClCompile Include="r_R_calculate.cpp">
+      <Filter>Core\Render pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="r_R_lights.cpp">
+      <Filter>Core\Render pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="r_R_render.cpp">
+      <Filter>Core\Render pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="r_R_sun.cpp">
+      <Filter>Core\Render pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
