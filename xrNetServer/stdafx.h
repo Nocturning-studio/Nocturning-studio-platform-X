@@ -16,6 +16,11 @@
 #include <DPlay\dplay8.h>
 #pragma warning(pop)
 
+#ifdef ENABLE_PROFILING
+#include <optick/optick.h>
+#pragma comment(lib, "OptickCore.lib")
+#endif
+
 #include "NET_Shared.h"
 
 #define _RELEASE(x)			{ if(x) { (x)->Release();       (x)=NULL; } }

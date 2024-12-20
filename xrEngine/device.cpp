@@ -172,6 +172,7 @@ void CRenderDevice::RenderThreadProc(void* context)
 }
 
 #include "igame_level.h"
+#include <ThreadUtil.h>
 void CRenderDevice::PreCache(u32 amount)
 {
 	OPTICK_EVENT("CRenderDevice::PreCache");
@@ -208,7 +209,7 @@ void CRenderDevice::Run()
 
 	LPCSTR MainThreadName = "X-RAY Primary thread";
 	Msg("Setting main thread name: %s", MainThreadName);
-	thread_name(MainThreadName);
+	//Threading::SetThreadName(MainThreadName);
 	OPTICK_THREAD(MainThreadName);
 
 	// Startup timers and calculate timer delta
@@ -224,7 +225,7 @@ void CRenderDevice::Run()
 	}
 
 	mt_bMustExit = FALSE;
-	thread_spawn(SecondaryThreadProc, "X-RAY Secondary thread", 0, this);
+	Threading::SpawnThread(SecondaryThreadProc, "X-RAY Secondary thread", 0, this);
 	//thread_spawn(RenderThreadProc, "X-RAY Render thread", 0, this);
 
 	// Message cycle

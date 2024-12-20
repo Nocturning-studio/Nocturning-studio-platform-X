@@ -82,6 +82,9 @@
     <Filter Include="Threading">
       <UniqueIdentifier>{afd8eacd-cc30-46ec-af60-66b4e35350b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{ef73910a-9734-4697-9879-8f5109a89733}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FTimer.cpp">
@@ -269,6 +272,21 @@
       <Filter>shared memory/string library\string concat</Filter>
     </ClCompile>
     <ClCompile Include="Event.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="Task.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskManager.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="ScopeLock.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadUtil.cpp">
       <Filter>Threading</Filter>
     </ClCompile>
   </ItemGroup>
@@ -557,6 +575,36 @@
       <Filter>shared memory/string library\string concat</Filter>
     </ClInclude>
     <ClInclude Include="Event.hpp">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="ParallelFor.hpp">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="ParallelForEach.hpp">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Task.hpp">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskManager.hpp">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="xr_smart_pointers.h">
+      <Filter>Math\Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock.hpp">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="ScopeLock.hpp">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadUtil.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Noncopyable.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Threading.h">
       <Filter>Threading</Filter>
     </ClInclude>
   </ItemGroup>

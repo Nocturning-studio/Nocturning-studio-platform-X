@@ -11,6 +11,7 @@
 
 #include "../object_broker.h"
 #include "../string_table.h"
+#include <ThreadUtil.h>
 
 void __cdecl SBCallback(void* sb, SBCallbackReason reason, void* server, void* instance);
 
@@ -161,6 +162,9 @@ struct RefreshData
 };
 void RefreshInternetList(void* inData)
 {
+	OPTICK_THREAD("GameSpy Internet Refresh thread");
+	OPTICK_FRAME("GameSpy Internet Refresh thread");
+
 	RefreshData* pRData = (RefreshData*)inData;
 	pRData->pGSBrowser->RefreshListInternet(pRData->FilterStr);
 	xr_delete(pRData);
@@ -207,7 +211,7 @@ void CGameSpy_Browser::RefreshList_Full(bool Local, const char* FilterStr)
 			if (MainMenu())
 				MainMenu()->Show_CTMS_Dialog();
 
-			thread_spawn(RefreshInternetList, "GameSpy Internet Refresh thread", 0, pRData);
+			Threading::SpawnThread(RefreshInternetList, "GameSpy Internet Refresh thread", 0, pRData);
 		}
 		if (error != sbe_noerror || !m_bAbleToConnectToMasterServer)
 		{

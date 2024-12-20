@@ -14,6 +14,7 @@
 #include "ResourceManager.h"
 
 #include "xr_object.h"
+#include <ThreadUtil.h>
 
 extern ENGINE_API Flags32 ps_psp_ls_flags = {PSP_VIEW | NORMAL_VIEW};
 extern ENGINE_API Flags32 ps_weather_ls_flags = {WEATHER_EFFECTS};
@@ -263,6 +264,9 @@ class CCC_Help : public IConsole_Command
 //-----------------------------------------------------------------------
 void crashthread(void*)
 {
+	OPTICK_EVENT("X-Ray Crash thread");
+	OPTICK_FRAME("X-Ray Crash thread");
+
 	Sleep(1000);
 	Msg("~ crash thread activated");
 	u64 clk = CPU::GetCLK();
@@ -310,7 +314,7 @@ class CCC_Crash : public IConsole_Command
 	};
 	virtual void Execute(LPCSTR args)
 	{
-		thread_spawn(crashthread, "crash", 0, 0);
+		Threading::SpawnThread(crashthread, "crash", 0, 0);
 	}
 };
 

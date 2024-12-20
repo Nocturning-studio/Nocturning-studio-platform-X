@@ -11,35 +11,17 @@
 	limitations under the License.
 */
 #include "stdafx.h"
-#include "Event.hpp"
-#include <windows.h>
+#include "ScopeLock.hpp"
+#include "Lock.hpp"
+#include "xrDebug.h"
 
-Event::Event()
+ScopeLock::ScopeLock(Lock* SyncObject) : syncObject(SyncObject)
 {
-	handle = (void*)CreateEvent(NULL, FALSE, FALSE, NULL);
+	R_ASSERT(syncObject);
+	syncObject->Enter();
 }
 
-Event::~Event()
+ScopeLock::~ScopeLock()
 {
-	CloseHandle(handle);
-}
-
-void Event::Reset()
-{
-	ResetEvent(handle);
-}
-
-void Event::Set()
-{
-	SetEvent(handle);
-}
-
-void Event::Wait() const
-{
-	WaitForSingleObject(handle, INFINITE);
-}
-
-bool Event::Wait(u32 millisecondsTimeout) const
-{
-	return WaitForSingleObject(handle, millisecondsTimeout) != WAIT_TIMEOUT;
+	syncObject->Leave();
 }

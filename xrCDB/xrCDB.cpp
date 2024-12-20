@@ -6,6 +6,7 @@
 
 #include "xrCDB.h"
 #include <thread>
+#include "../xrCore/ThreadUtil.h"
 
 using namespace CDB;
 using namespace Opcode;
@@ -60,6 +61,9 @@ struct BTHREAD_params
 
 void MODEL::build_thread(void* params)
 {
+	OPTICK_THREAD("xrCDB Build Thread");
+	OPTICK_FRAME("xrCDB Build Thread");
+
 	FPU::m64r();
 	BTHREAD_params P = *((BTHREAD_params*)params);
 	P.M->cs.Enter();
@@ -87,7 +91,7 @@ void MODEL::build(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc, vo
 	{
 		BTHREAD_params P = {this, V, Vcnt, T, Tcnt, bc, bcp};
 		Msg("* xrCDB: Use dedicated thread for cform building");
-		thread_spawn(build_thread, "X-Ray CDB-construction thread", 0, &P);
+		Threading::SpawnThread(build_thread, "X-Ray CDB-construction thread", 0, &P);
 		while (S_INIT == status)
 			Sleep(5);
 	}

@@ -10,36 +10,17 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-#include "stdafx.h"
-#include "Event.hpp"
-#include <windows.h>
+#pragma once
 
-Event::Event()
-{
-	handle = (void*)CreateEvent(NULL, FALSE, FALSE, NULL);
-}
+#include "Noncopyable.hpp"
 
-Event::~Event()
-{
-	CloseHandle(handle);
-}
+class Lock;
 
-void Event::Reset()
+class XRCORE_API ScopeLock : Noncopyable
 {
-	ResetEvent(handle);
-}
+	Lock* syncObject;
 
-void Event::Set()
-{
-	SetEvent(handle);
-}
-
-void Event::Wait() const
-{
-	WaitForSingleObject(handle, INFINITE);
-}
-
-bool Event::Wait(u32 millisecondsTimeout) const
-{
-	return WaitForSingleObject(handle, millisecondsTimeout) != WAIT_TIMEOUT;
-}
+  public:
+	ScopeLock(Lock* SyncObject);
+	~ScopeLock();
+};
