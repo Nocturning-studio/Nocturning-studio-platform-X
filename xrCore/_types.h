@@ -19,6 +19,8 @@ typedef double f64;
 
 typedef char* pstr;
 typedef const char* pcstr;
+typedef char* const cpstr;
+typedef const char* const cpcstr;
 
 // windoze stuff
 #ifndef _WINDOWS_
