@@ -7,7 +7,6 @@
 #pragma once
 #include "xrCore.h"
 #include "xrCore_platform.h"
-#include "Threading.h"
 
 #ifdef ENABLE_PROFILING
 #include <optick/optick.h>

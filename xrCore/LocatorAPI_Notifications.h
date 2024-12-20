@@ -1,3 +1,4 @@
+#include "ThreadUtil.h"
 #ifndef LocatorAPI_NotificationsH
 #define LocatorAPI_NotificationsH
 #pragma once
@@ -21,7 +22,7 @@ class CThread
 	}
 	void Start()
 	{
-		thread_spawn(startup, "X-Ray File System notify thread", 0, this);
+		Threading::SpawnThread(startup, "X-Ray File System notify thread", 0, this);
 	}
 	virtual void Execute() = 0;
 	void Terminate()

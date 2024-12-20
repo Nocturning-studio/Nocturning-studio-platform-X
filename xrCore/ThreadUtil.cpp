@@ -13,6 +13,7 @@
 #include "stdafx.h"
 #include "ThreadUtil.h"
 #include <Windows.h>
+
 namespace Threading
 {
 
@@ -73,6 +74,7 @@ bool SpawnThread(EntryFuncType entry, pcstr name, u32 stack, void* arglist)
 {
 	OPTICK_THREAD(name);
 	OPTICK_FRAME(name);
+	Msg("Spawning thread: %s", name);
 
 	Debug._initialize(false);
 

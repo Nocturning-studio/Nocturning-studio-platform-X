@@ -9,6 +9,9 @@
 
 void CThread::startup(void* P)
 {
+	OPTICK_THREAD("X-Ray File System notify thread");
+	OPTICK_FRAME("X-Ray File System notify thread");
+
 	CThread* T = (CThread*)P;
 	T->Execute();
 }

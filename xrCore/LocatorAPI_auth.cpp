@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <thread>
+#include "ThreadUtil.h"
 #pragma hdrstop
 
 struct auth_options
@@ -10,6 +11,9 @@ struct auth_options
 
 void auth_entry(void* p)
 {
+	OPTICK_THREAD("X-Ray LocatorAPI Checksum thread");
+	OPTICK_FRAME("X-Ray LocatorAPI Checksum thread");
+
 	FS.auth_runtime(p);
 }
 
@@ -22,7 +26,7 @@ void CLocatorAPI::auth_generate(xr_vector<xr_string>& ignore, xr_vector<xr_strin
 if (std::thread::hardware_concurrency() <= 3)
 	FS.auth_runtime(_o);
 else
-	thread_spawn(auth_entry, "X-Ray LocatorAPI Checksum thread", 0, _o);
+	Threading::SpawnThread(auth_entry, "X-Ray LocatorAPI Checksum thread", 0, _o);
 }
 
 u64 CLocatorAPI::auth_get()

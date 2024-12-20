@@ -214,6 +214,8 @@ void execUserScript()
 }
 void slowdownthread(void*)
 {
+	OPTICK_EVENT("X-Ray Slowdown thread");
+	OPTICK_FRAME("X-Ray Slowdown thread");
 	for (;;)
 	{
 		if (Device.Statistic->fFPS < 30)
@@ -235,12 +237,12 @@ void CheckPrivilegySlowdown()
 #ifdef DEBUG
 	if (strstr(Core.Params, "-slowdown"))
 	{
-		thread_spawn(slowdownthread, "Debug Slowdown thread", 0, 0);
+		Threading::SpawnThreadthread_spawn(slowdownthread, "Debug Slowdown thread", 0, 0);
 	}
 	if (strstr(Core.Params, "-slowdown2x"))
 	{
-		thread_spawn(slowdownthread, "Debug Slowdown thread 0", 0, 0);
-		thread_spawn(slowdownthread, "Debug Slowdown thread 1", 0, 0);
+		Threading::SpawnThreadthread_spawn(slowdownthread, "Debug Slowdown thread 0", 0, 0);
+		Threading::SpawnThreadthread_spawn(slowdownthread, "Debug Slowdown thread 1", 0, 0);
 	}
 #endif // DEBUG
 }
