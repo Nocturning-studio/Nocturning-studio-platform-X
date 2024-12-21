@@ -193,6 +193,7 @@
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)third-party\lib\;$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
@@ -200,6 +201,7 @@
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)third-party\lib\;$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
@@ -207,6 +209,7 @@
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)third-party\lib\;$(SolutionDir)third-party\lib\;$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
@@ -214,6 +217,7 @@
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)third-party\lib\;$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
@@ -245,6 +249,7 @@
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)third-party\lib\;$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
@@ -259,6 +264,7 @@
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)third-party\lib\;$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>

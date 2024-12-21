@@ -67,7 +67,7 @@ void CCoverManager::compute_static_cover()
 
 	u32 VertexCount = ai().level_graph().header().vertex_count();
 
-	concurrency::parallel_for_each(u32(0), VertexCount, [this](u32 iterator)
+	concurrency::parallel_for(u32(0), VertexCount, [this](u32 iterator)
 	{
 		if (ai().level_graph().vertex(iterator)->cover(0) + ai().level_graph().vertex(iterator)->cover(1) +
 			ai().level_graph().vertex(iterator)->cover(2) + ai().level_graph().vertex(iterator)->cover(3))
