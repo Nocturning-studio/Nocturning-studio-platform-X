@@ -158,7 +158,7 @@
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(SolutionDir)third-party\lib\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(SolutionDir)third-party\lib\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(ExternalIncludePath)</ExternalIncludePath>
     <IncludePath>$(SolutionDir)third-party\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
@@ -170,7 +170,7 @@
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(SolutionDir)third-party\lib\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(SolutionDir)third-party\lib\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(ExternalIncludePath)</ExternalIncludePath>
     <IncludePath>$(SolutionDir)third-party\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
@@ -179,14 +179,14 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)third-party\lib\;$(SolutionDir)third-party\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(SolutionDir)third-party\lib\;$(SolutionDir)third-party\lib\;$(LibraryPath)</LibraryPath>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(SolutionDir)third-party\lib\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(SolutionDir)third-party\lib\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(ExternalIncludePath)</ExternalIncludePath>
     <IncludePath>$(SolutionDir)third-party\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
@@ -194,7 +194,7 @@
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(SolutionDir)third-party\lib\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(SolutionDir)third-party\lib\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(ExternalIncludePath)</ExternalIncludePath>
     <IncludePath>$(SolutionDir)third-party\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>

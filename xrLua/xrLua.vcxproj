@@ -187,7 +187,7 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(ProjectDir)src\;$(ProjectDir)dynasm\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)third-party\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
@@ -199,28 +199,28 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(ProjectDir)src\;$(ProjectDir)dynasm\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)third-party\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(ProjectDir)src\;$(ProjectDir)dynasm\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)third-party\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(ProjectDir)src\;$(ProjectDir)dynasm\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)third-party\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(ProjectDir)src\;$(ProjectDir)dynasm\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)third-party\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
@@ -247,7 +247,7 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(ProjectDir)src\;$(ProjectDir)dynasm\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)third-party\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>

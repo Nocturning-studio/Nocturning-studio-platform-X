@@ -288,7 +288,7 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)third-party\include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -305,7 +305,7 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)third-party\include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">
@@ -320,7 +320,7 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)third-party\include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
@@ -328,7 +328,7 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)third-party\include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
@@ -336,7 +336,7 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)third-party\include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
@@ -344,7 +344,7 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)third-party\include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -382,7 +382,7 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(SolutionDir)third-party\include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Priquel|x64'">
@@ -398,7 +398,7 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(SolutionDir)third-party\include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed_Priquel|x64'">
@@ -412,7 +412,7 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(DXSDK_DIR)Include\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(SolutionDir)third-party\include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Priquel|x64'">

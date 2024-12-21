@@ -186,7 +186,7 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)xrEngine\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
@@ -200,28 +200,28 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)xrEngine\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)xrEngine\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)xrEngine\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)xrEngine\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
@@ -252,7 +252,7 @@
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)xrEngine\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
+    <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(LibraryPath);$(SolutionDir)..\libraries\;$(SolutionDir)third-party\lib\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
@@ -281,7 +281,6 @@
       <BrowseInformation />
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -747,7 +746,6 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <BrowseInformation />
       <WarningLevel>Level4</WarningLevel>
-      
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
