@@ -218,7 +218,7 @@ HRESULT CResourceManager::CompileShader(
 	CShaderMacros&	macros,
 	T*&				result)
 {
-	bool bUseShaderCache = false;
+	bool bUseShaderCache = true;
 	bool bDisassebleShader = true;
 	bool bWarningsAsErrors = false;
 	bool bErrorsAsWarnings = false;
