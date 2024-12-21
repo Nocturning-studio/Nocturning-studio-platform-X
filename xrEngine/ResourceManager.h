@@ -96,10 +96,6 @@ class ENGINE_API CResourceManager
 		return m_blenders;
 	}
 
-	// Debug
-	void DBG_VerifyGeoms();
-	void DBG_VerifyTextures();
-
 	// Editor cooperation
 	void ED_UpdateBlender(LPCSTR Name, IBlender* data);
 	void ED_UpdateMatrix(LPCSTR Name, CMatrix* data);

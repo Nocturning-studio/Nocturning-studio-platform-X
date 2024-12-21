@@ -17,18 +17,19 @@
 #include "ShaderResourceTraits.h"
 #include "ShaderCompile.h"
 
+#include <ppl.h>
+
 //--------------------------------------------------------------------------------------------------------------
 SState* CResourceManager::_CreateState(SimulatorStates& state_code)
 {
 	// Search equal state-code
-	for (u32 it = 0; it < v_states.size(); it++)
-	{
+	concurrency::parallel_for((u32)0, v_states.size(), [&](u32 it) {
 		SState* C = v_states[it];
 		SimulatorStates& base = C->state_code;
 
 		if (base.equal(state_code))
 			return C;
-	}
+	});
 
 	// Create New
 	v_states.push_back(xr_new<SState>());
@@ -53,9 +54,10 @@ void CResourceManager::_DeleteState(const SState* state)
 SPass* CResourceManager::_CreatePass(ref_state& _state, ref_ps& _ps, ref_vs& _vs, ref_ctable& _ctable,
 									 ref_texture_list& _T, ref_matrix_list& _M, ref_constant_list& _C)
 {
-	for (u32 it = 0; it < v_passes.size(); it++)
+	concurrency::parallel_for((u32)0, v_passes.size(), [&](u32 it) {
 		if (v_passes[it]->equal(_state, _ps, _vs, _ctable, _T, _M, _C))
 			return v_passes[it];
+	});
 
 	SPass* P = xr_new<SPass>();
 	P->dwFlags |= xr_resource_flagged::RF_REGISTERED;
@@ -101,13 +103,12 @@ static BOOL dcl_equal(D3DVERTEXELEMENT9* a, D3DVERTEXELEMENT9* b)
 SDeclaration* CResourceManager::_CreateDecl(D3DVERTEXELEMENT9* dcl)
 {
 	// Search equal code
-	for (u32 it = 0; it < v_declarations.size(); it++)
-	{
+	concurrency::parallel_for((u32)0, v_declarations.size(), [&](u32 it) {
 		SDeclaration* D = v_declarations[it];
 
 		if (dcl_equal(dcl, &*D->dcl_code.begin()))
 			return D;
-	}
+	});
 
 	// Create _new
 	SDeclaration* D = xr_new<SDeclaration>();
@@ -133,11 +134,15 @@ R_constant_table* CResourceManager::_CreateConstantTable(R_constant_table& C)
 {
 	if (C.empty())
 		return NULL;
-	for (u32 it = 0; it < v_constant_tables.size(); it++)
+
+	concurrency::parallel_for((u32)0, v_constant_tables.size(), [&](u32 it) {
 		if (v_constant_tables[it]->equal(C))
 			return v_constant_tables[it];
+	});
+
 	v_constant_tables.push_back(xr_new<R_constant_table>(C));
 	v_constant_tables.back()->dwFlags |= xr_resource_flagged::RF_REGISTERED;
+
 	return v_constant_tables.back();
 }
 
@@ -221,6 +226,7 @@ void CResourceManager::_DeleteRTC(const CRTC* RT)
 {
 	if (0 == (RT->dwFlags & xr_resource_flagged::RF_REGISTERED))
 		return;
+
 	LPSTR N = LPSTR(*RT->cName);
 	map_RTC::iterator I = m_rtargets_c.find(N);
 	if (I != m_rtargets_c.end())
@@ -231,22 +237,6 @@ void CResourceManager::_DeleteRTC(const CRTC* RT)
 	Msg("! ERROR: Failed to find render-target '%s'", *RT->cName);
 }
 //--------------------------------------------------------------------------------------------------------------
-void CResourceManager::DBG_VerifyGeoms()
-{
-	/*
-	for (u32 it=0; it<v_geoms.size(); it++)
-	{
-	SGeometry* G					= v_geoms[it];
-
-	D3DVERTEXELEMENT9		test	[MAX_FVF_DECL_SIZE];
-	u32						size	= 0;
-	G->dcl->GetDeclaration			(test,(unsigned int*)&size);
-	u32 vb_stride					= D3DXGetDeclVertexSize	(test,0);
-	u32 vb_stride_cached			= G->vb_stride;
-	R_ASSERT						(vb_stride == vb_stride_cached);
-	}
-	*/
-}
 
 SGeometry* CResourceManager::CreateGeom(D3DVERTEXELEMENT9* decl, IDirect3DVertexBuffer9* vb, IDirect3DIndexBuffer9* ib)
 {
@@ -256,12 +246,11 @@ SGeometry* CResourceManager::CreateGeom(D3DVERTEXELEMENT9* decl, IDirect3DVertex
 	u32 vb_stride = D3DXGetDeclVertexSize(decl, 0);
 
 	// ***** first pass - search already loaded shader
-	for (u32 it = 0; it < v_geoms.size(); it++)
-	{
+	concurrency::parallel_for((u32)0, v_geoms.size(), [&](u32 it) {
 		SGeometry& G = *(v_geoms[it]);
 		if ((G.dcl == dcl) && (G.vb == vb) && (G.ib == ib) && (G.vb_stride == vb_stride))
 			return v_geoms[it];
-	}
+	});
 
 	SGeometry* Geom = xr_new<SGeometry>();
 	Geom->dwFlags |= xr_resource_flagged::RF_REGISTERED;
@@ -337,19 +326,6 @@ void CResourceManager::_DeleteTexture(const CTexture* T)
 		return;
 	}
 	Msg("! ERROR: Failed to find texture surface '%s'", *T->cName);
-}
-
-void CResourceManager::DBG_VerifyTextures()
-{
-	map_Texture::iterator I = m_textures.begin();
-	map_Texture::iterator E = m_textures.end();
-	for (; I != E; I++)
-	{
-		R_ASSERT(I->first);
-		R_ASSERT(I->second);
-		R_ASSERT(I->second->cName);
-		R_ASSERT(0 == xr_strcmp(I->first, *I->second->cName));
-	}
 }
 
 //--------------------------------------------------------------------------------------------------------------
@@ -438,12 +414,13 @@ bool cmp_tl(const std::pair<u32, ref_texture>& _1, const std::pair<u32, ref_text
 STextureList* CResourceManager::_CreateTextureList(STextureList& L)
 {
 	std::sort(L.begin(), L.end(), cmp_tl);
-	for (u32 it = 0; it < lst_textures.size(); it++)
-	{
+
+	concurrency::parallel_for((u32)0, lst_textures.size(), [&](u32 it) {
 		STextureList* base = lst_textures[it];
 		if (L.equal(*base))
 			return base;
-	}
+	});
+
 	STextureList* lst = xr_new<STextureList>(L);
 	lst->dwFlags |= xr_resource_flagged::RF_REGISTERED;
 	lst_textures.push_back(lst);
@@ -470,12 +447,12 @@ SMatrixList* CResourceManager::_CreateMatrixList(SMatrixList& L)
 	if (bEmpty)
 		return NULL;
 
-	for (u32 it = 0; it < lst_matrices.size(); it++)
-	{
+	concurrency::parallel_for((u32)0, lst_matrices.size(), [&](u32 it) {
 		SMatrixList* base = lst_matrices[it];
 		if (L.equal(*base))
 			return base;
-	}
+	});
+
 	SMatrixList* lst = xr_new<SMatrixList>(L);
 	lst->dwFlags |= xr_resource_flagged::RF_REGISTERED;
 	lst_matrices.push_back(lst);
@@ -502,12 +479,12 @@ SConstantList* CResourceManager::_CreateConstantList(SConstantList& L)
 	if (bEmpty)
 		return NULL;
 
-	for (u32 it = 0; it < lst_constants.size(); it++)
-	{
+	concurrency::parallel_for((u32)0, lst_constants.size(), [&](u32 it) {
 		SConstantList* base = lst_constants[it];
 		if (L.equal(*base))
 			return base;
-	}
+	});
+
 	SConstantList* lst = xr_new<SConstantList>(L);
 	lst->dwFlags |= xr_resource_flagged::RF_REGISTERED;
 	lst_constants.push_back(lst);
