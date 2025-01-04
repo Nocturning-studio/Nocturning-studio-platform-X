@@ -167,7 +167,7 @@ enum
 extern ECORE_API Flags32 ps_r_shading_flags;
 enum
 {
-	RFLAG_ADVANCED_SHADING = (1 << 0)
+	RFLAG_DISABLED_SHADING = (1 << 0)
 };
 
 extern ECORE_API Flags32 ps_r_postprocess_flags;

@@ -280,7 +280,7 @@ Flags32 ps_r_lighting_flags = {RFLAG_SUN | RFLAG_EXP_DONT_TEST_UNSHADOWED};
 
 Flags32 ps_r_postprocess_flags = {RFLAG_AUTOEXPOSURE | RFLAG_DOF | RFLAG_MBLUR};
 
-Flags32 ps_r_shading_flags = {RFLAG_ADVANCED_SHADING};
+Flags32 ps_r_shading_flags = {0};
 
 Flags32 ps_r_overlay_flags = {NULL};
 
@@ -788,7 +788,7 @@ void xrRender_initconsole()
 
 	CMD3(CCC_Mask, "r_shadow_cascede_zcul", &ps_r_lighting_flags, RFLAGEXT_SUN_ZCULLING);
 
-	CMD3(CCC_Mask, "r_advanced_shading", &ps_r_shading_flags, RFLAG_ADVANCED_SHADING);
+	CMD3(CCC_Mask, "r_disable_shading", &ps_r_shading_flags, RFLAG_DISABLED_SHADING);
 
 	CMD3(CCC_Mask, "r_allow_r1_lights", &ps_r_lighting_flags, RFLAG_R1LIGHTS);
 

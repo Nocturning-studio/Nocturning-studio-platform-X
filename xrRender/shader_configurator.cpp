@@ -40,7 +40,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	ref_texture refAlbedoTexture;
 	refAlbedoTexture.create(AlbedoTexture);
 	bool bUseBump = refAlbedoTexture.bump_exist();
-	bool DisableBump = !!(ps_r_material_quality == 0);
+	bool DisableBump = !!(ps_r_material_quality == 0) || ps_r_shading_flags.test(RFLAG_DISABLED_SHADING);
 	// Get bump map texture
 	if (!DisableBump)
 	{

@@ -97,7 +97,7 @@ void CBlender_BmmD::Compile(CBlender_Compile& C)
 		C.r_Sampler("s_dt_b", oB_Name, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 		C.r_Sampler("s_dt_a", oA_Name, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 
-		if (ps_r_material_quality > 0)
+		if (ps_r_material_quality > 0 && !ps_r_shading_flags.test(RFLAG_DISABLED_SHADING))
 		{
 			C.r_Sampler("s_dn_r", strconcat(sizeof(mask), mask, oR_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
 			C.r_Sampler("s_dn_g", strconcat(sizeof(mask), mask, oG_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);

@@ -263,11 +263,18 @@ CRenderTarget::CRenderTarget()
 
 	// G-Buffer
 	{
-		rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-		rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
-
-		if (ps_r_shading_flags.test(RFLAG_ADVANCED_SHADING))
+		if (ps_r_shading_flags.test(RFLAG_DISABLED_SHADING))
+		{
+			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_R16F);
 			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+		}
+		else
+		{
+			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+		}
 	}
 
 	rt_Light_Accumulator.create(r_RT_Light_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
@@ -278,9 +285,9 @@ CRenderTarget::CRenderTarget()
 	rt_Generic_0.create(r_RT_generic0, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	rt_Generic_1.create(r_RT_generic1, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
-	rt_Motion_Blur_Saved_Frame.create(r_RT_mblur_saved_frame, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	//rt_Motion_Blur_Saved_Frame.create(r_RT_mblur_saved_frame, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
-	rt_Reflections.create(r_RT_reflections, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+	//rt_Reflections.create(r_RT_reflections, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 
 	// OCCLUSION
 	s_occq.create(b_occq, "r\\occq");
@@ -350,18 +357,18 @@ CRenderTarget::CRenderTarget()
 
 	// AO
 	// Create rendertarget
-	rt_ao.create(r_RT_ao, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	rt_ao.create(r_RT_ao, dwWidth, dwHeight, D3DFMT_L8);
 
 	// Create shader resource
 	s_ambient_occlusion.create(b_ambient_occlusion, "r\\ambient_occlusion");
 
 	// autoexposure
 	{
-		rt_LUM_512.create(r_RT_autoexposure_t512, 512, 512, D3DFMT_A16B16G16R16F);
-		rt_LUM_256.create(r_RT_autoexposure_t256, 256, 256, D3DFMT_A16B16G16R16F);
-		rt_LUM_128.create(r_RT_autoexposure_t128, 128, 128, D3DFMT_A16B16G16R16F);
-		rt_LUM_64.create(r_RT_autoexposure_t64, 64, 64, D3DFMT_A16B16G16R16F);
-		rt_LUM_8.create(r_RT_autoexposure_t8, 8, 8, D3DFMT_A16B16G16R16F);
+		rt_LUM_512.create(r_RT_autoexposure_t512, 512, 512, D3DFMT_L8);
+		rt_LUM_256.create(r_RT_autoexposure_t256, 256, 256, D3DFMT_L8);
+		rt_LUM_128.create(r_RT_autoexposure_t128, 128, 128, D3DFMT_L8);
+		rt_LUM_64.create(r_RT_autoexposure_t64, 64, 64, D3DFMT_L8);
+		rt_LUM_8.create(r_RT_autoexposure_t8, 8, 8, D3DFMT_L8);
 		s_autoexposure.create(b_autoexposure, "r\\autoexposure");
 		f_autoexposure_adapt = 0.5f;
 
@@ -373,7 +380,7 @@ CRenderTarget::CRenderTarget()
 		{
 			string256 name;
 			sprintf(name, "%s_%d", r_RT_autoexposure_pool, it);
-			rt_LUM_pool[it].create(name, 1, 1, D3DFMT_R16F);
+			rt_LUM_pool[it].create(name, 1, 1, D3DFMT_L8);
 			u_setrt(rt_LUM_pool[it], 0, 0, 0);
 			CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0x7f7f7f7f, 1.0f, 0L));
 		}
@@ -400,116 +407,6 @@ CRenderTarget::CRenderTarget()
 		t_LUT_1.create(r_T_LUTs1);
 	}
 
-	// Build textures
-	{
-		/*
-		// Build material(s)
-		{
-			// Surface
-			R_CHK(D3DXCreateVolumeTexture(HW.pDevice, TEX_material_LdotN, TEX_material_LdotH, 4, 1, 0, D3DFMT_A8L8,
-										  D3DPOOL_MANAGED, &t_material_surf));
-			t_material = Device.Resources->_CreateTexture(r_material);
-			t_material->surface_set(t_material_surf);
-
-			// Fill it (addr: x=dot(L,N),y=dot(L,H))
-			D3DLOCKED_BOX R;
-			R_CHK(t_material_surf->LockBox(0, &R, 0, 0));
-			for (u32 slice = 0; slice < 4; slice++)
-			{
-				for (u32 y = 0; y < TEX_material_LdotH; y++)
-				{
-					for (u32 x = 0; x < TEX_material_LdotN; x++)
-					{
-						u16* p = (u16*)(LPBYTE(R.pBits) + slice * R.SlicePitch + y * R.RowPitch + x * 2);
-						float ld = float(x) / float(TEX_material_LdotN - 1);
-						float ls = float(y) / float(TEX_material_LdotH - 1) + EPS_S;
-						ls *= powf(ld, 1 / 32.f);
-						float fd, fs;
-
-						switch (slice)
-						{
-						case 0: {				  // looks like OrenNayar
-							fd = powf(ld, 0.75f); // 0.75
-							fs = powf(ls, 16.f) * .5f;
-						}
-						break;
-						case 1: {				  // looks like Blinn
-							fd = powf(ld, 0.90f); // 0.90
-							fs = powf(ls, 24.f);
-						}
-						break;
-						case 2: {	 // looks like Phong
-							fd = ld; // 1.0
-							fs = powf(ls * 1.01f, 128.f);
-						}
-						break;
-						case 3: { // looks like Metal
-							float s0 = _abs(1 - _abs(0.05f * _sin(33.f * ld) + ld - ls));
-							float s1 = _abs(1 - _abs(0.05f * _cos(33.f * ld * ls) + ld - ls));
-							float s2 = _abs(1 - _abs(ld - ls));
-							fd = ld; // 1.0
-							fs = powf(_max(_max(s0, s1), s2), 24.f);
-							fs *= powf(ld, 1 / 7.f);
-						}
-						break;
-						default:
-							fd = fs = 0;
-						}
-						s32 _d = clampr(iFloor(fd * 255.5f), 0, 255);
-						s32 _s = clampr(iFloor(fs * 255.5f), 0, 255);
-						if ((y == (TEX_material_LdotH - 1)) && (x == (TEX_material_LdotN - 1)))
-						{
-							_d = 255;
-							_s = 255;
-						}
-						*p = u16(_s * 256 + _d);
-					}
-				}
-			}
-			R_CHK(t_material_surf->UnlockBox(0));
-			// #ifdef DEBUG
-			// R_CHK	(D3DXSaveTextureToFile	("x:\\r_material.dds",D3DXIFF_DDS,t_material_surf,0));
-			// #endif
-		}
-		*/
-		/*
-		// Build noise table
-		if (1)
-		{
-			// Surfaces
-			D3DLOCKED_RECT R[TEX_jitter_count];
-			for (int it = 0; it < TEX_jitter_count; it++)
-			{
-				string_path name;
-				sprintf(name, "%s%d", r_jitter, it);
-				R_CHK(D3DXCreateTexture(HW.pDevice, TEX_jitter, TEX_jitter, 1, 0, D3DFMT_Q8W8V8U8, D3DPOOL_MANAGED,
-										&t_noise_surf[it]));
-				t_noise[it] = Device.Resources->_CreateTexture(name);
-				t_noise[it]->surface_set(t_noise_surf[it]);
-				R_CHK(t_noise_surf[it]->LockRect(0, &R[it], 0, 0));
-			}
-
-			// Fill it,
-			for (u32 y = 0; y < TEX_jitter; y++)
-			{
-				for (u32 x = 0; x < TEX_jitter; x++)
-				{
-					DWORD data[TEX_jitter_count];
-					generate_jitter(data, TEX_jitter_count);
-					for (u32 it = 0; it < TEX_jitter_count; it++)
-					{
-						u32* p = (u32*)(LPBYTE(R[it].pBits) + y * R[it].Pitch + x * 4);
-						*p = data[it];
-					}
-				}
-			}
-			for (int it = 0; it < TEX_jitter_count; it++)
-			{
-				R_CHK(t_noise_surf[it]->UnlockRect(0));
-			}
-		}
-		*/
-	}
 	s_contrast_adaptive_sharpening.create(b_contrast_adaptive_sharpening, "r\\contrast_adaptive_sharpening");
 
 	s_antialiasing.create(b_antialiasing, "r\\antialiasing");
