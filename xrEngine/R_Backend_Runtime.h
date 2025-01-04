@@ -340,6 +340,14 @@ IC void CBackend::set_ColorWriteEnable(u32 _mask)
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_COLORWRITEENABLE3, _mask));
 	}
 }
+IC void CBackend::set_ZWriteEnable(bool state)
+{
+	if (zwrite != state)
+	{
+		zwrite = state;
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZWRITEENABLE, state));
+	}
+}
 ICF void CBackend::set_CullMode(u32 _mode)
 {
 	if (cull_mode != _mode)

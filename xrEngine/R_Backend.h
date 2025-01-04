@@ -90,6 +90,7 @@ class ENGINE_API CBackend
 	u32 stencil_zfail;
 	u32 colorwrite_mask;
 	u32 cull_mode;
+	bool zwrite;
 
 	// Lists
 	STextureList* T;
@@ -222,6 +223,7 @@ class ENGINE_API CBackend
 						u32 _zfail = D3DSTENCILOP_KEEP);
 	IC void set_ColorWriteEnable(u32 _mask = D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN |
 											 D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA);
+	IC void set_ZWriteEnable(bool state);
 	IC void set_CullMode(u32 _mode);
 	IC u32 get_CullMode()
 	{

@@ -240,31 +240,6 @@ void CRender::Render()
 		HOM.Render(ViewBase);
 	}
 
-	//******* Z-prefill calc - DEFERRER RENDERER
-	if (ps_r_ls_flags.test(RFLAG_ZFILL))
-	{
-		float z_distance = ps_r_zfill;
-		Fmatrix m_zfill, m_project;
-		m_project.build_projection(deg2rad(Device.fFOV), Device.fASPECT, VIEWPORT_NEAR,
-								   z_distance * g_pGamePersistent->Environment().CurrentEnv->far_plane);
-		m_zfill.mul(m_project, Device.mView);
-		r_pmask(true, false); // enable priority "0"
-		set_Recorder(NULL);
-		phase = PHASE_SMAP;
-		render_main(m_zfill, false);
-		r_pmask(true, false); // disable priority "1"
-
-		// flush
-		Target->clear_gbuffer();
-		RCache.set_ColorWriteEnable(FALSE);
-		r_dsgraph_render_graph(0);
-		RCache.set_ColorWriteEnable();
-	}
-	else
-	{
-		Target->clear_gbuffer();
-	}
-
 	//*******
 	// Sync point
 	Device.Statistic->RenderDUMP_Wait_S.Begin();
@@ -289,6 +264,38 @@ void CRender::Render()
 	q_sync_count = (q_sync_count + 1) % HW.Caps.iGPUNum;
 	CHK_DX(q_sync_point[q_sync_count]->Issue(D3DISSUE_END));
 
+	Target->clear_gbuffer();
+
+	//******* Z-prefill calc - DEFERRER RENDERER
+	if (ps_r_ls_flags.test(RFLAG_ZFILL))
+	{
+		r_pmask(true, false); // enable priority "0"
+
+		set_Recorder(NULL);
+
+		phase = PHASE_SMAP;
+
+		render_main(Device.mFullTransform, false);
+
+		RCache.set_ColorWriteEnable(FALSE);
+		RCache.set_ZWriteEnable(TRUE);
+
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL));
+
+		Target->enable_anisotropy_filtering();
+
+		r_dsgraph_render_graph(0);
+
+		r_dsgraph_render_hud();
+
+		r_dsgraph_render_lods(true, true);
+
+		Target->disable_anisotropy_filtering();
+
+		RCache.set_ColorWriteEnable(TRUE);
+		RCache.set_ZWriteEnable(FALSE);
+	}
+
 	//******* Main calc - DEFERRER RENDERER
 	// Main calc
 	r_pmask(true, false, true); // enable priority "0",+ capture wmarks
@@ -310,19 +317,24 @@ void CRender::Render()
 
 	Target->create_gbuffer();
 
+	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL));
+
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
 
+	r_dsgraph_render_graph(0);
+
+	RCache.set_ZWriteEnable(TRUE);
+
 	if (Details)
 		Details->Render();
-
-	r_dsgraph_render_graph(0);
 
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
 
 	Target->disable_anisotropy_filtering();
 	Device.Statistic->RenderCALC_GBuffer.End();
+
 	//******* Occlusion testing of volume-limited light-sources
 	Target->phase_occq();
 
@@ -390,9 +402,15 @@ void CRender::Render()
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
 
+	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL));
+
+	RCache.set_ZWriteEnable(FALSE);
+
 	r_dsgraph_render_hud();
 
 	r_dsgraph_render_lods(true, true);
+
+	RCache.set_ZWriteEnable(TRUE);
 
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
