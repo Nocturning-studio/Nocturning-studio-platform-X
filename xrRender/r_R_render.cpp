@@ -286,6 +286,9 @@ void CRender::Render()
 
 		r_dsgraph_render_graph(0);
 
+		if (Details)
+			Details->Render();
+
 		r_dsgraph_render_hud();
 
 		r_dsgraph_render_lods(true, true);
@@ -324,10 +327,11 @@ void CRender::Render()
 
 	r_dsgraph_render_graph(0);
 
-	RCache.set_ZWriteEnable(TRUE);
-
 	if (Details)
+	{
+		Details->UpdateVisibleM();
 		Details->Render();
+	}
 
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
@@ -495,8 +499,8 @@ void CRender::Render()
 	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
 		Target->phase_autoexposure();
 
-	if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
-		Target->motion_blur_phase_save_frame();
+	//if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
+	//	Target->motion_blur_phase_save_frame();
 
 	// Generic1 -> Generic0 -> Generic1
 	if (ps_r_postprocess_flags.test(RFLAG_DOF))
