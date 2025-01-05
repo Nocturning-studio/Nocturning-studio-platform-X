@@ -160,6 +160,9 @@
     <Filter Include="Game API\Demo\Photo mode">
       <UniqueIdentifier>{227abcdc-449a-4663-a476-96aca17ddd7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Profiling">
+      <UniqueIdentifier>{8dc6eb7a-079c-47df-bbfa-b9bf38756dc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_d3d_extensions.h">
@@ -569,6 +572,9 @@
     </ClInclude>
     <ClInclude Include="CPhotoMode.h">
       <Filter>Game API\Demo\Photo mode</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick_Capture.h">
+      <Filter>Engine\Profiling</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -985,6 +991,9 @@
     </ClCompile>
     <ClCompile Include="CPhotoMode.cpp">
       <Filter>Game API\Demo\Photo mode</Filter>
+    </ClCompile>
+    <ClCompile Include="Optick_Capture.cpp">
+      <Filter>Engine\Profiling</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

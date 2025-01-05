@@ -1531,6 +1531,7 @@
     <ClInclude Include="MbHelpers.h" />
     <ClInclude Include="motion.h" />
     <ClInclude Include="ObjectAnimator.h" />
+    <ClInclude Include="Optick_Capture.h" />
     <ClInclude Include="ParticleCustom.h" />
     <ClInclude Include="perlin.h" />
     <ClInclude Include="Properties.h" />
@@ -1767,6 +1768,7 @@
     <ClCompile Include="MbHelpers.cpp" />
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="ObjectAnimator.cpp" />
+    <ClCompile Include="Optick_Capture.cpp" />
     <ClCompile Include="ParticleCustom.cpp" />
     <ClCompile Include="perlin.cpp" />
     <ClCompile Include="PS_instance.cpp" />

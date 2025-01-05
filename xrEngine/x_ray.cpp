@@ -22,6 +22,7 @@
 #include <process.h>
 #include "../xrDiscordAPI/DiscordAPI.h"
 #include <optick/optick.h>
+#include "Optick_Capture.h"
 
 //---------------------------------------------------------------------
 ENGINE_API CInifile* pGameIni = NULL;
@@ -852,6 +853,10 @@ CApplication::CApplication()
 
 	DiscordAPI.Init();
 
+#ifdef ENABLE_PROFILING
+	OptickCapture.Initialize();
+#endif
+
 	// App Title
 	app_title[0] = '\0';
 }
@@ -861,6 +866,10 @@ CApplication::~CApplication()
 	OPTICK_EVENT("CApplication::~CApplication");
 
 	Console->Hide();
+
+#ifdef ENABLE_PROFILING
+	OptickCapture.Destroy();
+#endif
 
 	// font
 	Device.seqRender.Remove(pFontSystem);
@@ -1071,6 +1080,10 @@ void CApplication::OnFrame()
 
 	if (!g_dedicated_server)
 		DiscordAPI.Update();
+
+#ifdef ENABLE_PROFILING
+	OptickCapture.OnFrame();
+#endif
 }
 
 void CApplication::Level_Append(LPCSTR folder)

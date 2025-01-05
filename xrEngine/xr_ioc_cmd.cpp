@@ -16,6 +16,8 @@
 #include "xr_object.h"
 #include <ThreadUtil.h>
 
+#include "Optick_Capture.h"
+
 extern ENGINE_API Flags32 ps_psp_ls_flags = {PSP_VIEW | NORMAL_VIEW};
 extern ENGINE_API Flags32 ps_weather_ls_flags = {WEATHER_EFFECTS};
 extern ENGINE_API Flags32 ps_effectors_ls_flags = {VIEW_BOBBING_ENABLED | DYNAMIC_FOV_ENABLED};
@@ -657,37 +659,33 @@ class CCC_DR_UsePoints : public CCC_Integer
 	virtual void Save(IWriter* F){};
 };
 
-class CCC_Profiler : public IConsole_Command
+class CCC_Optick_Switch : public IConsole_Command
 {
-	bool start_profile = false;
-
   public:
-	CCC_Profiler(LPCSTR N) : IConsole_Command(N){};
+	CCC_Optick_Switch(LPCSTR N) : IConsole_Command(N)
+	{
+		bEmptyArgsHandled = TRUE;
+	};
 	virtual void Execute(LPCSTR args)
 	{
 #ifdef ENABLE_PROFILING
-		if (!start_profile)
-		{
-			// OPTICK_SET_MEMORY_ALLOCATOR(
-			//        [](size_t size) -> void * { return operator new(size); },
-			//        [](void *p) { operator delete(p); },
-			//        []() { /* Do some TLS initialization here if needed */ }
-			//);
-			OPTICK_START_CAPTURE(Optick::Mode::Type(Optick::Mode::INSTRUMENTATION | Optick::Mode::TAGS |
-													Optick::Mode::AUTOSAMPLING | Optick::Mode::SWITCH_CONTEXT |
-													Optick::Mode::IO | Optick::Mode::SYS_CALLS |
-													Optick::Mode::OTHER_PROCESSES));
-			start_profile = true;
-		}
-		else
-		{
-			OPTICK_STOP_CAPTURE();
-			shared_str str;
-			str.sprintf("%s.opt", args);
-			OPTICK_SAVE_CAPTURE(str.c_str());
-			// OPTICK_SHUTDOWN();
-			start_profile = false;
-		}
+		OptickCapture.SwitchProfiler();
+#endif
+	}
+};
+
+int optick_capture_frames_count = 0;
+class CCC_Optick_Capture_Frames : public CCC_Integer
+{
+  public:
+	CCC_Optick_Capture_Frames(LPCSTR N, int* frames_count, int _min = 0, int _max = 999)
+		: CCC_Integer(N, frames_count, _min, _max){};
+
+	virtual void Execute(LPCSTR args)
+	{
+#ifdef ENABLE_PROFILING
+		CCC_Integer::Execute(args);
+		OptickCapture.StartCapturing(*value);
 #endif
 	}
 };
@@ -719,7 +717,8 @@ void CCC_Register()
 	CMD1(CCC_LoadCFG, "cfg_load");
 
 #ifdef ENABLE_PROFILING
-	CMD1(CCC_Profiler, "profiler_switch");
+	CMD1(CCC_Optick_Switch, "optick_switch");
+	CMD4(CCC_Optick_Capture_Frames, "optick_capture_frames", &optick_capture_frames_count, 0, 999);
 #endif
 
 #ifdef DEBUG
