@@ -75,6 +75,8 @@ void CPortal::OnRender()
 //
 void CPortal::Setup(Fvector* V, int vcnt, CSector* face, CSector* back)
 {
+	OPTICK_EVENT("CPortal::Setup");
+
 	// calc sphere
 	Fbox BB;
 	BB.invalidate();
@@ -121,6 +123,8 @@ extern float r_ssaLOD_A, r_ssaLOD_B;
 
 void CSector::traverse(CFrustum& F, _scissor& R_scissor)
 {
+	OPTICK_EVENT("CPortal::traverse");
+
 	// Register traversal process
 	if (r_marker != PortalTraverser.i_marker)
 	{
@@ -286,6 +290,8 @@ void CSector::traverse(CFrustum& F, _scissor& R_scissor)
 
 void CSector::load(IReader& fs)
 {
+	OPTICK_EVENT("CPortal::load");
+
 	// Assign portal polygons
 	u32 size = fs.find_chunk(fsP_Portals);
 	R_ASSERT(0 == (size & 1));

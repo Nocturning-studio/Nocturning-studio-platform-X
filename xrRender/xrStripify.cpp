@@ -6,6 +6,8 @@
 
 int xrSimulate(xr_vector<u16>& indices, int iCacheSize)
 {
+	OPTICK_EVENT("xrSimulate");
+
 	VertexCache C(iCacheSize);
 
 	int count = 0;
@@ -22,6 +24,8 @@ int xrSimulate(xr_vector<u16>& indices, int iCacheSize)
 
 void xrStripify(xr_vector<u16>& indices, xr_vector<u16>& perturb, int iCacheSize, int iMinStripLength)
 {
+	OPTICK_EVENT("xrStripify");
+
 	SetCacheSize(iCacheSize);
 	SetMinStripSize(iMinStripLength);
 	SetListsOnly(true);
