@@ -256,10 +256,6 @@ float ps_r_sun_lumscale = 1.0f;
 float ps_r_sun_lumscale_hemi = 1.0f;
 float ps_r_sun_lumscale_amb = 1.0f;
 
-float ps_r_gmaterial = 0.f;
-
-float ps_r_zfill = 0.1f;
-
 float ps_r_dhemi_sky_scale = 0.08f;
 float ps_r_dhemi_light_scale = 0.2f;
 float ps_r_dhemi_light_flow = 0.1f;
@@ -383,41 +379,6 @@ class CCC_tf_MipBias : public CCC_Float
 		apply();
 	}
 };
-///////////////////////////////////////////////////////////////////////////////////
-#ifdef DEBUG
-class CCC_R2GM : public CCC_Float
-{
-  public:
-	CCC_R2GM(LPCSTR N, float* v) : CCC_Float(N, v, 0.f, 4.f)
-	{
-		*v = 0;
-	};
-	virtual void Execute(LPCSTR args)
-	{
-		if (0 == xr_strcmp(args, "on"))
-		{
-			ps_r_ls_flags.set(RFLAG_GLOBALMATERIAL, TRUE);
-		}
-		else if (0 == xr_strcmp(args, "off"))
-		{
-			ps_r_ls_flags.set(RFLAG_GLOBALMATERIAL, FALSE);
-		}
-		else
-		{
-			CCC_Float::Execute(args);
-			if (ps_r_ls_flags.test(RFLAG_GLOBALMATERIAL))
-			{
-				static LPCSTR name[4] = {"oren", "blin", "phong", "metal"};
-				float mid = *value;
-				int m0 = iFloor(mid) % 4;
-				int m1 = (m0 + 1) % 4;
-				float frc = mid - float(iFloor(mid));
-				Msg("* material set to [%s]-[%s], with lerp of [%f]", name[m0], name[m1], frc);
-			}
-		}
-	}
-};
-#endif
 ///////////////////////////////////////////////////////////////////////////////////
 class CCC_Screenshot : public IConsole_Command
 {
@@ -811,12 +772,7 @@ void xrRender_initconsole()
 
 	CMD2(CCC_tf_MipBias, "r_tf_mipbias", &ps_r_tf_Mipbias);
 
-#ifdef DEBUG
-	CMD2(CCC_R2GM, "r_global_material", &ps_r_gmaterial);
-#endif
-
-	CMD3(CCC_Mask, "r_zfill", &ps_r_ls_flags, RFLAG_ZFILL);
-	CMD4(CCC_Float, "r_zfill_depth", &ps_r_zfill, .001f, .5f);
+	CMD3(CCC_Mask, "r_z_prepass", &ps_r_ls_flags, RFLAG_Z_PREPASS);
 
 	CMD4(CCC_Float, "r_gloss_factor", &ps_r_gloss_factor, 1.f, 3.f);
 

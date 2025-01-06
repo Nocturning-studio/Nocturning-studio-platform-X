@@ -79,8 +79,13 @@ void CBlender_Model_EbB::Compile(CBlender_Compile& C)
 		case SE_NORMAL_LQ: // deffer
 			configure_shader(C, false, "dynamic_mesh", "static_mesh", false);
 			break;
-		case SE_SHADOW: // smap
-			C.r_Pass("shadow_direct_dynamic_mesh", "shadow_direct_static_mesh", FALSE, TRUE, TRUE, FALSE);
+		case SE_SHADOW_DEPTH: // smap
+			C.r_Pass("shadow_depth_stage_dynamic_mesh", "shadow_depth_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
+			C.r_Sampler("s_base", C.L_textures[0]);
+			C.r_End();
+			break;
+		case SE_DEPTH_PREPASS:
+			C.r_Pass("depth_prepass_stage_dynamic_mesh", "depth_prepass_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
 			C.r_Sampler("s_base", C.L_textures[0]);
 			C.r_End();
 			break;

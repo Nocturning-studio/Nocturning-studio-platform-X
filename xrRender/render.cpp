@@ -55,11 +55,21 @@ ShaderElement* CRender::rimp_select_sh_dynamic(IRender_Visual* pVisual, float cd
 {
 	OPTICK_EVENT("CRender::rimp_select_sh_dynamic");
 
-	int id = SE_SHADOW;
-	if (CRender::PHASE_NORMAL == RImplementation.phase)
+	int id = 0;
+
+	switch (RImplementation.phase)
 	{
+	case CRender::PHASE_NORMAL:
 		id = ((_sqrt(cdist_sq) - pVisual->vis.sphere.R) < r_dtex_range) ? SE_NORMAL_HQ : SE_NORMAL_LQ;
+		break;
+	case CRender::PHASE_SHADOW_DEPTH:
+		id = SE_SHADOW_DEPTH;
+		break;
+	case CRender::PHASE_DEPTH_PREPASS:
+		id = SE_DEPTH_PREPASS;
+		break;
 	}
+
 	return pVisual->shader->E[id]._get();
 }
 //////////////////////////////////////////////////////////////////////////
@@ -67,11 +77,21 @@ ShaderElement* CRender::rimp_select_sh_static(IRender_Visual* pVisual, float cdi
 {
 	OPTICK_EVENT("CRender::rimp_select_sh_static");
 
-	int id = SE_SHADOW;
-	if (CRender::PHASE_NORMAL == RImplementation.phase)
+	int id = 0;
+
+	switch (RImplementation.phase)
 	{
+	case CRender::PHASE_NORMAL:
 		id = ((_sqrt(cdist_sq) - pVisual->vis.sphere.R) < r_dtex_range) ? SE_NORMAL_HQ : SE_NORMAL_LQ;
+		break;
+	case CRender::PHASE_SHADOW_DEPTH:
+		id = SE_SHADOW_DEPTH;
+		break;
+	case CRender::PHASE_DEPTH_PREPASS:
+		id = SE_DEPTH_PREPASS;
+		break;
 	}
+
 	return pVisual->shader->E[id]._get();
 }
 //////////////////////////////////////////////////////////////////////////

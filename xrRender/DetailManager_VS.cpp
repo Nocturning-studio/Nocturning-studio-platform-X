@@ -198,7 +198,32 @@ void CDetailManager::hw_Render_dump(ref_constant x_array, u32 var_id, u32 lod_id
 		if (!vis.empty())
 		{
 			// Setup matrices + colors (and flush it as nesessary)
-			RCache.set_Element(Object.shader->E[lod_id]);
+			int id = 0;
+
+			//switch (RImplementation.phase)
+			//{
+			//case CRender::PHASE_NORMAL:
+				if(lod_id == 0)
+					id = SE_DETAIL_NORMAL_ANIMATED;
+				else
+					id = SE_DETAIL_NORMAL_STATIC;
+			//	break;
+			//case CRender::PHASE_SHADOW_DEPTH:
+			//	if (lod_id == 0)
+			//		id = SE_DETAIL_SHADOW_DEPTH_ANIMATED;
+			//	else
+			//		id = SE_DETAIL_SHADOW_DEPTH_STATIC;
+			//	break;
+			//case CRender::PHASE_DEPTH_PREPASS:
+			//	if (lod_id == 0)
+			//		id = SE_DETAIL_DEPTH_PREPASS_ANIMATED;
+			//	else
+			//		id = SE_DETAIL_DEPTH_PREPASS_STATIC;
+			//	break;
+			//}
+
+			RCache.set_Element(Object.shader->E[id]);
+
 			RImplementation.apply_lmaterial();
 			u32 c_base = x_array->vs.index;
 			Fvector4* c_storage = RCache.get_ConstantCache_Vertex().get_array_f().access(c_base);

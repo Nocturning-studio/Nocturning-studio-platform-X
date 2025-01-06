@@ -81,8 +81,14 @@ void CBlender_deffer_aref::Compile(CBlender_Compile& C)
 		case SE_NORMAL_LQ: // deffer
 			configure_shader(C, false, "static_mesh", "static_mesh", true);
 			break;
-		case SE_SHADOW: // smap
-			C.r_Pass("shadow_direct_static_mesh_alphatest", "shadow_direct_static_mesh_alphatest", FALSE);
+		case SE_SHADOW_DEPTH: // smap
+			C.r_Pass("shadow_depth_stage_static_mesh_alphatest", "shadow_depth_stage_static_mesh_alphatest", FALSE);
+			C.r_Sampler("s_base", C.L_textures[0]);
+			jitter(C);
+			C.r_End();
+			break;
+		case SE_DEPTH_PREPASS:
+			C.r_Pass("depth_prepass_stage_static_mesh_alphatest", "depth_prepass_stage_static_mesh_alphatest", FALSE, TRUE, TRUE, FALSE);
 			C.r_Sampler("s_base", C.L_textures[0]);
 			jitter(C);
 			C.r_End();

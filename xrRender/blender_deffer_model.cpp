@@ -84,10 +84,10 @@ void CBlender_deffer_model::Compile(CBlender_Compile& C)
 		case SE_NORMAL_LQ: // deffer
 			configure_shader(C, false, "dynamic_mesh", "static_mesh", bAref);
 			break;
-		case SE_SHADOW: // smap
+		case SE_SHADOW_DEPTH: // smap
 			if (bAref)
 			{
-				C.r_Pass("shadow_direct_dynamic_mesh_alphatest", "shadow_direct_static_mesh_alphatest", FALSE);
+				C.r_Pass("shadow_depth_stage_dynamic_mesh_alphatest", "shadow_depth_stage_static_mesh_alphatest", FALSE);
 				C.r_Sampler("s_base", C.L_textures[0]);
 				jitter(C);
 				C.r_End();
@@ -95,7 +95,23 @@ void CBlender_deffer_model::Compile(CBlender_Compile& C)
 			}
 			else
 			{
-				C.r_Pass("shadow_direct_dynamic_mesh", "shadow_direct_static_mesh", FALSE, TRUE, TRUE, FALSE);
+				C.r_Pass("shadow_depth_stage_dynamic_mesh", "shadow_depth_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
+				C.r_Sampler("s_base", C.L_textures[0]);
+				C.r_End();
+				break;
+			}
+		case SE_DEPTH_PREPASS:
+			if (bAref)
+			{
+				C.r_Pass("depth_prepass_stage_dynamic_mesh_alphatest", "depth_prepass_stage_static_mesh_alphatest", FALSE, TRUE, TRUE, FALSE);
+				C.r_Sampler("s_base", C.L_textures[0]);
+				jitter(C);
+				C.r_End();
+				break;
+			}
+			else
+			{
+				C.r_Pass("depth_prepass_stage_dynamic_mesh", "depth_prepass_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
 				C.r_Sampler("s_base", C.L_textures[0]);
 				C.r_End();
 				break;

@@ -359,8 +359,6 @@ BOOL CPhotoMode::ProcessCam(SCamEffectorInfo& info)
 		info.d.set(m_Camera.k);
 		info.p.set(m_Camera.c);
 
-		fLifeTime -= Device.fTimeDelta;
-
 		m_vT.set(0, 0, 0);
 		m_vR.set(0, 0, 0);
 
@@ -539,8 +537,8 @@ void CPhotoMode::IR_OnKeyboardPress(int dik)
 			fLifeTime = -1;
 	}
 
-	if (dik == DIK_PAUSE)
-		Device.Pause(!Device.Paused(), TRUE, TRUE, "photo_mode");
+	//if (dik == DIK_PAUSE)
+	//	Device.Pause(!Device.Paused(), TRUE, TRUE, "photo_mode");
 
 #ifndef MASTER_GOLD
 #pragma todo("Deathman to all: Переделать быструю отладку рендера под удобный вид")

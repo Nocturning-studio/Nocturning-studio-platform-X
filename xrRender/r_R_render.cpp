@@ -141,13 +141,13 @@ void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals)
 				break; // exit loop on frustums
 			}
 		}
-		if (g_pGameLevel && (phase == PHASE_NORMAL))
+		if (g_pGameLevel && (phase == PHASE_NORMAL || phase == PHASE_DEPTH_PREPASS))
 			g_pGameLevel->pHUD->Render_Last(); // HUD
 	}
 	else
 	{
 		set_Object(0);
-		if (g_pGameLevel && (phase == PHASE_NORMAL))
+		if (g_pGameLevel && (phase == PHASE_NORMAL || phase == PHASE_DEPTH_PREPASS))
 			g_pGameLevel->pHUD->Render_Last(); // HUD
 	}
 }
@@ -267,13 +267,13 @@ void CRender::Render()
 	Target->clear_gbuffer();
 
 	//******* Z-prefill calc - DEFERRER RENDERER
-	if (ps_r_ls_flags.test(RFLAG_ZFILL))
+	if (ps_r_ls_flags.test(RFLAG_Z_PREPASS))
 	{
 		r_pmask(true, false); // enable priority "0"
 
 		set_Recorder(NULL);
 
-		phase = PHASE_SMAP;
+		phase = PHASE_DEPTH_PREPASS;
 
 		render_main(Device.mFullTransform, false);
 

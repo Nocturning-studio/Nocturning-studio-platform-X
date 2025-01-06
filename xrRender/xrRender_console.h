@@ -196,9 +196,8 @@ enum
 extern ECORE_API Flags32 ps_r_ls_flags;
 enum
 {
-	RFLAG_GLOBALMATERIAL = (1 << 0),
-	RFLAG_ZFILL = (1 << 1),
-	RFLAG_USE_NVDBT = (1 << 2)
+	RFLAG_Z_PREPASS = (1 << 0),
+	RFLAG_USE_NVDBT = (1 << 1)
 };
 
 /*-------------------------------------------------------------------------------*/

@@ -45,12 +45,12 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 	IBlender::Compile(C);
 
 	//*************** codepath is the same, only shaders differ
-	LPCSTR tvs = "multiple_object_animated";
-	LPCSTR tvs_s = "shadow_direct_multiple_object_animated";
+	LPCSTR tvs = "multiple_usage_object_animated";
+	LPCSTR tvs_s = "shadow_depth_stage_multiple_usage_object_animated";
 	if (oNotAnTree.value)
 	{
-		tvs = "multiple_object";
-		tvs_s = "shadow_direct_multiple_object";
+		tvs = "multiple_usage_object";
+		tvs_s = "shadow_depth_stage_multiple_usage_object";
 	}
 
 	switch (C.iElement)
@@ -61,11 +61,20 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 	case SE_NORMAL_LQ: // deffer
 		configure_shader(C, false, tvs, "static_mesh", oBlend.value);
 		break;
-	case SE_SHADOW: // smap-spot
+	case SE_SHADOW_DEPTH: // smap-spot
 		if (oBlend.value)
-			C.r_Pass(tvs_s, "shadow_direct_static_mesh_alphatest", FALSE);
+			C.r_Pass(tvs_s, "shadow_depth_stage_static_mesh_alphatest", FALSE);
 		else
-			C.r_Pass(tvs_s, "shadow_direct_static_mesh", FALSE);
+			C.r_Pass(tvs_s, "shadow_depth_stage_static_mesh", FALSE);
+		C.r_Sampler("s_base", C.L_textures[0]);
+		jitter(C);
+		C.r_End();
+		break;
+	case SE_DEPTH_PREPASS: // smap-spot
+		if (oBlend.value)
+			C.r_Pass(tvs_s, "depth_prepass_stage_static_mesh_alphatest", FALSE, TRUE, TRUE, FALSE);
+		else
+			C.r_Pass(tvs_s, "depth_prepass_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
 		C.r_Sampler("s_base", C.L_textures[0]);
 		jitter(C);
 		C.r_End();

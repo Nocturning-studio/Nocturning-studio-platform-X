@@ -30,7 +30,8 @@ class CRender : public R_dsgraph_structure
 	enum
 	{
 		PHASE_NORMAL = 0, // E[0]
-		PHASE_SMAP = 1,	  // E[1]
+		PHASE_SHADOW_DEPTH = 1,	  // E[1]
+		PHASE_DEPTH_PREPASS = 2,
 	};
 
   public:
@@ -196,10 +197,6 @@ class CRender : public R_dsgraph_structure
 		CTexture* T = RCache.get_ActiveTexture(u32(C->samp.index));
 		VERIFY(T);
 		float mtl = T->m_material;
-#ifdef DEBUG
-		if (ps_r_ls_flags.test(RFLAG_GLOBALMATERIAL))
-			mtl = ps_r_gmaterial;
-#endif
 		RCache.set_c(c_lmaterial, o_hemi, o_sun, 0, (mtl + .5f) / 4.f);
 	}
 

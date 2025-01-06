@@ -102,7 +102,7 @@ void CRender::render_lights(light_Package& LP)
 			Lights_LastFrame.push_back(L);
 
 			// render
-			phase = PHASE_SMAP;
+			phase = PHASE_SHADOW_DEPTH;
 			r_pmask(true, false);
 			L->svis.begin();
 			r_dsgraph_render_subspace(L->spatial.sector, L->X.S.combine, L->position, TRUE);
