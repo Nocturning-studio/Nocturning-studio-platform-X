@@ -124,6 +124,14 @@ static class cl_hdr_params : public R_constant_setup
 	}
 } binder_hdr_params;
 //////////////////////////////////////////////////////////////////////////
+static class cl_ao_brightness : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c("ao_brightness", ps_r_ao_brightness, 0, 0, 0);
+	}
+} binder_ao_brightness;
+//////////////////////////////////////////////////////////////////////////
 void CRender::CheckHWRenderSupporting()
 {
 	OPTICK_EVENT("CRender::CheckHWRenderSupporting");
@@ -247,6 +255,7 @@ void CRender::create()
 	::Device.Resources->RegisterConstantSetup("sun_dir", &binder_sun_dir);
 	::Device.Resources->RegisterConstantSetup("sun_color", &binder_sun_color);
 	::Device.Resources->RegisterConstantSetup("hdr_params", &binder_hdr_params);
+	::Device.Resources->RegisterConstantSetup("ao_brightness", &binder_ao_brightness);
 
 	c_lmaterial = "L_material";
 	c_sbase = "s_base";
