@@ -186,9 +186,6 @@ CShaderMacros CRender::FetchShaderMacros()
 
 	CShaderMacros macros;
 
-	// build id
-	macros.add("BUILD_ID", c_build_id);
-
 	// skinning
 	macros.add(m_skinning < 0, "SKIN_NONE", "1");
 	macros.add(0 == m_skinning, "SKIN_0", "1");
@@ -229,7 +226,6 @@ CShaderMacros CRender::FetchShaderMacros()
 	return macros;
 }
 //////////////////////////////////////////////////////////////////////////
-extern XRCORE_API u32 build_id;
 void CRender::create()
 {
 	OPTICK_EVENT("CRender::create");
@@ -240,8 +236,6 @@ void CRender::create()
 	xrRender_console_apply_conditions();
 
 	m_skinning = -1;
-
-	sprintf(c_build_id, "%d", build_id);
 
 	// options
 	o.noshadows = (strstr(Core.Params, "-noshadows")) ? TRUE : FALSE;

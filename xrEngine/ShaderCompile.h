@@ -207,6 +207,7 @@ HRESULT CResourceManager::ReadShaderCache(string_path name, T*& result)
 	return cache_result;
 }
 
+extern XRCORE_API u32 build_id;
 template<typename T>
 HRESULT CResourceManager::CompileShader(
 	LPCSTR			name,
@@ -232,7 +233,7 @@ HRESULT CResourceManager::CompileShader(
 
 	HRESULT _result = NULL;
 	string_path cache_dest;
-	sprintf_s(cache_dest, sizeof cache_dest, "shaders_cache\\%s%s.%s\\%s", ::Render->getShaderPath(), name, ext, macros.get_name().c_str());
+	sprintf_s(cache_dest, sizeof cache_dest, "shaders_cache\\%s%s.%s\\%s%d.xrcache", ::Render->getShaderPath(), name, ext, macros.get_name().c_str(), build_id);
 	FS.update_path(cache_dest, "$app_data_root$", cache_dest);
 
 	//Try to find and read cache file
