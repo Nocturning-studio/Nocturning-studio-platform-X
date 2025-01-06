@@ -422,7 +422,10 @@ class CCC_DemoPlay : public IConsole_Command
 class CCC_Photo_Mode : public IConsole_Command
 {
   public:
-	CCC_Photo_Mode(LPCSTR N) : IConsole_Command(N){};
+	CCC_Photo_Mode(LPCSTR N) : IConsole_Command(N)
+	{
+		bEmptyArgsHandled = TRUE;
+	};
 	virtual void Execute(LPCSTR args)
 	{
 #ifdef MASTER_GOLD

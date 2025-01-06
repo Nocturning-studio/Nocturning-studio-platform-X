@@ -157,11 +157,11 @@
     <Filter Include="Game API\Sound Environment">
       <UniqueIdentifier>{4344e60a-1d70-41a3-908e-6dba4316c117}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game API\Demo\Photo mode">
-      <UniqueIdentifier>{227abcdc-449a-4663-a476-96aca17ddd7d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Profiling">
       <UniqueIdentifier>{8dc6eb7a-079c-47df-bbfa-b9bf38756dc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game API\Photo mode">
+      <UniqueIdentifier>{227abcdc-449a-4663-a476-96aca17ddd7d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -571,7 +571,7 @@
       <Filter>Game API\Sound Environment</Filter>
     </ClInclude>
     <ClInclude Include="CPhotoMode.h">
-      <Filter>Game API\Demo\Photo mode</Filter>
+      <Filter>Game API\Photo mode</Filter>
     </ClInclude>
     <ClInclude Include="Optick_Capture.h">
       <Filter>Engine\Profiling</Filter>
@@ -990,7 +990,7 @@
       <Filter>Game API\Sound Environment</Filter>
     </ClCompile>
     <ClCompile Include="CPhotoMode.cpp">
-      <Filter>Game API\Demo\Photo mode</Filter>
+      <Filter>Game API\Photo mode</Filter>
     </ClCompile>
     <ClCompile Include="Optick_Capture.cpp">
       <Filter>Engine\Profiling</Filter>
