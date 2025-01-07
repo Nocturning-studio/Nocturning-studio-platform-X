@@ -25,7 +25,10 @@ void CRenderTarget::clear_gbuffer()
 {
 	OPTICK_EVENT("CRenderTarget::clear_gbuffer");
 
-	u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_GBuffer_3, HW.pBaseZB);
+	if (ps_r_shading_flags.test(RFLAG_DISABLED_SHADING))
+		u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_ZBuffer, NULL, HW.pBaseZB);
+	else
+		u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_ZBuffer, rt_GBuffer_3, HW.pBaseZB);
 
 	CHK_DX(HW.pDevice->Clear(0L, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x0, 1.0f, 0L));
 }
@@ -34,7 +37,10 @@ void CRenderTarget::create_gbuffer()
 {
 	OPTICK_EVENT("CRenderTarget::create_gbuffer");
 
-	u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_GBuffer_3, HW.pBaseZB);
+	if (ps_r_shading_flags.test(RFLAG_DISABLED_SHADING))
+		u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_ZBuffer, NULL, HW.pBaseZB);
+	else
+		u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_ZBuffer, rt_GBuffer_3, HW.pBaseZB);
 
 	// Stencil - write 0x1 at pixel pos
 	RCache.set_Stencil(TRUE, D3DCMP_ALWAYS, 0x01, 0xff, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_REPLACE,

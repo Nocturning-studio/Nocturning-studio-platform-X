@@ -6,7 +6,7 @@ void CRenderTarget::phase_combine_postprocess()
 {
 	OPTICK_EVENT("CRenderTarget::phase_combine_postprocess");
 
-	u_setrt(rt_Generic_0, NULL, NULL, NULL);
+	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
@@ -54,7 +54,7 @@ void CRenderTarget::phase_apply_volumetric()
 {
 	OPTICK_EVENT("CRenderTarget::phase_apply_volumetric");
 
-	u_setrt(rt_Generic_0, NULL, NULL, NULL);
+	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
@@ -103,7 +103,7 @@ void CRenderTarget::phase_combine()
 	Fvector2 p0, p1;
 
 	// low/hi RTs
-	u_setrt(rt_Generic_1, 0, 0, HW.pBaseZB);
+	u_setrt(rt_Generic_1, NULL, NULL, NULL, HW.pBaseZB);
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
 
@@ -178,7 +178,7 @@ void CRenderTarget::phase_combine()
 	if (ps_r_debug_render == 0)
 #endif
 	{
-		u_setrt(rt_Generic_1, rt_GBuffer_2, NULL, HW.pBaseZB); // LDR RT
+		u_setrt(rt_Generic_1, rt_ZBuffer, NULL, NULL, HW.pBaseZB);
 
 		RCache.set_CullMode(CULL_CCW);
 		RCache.set_Stencil(FALSE);

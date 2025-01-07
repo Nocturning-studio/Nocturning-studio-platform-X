@@ -1,12 +1,10 @@
 #pragma once
 
-// depth-stencil buffer
-#define r_RT_ZB "$user$zb"
-
 // Geometry Buffer
 #define r_RT_GBuffer_1 "$user$gbuffer_1"
 #define r_RT_GBuffer_2 "$user$gbuffer_2"
 #define r_RT_GBuffer_3 "$user$gbuffer_3"
+#define r_RT_ZBuffer "$user$zbuffer"
 
 // Light Accumulating
 #define r_RT_Light_Accumulator "$user$accumulator"

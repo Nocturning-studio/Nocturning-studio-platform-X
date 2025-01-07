@@ -38,7 +38,7 @@ void CRenderTarget::phase_fog_scattering()
 
 	RCache.set_Geometry(g_combine);
 
-	u_setrt(rt_Generic_0, NULL, NULL, NULL);
+	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
 
 	for (int BlurIterations = 0; BlurIterations < 4; BlurIterations++)
 	for (u32 i = 0; i < s_fog_scattering->E[0]->passes.size(); i++)

@@ -8,7 +8,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::phase_contrast_adaptive_sharpening()
 {
-	u_setrt(rt_Generic_0, NULL, NULL, NULL);
+	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);

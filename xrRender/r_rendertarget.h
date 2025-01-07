@@ -58,6 +58,7 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_GBuffer_1;
 	ref_rt rt_GBuffer_2;
 	ref_rt rt_GBuffer_3;
+	ref_rt rt_ZBuffer;
 
 	// Accumulation Buffer
 	ref_rt rt_Light_Accumulator;
@@ -224,9 +225,8 @@ class CRenderTarget : public IRender_Target
 	void u_compute_texgen_screen(Fmatrix& dest);
 	void u_compute_texgen_jitter(Fmatrix& dest);
 	float hclip(float v, float dim);
-	void u_setrt(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, IDirect3DSurface9* zb);
-	void u_setrt(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3,
-				 IDirect3DSurface9* zb);
+	void u_setrt(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, const ref_rt& _4, IDirect3DSurface9* zb);
+	void u_setrt(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3, IDirect3DSurface9* _4, IDirect3DSurface9* zb);
 	void u_calc_tc_noise(Fvector2& p0, Fvector2& p1);
 	void u_calc_tc_duality_ss(Fvector2& r0, Fvector2& r1, Fvector2& l0, Fvector2& l1);
 	BOOL u_DBT_enable(float zMin, float zMax);

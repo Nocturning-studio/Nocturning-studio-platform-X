@@ -22,7 +22,7 @@ void CRenderTarget::draw_overlays()
 	if (ps_r_overlay_flags.test(RFLAG_WATERMARK))
 		WatermarkEnabled = 1;
 
-	u_setrt(rt_Generic_0, NULL, NULL, NULL);
+	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);

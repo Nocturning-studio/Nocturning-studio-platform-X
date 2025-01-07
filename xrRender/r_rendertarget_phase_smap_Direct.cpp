@@ -3,7 +3,7 @@
 void CRenderTarget::phase_smap_direct(light* L, u32 sub_phase)
 {
 	// Targets
-	u_setrt(rt_smap_surf, NULL, NULL, rt_smap_depth->pRT);
+	u_setrt(rt_smap_surf, NULL, NULL, NULL, rt_smap_depth->pRT);
 
 	// optimized clear
 	D3DRECT R;

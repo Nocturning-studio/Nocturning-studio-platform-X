@@ -7,7 +7,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::calc_screen_space_reflections()
 {
-	u_setrt(rt_Reflections, NULL, NULL, NULL);
+	u_setrt(rt_Reflections, NULL, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);

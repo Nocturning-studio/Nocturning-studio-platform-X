@@ -59,7 +59,7 @@ void CRenderTarget::phase_bloom()
 
 	// Downsample, prepare image and store in rt_Bloom_1 and rt_Bloom_Blades
 	{
-		u_setrt(rt_Bloom_1, rt_Bloom_Blades_1, NULL, NULL);
+		u_setrt(rt_Bloom_1, rt_Bloom_Blades_1, NULL, NULL, NULL);
 		RCache.set_Element(s_bloom->E[0]);
 		RCache.set_c("bloom_parameters", ps_r_bloom_threshold, 
 										 ps_r_bloom_brightness, 
@@ -72,12 +72,12 @@ void CRenderTarget::phase_bloom()
 	//Main bloom effect
 	for (int i = 0; i < 2; i++)
 	{
-		u_setrt(rt_Bloom_2, NULL, NULL, NULL);
+		u_setrt(rt_Bloom_2, NULL, NULL, NULL, NULL);
 		RCache.set_Element(s_bloom->E[1]);
 		RCache.set_c("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-		u_setrt(rt_Bloom_1, NULL, NULL, NULL);
+		u_setrt(rt_Bloom_1, NULL, NULL, NULL, NULL);
 		RCache.set_Element(s_bloom->E[2]);
 		RCache.set_c("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
@@ -86,12 +86,12 @@ void CRenderTarget::phase_bloom()
 	// Blades effect
 	for (int i = 0; i < 2; i++)
 	{
-		u_setrt(rt_Bloom_Blades_2, NULL, NULL, NULL);
+		u_setrt(rt_Bloom_Blades_2, NULL, NULL, NULL, NULL);
 		RCache.set_Element(s_bloom->E[3]);
 		RCache.set_c("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-		u_setrt(rt_Bloom_Blades_1, NULL, NULL, NULL);
+		u_setrt(rt_Bloom_Blades_1, NULL, NULL, NULL, NULL);
 		RCache.set_Element(s_bloom->E[4]);
 		RCache.set_c("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);

@@ -37,11 +37,11 @@ void CRenderTarget::phase_barrel_blur()
 
 	RCache.set_Geometry(g_combine);
 
-	u_setrt(rt_Generic_0, NULL, NULL, NULL);
+	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
 	RCache.set_Element(s_barrel_blur->E[0]);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-	u_setrt(rt_Generic_1, NULL, NULL, NULL);
+	u_setrt(rt_Generic_1, NULL, NULL, NULL, NULL);
 	RCache.set_Element(s_barrel_blur->E[1]);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }

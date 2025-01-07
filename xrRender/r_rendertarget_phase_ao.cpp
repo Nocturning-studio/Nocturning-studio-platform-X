@@ -40,7 +40,7 @@ void CRenderTarget::phase_ao()
 
 	RCache.set_Geometry(g_combine);
 
-	u_setrt(rt_ao, NULL, NULL, NULL);
+	u_setrt(rt_ao, NULL, NULL, NULL, NULL);
 
 	if (ps_r_ao_quality == 1)
 	{

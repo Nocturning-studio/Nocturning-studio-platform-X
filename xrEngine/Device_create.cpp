@@ -77,8 +77,8 @@ void CRenderDevice::_Create(LPCSTR shName)
 	Statistic->OnDeviceCreate();
 
 #ifndef DEDICATED_SERVER
-	m_WireShader.create("editor\\wire");
-	m_SelectionShader.create("editor\\selection");
+	m_WireShader.create("hud\\crosshair");
+	m_SelectionShader.create("hud\\crosshair");
 
 	DU.OnDeviceCreate();
 #endif

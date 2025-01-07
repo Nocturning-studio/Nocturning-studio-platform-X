@@ -163,19 +163,19 @@ void CRender::render_menu()
 
 	// Main Render
 	{
-		Target->u_setrt(Target->rt_Generic_0, 0, 0, HW.pBaseZB); // LDR RT
+		Target->u_setrt(Target->rt_Generic_0, NULL, NULL, NULL, HW.pBaseZB); // LDR RT
 		g_pGamePersistent->OnRenderPPUI_main();					 // PP-UI
 	}
 
 	// Distort
 	{
-		Target->u_setrt(Target->rt_Distortion_Mask, 0, 0, HW.pBaseZB); // Now RT is a distortion mask
+		Target->u_setrt(Target->rt_Distortion_Mask, NULL, NULL, NULL, HW.pBaseZB); // Now RT is a distortion mask
 		CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, color_rgba(127, 127, 0, 127), 1.0f, 0L));
 		g_pGamePersistent->OnRenderPPUI_PP(); // PP-UI
 	}
 
 	// Actual Display
-	Target->u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, NULL, NULL, HW.pBaseZB);
+	Target->u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, NULL, NULL, NULL, HW.pBaseZB);
 	RCache.set_Shader(Target->s_menu);
 	RCache.set_Geometry(Target->g_menu);
 
@@ -200,6 +200,38 @@ void CRender::render_menu()
 	pv++;
 	RCache.Vertex.Unlock(4, Target->g_menu->vb_stride);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+}
+
+void CRender::render_forward()
+{
+	OPTICK_EVENT("CRender::render_forward");
+
+	VERIFY(0 == mapDistort.size());
+
+	//******* Main render - second order geometry (the one, that doesn't support deffering)
+	//.todo: should be done inside "combine" with estimation of of autoexposure, tone-mapping, etc.
+	{
+		// level
+		r_pmask(false, true); // enable priority "1"
+		phase = PHASE_NORMAL;
+		render_main(Device.mFullTransform, false); //
+
+		Target->enable_anisotropy_filtering();
+
+		if (psDeviceFlags.test(rsWireframe))
+			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
+
+		r_dsgraph_render_graph(1); // normal level, secondary priority
+		r_dsgraph_render_sorted(); // strict-sorted geoms
+
+		if (psDeviceFlags.test(rsWireframe))
+			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
+
+		Target->disable_anisotropy_filtering();
+
+		g_pGamePersistent->Environment().RenderThunderbolt();
+		g_pGamePersistent->Environment().RenderRain();
+	}
 }
 
 extern u32 g_r;
@@ -533,34 +565,3 @@ void CRender::Render()
 	Device.Statistic->RenderCALC.End();
 }
 
-void CRender::render_forward()
-{
-	OPTICK_EVENT("CRender::render_forward");
-
-	VERIFY(0 == mapDistort.size());
-
-	//******* Main render - second order geometry (the one, that doesn't support deffering)
-	//.todo: should be done inside "combine" with estimation of of autoexposure, tone-mapping, etc.
-	{
-		// level
-		r_pmask(false, true); // enable priority "1"
-		phase = PHASE_NORMAL;
-		render_main(Device.mFullTransform, false);	   //
-
-		Target->enable_anisotropy_filtering();
-
-		if (psDeviceFlags.test(rsWireframe))
-			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
-
-		r_dsgraph_render_graph(1);					   // normal level, secondary priority
-		r_dsgraph_render_sorted();					   // strict-sorted geoms
-
-		if (psDeviceFlags.test(rsWireframe))
-			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
-
-		Target->disable_anisotropy_filtering();
-
-		g_pGamePersistent->Environment().RenderThunderbolt();
-		g_pGamePersistent->Environment().RenderRain();
-	}
-}

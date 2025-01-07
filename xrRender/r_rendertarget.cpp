@@ -81,15 +81,15 @@ CRenderTarget::CRenderTarget()
 		if (ps_r_shading_flags.test(RFLAG_DISABLED_SHADING))
 		{
 			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_R16F);
-			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 		}
 		else
 		{
 			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 		}
+		rt_ZBuffer.create(r_RT_ZBuffer, dwWidth, dwHeight, D3DFMT_R16F);
 	}
 
 	rt_Light_Accumulator.create(r_RT_Light_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
@@ -196,7 +196,7 @@ CRenderTarget::CRenderTarget()
 			string256 name;
 			sprintf(name, "%s_%d", r_RT_autoexposure_pool, it);
 			rt_LUM_pool[it].create(name, 1, 1, D3DFMT_L8);
-			u_setrt(rt_LUM_pool[it], 0, 0, 0);
+			u_setrt(rt_LUM_pool[it], NULL, NULL, NULL, NULL);
 			CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0x7f7f7f7f, 1.0f, 0L));
 		}
 	}
