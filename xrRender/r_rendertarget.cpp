@@ -78,7 +78,7 @@ CRenderTarget::CRenderTarget()
 
 	// G-Buffer
 	{
-		if (ps_r_shading_flags.test(RFLAG_DISABLED_SHADING))
+		if (ps_r_shading_flags.test(RFLAG_FLAT_SHADING))
 		{
 			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);

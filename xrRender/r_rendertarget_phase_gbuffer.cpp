@@ -25,7 +25,7 @@ void CRenderTarget::clear_gbuffer()
 {
 	OPTICK_EVENT("CRenderTarget::clear_gbuffer");
 
-	if (ps_r_shading_flags.test(RFLAG_DISABLED_SHADING))
+	if (ps_r_shading_flags.test(RFLAG_FLAT_SHADING))
 		u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_ZBuffer, NULL, HW.pBaseZB);
 	else
 		u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_ZBuffer, rt_GBuffer_3, HW.pBaseZB);
@@ -37,7 +37,7 @@ void CRenderTarget::create_gbuffer()
 {
 	OPTICK_EVENT("CRenderTarget::create_gbuffer");
 
-	if (ps_r_shading_flags.test(RFLAG_DISABLED_SHADING))
+	if (ps_r_shading_flags.test(RFLAG_FLAT_SHADING))
 		u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_ZBuffer, NULL, HW.pBaseZB);
 	else
 		u_setrt(rt_GBuffer_1, rt_GBuffer_2, rt_ZBuffer, rt_GBuffer_3, HW.pBaseZB);

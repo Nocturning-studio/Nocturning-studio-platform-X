@@ -12,6 +12,7 @@
 //////////////////////////////////////////////////////////////////////////
 CRender RImplementation;
 //////////////////////////////////////////////////////////////////////////
+#pragma todo(Deathman to Deathman: Добавить поддержку Glow)
 class CGlow : public IRender_Glow
 {
   public:
@@ -249,7 +250,7 @@ CShaderMacros CRender::FetchShaderMacros()
 
 	macros.add("SUN_SHAFTS_QUALITY", c_sun_shafts_quality);
 
-	macros.add(ps_r_shading_flags.test(RFLAG_DISABLED_SHADING), "DISABLE_SHADING", "1");
+	macros.add(ps_r_shading_flags.test(RFLAG_FLAT_SHADING), "DISABLE_SHADING", "1");
 
 	return macros;
 }
