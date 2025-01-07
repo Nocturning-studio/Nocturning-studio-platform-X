@@ -10,29 +10,14 @@
     <Filter Include="Details">
       <UniqueIdentifier>{11542d84-a32a-4f97-bf85-4f546cc5a224}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Stripifier">
-      <UniqueIdentifier>{90ddcd80-88df-482f-9b11-217190755c23}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Lights">
       <UniqueIdentifier>{268234e2-3527-4c36-97d3-c33940d436e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Wallmarks">
-      <UniqueIdentifier>{007cc9e4-5b81-4324-a362-e25cbbd79777}</UniqueIdentifier>
     </Filter>
     <Filter Include="Models">
       <UniqueIdentifier>{a263f29c-0c06-4cad-90de-b322ee2f04e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Models\Visuals">
       <UniqueIdentifier>{cc83a68c-2620-42ca-8e59-6eaf108f2a8a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Visibility">
-      <UniqueIdentifier>{51efb266-14aa-4e05-8f0a-b2edb53b9b0a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Visibility\Sector/Portal">
-      <UniqueIdentifier>{113a2b8e-7672-4fdf-89aa-c2bdb9a003dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Visibility\HOM Occlusion">
-      <UniqueIdentifier>{192e35d4-dc12-4e11-a00b-860e34665128}</UniqueIdentifier>
     </Filter>
     <Filter Include="Rendertargets">
       <UniqueIdentifier>{fec1153a-2d47-4773-b385-8ff1d008ed3c}</UniqueIdentifier>
@@ -112,9 +97,6 @@
     <Filter Include="Blenders\Light accumulating stage">
       <UniqueIdentifier>{6371f753-349c-476b-bd50-91c769017890}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blenders\Editor">
-      <UniqueIdentifier>{bba361c5-5691-49c1-aa3b-5e771dcfb391}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Blenders\Forward rendering">
       <UniqueIdentifier>{ed178e34-be90-41d6-bc02-c215b6ccf8df}</UniqueIdentifier>
     </Filter>
@@ -166,6 +148,18 @@
     <Filter Include="Core\Render pipeline">
       <UniqueIdentifier>{fe8ea627-ce82-4380-8edb-1145c56ad896}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Occlusion culling\HOM Occlusion">
+      <UniqueIdentifier>{192e35d4-dc12-4e11-a00b-860e34665128}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Occlusion culling\Sector/Portal">
+      <UniqueIdentifier>{113a2b8e-7672-4fdf-89aa-c2bdb9a003dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Occlusion culling\Stripifier">
+      <UniqueIdentifier>{90ddcd80-88df-482f-9b11-217190755c23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wallmarks">
+      <UniqueIdentifier>{007cc9e4-5b81-4324-a362-e25cbbd79777}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl_intersect.h">
@@ -193,16 +187,16 @@
       <Filter>Details</Filter>
     </ClInclude>
     <ClInclude Include="NvTriStrip.h">
-      <Filter>Stripifier</Filter>
+      <Filter>Core\Occlusion culling\Stripifier</Filter>
     </ClInclude>
     <ClInclude Include="NvTriStripObjects.h">
-      <Filter>Stripifier</Filter>
+      <Filter>Core\Occlusion culling\Stripifier</Filter>
     </ClInclude>
     <ClInclude Include="VertexCache.h">
-      <Filter>Stripifier</Filter>
+      <Filter>Core\Occlusion culling\Stripifier</Filter>
     </ClInclude>
     <ClInclude Include="xrStripify.h">
-      <Filter>Stripifier</Filter>
+      <Filter>Core\Occlusion culling\Stripifier</Filter>
     </ClInclude>
     <ClInclude Include="light.h">
       <Filter>Lights</Filter>
@@ -256,13 +250,13 @@
       <Filter>Models\Visuals</Filter>
     </ClInclude>
     <ClInclude Include="r_sector.h">
-      <Filter>Visibility\Sector/Portal</Filter>
+      <Filter>Core\Occlusion culling\Sector/Portal</Filter>
     </ClInclude>
     <ClInclude Include="HOM.h">
-      <Filter>Visibility\HOM Occlusion</Filter>
+      <Filter>Core\Occlusion culling\HOM Occlusion</Filter>
     </ClInclude>
     <ClInclude Include="occRasterizer.h">
-      <Filter>Visibility\HOM Occlusion</Filter>
+      <Filter>Core\Occlusion culling\HOM Occlusion</Filter>
     </ClInclude>
     <ClInclude Include="du_sphere_part.h">
       <Filter>Rendertargets\Core</Filter>
@@ -302,12 +296,6 @@
     </ClInclude>
     <ClInclude Include="blender_light_spot.h">
       <Filter>Blenders\Light accumulating stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Editor_Selection.h">
-      <Filter>Blenders\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Editor_Wire.h">
-      <Filter>Blenders\Editor</Filter>
     </ClInclude>
     <ClInclude Include="blender_bloom_build.h">
       <Filter>Blenders\Postprocess stage\Bloom</Filter>
@@ -432,16 +420,16 @@
       <Filter>Details</Filter>
     </ClCompile>
     <ClCompile Include="NvTriStrip.cpp">
-      <Filter>Stripifier</Filter>
+      <Filter>Core\Occlusion culling\Stripifier</Filter>
     </ClCompile>
     <ClCompile Include="NvTriStripObjects.cpp">
-      <Filter>Stripifier</Filter>
+      <Filter>Core\Occlusion culling\Stripifier</Filter>
     </ClCompile>
     <ClCompile Include="VertexCache.cpp">
-      <Filter>Stripifier</Filter>
+      <Filter>Core\Occlusion culling\Stripifier</Filter>
     </ClCompile>
     <ClCompile Include="xrStripify.cpp">
-      <Filter>Stripifier</Filter>
+      <Filter>Core\Occlusion culling\Stripifier</Filter>
     </ClCompile>
     <ClCompile Include="light.cpp">
       <Filter>Lights</Filter>
@@ -498,19 +486,19 @@
       <Filter>Models\Visuals</Filter>
     </ClCompile>
     <ClCompile Include="r_sector.cpp">
-      <Filter>Visibility\Sector/Portal</Filter>
+      <Filter>Core\Occlusion culling\Sector/Portal</Filter>
     </ClCompile>
     <ClCompile Include="r_sector_traversal.cpp">
-      <Filter>Visibility\Sector/Portal</Filter>
+      <Filter>Core\Occlusion culling\Sector/Portal</Filter>
     </ClCompile>
     <ClCompile Include="HOM.cpp">
-      <Filter>Visibility\HOM Occlusion</Filter>
+      <Filter>Core\Occlusion culling\HOM Occlusion</Filter>
     </ClCompile>
     <ClCompile Include="occRasterizer.cpp">
-      <Filter>Visibility\HOM Occlusion</Filter>
+      <Filter>Core\Occlusion culling\HOM Occlusion</Filter>
     </ClCompile>
     <ClCompile Include="occRasterizer_core.cpp">
-      <Filter>Visibility\HOM Occlusion</Filter>
+      <Filter>Core\Occlusion culling\HOM Occlusion</Filter>
     </ClCompile>
     <ClCompile Include="r_rendertarget_phase_gbuffer.cpp">
       <Filter>Rendertargets\Render stages\GBuffer stage</Filter>
@@ -568,12 +556,6 @@
     </ClCompile>
     <ClCompile Include="blender_light_spot.cpp">
       <Filter>Blenders\Light accumulating stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Editor_Selection.cpp">
-      <Filter>Blenders\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Editor_Wire.cpp">
-      <Filter>Blenders\Editor</Filter>
     </ClCompile>
     <ClCompile Include="blender_bloom_build.cpp">
       <Filter>Blenders\Postprocess stage\Bloom</Filter>
@@ -745,6 +727,9 @@
     </ClCompile>
     <ClCompile Include="r_R_sun.cpp">
       <Filter>Core\Render pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="r_rendertarget_backend.cpp">
+      <Filter>Rendertargets\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
