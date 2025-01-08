@@ -198,8 +198,6 @@ float ps_r_ssaHZBvsTEX = 96.f;
 float ps_pps_u = 0.0f;
 float ps_pps_v = 0.0f;
 
-int ps_r_tf_Anisotropic = 4;
-
 int ps_r_thread_wait_sleep = 0;
 
 // Render common flags
@@ -329,31 +327,6 @@ class CCC_ConditionsToken : public CCC_Token
 
 		tokens = tokens_mem;
 	};
-};
-///////////////////////////////////////////////////////////////////////////////////
-class CCC_tf_Aniso : public CCC_Integer
-{
-  public:
-	void apply()
-	{
-		if (0 == HW.pDevice)
-			return;
-		int val = *value;
-		clamp(val, 2, 16);
-		for (u32 i = 0; i < HW.Caps.raster.dwStages; i++)
-			CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, val));
-	}
-	CCC_tf_Aniso(LPCSTR N, int* v) : CCC_Integer(N, v, 2, 16){};
-	virtual void Execute(LPCSTR args)
-	{
-		CCC_Integer::Execute(args);
-		apply();
-	}
-	virtual void Status(TStatus& S)
-	{
-		CCC_Integer::Status(S);
-		apply();
-	}
 };
 ///////////////////////////////////////////////////////////////////////////////////
 class CCC_tf_MipBias : public CCC_Float
@@ -657,8 +630,6 @@ void xrRender_initconsole()
 	tw_min.set(EPS, EPS, EPS);
 	tw_max.set(2, 2, 2);
 	CMD4(CCC_Vector3, "r_d_tree_wave", &ps_r_Tree_Wave, tw_min, tw_max);
-
-	CMD2(CCC_tf_Aniso, "r_tf_aniso", &ps_r_tf_Anisotropic); //	{1..16}
 
 	CMD3(CCC_Mask, "r_lens_flares", &ps_render_flags, RFLAG_LENS_FLARES);
 

@@ -50,7 +50,6 @@ extern ECORE_API float ps_r_LOD;
 extern ECORE_API float ps_r_ssaDISCARD;
 extern ECORE_API float ps_r_ssaDONTSORT;
 extern ECORE_API float ps_r_ssaHZBvsTEX;
-extern ECORE_API int ps_r_tf_Anisotropic;
 
 extern ECORE_API int ps_r_thread_wait_sleep;
 

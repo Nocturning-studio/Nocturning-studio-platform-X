@@ -233,6 +233,10 @@ class ENGINE_API CBackend
 	void set_ClipPlanes(u32 _enable, Fmatrix* _xform = NULL, u32 fmask = 0xff);
 	IC void set_Scissor(Irect* rect = NULL);
 
+	void enable_anisotropy_filtering();
+	void disable_anisotropy_filtering();
+	void set_anisotropy_filtering(int max_anisothropy);
+
 	// constants
 	ICF ref_constant get_c(LPCSTR n)
 	{

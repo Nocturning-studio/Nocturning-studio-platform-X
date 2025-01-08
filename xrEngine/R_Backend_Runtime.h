@@ -437,4 +437,28 @@ ICF void CBackend::set_CullMode(u32 _mode)
 	}
 }
 
+ICF void CBackend::set_anisotropy_filtering(int max_anisothropy)
+{
+	OPTICK_EVENT("CBackend::set_anisotropy_filtering");
+
+	for (u32 i = 0; i < HW.Caps.raster.dwStages; i++)
+		CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, max_anisothropy));
+}
+
+ICF void CBackend::enable_anisotropy_filtering()
+{
+	OPTICK_EVENT("CBackend::enable_anisotropy_filtering");
+
+	for (u32 i = 0; i < HW.Caps.raster.dwStages; i++)
+		CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, psAnisotropic));
+}
+
+ICF void CBackend::disable_anisotropy_filtering()
+{
+	OPTICK_EVENT("CBackend::disable_anisotropy_filtering");
+
+	for (u32 i = 0; i < HW.Caps.raster.dwStages; i++)
+		CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, 1));
+}
+
 #endif

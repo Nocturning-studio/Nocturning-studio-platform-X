@@ -5,22 +5,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void CRenderTarget::enable_anisotropy_filtering()
-{
-	OPTICK_EVENT("CRenderTarget::enable_anisotropy_filtering");
-
-	for (u32 i = 0; i < HW.Caps.raster.dwStages; i++)
-		CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, ps_r_tf_Anisotropic));
-}
-
-void CRenderTarget::disable_anisotropy_filtering()
-{
-	OPTICK_EVENT("CRenderTarget::disable_anisotropy_filtering");
-
-	for (u32 i = 0; i < HW.Caps.raster.dwStages; i++)
-		CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, 1));
-}
-
 void CRenderTarget::clear_gbuffer()
 {
 	OPTICK_EVENT("CRenderTarget::clear_gbuffer");

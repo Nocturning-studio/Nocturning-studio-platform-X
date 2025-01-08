@@ -216,7 +216,7 @@ void CRender::render_forward()
 		phase = PHASE_NORMAL;
 		render_main(Device.mFullTransform, false); //
 
-		Target->enable_anisotropy_filtering();
+		RCache.enable_anisotropy_filtering();
 
 		if (psDeviceFlags.test(rsWireframe))
 			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
@@ -227,7 +227,7 @@ void CRender::render_forward()
 		if (psDeviceFlags.test(rsWireframe))
 			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
 
-		Target->disable_anisotropy_filtering();
+		RCache.disable_anisotropy_filtering();
 
 		g_pGamePersistent->Environment().RenderThunderbolt();
 		g_pGamePersistent->Environment().RenderRain();
@@ -318,7 +318,7 @@ void CRender::Render()
 
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL));
 
-		Target->enable_anisotropy_filtering();
+		RCache.enable_anisotropy_filtering();
 
 		r_dsgraph_render_graph(0);
 
@@ -329,7 +329,7 @@ void CRender::Render()
 
 		r_dsgraph_render_lods(true, true);
 
-		Target->disable_anisotropy_filtering();
+		RCache.disable_anisotropy_filtering();
 
 		RCache.set_ColorWriteEnable(TRUE);
 		RCache.set_ZWriteEnable(FALSE);
@@ -354,7 +354,7 @@ void CRender::Render()
 	//******* Main render :: PART-0	-- first
 	// level, SPLIT
 	Device.Statistic->RenderCALC_GBuffer.Begin();
-	Target->enable_anisotropy_filtering();
+	RCache.enable_anisotropy_filtering();
 
 	Target->create_gbuffer();
 
@@ -374,7 +374,7 @@ void CRender::Render()
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
 
-	Target->disable_anisotropy_filtering();
+	RCache.disable_anisotropy_filtering();
 	Device.Statistic->RenderCALC_GBuffer.End();
 
 	//******* Occlusion testing of volume-limited light-sources
@@ -440,7 +440,7 @@ void CRender::Render()
 
 	PortalTraverser.fade_render();
 
-	Target->enable_anisotropy_filtering();
+	RCache.enable_anisotropy_filtering();
 
 	Target->create_gbuffer();
 
@@ -458,7 +458,7 @@ void CRender::Render()
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
 
-	Target->disable_anisotropy_filtering();
+	RCache.disable_anisotropy_filtering();
 
 	// Wall marks
 	if (Wallmarks)

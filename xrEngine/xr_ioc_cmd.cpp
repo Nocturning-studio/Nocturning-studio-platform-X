@@ -27,6 +27,8 @@ extern xr_token* vid_mode_token;
 
 xr_token vid_bpp_token[] = {{"16", 16}, {"32", 32}, {0, 0}};
 
+int psAnisotropic = 4;
+
 xr_token wpn_zoom_button_mode[] = {{"st_opt_press", 1}, {"st_opt_hold", 2}, {0, 0}};
 
 void IConsole_Command::add_to_LRU(shared_str const& arg)
@@ -601,6 +603,31 @@ class CCC_Gamma : public CCC_Float
 	}
 };
 
+class CCC_tf_Aniso : public CCC_Integer
+{
+  public:
+	void apply()
+	{
+		if (0 == HW.pDevice)
+			return;
+		int val = *value;
+		clamp(val, 2, 16);
+
+		RCache.set_anisotropy_filtering(val);
+	}
+	CCC_tf_Aniso(LPCSTR N, int* v) : CCC_Integer(N, v, 2, 16){};
+	virtual void Execute(LPCSTR args)
+	{
+		CCC_Integer::Execute(args);
+		apply();
+	}
+	virtual void Status(TStatus& S)
+	{
+		CCC_Integer::Status(S);
+		apply();
+	}
+};
+
 //-----------------------------------------------------------------------
 
 extern INT g_bDR_LM_UsePointsBBox;
@@ -781,6 +808,8 @@ void CCC_Register()
 	CMD2(CCC_Gamma, "rs_c_contrast", &ps_contrast);
 	//	CMD4(CCC_Integer,	"rs_vb_size",			&rsDVB_Size,		32,		4096);
 	//	CMD4(CCC_Integer,	"rs_ib_size",			&rsDIB_Size,		32,		4096);
+
+	CMD2(CCC_tf_Aniso, "rs_anisothropy", &psAnisotropic); //	{1..16}
 
 	// Texture manager
 	CMD4(CCC_Integer, "texture_lod", &psTextureLOD, 0, 3);
