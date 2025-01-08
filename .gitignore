@@ -5,3 +5,4 @@
 *.db-wal
 *.opendb
 *.ipch
+.PVS-Studio
