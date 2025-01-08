@@ -4,6 +4,8 @@
 #include "ObjectAnimator.h"
 #include "motion.h"
 
+#include <ppl.h>
+
 bool motion_sort_pred(COMotion* a, COMotion* b)
 {
 	return a->name < b->name;
@@ -79,7 +81,7 @@ void CObjectAnimator::LoadMotions(LPCSTR fname)
 			}
 			FS.r_close(F);
 		}
-		std::sort(m_Motions.begin(), m_Motions.end(), motion_sort_pred);
+		concurrency::parallel_sort(m_Motions.begin(), m_Motions.end(), motion_sort_pred);
 	}
 }
 

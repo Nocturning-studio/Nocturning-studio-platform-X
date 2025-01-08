@@ -10,6 +10,8 @@
 #pragma warning(push)
 #pragma warning(disable : 5037)
 
+#include <ppl.h>
+
 #define TEMPLATE_SPECIALIZATION template <typename _key_type, typename _data_type, typename _compare_predicate_type>
 
 #define _associative_vector associative_vector<_key_type, _data_type, _compare_predicate_type>
@@ -34,7 +36,7 @@ IC _associative_vector::associative_vector(_iterator_type first, _iterator_type 
 	: //	inherited			(first,last,allocator),
 	  inherited(first, last), value_compare(predicate)
 {
-	std::sort(begin(), end(), (value_compare&)(*this));
+	concurrency::parallel_sort(begin(), end(), (value_compare&)(*this));
 }
 
 TEMPLATE_SPECIALIZATION
@@ -256,7 +258,7 @@ template <class _iterator_type> IC void _associative_vector::insert(_iterator_ty
 	}
 
 	inherited::insert(end(), first, last);
-	std::sort(begin(), end(), (value_compare&)(*this));
+	concurrency::parallel_sort(begin(), end(), (value_compare&)(*this));
 }
 
 TEMPLATE_SPECIALIZATION

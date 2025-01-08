@@ -11,6 +11,7 @@
 #include "xrServer.h"
 #include "game_object_space.h"
 #include "script_callback_ex.h"
+#include <ppl.h>
 
 struct FindLocationBySpotID
 {
@@ -255,7 +256,7 @@ void CMapManager::Update()
 	{
 		(*it).actual = (*it).location->Update();
 	}
-	std::sort(Locations().begin(), Locations().end());
+	concurrency::parallel_sort(Locations().begin(), Locations().end());
 
 	while ((!Locations().empty()) && (!Locations().back().actual))
 	{

@@ -2,6 +2,8 @@
 #define xr_collide_defsH
 #pragma once
 
+#include <ppl.h>
+
 class ENGINE_API CObject;
 namespace collide
 {
@@ -190,7 +192,7 @@ class rq_results
 	}
 	IC void r_sort()
 	{
-		std::sort(results.begin(), results.end(), r_sort_pred);
+		concurrency::parallel_sort(results.begin(), results.end(), r_sort_pred);
 	}
 };
 typedef BOOL rq_callback(rq_result& result, LPVOID user_data);

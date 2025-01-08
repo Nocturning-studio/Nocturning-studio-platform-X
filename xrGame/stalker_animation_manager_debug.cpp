@@ -17,6 +17,8 @@
 #include <malloc.h>
 #pragma warning(pop)
 
+#include <ppl.h>
+
 typedef std::pair<shared_str, shared_str> ANIMATION_ID;
 
 struct animation_id_predicate
@@ -107,7 +109,7 @@ void show_animations()
 	};
 
 	const ANIMATION_STATS_PAIR** const e = animations + animation_count;
-	std::sort(animations, e, &predicate::frame_count);
+	concurrency::parallel_sort(animations, e, &predicate::frame_count);
 
 	Msg("frames starts animation                        animation_set");
 	for (i = animations; i != e; ++i)
@@ -134,7 +136,7 @@ void show_blends()
 	};
 
 	const BLEND_STATS_PAIR** const e = blends + blend_count;
-	std::sort(blends, e, &predicate::blend_count);
+	concurrency::parallel_sort(blends, e, &predicate::blend_count);
 
 	Msg("       animation_set1                                  animation1    count     animation2                     "
 		"             animation_set2");

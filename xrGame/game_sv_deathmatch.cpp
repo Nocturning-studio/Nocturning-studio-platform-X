@@ -17,6 +17,8 @@
 #include "Missile.h"
 #include "game_cl_base_weapon_usage_statistic.h"
 
+#include <ppl.h>
+
 // #define DELAYED_ROUND_TIME	7000
 #include "ui\UIBuyWndShared.h"
 #include "../xrEngine/xr_ioconsole.h"
@@ -817,7 +819,7 @@ void game_sv_Deathmatch::assign_RP(CSE_Abstract* E, game_PlayerState* ps_who)
 		tmpPoints.push_back(RPointData(i, MinEnemyDist, false));
 	}
 	R_ASSERT(tmpPoints.size());
-	std::sort(tmpPoints.begin(), tmpPoints.end());
+	concurrency::parallel_sort(tmpPoints.begin(), tmpPoints.end());
 	u32 HalfList = tmpPoints.size() / (pEnemies.empty() ? 1 : 2);
 	u32 NewPointID = (HalfList) ? (tmpPoints.size() - HalfList + ::Random.randI(HalfList)) : 0;
 

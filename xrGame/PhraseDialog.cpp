@@ -3,6 +3,7 @@
 #include "phrasedialogmanager.h"
 #include "gameobject.h"
 #include "ai_debug.h"
+#include <ppl.h>
 
 SPhraseDialogData::SPhraseDialogData()
 {
@@ -134,7 +135,7 @@ bool CPhraseDialog::SayPhrase(DIALOG_SHARED_PTR& phrase_dialog, const shared_str
 				  make_string("No available phrase to say, dialog[%s]", *phrase_dialog->m_DialogId));
 
 		// упорядочить списко по убыванию благосклонности
-		std::sort(phrase_dialog->m_PhraseVector.begin(), phrase_dialog->m_PhraseVector.end(), PhraseGoodwillPred);
+		concurrency::parallel_sort(phrase_dialog->m_PhraseVector.begin(), phrase_dialog->m_PhraseVector.end(), PhraseGoodwillPred);
 	}
 
 	// сообщить CDialogManager, что сказана фраза

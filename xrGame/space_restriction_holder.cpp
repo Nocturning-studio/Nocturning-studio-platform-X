@@ -20,6 +20,8 @@
 #include <malloc.h>
 #pragma warning(pop)
 
+#include <ppl.h>
+
 CSpaceRestrictionHolder::~CSpaceRestrictionHolder()
 {
 	clear();
@@ -68,7 +70,7 @@ shared_str CSpaceRestrictionHolder::normalize_string(shared_str space_restrictor
 	++string_current;
 
 	// 2. sort the vector (svector???)
-	std::sort(strings, string_current, pred_str());
+	concurrency::parallel_sort(strings, string_current, pred_str());
 
 	// 3. copy back to another temp string, based on sorted vector
 	LPSTR result_string = (LPSTR)_alloca((n + 1) * sizeof(char));

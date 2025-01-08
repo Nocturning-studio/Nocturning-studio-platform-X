@@ -26,6 +26,8 @@
 #include "space_restrictor.h"
 #endif // DEBUG
 
+#include <ppl.h>
+
 int g_restriction_checker = 0;
 
 CSpaceRestrictionComposition::~CSpaceRestrictionComposition()
@@ -158,7 +160,7 @@ void CSpaceRestrictionComposition::test_correctness()
 	}
 
 	{
-		std::sort(m_test_storage.begin(), m_test_storage.end());
+		concurrency::parallel_sort(m_test_storage.begin(), m_test_storage.end());
 		m_test_storage.erase(std::unique(m_test_storage.begin(), m_test_storage.end()), m_test_storage.end());
 	}
 

@@ -29,6 +29,8 @@
 #include <malloc.h>
 #pragma warning(pop)
 
+#include <ppl.h>
+
 const float wounded_enemy_reached_distance = 3.f;
 
 const unsigned __int32 __c0 = 0x55555555;
@@ -201,7 +203,7 @@ void CAgentEnemyManager::compute_enemy_danger()
 		(*I).m_probability = best;
 	}
 
-	std::sort(m_enemies.begin(), m_enemies.end());
+	concurrency::parallel_sort(m_enemies.begin(), m_enemies.end());
 }
 
 void CAgentEnemyManager::assign_enemies()

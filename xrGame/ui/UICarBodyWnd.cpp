@@ -25,6 +25,7 @@
 #include "../script_callback_ex.h"
 #include "../script_game_object.h"
 #include "../BottleItem.h"
+#include <ppl.h>
 
 #define CAR_BODY_XML "carbody_new.xml"
 #define CARBODY_ITEM_XML "carbody_item.xml"
@@ -268,7 +269,7 @@ void CUICarBodyWnd::UpdateLists()
 
 	ruck_list.clear();
 	m_pOurObject->inventory().AddAvailableItems(ruck_list, true);
-	std::sort(ruck_list.begin(), ruck_list.end(), InventoryUtilities::GreaterRoomInRuck);
+	concurrency::parallel_sort(ruck_list.begin(), ruck_list.end(), InventoryUtilities::GreaterRoomInRuck);
 
 	//Íàø ðþêçàê
 	TIItemContainer::iterator it;
@@ -285,7 +286,7 @@ void CUICarBodyWnd::UpdateLists()
 	else
 		m_pInventoryBox->AddAvailableItems(ruck_list);
 
-	std::sort(ruck_list.begin(), ruck_list.end(), InventoryUtilities::GreaterRoomInRuck);
+	concurrency::parallel_sort(ruck_list.begin(), ruck_list.end(), InventoryUtilities::GreaterRoomInRuck);
 
 	//×óæîé ðþêçàê
 	for (it = ruck_list.begin(); ruck_list.end() != it; ++it)

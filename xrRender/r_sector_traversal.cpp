@@ -101,7 +101,7 @@ void CPortalTraverser::fade_render()
 		return;
 
 	// re-sort, back to front
-	std::sort(f_portals.begin(), f_portals.end(), psort_pred);
+	concurrency::parallel_sort(f_portals.begin(), f_portals.end(), psort_pred);
 
 	// calc poly-count
 	u32 _pcount = 0;

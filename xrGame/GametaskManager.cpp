@@ -12,6 +12,7 @@
 #include "ui/UIPDAWnd.h"
 #include "encyclopedia_article.h"
 #include "ui/UIEventsWnd.h"
+#include <ppl.h>
 
 #pragma warning(push)
 #pragma warning(disable : 4995)
@@ -92,7 +93,7 @@ CGameTask* CGameTaskManager::GiveGameTaskToActor(CGameTask* t, u32 timeToComplet
 	t->m_ReceiveTime = Level().GetGameTime();
 	t->m_TimeToComplete = t->m_ReceiveTime + timeToComplete;
 
-	std::sort(GameTasks().begin(), GameTasks().end(), task_prio_pred);
+	concurrency::parallel_sort(GameTasks().begin(), GameTasks().end(), task_prio_pred);
 
 	ARTICLE_VECTOR& article_vector = Actor()->encyclopedia_registry->registry().objects();
 

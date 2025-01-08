@@ -5,6 +5,7 @@
 #include "level.h"
 #include "actor.h"
 #include "xr_level_controller.h"
+#include <ppl.h>
 
 dlgItem::dlgItem(CUIWindow* pWnd)
 {
@@ -225,7 +226,7 @@ void CDialogHolder::shedule_Update(u32 dt)
 	if (m_dialogsToRender.empty())
 		return;
 
-	std::sort(m_dialogsToRender.begin(), m_dialogsToRender.end());
+	concurrency::parallel_sort(m_dialogsToRender.begin(), m_dialogsToRender.end());
 
 	while ((m_dialogsToRender.size()) && (!m_dialogsToRender[m_dialogsToRender.size() - 1].enabled))
 		m_dialogsToRender.pop_back();

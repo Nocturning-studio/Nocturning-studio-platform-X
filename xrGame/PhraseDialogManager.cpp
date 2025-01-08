@@ -13,6 +13,8 @@
 #include "gameobject.h"
 #include "script_game_object.h"
 
+#include <ppl.h>
+
 CPhraseDialogManager::CPhraseDialogManager(void)
 {
 }
@@ -90,7 +92,7 @@ static bool dialog_priority(DIALOG_SHARED_PTR dialog1, DIALOG_SHARED_PTR dialog2
 
 void CPhraseDialogManager::UpdateAvailableDialogs(CPhraseDialogManager* partner)
 {
-	std::sort(m_AvailableDialogs.begin(), m_AvailableDialogs.end(), dialog_priority);
+	concurrency::parallel_sort(m_AvailableDialogs.begin(), m_AvailableDialogs.end(), dialog_priority);
 }
 
 bool CPhraseDialogManager::AddAvailableDialog(shared_str dialog_id, CPhraseDialogManager* partner)

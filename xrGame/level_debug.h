@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ppl.h>
+
 #ifdef DEBUG
 
 class CLevelDebug
@@ -47,7 +49,7 @@ class CLevelDebug
 		IC void add_item(T data)
 		{
 			m_data.push_back(data);
-			std::sort(m_data.begin(), m_data.end(), sort_id_pred());
+			concurrency::parallel_sort(m_data.begin(), m_data.end(), sort_id_pred());
 		}
 
 		IC void remove_item(LPCSTR text)
@@ -55,14 +57,14 @@ class CLevelDebug
 			ITEM_STORAGE_VEC_IT it = std::remove_if(m_data.begin(), m_data.end(), remove_text_pred(text));
 			m_data.erase(it, m_data.end());
 
-			std::sort(m_data.begin(), m_data.end(), sort_id_pred());
+			concurrency::parallel_sort(m_data.begin(), m_data.end(), sort_id_pred());
 		}
 		IC void remove_item(u32 id)
 		{
 			ITEM_STORAGE_VEC_IT it = std::remove_if(m_data.begin(), m_data.end(), remove_id_pred(id));
 			m_data.erase(it, m_data.end());
 
-			std::sort(m_data.begin(), m_data.end(), sort_id_pred());
+			concurrency::parallel_sort(m_data.begin(), m_data.end(), sort_id_pred());
 		}
 		IC void clear()
 		{

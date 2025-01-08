@@ -15,6 +15,8 @@
 #include "../game_base_space.h"
 #include "../actor.h"
 
+#include <ppl.h>
+
 #define BUY_MENU_TEXTURE "ui\\ui_mp_buy_menu"
 #define EQUIPMENT_ICONS "ui\\ui_icon_equipment"
 #define CHAR_ICONS "ui\\ui_icons_npc"
@@ -95,7 +97,7 @@ bool InventoryUtilities::FreeRoom_inBelt(TIItemContainer& item_list, PIItem _ite
 			ruck_room[i * width + j] = false;
 
 	item_list.push_back(_item);
-	std::sort(item_list.begin(), item_list.end(), GreaterRoomInRuck);
+	concurrency::parallel_sort(item_list.begin(), item_list.end(), GreaterRoomInRuck);
 
 	found_place = true;
 

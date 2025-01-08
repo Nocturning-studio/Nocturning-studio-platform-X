@@ -6,6 +6,8 @@
 #include "igame_level.h"
 #include "cl_intersect.h"
 
+#include <ppl.h>
+
 namespace Feel
 {
 Vision::Vision() : pure_relcase(&Vision::feel_vision_relcase)
@@ -113,7 +115,7 @@ void Vision::feel_vision_query(Fmatrix& mFull, Fvector& P)
 	}
 	if (seen.size() > 1)
 	{
-		std::sort(seen.begin(), seen.end());
+		concurrency::parallel_sort(seen.begin(), seen.end());
 		xr_vector<CObject*>::iterator end = std::unique(seen.begin(), seen.end());
 		if (end != seen.end())
 			seen.erase(end, seen.end());

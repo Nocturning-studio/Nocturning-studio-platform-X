@@ -13,6 +13,7 @@
 #include "PhysicsCommon.h"
 #include "level_sounds.h"
 #include "GamePersistent.h"
+#include <ppl.h>
 
 ENGINE_API bool g_dedicated_server;
 
@@ -209,7 +210,7 @@ void CLevel::Load_GameSpecific_CFORM(CDB::TRI* tris, u32 count)
 		return;
 	}
 
-	std::sort(translator.begin(), translator.end());
+	concurrency::parallel_sort(translator.begin(), translator.end());
 	{
 		CDB::TRI* I = tris;
 		CDB::TRI* E = tris + count;

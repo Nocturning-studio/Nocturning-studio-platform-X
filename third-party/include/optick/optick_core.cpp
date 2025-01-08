@@ -31,6 +31,8 @@
 #include <fstream>
 #include <iomanip>
 
+#include <ppl.h>
+
 //////////////////////////////////////////////////////////////////////////
 // Start of the Platform-specific stuff
 //////////////////////////////////////////////////////////////////////////
@@ -215,7 +217,7 @@ void SortMemoryPool(MemoryPool<T, SIZE>& memoryPool)
 	memoryArray.resize(count);
 	memoryPool.ToArray(&memoryArray[0]);
 
-	std::sort(memoryArray.begin(), memoryArray.end());
+	concurrency::parallel_sort(memoryArray.begin(), memoryArray.end());
 
 	memoryPool.Clear(true);
 

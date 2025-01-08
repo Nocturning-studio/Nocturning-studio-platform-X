@@ -10,6 +10,8 @@
 #include "xrPool.h"
 #include "r_constants.h"
 
+#include <ppl.h>
+
 // pool
 //.static	poolSS<R_constant,512>			g_constant_allocator;
 
@@ -196,7 +198,7 @@ BOOL R_constant_table::parse(void* _desc, u16 destination)
 			L.cls = r_type;
 		}
 	}
-	std::sort(table.begin(), table.end(), p_sort);
+	concurrency::parallel_sort(table.begin(), table.end(), p_sort);
 	return TRUE;
 }
 
@@ -233,7 +235,7 @@ void R_constant_table::merge(R_constant_table* T)
 	}
 
 	// Sort
-	std::sort(table.begin(), table.end(), p_sort);
+	concurrency::parallel_sort(table.begin(), table.end(), p_sort);
 }
 
 void R_constant_table::clear()

@@ -10,6 +10,8 @@
 #include <malloc.h>
 #pragma warning(pop)
 
+#include <ppl.h>
+
 // {DA825E1B-6830-43d7-835D-0B5AD82956A2}
 const GUID CLSID_DirectPlay8Server = {0xda825e1b, 0x6830, 0x43d7, {0x83, 0x5d, 0x0b, 0x5a, 0xd8, 0x29, 0x56, 0xa2}};
 
@@ -986,7 +988,7 @@ void IPureServer::UpdateBannedList()
 {
 	if (!BannedAddresses.size())
 		return;
-	std::sort(BannedAddresses.begin(), BannedAddresses.end(), banned_client_comparer);
+	concurrency::parallel_sort(BannedAddresses.begin(), BannedAddresses.end(), banned_client_comparer);
 	time_t T;
 	time(&T);
 

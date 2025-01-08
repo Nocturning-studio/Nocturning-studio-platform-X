@@ -7,6 +7,8 @@
 #include "PSLibrary.h"
 #include "ParticleEffect.h"
 
+#include <ppl.h>
+
 #define _game_data_ "$game_data$"
 
 bool ped_sort_pred(const PS::CPEDef* a, const PS::CPEDef* b)
@@ -196,8 +198,8 @@ bool CPSLibrary::Load(const char* nm)
 	// final
 	FS.r_close(F);
 
-	std::sort(m_PEDs.begin(), m_PEDs.end(), ped_sort_pred);
-	std::sort(m_PGDs.begin(), m_PGDs.end(), pgd_sort_pred);
+	concurrency::parallel_sort(m_PEDs.begin(), m_PEDs.end(), ped_sort_pred);
+	concurrency::parallel_sort(m_PGDs.begin(), m_PGDs.end(), pgd_sort_pred);
 
 	return bRes;
 }

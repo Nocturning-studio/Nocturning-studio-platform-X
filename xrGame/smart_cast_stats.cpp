@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include <ppl.h>
 
 #ifdef DEBUG
 #define SMART_CAST_STATS
@@ -113,7 +114,7 @@ IC void CSmartCastStats::show()
 
 	m_temp.clear();
 	m_temp.insert(m_temp.begin(), m_stats.begin(), m_stats.end());
-	std::sort(m_temp.begin(), m_temp.end(), CStatsPredicate());
+	concurrency::parallel_sort(m_temp.begin(), m_temp.end(), CStatsPredicate());
 	u32 total = 0;
 
 	xr_vector<CStats>::const_iterator I = m_temp.begin();

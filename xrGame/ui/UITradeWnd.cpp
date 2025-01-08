@@ -25,6 +25,7 @@
 #include "UIDragDropListEx.h"
 #include "UICellItem.h"
 #include "UICellItemFactory.h"
+#include <ppl.h>
 
 #define TRADE_XML "trade.xml"
 #define TRADE_CHARACTER_XML "trade_character.xml"
@@ -504,7 +505,7 @@ void CUITradeWnd::UpdateLists(EListType mode)
 	{
 		ruck_list.clear();
 		m_pInv->AddAvailableItems(ruck_list, true);
-		std::sort(ruck_list.begin(), ruck_list.end(), InventoryUtilities::GreaterRoomInRuck);
+		concurrency::parallel_sort(ruck_list.begin(), ruck_list.end(), InventoryUtilities::GreaterRoomInRuck);
 		FillList(ruck_list, m_uidata->UIOurBagList, true);
 	}
 
@@ -512,7 +513,7 @@ void CUITradeWnd::UpdateLists(EListType mode)
 	{
 		ruck_list.clear();
 		m_pOthersInv->AddAvailableItems(ruck_list, true);
-		std::sort(ruck_list.begin(), ruck_list.end(), InventoryUtilities::GreaterRoomInRuck);
+		concurrency::parallel_sort(ruck_list.begin(), ruck_list.end(), InventoryUtilities::GreaterRoomInRuck);
 		FillList(ruck_list, m_uidata->UIOthersBagList, false);
 	}
 }

@@ -14,6 +14,7 @@
 #include "game_sv_artefacthunt.h"
 #include "date_time.h"
 #include "game_cl_base_weapon_usage_statistic.h"
+#include <ppl.h>
 
 extern float g_cl_lvInterp;
 extern int g_cl_InterpolationType; // 0 - Linear, 1 - BSpline, 2 - HSpline
@@ -229,7 +230,7 @@ class CCC_Dbg_NumObjects : public IConsole_Command
 			CSE_Abstract* pEntity = Level().Server->GetEntity(i);
 			SObjID.push_back(pEntity->ID);
 		};
-		std::sort(SObjID.begin(), SObjID.end());
+		concurrency::parallel_sort(SObjID.begin(), SObjID.end());
 
 		u32 CLObjNum = Level().Objects.o_count();
 		xr_vector<u16> CObjID;
@@ -237,7 +238,7 @@ class CCC_Dbg_NumObjects : public IConsole_Command
 		{
 			CObjID.push_back(Level().Objects.o_get_by_iterator(i)->ID());
 		};
-		std::sort(CObjID.begin(), CObjID.end());
+		concurrency::parallel_sort(CObjID.begin(), CObjID.end());
 
 		Msg("Client Objects : %d", CLObjNum);
 		Msg("Server Objects : %d", SVObjNum);

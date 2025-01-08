@@ -11,7 +11,7 @@
 #include "ai_space.h"
 #include "profiler.h"
 #include "level_graph.h"
-
+#include <ppl.h>
 #ifdef DEBUG
 #include "custommonster.h"
 extern bool show_restrictions(CRestrictedObject* object);

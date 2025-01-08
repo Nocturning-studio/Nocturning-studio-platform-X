@@ -8,6 +8,7 @@
 #include "../level.h"
 #include "UIStatic.h"
 #include "UIXmlInit.h"
+#include <ppl.h>
 
 IC bool DM_Compare_Players(game_PlayerState* p1, game_PlayerState* p2);
 
@@ -266,7 +267,7 @@ void CUIStatsPlayerList::Update()
 			ShowHeader(true);
 	}
 
-	std::sort(items.begin(), items.end(), DM_Compare_Players);
+	concurrency::parallel_sort(items.begin(), items.end(), DM_Compare_Players);
 
 	int n = (int)items.size();
 	n -= m_pad->GetChildWndList().size();

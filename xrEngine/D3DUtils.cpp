@@ -16,6 +16,8 @@
 #include "d3dx9.h"
 #pragma warning(pop)
 
+#include <ppl.h>
+
 CDrawUtilities DU;
 
 #define LINE_DIVISION 32 // не меньше 6!!!!!

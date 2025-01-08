@@ -10,6 +10,7 @@
 #include "space_restriction_base.h"
 #include "ai_space.h"
 #include "level_graph.h"
+#include <ppl.h>
 
 #define DEFAULT_RADIUS EPS_L
 
@@ -67,7 +68,7 @@ struct SortByXZ_predicate
 
 void CSpaceRestrictionBase::process_borders()
 {
-	std::sort(m_border.begin(), m_border.end());
+	concurrency::parallel_sort(m_border.begin(), m_border.end());
 	m_border.erase(std::unique(m_border.begin(), m_border.end()), m_border.end());
-	std::sort(m_border.begin(), m_border.end(), SortByXZ_predicate());
+	concurrency::parallel_sort(m_border.begin(), m_border.end(), SortByXZ_predicate());
 }

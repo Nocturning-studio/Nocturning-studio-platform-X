@@ -4,6 +4,8 @@
 #include "../../../level.h"
 #include "../../../actor.h"
 
+#include <ppl.h>
+
 CPolterTele::CPolterTele(CPoltergeist* polter) : inherited(polter)
 {
 }
@@ -223,7 +225,7 @@ bool CPolterTele::tele_raise_objects()
 	tele_find_objects(tele_objects, pos);
 
 	// сортировать и оставить только необходимое количество объектов
-	std::sort(tele_objects.begin(), tele_objects.end(),
+	concurrency::parallel_sort(tele_objects.begin(), tele_objects.end(),
 			  best_object_predicate2_telekinesis(m_object->Position(), Actor()->Position()));
 
 	// оставить уникальные объекты

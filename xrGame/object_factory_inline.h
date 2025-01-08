@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <ppl.h>
+
 IC const CObjectFactory& object_factory()
 {
 	if (!g_object_factory)
@@ -126,7 +128,7 @@ IC void CObjectFactory::actualize() const
 		return;
 
 	m_actual = true;
-	std::sort(m_clsids.begin(), m_clsids.end(), CObjectItemPredicate());
+	concurrency::parallel_sort(m_clsids.begin(), m_clsids.end(), CObjectItemPredicate());
 }
 
 #endif

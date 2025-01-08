@@ -14,6 +14,7 @@
 #include "game_cl_base.h"
 #include "AI/Monsters/BaseMonster/base_monster.h"
 #include "../xrEngine/igame_persistent.h"
+#include <ppl.h>
 
 #define RECT_SIZE 16
 
@@ -255,7 +256,7 @@ void CBinocularsVision::Update()
 				m_snd_found.play_at_pos(0, Fvector().set(0, 0, 0), sm_2D);
 		}
 	}
-	std::sort(m_active_objects.begin(), m_active_objects.end());
+	concurrency::parallel_sort(m_active_objects.begin(), m_active_objects.end());
 
 	while (m_active_objects.size() && m_active_objects.back()->m_flags.test(flVisObjNotValid))
 	{

@@ -2,6 +2,8 @@
 #include "ai_monster_squad.h"
 #include "../../entity.h"
 
+#include <ppl.h>
+
 void CMonsterSquad::ProcessAttack()
 {
 	m_enemy_map.clear();
@@ -59,7 +61,7 @@ void CMonsterSquad::Attack_AssignTargetDir(ENTITY_VEC& members, CEntity* enemy)
 	lines.clear();
 
 	// сортировать по убыванию расстояния от npc до врага
-	std::sort(members.begin(), members.end(), sort_predicate(enemy));
+	concurrency::parallel_sort(members.begin(), members.end(), sort_predicate(enemy));
 	if (members.empty())
 		return;
 

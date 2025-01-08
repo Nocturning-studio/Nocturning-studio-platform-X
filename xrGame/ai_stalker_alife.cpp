@@ -23,6 +23,8 @@
 #include "ef_pattern.h"
 #include "trade_parameters.h"
 
+#include <ppl.h>
+
 extern u32 get_rank(const shared_str& section);
 
 static const int MAX_AMMO_ATTACH_COUNT = 10;
@@ -252,7 +254,7 @@ void CAI_Stalker::update_sell_info()
 	m_total_money = get_money();
 	u32 money_delta = fill_items(inventory(), this, ALife::_OBJECT_ID(-1));
 	m_total_money += money_delta;
-	std::sort(m_temp_items.begin(), m_temp_items.end());
+	concurrency::parallel_sort(m_temp_items.begin(), m_temp_items.end());
 	select_items();
 
 	TIItemContainer::iterator I = inventory().m_all.begin();

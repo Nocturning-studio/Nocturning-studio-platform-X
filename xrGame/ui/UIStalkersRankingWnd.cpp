@@ -14,6 +14,8 @@
 #include "../actor.h"
 #include "../xrServer_Objects_ALife_Monsters.h"
 
+#include <ppl.h>
+
 #define STALKERS_RANKING_XML "stalkers_ranking.xml"
 #define STALKERS_RANKING_CHARACTER_XML "stalkers_ranking_character.xml"
 
@@ -100,7 +102,7 @@ extern CSE_ALifeTraderAbstract* ch_info_get_from_id(u16 id);
 
 int get_actor_ranking()
 {
-	std::sort(g_all_statistic_humans.begin(), g_all_statistic_humans.end(), GreaterRankPred);
+	concurrency::parallel_sort(g_all_statistic_humans.begin(), g_all_statistic_humans.end(), GreaterRankPred);
 	CSE_ALifeTraderAbstract* pActorAbstract = ch_info_get_from_id(Actor()->ID());
 	SStatData d;
 	d.id = Actor()->ID();

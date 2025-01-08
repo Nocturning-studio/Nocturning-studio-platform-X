@@ -8,6 +8,8 @@
 
 #include <boost/crc.hpp>
 
+#include <ppl.h>
+
 extern void BuildStackTrace();
 
 extern char g_stackTrace[100][4096];
@@ -54,7 +56,7 @@ void mem_alloc_show_stats()
 		}
 	};
 
-	std::sort(strings, e, predicate::compare);
+	concurrency::parallel_sort(strings, e, predicate::compare);
 
 	int j = 0;
 	for (i = strings; i != e; ++i, ++j)

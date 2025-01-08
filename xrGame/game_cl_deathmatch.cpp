@@ -32,6 +32,8 @@
 #include "ui\UIBuyWnd.h"
 #endif
 
+#include <ppl.h>
+
 #define DM_TEAM0_MENU "deathmatch_team0"
 
 game_cl_Deathmatch::game_cl_Deathmatch()
@@ -394,7 +396,7 @@ int game_cl_Deathmatch::GetPlayersPlace(game_PlayerState* ps)
 	xr_vector<game_PlayerState*> Players;
 	for (; I != E; ++I)
 		Players.push_back(I->second);
-	std::sort(Players.begin(), Players.end(), DM_Compare_Players);
+	concurrency::parallel_sort(Players.begin(), Players.end(), DM_Compare_Players);
 
 	int Place = 1;
 	for (u32 i = 0; i < Players.size(); i++)

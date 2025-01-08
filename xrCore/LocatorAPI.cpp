@@ -15,6 +15,8 @@
 #include "stream_reader.h"
 #include "file_stream_reader.h"
 
+#include <ppl.h>
+
 const u32 BIG_FILE_READER_WINDOW_SIZE = 1024 * 1024;
 
 #define PROTECTED_BUILD
@@ -526,7 +528,7 @@ bool CLocatorAPI::Recurse(const char* path)
 
 	rec_files.clear_not_free();
 
-	std::sort(buffer.begin(), buffer.end(), pred_str_ff);
+	concurrency::parallel_sort(buffer.begin(), buffer.end(), pred_str_ff);
 	for (FFIt I = buffer.begin(), E = buffer.end(); I != E; ++I)
 		ProcessOne(path, &*I);
 

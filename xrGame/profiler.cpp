@@ -10,6 +10,8 @@
 #include "profiler.h"
 #include "../xrEngine/gamefont.h"
 
+#include <ppl.h>
+
 #ifdef PROFILE_CRITICAL_SECTIONS
 static volatile LONG critical_section_counter = 0;
 
@@ -183,7 +185,7 @@ void CProfiler::show_stats(CGameFont* game_font, bool show)
 
 	if (!m_portions.empty())
 	{
-		std::sort(m_portions.begin(), m_portions.end(), CProfilePortionPredicate());
+		concurrency::parallel_sort(m_portions.begin(), m_portions.end(), CProfilePortionPredicate());
 		u64 timer_time = 0;
 		u32 call_count = 0;
 

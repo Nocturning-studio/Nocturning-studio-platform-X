@@ -23,6 +23,8 @@
 #include "D3DUtils.h"
 #include "xrCore.h"
 
+#include <ppl.h>
+
 // #define WEATHER_LOGGING
 
 #define DAY_LENGTH 86400.f
@@ -268,7 +270,7 @@ bool CEnvironment::SetWeatherFX(shared_str name)
 		}
 		clamp(current_weight, 0.f, 1.f);
 
-		std::sort(CurrentWeather->begin(), CurrentWeather->end(), sort_env_etl_pred);
+		concurrency::parallel_sort(CurrentWeather->begin(), CurrentWeather->end(), sort_env_etl_pred);
 		CEnvDescriptor* C0 = CurrentWeather->at(0);
 		CEnvDescriptor* C1 = CurrentWeather->at(1);
 		CEnvDescriptor* CE = CurrentWeather->at(CurrentWeather->size() - 2);
@@ -288,7 +290,7 @@ bool CEnvironment::SetWeatherFX(shared_str name)
 		bWFX = true;
 
 		// sort wfx envs
-		std::sort(CurrentWeather->begin(), CurrentWeather->end(), sort_env_pred);
+		concurrency::parallel_sort(CurrentWeather->begin(), CurrentWeather->end(), sort_env_pred);
 
 		Current[0] = C0;
 		Current[1] = C1;
@@ -708,7 +710,7 @@ void CEnvironment::load_weathers()
 	for (; _I != _E; _I++)
 	{
 		R_ASSERT3(_I->second.size() > 1, "One weather cycle must have implementations for at least two hours", *_I->first);
-		std::sort(_I->second.begin(), _I->second.end(), sort_env_etl_pred);
+		concurrency::parallel_sort(_I->second.begin(), _I->second.end(), sort_env_etl_pred);
 	}
 	R_ASSERT2(!WeatherCycles.empty(), "Empty weathers.");
 	SetWeather((*WeatherCycles.begin()).first.c_str());
@@ -772,7 +774,7 @@ void CEnvironment::load_weather_effects()
 	for (; _I != _E; _I++)
 	{
 		R_ASSERT3(_I->second.size() > 1, "Environment in weather must >=2", *_I->first);
-		std::sort(_I->second.begin(), _I->second.end(), sort_env_etl_pred);
+		concurrency::parallel_sort(_I->second.begin(), _I->second.end(), sort_env_etl_pred);
 	}
 }
 

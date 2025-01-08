@@ -6,6 +6,8 @@
 #include "SkeletonX.h"
 #include "fmesh.h"
 
+#include <ppl.h>
+
 extern int psSkeletonUpdate;
 
 //////////////////////////////////////////////////////////////////////////
@@ -877,7 +879,7 @@ IC bool operator<(const ConsistantKey& A, const ConsistantKey& B) // note: inver
 IC void MakeKeysConsistant(ConsistantKey *keys, int count)
 {
 	// sort in decreasing order
-	std::sort(keys,keys+count);
+	concurrency::parallel_sort(keys,keys+count);
 
 	// recalc
 	for (int i=0; i<count-1; i++) {
@@ -891,7 +893,7 @@ IC void MakeKeysConsistant(ConsistantKey *keys, int count)
 IC void MakeKeysSelected(ConsistantKey* keys, int count)
 {
 	// sort in decreasing order
-	std::sort(keys, keys + count);
+	concurrency::parallel_sort(keys, keys + count);
 }
 
 /*

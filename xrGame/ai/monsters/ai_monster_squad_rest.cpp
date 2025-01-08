@@ -3,6 +3,8 @@
 #include "../../entity.h"
 #include "../../ai_object_location.h"
 
+#include <ppl.h>
+
 void CMonsterSquad::ProcessIdle()
 {
 	m_temp_entities.clear();

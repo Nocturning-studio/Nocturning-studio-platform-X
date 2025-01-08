@@ -1,6 +1,7 @@
 #include "pch_script.h"
 #include "fs_registrator.h"
 #include "LocatorApi.h"
+#include <ppl.h>
 
 using namespace luabind;
 
@@ -152,17 +153,17 @@ FS_file_list_ex::FS_file_list_ex(LPCSTR path, u32 flags, LPCSTR mask)
 void FS_file_list_ex::Sort(u32 flags)
 {
 	if (flags == eSortByNameUp)
-		std::sort(m_file_items.begin(), m_file_items.end(), nameSorter<true>);
+		concurrency::parallel_sort(m_file_items.begin(), m_file_items.end(), nameSorter<true>);
 	else if (flags == eSortByNameDown)
-		std::sort(m_file_items.begin(), m_file_items.end(), nameSorter<false>);
+		concurrency::parallel_sort(m_file_items.begin(), m_file_items.end(), nameSorter<false>);
 	else if (flags == eSortBySizeUp)
-		std::sort(m_file_items.begin(), m_file_items.end(), sizeSorter<true>);
+		concurrency::parallel_sort(m_file_items.begin(), m_file_items.end(), sizeSorter<true>);
 	else if (flags == eSortBySizeDown)
-		std::sort(m_file_items.begin(), m_file_items.end(), sizeSorter<false>);
+		concurrency::parallel_sort(m_file_items.begin(), m_file_items.end(), sizeSorter<false>);
 	else if (flags == eSortByModifUp)
-		std::sort(m_file_items.begin(), m_file_items.end(), modifSorter<true>);
+		concurrency::parallel_sort(m_file_items.begin(), m_file_items.end(), modifSorter<true>);
 	else if (flags == eSortByModifDown)
-		std::sort(m_file_items.begin(), m_file_items.end(), modifSorter<false>);
+		concurrency::parallel_sort(m_file_items.begin(), m_file_items.end(), modifSorter<false>);
 }
 
 FS_file_list_ex file_list_open_ex(CLocatorAPI* fs, LPCSTR path, u32 flags, LPCSTR mask)

@@ -3,6 +3,8 @@
 
 #include "Blender.h"
 
+#include <ppl.h>
+
 //////////////////////////////////////////////////////////////////////
 #include "blender_clsid.h"
 IC bool p_sort(IBlender* A, IBlender* B)
@@ -57,7 +59,7 @@ void IBlender::CreatePalette(xr_vector<IBlender*>& palette)
 	}
 
 	// Sort by desc and return
-	std::sort(palette.begin(), palette.end(), p_sort);
+	concurrency::parallel_sort(palette.begin(), palette.end(), p_sort);
 }
 
 #ifndef _EDITOR

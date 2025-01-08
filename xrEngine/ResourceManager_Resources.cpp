@@ -413,7 +413,7 @@ bool cmp_tl(const std::pair<u32, ref_texture>& _1, const std::pair<u32, ref_text
 }
 STextureList* CResourceManager::_CreateTextureList(STextureList& L)
 {
-	std::sort(L.begin(), L.end(), cmp_tl);
+	concurrency::parallel_sort(L.begin(), L.end(), cmp_tl);
 
 	concurrency::parallel_for((u32)0, lst_textures.size(), [&](u32 it) {
 		STextureList* base = lst_textures[it];

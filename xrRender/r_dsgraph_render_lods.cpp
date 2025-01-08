@@ -75,7 +75,7 @@ void R_dsgraph_structure::r_dsgraph_render_lods(bool _setup_zb, bool _clear)
 		svector<std::pair<float, u32>, 8> selector;
 		for (u32 s = 0; s < 8; s++)
 			selector.push_back(mk_pair(Ldir.dotproduct(facets[s].N), s));
-		std::sort(selector.begin(), selector.end(), pred_dot);
+		concurrency::parallel_sort(selector.begin(), selector.end(), pred_dot);
 
 		float dot_best = selector[selector.size() - 1].first;
 		float dot_next = selector[selector.size() - 2].first;

@@ -2,6 +2,7 @@
 #pragma hdrstop
 
 #include "xrCDB.h"
+#include <ppl.h>
 
 namespace CDB
 {
@@ -150,7 +151,7 @@ void Collector::calc_adjacency(xr_vector<u32>& dest)
 		++i;
 	}
 
-	std::sort(edges, edges + edge_count, sort_predicate());
+	concurrency::parallel_sort(edges, edges + edge_count, sort_predicate());
 
 	dest.assign(edge_count, u32(-1));
 

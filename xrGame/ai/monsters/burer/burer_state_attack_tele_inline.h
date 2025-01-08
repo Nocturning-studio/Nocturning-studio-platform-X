@@ -2,6 +2,8 @@
 
 #include "../../../level.h"
 
+#include <ppl.h>
+
 #define TEMPLATE_SPECIALIZATION template <typename _Object>
 
 #define CStateBurerAttackTeleAbstract CStateBurerAttackTele<_Object>
@@ -338,7 +340,7 @@ class best_object_predicate2_burer_tele
 TEMPLATE_SPECIALIZATION
 void CStateBurerAttackTeleAbstract::SelectObjects()
 {
-	std::sort(tele_objects.begin(), tele_objects.end(),
+	concurrency::parallel_sort(tele_objects.begin(), tele_objects.end(),
 			  best_object_predicate2_burer_tele(object->Position(), object->EnemyMan.get_enemy()->Position()));
 
 	// выбрать объект

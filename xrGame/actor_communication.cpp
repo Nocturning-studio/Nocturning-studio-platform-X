@@ -31,6 +31,8 @@
 #include "ai/monsters/basemonster/base_monster.h"
 #include "ai/trader/ai_trader.h"
 
+#include <ppl.h>
+
 void CActor::AddEncyclopediaArticle(const CInfoPortion* info_portion) const
 {
 	VERIFY(info_portion);
@@ -314,7 +316,7 @@ void CActor::AddGameNews_deffered(GAME_NEWS_DATA& news_data, u32 delay)
 	m_defferedMessages.push_back(SDefNewsMsg());
 	m_defferedMessages.back().news_data = d;
 	m_defferedMessages.back().time = Device.dwTimeGlobal + delay;
-	std::sort(m_defferedMessages.begin(), m_defferedMessages.end());
+	concurrency::parallel_sort(m_defferedMessages.begin(), m_defferedMessages.end());
 }
 void CActor::UpdateDefferedMessages()
 {

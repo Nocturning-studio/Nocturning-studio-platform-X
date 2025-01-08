@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <ppl.h>
+
 IC const CALifeSpawnHeader& CALifeSpawnRegistry::header() const
 {
 	return (m_header);
@@ -40,7 +42,7 @@ IC const CALifeSpawnRegistry::SPAWN_GRAPH& CALifeSpawnRegistry::spawns() const
 
 IC void CALifeSpawnRegistry::process_spawns(SPAWN_IDS& spawns)
 {
-	std::sort(spawns.begin(), spawns.end());
+	concurrency::parallel_sort(spawns.begin(), spawns.end());
 	spawns.erase(std::unique(spawns.begin(), spawns.end()), spawns.end());
 }
 

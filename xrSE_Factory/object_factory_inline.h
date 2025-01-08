@@ -9,6 +9,8 @@
 #ifndef object_factory_inlineH
 #define object_factory_inlineH
 
+#include <ppl.h>
+
 #pragma once
 
 IC	const CObjectFactory &object_factory()
@@ -124,7 +126,7 @@ IC	void CObjectFactory::actualize										() const
 		return;
 
 	m_actual			= true;
-	std::sort			(m_clsids.begin(),m_clsids.end(),CObjectItemPredicate());
+	concurrency::parallel_sort			(m_clsids.begin(),m_clsids.end(),CObjectItemPredicate());
 }
 
 #endif

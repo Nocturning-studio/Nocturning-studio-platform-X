@@ -13,6 +13,8 @@
 #include "space_restrictor.h"
 #include "graph_engine.h"
 
+#include <ppl.h>
+
 struct CBorderMergePredicate
 {
 	CSpaceRestrictionShape* m_restriction;
@@ -129,7 +131,7 @@ void CSpaceRestrictionShape::test_correctness()
 		return;
 
 	// leave only unique nodes in m_test_storage
-	std::sort(m_test_storage.begin(), m_test_storage.end());
+	concurrency::parallel_sort(m_test_storage.begin(), m_test_storage.end());
 	m_test_storage.erase(std::unique(m_test_storage.begin(), m_test_storage.end()), m_test_storage.end());
 
 	// flood

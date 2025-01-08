@@ -2,6 +2,8 @@
 #include "UIMainIngameWnd.h"
 #include "UIMotionIcon.h"
 #include "UIXmlInit.h"
+#include <ppl.h>
+
 const LPCSTR MOTION_ICON_XML = "motion_icon.xml";
 
 CUIMotionIcon::CUIMotionIcon()
@@ -107,7 +109,7 @@ void CUIMotionIcon::Update()
 		m_bchanged = false;
 		if (m_npc_visibility.size())
 		{
-			std::sort(m_npc_visibility.begin(), m_npc_visibility.end());
+			concurrency::parallel_sort(m_npc_visibility.begin(), m_npc_visibility.end());
 			SetLuminosity(m_npc_visibility.back().value);
 		}
 		else

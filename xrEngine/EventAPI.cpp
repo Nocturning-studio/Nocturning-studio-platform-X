@@ -2,6 +2,8 @@
 #include "eventapi.h"
 #include "xr_ioconsole.h"
 
+#include "ppl.h"
+
 extern void msRead();
 extern void msCreate(LPCSTR name);
 
@@ -70,7 +72,7 @@ IC bool ev_sort(CEvent* E1, CEvent* E2)
 
 void CEventAPI::Dump()
 {
-	std::sort(Events.begin(), Events.end(), ev_sort);
+	concurrency::parallel_sort(Events.begin(), Events.end(), ev_sort);
 	for (u32 i = 0; i < Events.size(); i++)
 		Msg("* [%d] %s", Events[i]->RefCount(), Events[i]->GetFull());
 }

@@ -5,6 +5,7 @@
 #include "HOM.h"
 #include "occRasterizer.h"
 #include "../xrEngine/GameFont.h"
+#include <ppl.h>
 
 float psOSSR = .001f;
 
@@ -179,7 +180,7 @@ void CHOM::Render_DB(CFrustum& base)
 
 	Fvector COP = Device.vCameraPosition;
 	end = std::remove_if(it, end, pred_fb(m_pTris));
-	std::sort(it, end, pred_fb(m_pTris, COP));
+	concurrency::parallel_sort(it, end, pred_fb(m_pTris, COP));
 
 	float view_dim = occ_dim_0;
 	Fmatrix m_viewport = {view_dim / 2.f, 0.0f, 0.0f, 0.0f, 0.0f, -view_dim / 2.f,		  0.0f,
