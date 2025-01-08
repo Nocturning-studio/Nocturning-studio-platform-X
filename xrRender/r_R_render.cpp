@@ -305,7 +305,7 @@ void CRender::render_stage_depth_prepass()
 
 	RCache.enable_anisotropy_filtering();
 
-	r_dsgraph_render_graph(0);
+	//r_dsgraph_render_graph(0);
 
 	if (Details)
 		Details->Render();
@@ -561,6 +561,15 @@ void CRender::render_stage_hom()
 	}
 }
 
+void CRender::render_stage_ao()
+{
+	OPTICK_EVENT("CRender::render_stage_ao");
+
+	Device.Statistic->RenderCALC_AO.Begin();
+	Target->phase_ao();
+	Device.Statistic->RenderCALC_AO.End();
+}
+
 void CRender::RenderWorld()
 {
 	OPTICK_EVENT("CRender::RenderWorld");
@@ -616,7 +625,7 @@ void CRender::RenderWorld()
 	HOM.Disable();
 
 	// Ambient occlusion rendering
-	Target->phase_ao();
+	render_stage_ao();
 
 	Target->phase_autoexposure_pipeline_start();
 
