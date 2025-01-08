@@ -458,7 +458,8 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\OptickCore.dll" "$(OutDir)OptickCore.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -569,7 +570,8 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\OptickCore.dll" "$(OutDir)OptickCore.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">
@@ -684,7 +686,8 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\OptickCore.dll" "$(OutDir)OptickCore.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
@@ -746,7 +749,8 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\OptickCore.dll" "$(OutDir)OptickCore.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
@@ -809,7 +813,8 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\OptickCore.dll" "$(OutDir)OptickCore.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
@@ -871,7 +876,8 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\OptickCore.dll" "$(OutDir)OptickCore.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -1191,7 +1197,8 @@
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\OptickCore.dll" "$(OutDir)OptickCore.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|x64'">
@@ -1296,7 +1303,8 @@
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\OptickCore.dll" "$(OutDir)OptickCore.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|x64'">
@@ -1401,7 +1409,8 @@
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\OptickCore.dll" "$(OutDir)OptickCore.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|x64'">
@@ -1923,6 +1932,9 @@
     <Text Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\third-party\include\optick\OptickCore.vcxproj">
+      <Project>{830934d9-6f6c-c37d-18f2-fb3304348f00}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\xrDiscordAPI\xrDiscordAPI.vcxproj">
       <Project>{f4b26665-46b9-4e39-8c2c-d302b095ec14}</Project>
     </ProjectReference>

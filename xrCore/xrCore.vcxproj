@@ -1449,6 +1449,9 @@
       <Project>{e8cf1ada-264a-4127-86c2-fd7057d3792c}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\third-party\include\optick\OptickCore.vcxproj">
+      <Project>{830934d9-6f6c-c37d-18f2-fb3304348f00}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

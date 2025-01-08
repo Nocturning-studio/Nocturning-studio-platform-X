@@ -26,7 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "optick.config.h"
 
-#if USE_OPTICK && ENABLE_PROFILING
+#if USE_OPTICK
 #include <stdint.h>
 #include <stddef.h>
 
@@ -688,25 +688,6 @@ OPTICK_INLINE Optick::EventDescription* CreateDescription(const char* functionNa
 	return ::Optick::EventDescription::Create(functionName, fileName, (unsigned long)fileLine, ::Optick::Category::GetColor(category), ::Optick::Category::GetMask(category));
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-struct OPTICK_API GPUEvent
-{
-	EventData* data;
-
-	static EventData* Start(const EventDescription& description);
-	static void Stop(EventData& data);
-
-	GPUEvent(const EventDescription& description)
-	{
-		data = Start(description);
-	}
-
-	~GPUEvent()
-	{
-		if (data)
-			Stop(*data);
-	}
-};
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 struct OPTICK_API Tag
 {
 	static void Attach(const EventDescription& description, float val);
@@ -740,49 +721,6 @@ struct ThreadScope
 	~ThreadScope()
 	{
 		UnRegisterThread(false);
-	}
-};
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-enum OPTICK_API GPUQueueType
-{
-	GPU_QUEUE_GRAPHICS,
-	GPU_QUEUE_COMPUTE,
-	GPU_QUEUE_TRANSFER,
-	GPU_QUEUE_VSYNC,
-
-	GPU_QUEUE_COUNT,
-};
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-struct OPTICK_API GPUContext
-{
-	void* cmdBuffer;
-	GPUQueueType queue;
-	int node;
-	GPUContext(void* c = nullptr, GPUQueueType q = GPU_QUEUE_GRAPHICS, int n = 0) : cmdBuffer(c), queue(q), node(n) {}
-};
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-OPTICK_API void InitGpuD3D12(ID3D12Device* device, ID3D12CommandQueue** cmdQueues, uint32_t numQueues);
-OPTICK_API void InitGpuVulkan(VkDevice* vkDevices, VkPhysicalDevice* vkPhysicalDevices, VkQueue* vkQueues, uint32_t* cmdQueuesFamily, uint32_t numQueues, const VulkanFunctions* functions);
-OPTICK_API void GpuFlip(void* swapChain);
-OPTICK_API GPUContext SetGpuContext(GPUContext context);
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-struct OPTICK_API GPUContextScope
-{
-	GPUContext prevContext;
-
-	GPUContextScope(ID3D12CommandList* cmdList, GPUQueueType queue = GPU_QUEUE_GRAPHICS, int node = 0)
-	{
-		prevContext = SetGpuContext(GPUContext(cmdList, queue, node));
-	}
-
-	GPUContextScope(VkCommandBuffer cmdBuffer, GPUQueueType queue = GPU_QUEUE_GRAPHICS, int node = 0)
-	{
-		prevContext = SetGpuContext(GPUContext(cmdBuffer, queue, node));
-	}
-
-	~GPUContextScope()
-	{
-		SetGpuContext(prevContext);
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1020,28 +958,7 @@ struct OptickApp
 // Clears all the internal buffers allocated by Optick
 // Notes:
 //		You shouldn't call any Optick functions after shutting down the system (it might lead to the undefined behaviour)
-#define OPTICK_SHUTDOWN()																						::Optick::Shutdown();
-
-// GPU events
-#define OPTICK_GPU_INIT_D3D12(DEVICE, CMD_QUEUES, NUM_CMD_QUEUS)													::Optick::InitGpuD3D12(DEVICE, CMD_QUEUES, NUM_CMD_QUEUS);
-#define OPTICK_GPU_INIT_VULKAN(DEVICES, PHYSICAL_DEVICES, CMD_QUEUES, CMD_QUEUES_FAMILY, NUM_CMD_QUEUS, FUNCTIONS)	::Optick::InitGpuVulkan(DEVICES, PHYSICAL_DEVICES, CMD_QUEUES, CMD_QUEUES_FAMILY, NUM_CMD_QUEUS, FUNCTIONS);
-
-// Setup GPU context:
-// Params:
-//		(CommandBuffer\CommandList, [Optional] Optick::GPUQueue queue, [Optional] int NodeIndex)
-// Examples:
-//		OPTICK_GPU_CONTEXT(cmdBuffer); - all OPTICK_GPU_EVENT will use the same command buffer within the scope
-//		OPTICK_GPU_CONTEXT(cmdBuffer, Optick::GPU_QUEUE_COMPUTE); - all events will use the same command buffer and queue for the scope 
-//		OPTICK_GPU_CONTEXT(cmdBuffer, Optick::GPU_QUEUE_COMPUTE, gpuIndex); - all events will use the same command buffer and queue for the scope 
-#define OPTICK_GPU_CONTEXT(...)	 ::Optick::GPUContextScope OPTICK_CONCAT(gpu_autogen_context_, __LINE__)(__VA_ARGS__); \
-									 (void)OPTICK_CONCAT(gpu_autogen_context_, __LINE__);
-
-#define OPTICK_GPU_EVENT(NAME)	 OPTICK_EVENT(NAME); \
-									 static ::Optick::EventDescription* OPTICK_CONCAT(gpu_autogen_description_, __LINE__) = nullptr; \
-									 if (OPTICK_CONCAT(gpu_autogen_description_, __LINE__) == nullptr) OPTICK_CONCAT(gpu_autogen_description_, __LINE__) = ::Optick::EventDescription::Create( NAME, __FILE__, __LINE__ ); \
-									 ::Optick::GPUEvent OPTICK_CONCAT(gpu_autogen_event_, __LINE__)( *(OPTICK_CONCAT(gpu_autogen_description_, __LINE__)) ); \
-
-#define OPTICK_GPU_FLIP(SWAP_CHAIN)		::Optick::GpuFlip(SWAP_CHAIN);
+#define OPTICK_SHUTDOWN() ::Optick::Shutdown();
 
 /////////////////////////////////////////////////////////////////////////////////
 // [Automation][Startup]
@@ -1098,11 +1015,6 @@ struct OptickApp
 #define OPTICK_SET_STATE_CHANGED_CALLBACK(CALLBACK)
 #define OPTICK_SET_MEMORY_ALLOCATOR(ALLOCATE_FUNCTION, DEALLOCATE_FUNCTION)	
 #define OPTICK_SHUTDOWN()
-#define OPTICK_GPU_INIT_D3D12(DEVICE, CMD_QUEUES, NUM_CMD_QUEUS)
-#define OPTICK_GPU_INIT_VULKAN(DEVICES, PHYSICAL_DEVICES, CMD_QUEUES, CMD_QUEUES_FAMILY, NUM_CMD_QUEUS, FUNCTIONS)
-#define OPTICK_GPU_CONTEXT(...)
-#define OPTICK_GPU_EVENT(NAME)
-#define OPTICK_GPU_FLIP(SWAP_CHAIN)
 #define OPTICK_UPDATE()
 #define OPTICK_FRAME_FLIP(...)
 #define OPTICK_FRAME_EVENT(FRAME_TYPE, ...)
@@ -1111,18 +1023,3 @@ struct OptickApp
 #define OPTICK_SAVE_CAPTURE(...)
 #define OPTICK_APP(NAME)
 #endif
-///////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-#define CLASS_NAME(Class) typeid(#Class).name()
-#define FUNCTION_NAME __func__
-
-#ifdef ENABLE_PROFILING
-#define SET_OPTICK_EVENT_BY_CLASS(Class)												\
-	const char* _method = "";															\
-	strconcat(sizeof(_method), _method, (const char*)CLASS_NAME(Class), "::", (const char*)FUNCTION_NAME);		\
-    OPTICK_EVENT(_method);
-#else
-#define SET_OPTICK_EVENT_BY_CLASS(Class)
-#endif
-*/
-///////////////////////////////////////////////////////////////////////////////////////////////////
