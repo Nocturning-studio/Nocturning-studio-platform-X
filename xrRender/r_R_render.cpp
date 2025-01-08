@@ -277,6 +277,8 @@ void CRender::Render()
 	Device.Statistic->RenderDUMP_Wait_S.Begin();
 	if (1)
 	{
+		OPTICK_EVENT("CRender::Render - Sync point");
+
 		CTimer T;
 		T.Start();
 		BOOL result = FALSE;
@@ -301,6 +303,8 @@ void CRender::Render()
 	//******* Z-prefill calc - DEFERRER RENDERER
 	if (ps_r_ls_flags.test(RFLAG_Z_PREPASS))
 	{
+		OPTICK_EVENT("CRender::Render - Z-Prepass");
+
 		r_pmask(true, false); // enable priority "0"
 
 		set_Recorder(NULL);
@@ -333,6 +337,8 @@ void CRender::Render()
 
 	//******* Main calc - DEFERRER RENDERER
 	// Main calc
+	OPTICK_EVENT("CRender::Render - Main pass");
+
 	r_pmask(true, false, true); // enable priority "0",+ capture wmarks
 
 	if (bSUN)
@@ -372,6 +378,7 @@ void CRender::Render()
 	Device.Statistic->RenderCALC_GBuffer.End();
 
 	//******* Occlusion testing of volume-limited light-sources
+	OPTICK_EVENT("CRender::Render - Occlusion culling");
 	Target->phase_occq();
 
 	LP_normal.clear();
@@ -429,6 +436,8 @@ void CRender::Render()
 
 	//******* Main render :: PART-1 (second)
 	// level
+	OPTICK_EVENT("CRender::Render - Lods and hud pass");
+
 	PortalTraverser.fade_render();
 
 	Target->enable_anisotropy_filtering();
@@ -445,8 +454,6 @@ void CRender::Render()
 	r_dsgraph_render_hud();
 
 	r_dsgraph_render_lods(true, true);
-
-	RCache.set_ZWriteEnable(TRUE);
 
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
@@ -465,6 +472,8 @@ void CRender::Render()
 
 	// Update incremental shadowmap-visibility solver
 	{
+		OPTICK_EVENT("CRender::Render - Shadow map visibility solver");
+
 		u32 it = 0;
 		for (it = 0; it < Lights_LastFrame.size(); it++)
 		{
@@ -485,6 +494,7 @@ void CRender::Render()
 	// Directional light - sun
 	if (bSUN)
 	{
+		OPTICK_EVENT("CRender::Render - Sun");
 		Device.Statistic->RenderCALC_SUN.Begin();
 		RImplementation.stats.l_visible++;
 		render_sun_cascades();
@@ -492,6 +502,7 @@ void CRender::Render()
 		Device.Statistic->RenderCALC_SUN.End();
 	}
 
+	OPTICK_EVENT("CRender::Render - Lights");
 	Device.Statistic->RenderCALC_LIGHTS.Begin();
 	// Lighting, non dependant on OCCQ
 	Target->phase_accumulator();
@@ -504,6 +515,7 @@ void CRender::Render()
 
 	HOM.Disable();
 
+	OPTICK_EVENT("CRender::Render - Ambient occlusion");
 	Device.Statistic->RenderCALC_AO.Begin();
 	Target->phase_ao();
 	Device.Statistic->RenderCALC_AO.End();
@@ -513,8 +525,11 @@ void CRender::Render()
 
 	Target->phase_autoexposure_pipeline_start();
 
+	OPTICK_EVENT("CRender::Render - Scene combining");
 	Target->phase_combine();
 
+
+	OPTICK_EVENT("CRender::Render - Postprocess");
 	// Generic0 -> Generic1
 	Target->phase_antialiasing();
 

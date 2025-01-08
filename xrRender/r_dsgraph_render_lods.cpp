@@ -14,6 +14,8 @@ extern float r_ssaLOD_B;
 
 ICF bool pred_dot(const std::pair<float, u32>& _1, const std::pair<float, u32>& _2)
 {
+	OPTICK_EVENT("pred_dot");
+
 	return _1.first < _2.first;
 }
 
@@ -43,6 +45,8 @@ void R_dsgraph_structure::r_dsgraph_render_lods(bool _setup_zb, bool _clear)
 		ssaRange = EPS_S;
 	for (u32 i = 0; i < lstLODs.size(); i++)
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_lods - sort");
+
 		// sort out redundancy
 		R_dsgraph::_LodItem& P = lstLODs[i];
 		if (P.pVisual->shader->E[shid] == cur_S)
@@ -108,6 +112,8 @@ void R_dsgraph_structure::r_dsgraph_render_lods(bool _setup_zb, bool _clear)
 	RCache.Vertex.Unlock(lstLODs.size() * 4, firstV->geom->vb_stride);
 
 	// *** Render
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_lods - render");
+
 	int current = 0;
 	RCache.set_xform_world(Fidentity);
 	for (u32 g = 0; g < lstLODgroups.size(); g++)

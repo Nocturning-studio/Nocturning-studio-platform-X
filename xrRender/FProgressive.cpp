@@ -34,6 +34,8 @@ void FProgressive::Release()
 
 void FProgressive::Load(const char* N, IReader* data, u32 dwFlags)
 {
+	OPTICK_EVENT("FProgressive::Load");
+
 	Fvisual::Load(N, data, dwFlags);
 
 	// normal SWI
@@ -67,6 +69,8 @@ void FProgressive::Load(const char* N, IReader* data, u32 dwFlags)
 
 void FProgressive::Render(float LOD)
 {
+	OPTICK_EVENT("FProgressive::Render");
+
 	if (m_fast && RImplementation.phase == CRender::PHASE_SHADOW_DEPTH)
 	{
 		int lod_id = iFloor((1.f - clampr(LOD, 0.f, 1.f)) * float(xSWI->count - 1) + 0.5f);
@@ -96,6 +100,8 @@ void FProgressive::Render(float LOD)
 #define PCOPY(a) a = pFrom->a
 void FProgressive::Copy(IRender_Visual* pSrc)
 {
+	OPTICK_EVENT("FProgressive::Copy");
+
 	Fvisual::Copy(pSrc);
 	FProgressive* pFrom = (FProgressive*)pSrc;
 	PCOPY(nSWI);

@@ -16,6 +16,8 @@ void CRender::render_lights(light_Package& LP)
 	// 1. calculate area + sort in descending order
 	// const	u16		smap_unassigned		= u16(-1);
 	{
+		OPTICK_EVENT("CRender::render_lights - Refactor order based");
+
 		xr_vector<light*>& source = LP.v_shadowed;
 		for (u32 it = 0; it < source.size(); it++)
 		{
@@ -35,6 +37,8 @@ void CRender::render_lights(light_Package& LP)
 
 	// 2. refactor - infact we could go from the backside and sort in ascending order
 	{
+		OPTICK_EVENT("CRender::render_lights - refactor");
+
 		xr_vector<light*>& source = LP.v_shadowed;
 		xr_vector<light*> refactored;
 		refactored.reserve(source.size());
@@ -146,6 +150,8 @@ void CRender::render_lights(light_Package& LP)
 		//		if (has_point_unshadowed)	-> 	accum point unshadowed
 		if (!LP.v_point.empty())
 		{
+			OPTICK_EVENT("CRender::render_lights - accum point");
+
 			light* LightPoint = LP.v_point.back();
 			LP.v_point.pop_back();
 			LightPoint->vis_update();
@@ -158,6 +164,8 @@ void CRender::render_lights(light_Package& LP)
 		//		if (has_spot_unshadowed)	-> 	accum spot unshadowed
 		if (!LP.v_spot.empty())
 		{
+			OPTICK_EVENT("CRender::render_lights - accum spot");
+
 			light* LightSpot = LP.v_spot.back();
 			LP.v_spot.pop_back();
 			LightSpot->vis_update();
@@ -171,6 +179,8 @@ void CRender::render_lights(light_Package& LP)
 		//		if (was_spot_shadowed)		->	accum spot shadowed
 		if (!L_spot_s.empty())
 		{
+			OPTICK_EVENT("CRender::render_lights - accum spot shadowed");
+
 			for (u32 it = 0; it < L_spot_s.size(); it++)
 			{
 				Target->accum_spot(L_spot_s[it]);
@@ -187,6 +197,8 @@ void CRender::render_lights(light_Package& LP)
 	// Point lighting (unshadowed, if left)
 	if (!LP.v_point.empty())
 	{
+		OPTICK_EVENT("CRender::render_lights - point");
+
 		xr_vector<light*>& Lvec = LP.v_point;
 		for (u32 pid = 0; pid < Lvec.size(); pid++)
 		{
@@ -202,6 +214,8 @@ void CRender::render_lights(light_Package& LP)
 	// Spot lighting (unshadowed, if left)
 	if (!LP.v_spot.empty())
 	{
+		OPTICK_EVENT("CRender::render_lights - spot");
+
 		xr_vector<light*>& Lvec = LP.v_spot;
 		for (u32 pid = 0; pid < Lvec.size(); pid++)
 		{

@@ -40,6 +40,7 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 
 	if (pVisual->vis.marker == RI.marker)
 		return;
+
 	pVisual->vis.marker = RI.marker;
 
 	float distSQ;
@@ -52,8 +53,10 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 	// b) Should be rendered to special distort buffer in another pass
 	VERIFY(pVisual->shader._get());
 	ShaderElement* sh_d = &*pVisual->shader->E[4];
+
 	if (sh_d && sh_d->flags.bDistort && pmask[sh_d->flags.iPriority / 2])
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_dynamic - distort");
 		mapSorted_Node* N = mapDistort.insertInAnyWay(distSQ);
 		N->val.ssa = SSA;
 		N->val.pObject = RI.val_pObject;
@@ -64,8 +67,10 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 
 	// Select shader
 	ShaderElement* sh = RImplementation.rimp_select_sh_dynamic(pVisual, distSQ);
+
 	if (0 == sh)
 		return;
+
 	if (!pmask[sh->flags.iPriority / 2])
 		return;
 
@@ -76,6 +81,7 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 	// HUD rendering
 	if (RI.val_bHUD)
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_dynamic - HUD");
 		if (sh->flags.bStrictB2F)
 		{
 			mapSorted_Node* N = mapSorted.insertInAnyWay(distSQ);
@@ -104,6 +110,8 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 	// strict-sorting selection
 	if (sh->flags.bStrictB2F)
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_dynamic - bStrictD2F");
+
 		mapSorted_Node* N = mapSorted.insertInAnyWay(distSQ);
 		N->val.ssa = SSA;
 		N->val.pObject = RI.val_pObject;
@@ -120,6 +128,8 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 	// d) Should be rendered to accumulation buffer in the second pass
 	if (sh->flags.bEmissive)
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_dynamic - Emissive");
+
 		mapSorted_Node* N = mapEmissive.insertInAnyWay(distSQ);
 		N->val.ssa = SSA;
 		N->val.pObject = RI.val_pObject;
@@ -127,8 +137,11 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 		N->val.Matrix = *RI.val_pTransform;
 		N->val.se = &*pVisual->shader->E[4]; // 4=L_special
 	}
+
 	if (sh->flags.bWmark && pmask_wmark)
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_dynamic - Wmark");
+
 		mapSorted_Node* N = mapWmark.insertInAnyWay(distSQ);
 		N->val.ssa = SSA;
 		N->val.pObject = RI.val_pObject;
@@ -139,6 +152,7 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 	}
 
 	// the most common node
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_dynamic - insert");
 	SPass& pass = *sh->passes.front();
 	mapMatrix_T& map = mapMatrix[sh->flags.iPriority / 2];
 #ifdef USE_RESOURCE_DEBUGGER
@@ -154,6 +168,7 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 	mapMatrixItems& items = Ntex->val;
 	items.push_back(item);
 
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_dynamic - sort");
 	// Need to sort for HZB efficient use
 	if (SSA > Ntex->val.ssa)
 	{
@@ -207,6 +222,8 @@ void R_dsgraph_structure::r_dsgraph_insert_static(IRender_Visual* pVisual)
 	ShaderElement* sh_d = &*pVisual->shader->E[4];
 	if (sh_d && sh_d->flags.bDistort && pmask[sh_d->flags.iPriority / 2])
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_static - Distort");
+
 		mapSorted_Node* N = mapDistort.insertInAnyWay(distSQ);
 		N->val.ssa = SSA;
 		N->val.pObject = NULL;
@@ -217,14 +234,18 @@ void R_dsgraph_structure::r_dsgraph_insert_static(IRender_Visual* pVisual)
 
 	// Select shader
 	ShaderElement* sh = RImplementation.rimp_select_sh_static(pVisual, distSQ);
+
 	if (0 == sh)
 		return;
+
 	if (!pmask[sh->flags.iPriority / 2])
 		return;
 
 	// strict-sorting selection
 	if (sh->flags.bStrictB2F)
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_static - bStrictB2F");
+
 		mapSorted_Node* N = mapSorted.insertInAnyWay(distSQ);
 		N->val.pObject = NULL;
 		N->val.pVisual = pVisual;
@@ -240,6 +261,8 @@ void R_dsgraph_structure::r_dsgraph_insert_static(IRender_Visual* pVisual)
 	// d) Should be rendered to accumulation buffer in the second pass
 	if (sh->flags.bEmissive)
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_static - Emissive");
+
 		mapSorted_Node* N = mapEmissive.insertInAnyWay(distSQ);
 		N->val.ssa = SSA;
 		N->val.pObject = NULL;
@@ -247,8 +270,11 @@ void R_dsgraph_structure::r_dsgraph_insert_static(IRender_Visual* pVisual)
 		N->val.Matrix = Fidentity;
 		N->val.se = &*pVisual->shader->E[4]; // 4=L_special
 	}
+
 	if (sh->flags.bWmark && pmask_wmark)
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_static - Wmark");
+
 		mapSorted_Node* N = mapWmark.insertInAnyWay(distSQ);
 		N->val.ssa = SSA;
 		N->val.pObject = NULL;
@@ -262,6 +288,7 @@ void R_dsgraph_structure::r_dsgraph_insert_static(IRender_Visual* pVisual)
 		val_feedback->rfeedback_static(pVisual);
 
 	counter_S++;
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_static - insert");
 	SPass& pass = *sh->passes.front();
 	mapNormal_T& map = mapNormal[sh->flags.iPriority / 2];
 #ifdef USE_RESOURCE_DEBUGGER
@@ -279,6 +306,7 @@ void R_dsgraph_structure::r_dsgraph_insert_static(IRender_Visual* pVisual)
 	items.push_back(item);
 
 	// Need to sort for HZB efficient use
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_static - Sort");
 	if (SSA > Ntex->val.ssa)
 	{
 		Ntex->val.ssa = SSA;
@@ -322,6 +350,7 @@ void CRender::add_leafs_Dynamic(IRender_Visual* pVisual)
 	switch (pVisual->Type)
 	{
 	case MT_PARTICLE_GROUP: {
+		OPTICK_EVENT("R_dsgraph_structure::add_leafs_Dynamic - Particle group");
 		// Add all children, doesn't perform any tests
 		PS::CParticleGroup* pG = (PS::CParticleGroup*)pVisual;
 		for (PS::CParticleGroup::SItemVecIt i_it = pG->items.begin(); i_it != pG->items.end(); i_it++)
@@ -340,6 +369,7 @@ void CRender::add_leafs_Dynamic(IRender_Visual* pVisual)
 	}
 		return;
 	case MT_HIERRARHY: {
+		OPTICK_EVENT("R_dsgraph_structure::add_leafs_Dynamic - hierrarhy");
 		// Add all children, doesn't perform any tests
 		FHierrarhyVisual* pV = (FHierrarhyVisual*)pVisual;
 		I = pV->children.begin();
@@ -350,6 +380,7 @@ void CRender::add_leafs_Dynamic(IRender_Visual* pVisual)
 		return;
 	case MT_SKELETON_ANIM:
 	case MT_SKELETON_RIGID: {
+		OPTICK_EVENT("R_dsgraph_structure::add_leafs_Dynamic - skeleton");
 		// Add all children, doesn't perform any tests
 		CKinematics* pV = (CKinematics*)pVisual;
 		BOOL _use_lod = FALSE;
@@ -401,6 +432,7 @@ void CRender::add_leafs_Static(IRender_Visual* pVisual)
 	switch (pVisual->Type)
 	{
 	case MT_PARTICLE_GROUP: {
+		OPTICK_EVENT("R_dsgraph_structure::add_leafs_Static - Particle group");
 		// Add all children, doesn't perform any tests
 		PS::CParticleGroup* pG = (PS::CParticleGroup*)pVisual;
 		for (PS::CParticleGroup::SItemVecIt i_it = pG->items.begin(); i_it != pG->items.end(); i_it++)
@@ -419,6 +451,7 @@ void CRender::add_leafs_Static(IRender_Visual* pVisual)
 	}
 		return;
 	case MT_HIERRARHY: {
+		OPTICK_EVENT("R_dsgraph_structure::add_leafs_Static - Hierrarhy");
 		// Add all children, doesn't perform any tests
 		FHierrarhyVisual* pV = (FHierrarhyVisual*)pVisual;
 		I = pV->children.begin();
@@ -429,6 +462,7 @@ void CRender::add_leafs_Static(IRender_Visual* pVisual)
 		return;
 	case MT_SKELETON_ANIM:
 	case MT_SKELETON_RIGID: {
+		OPTICK_EVENT("R_dsgraph_structure::add_leafs_Static - Skeleton");
 		// Add all children, doesn't perform any tests
 		CKinematics* pV = (CKinematics*)pVisual;
 		pV->CalculateBones(TRUE);
@@ -439,6 +473,7 @@ void CRender::add_leafs_Static(IRender_Visual* pVisual)
 	}
 		return;
 	case MT_LOD: {
+		OPTICK_EVENT("R_dsgraph_structure::add_leafs_Static - Lod");
 		FLOD* pV = (FLOD*)pVisual;
 		float D;
 		float ssa = CalcSSA(D, pV->vis.sphere.P, pV);
@@ -463,12 +498,14 @@ void CRender::add_leafs_Static(IRender_Visual* pVisual)
 		return;
 	case MT_TREE_PM:
 	case MT_TREE_ST: {
+		OPTICK_EVENT("R_dsgraph_structure::add_leafs_Static - Tree");
 		// General type of visual
 		r_dsgraph_insert_static(pVisual);
 	}
 		return;
 	default: {
 		// General type of visual
+		OPTICK_EVENT("R_dsgraph_structure::add_leafs_Static - static");
 		r_dsgraph_insert_static(pVisual);
 	}
 		return;
@@ -497,6 +534,7 @@ BOOL CRender::add_Dynamic(IRender_Visual* pVisual, u32 planes)
 	switch (pVisual->Type)
 	{
 	case MT_PARTICLE_GROUP: {
+		OPTICK_EVENT("CRender::add_Dynamic - particle group");
 		// Add all children, doesn't perform any tests
 		PS::CParticleGroup* pG = (PS::CParticleGroup*)pVisual;
 		for (PS::CParticleGroup::SItemVecIt i_it = pG->items.begin(); i_it != pG->items.end(); i_it++)
@@ -530,6 +568,7 @@ BOOL CRender::add_Dynamic(IRender_Visual* pVisual, u32 planes)
 	}
 	break;
 	case MT_HIERRARHY: {
+		OPTICK_EVENT("CRender::add_Dynamic - hierrarhy");
 		// Add all children
 		FHierrarhyVisual* pV = (FHierrarhyVisual*)pVisual;
 		I = pV->children.begin();
@@ -548,6 +587,7 @@ BOOL CRender::add_Dynamic(IRender_Visual* pVisual, u32 planes)
 	break;
 	case MT_SKELETON_ANIM:
 	case MT_SKELETON_RIGID: {
+		OPTICK_EVENT("CRender::add_Dynamic - skeleton");
 		// Add all children, doesn't perform any tests
 		CKinematics* pV = (CKinematics*)pVisual;
 		BOOL _use_lod = FALSE;
@@ -585,6 +625,7 @@ BOOL CRender::add_Dynamic(IRender_Visual* pVisual, u32 planes)
 	}
 	break;
 	default: {
+		OPTICK_EVENT("CRender::add_Dynamic - default");
 		// General type of visual
 		r_dsgraph_insert_dynamic(pVisual, Tpos);
 	}
@@ -612,6 +653,7 @@ void CRender::add_Static(IRender_Visual* pVisual, u32 planes)
 	switch (pVisual->Type)
 	{
 	case MT_PARTICLE_GROUP: {
+		OPTICK_EVENT("CRender::add_Static - particle group");
 		// Add all children, doesn't perform any tests
 		PS::CParticleGroup* pG = (PS::CParticleGroup*)pVisual;
 		for (PS::CParticleGroup::SItemVecIt i_it = pG->items.begin(); i_it != pG->items.end(); i_it++)
@@ -645,6 +687,7 @@ void CRender::add_Static(IRender_Visual* pVisual, u32 planes)
 	}
 	break;
 	case MT_HIERRARHY: {
+		OPTICK_EVENT("CRender::add_Static - hierrarhy");
 		// Add all children
 		FHierrarhyVisual* pV = (FHierrarhyVisual*)pVisual;
 		I = pV->children.begin();
@@ -663,6 +706,7 @@ void CRender::add_Static(IRender_Visual* pVisual, u32 planes)
 	break;
 	case MT_SKELETON_ANIM:
 	case MT_SKELETON_RIGID: {
+		OPTICK_EVENT("CRender::add_Static - skeleton");
 		// Add all children, doesn't perform any tests
 		CKinematics* pV = (CKinematics*)pVisual;
 		pV->CalculateBones(TRUE);
@@ -681,6 +725,7 @@ void CRender::add_Static(IRender_Visual* pVisual, u32 planes)
 	}
 	break;
 	case MT_LOD: {
+		OPTICK_EVENT("CRender::add_Static - lod");
 		FLOD* pV = (FLOD*)pVisual;
 		float D;
 		float ssa = CalcSSA(D, pV->vis.sphere.P, pV);
@@ -705,11 +750,13 @@ void CRender::add_Static(IRender_Visual* pVisual, u32 planes)
 	break;
 	case MT_TREE_ST:
 	case MT_TREE_PM: {
+		OPTICK_EVENT("CRender::add_Static - tree");
 		// General type of visual
 		r_dsgraph_insert_static(pVisual);
 	}
 		return;
 	default: {
+		OPTICK_EVENT("CRender::add_Static - default");
 		// General type of visual
 		r_dsgraph_insert_static(pVisual);
 	}

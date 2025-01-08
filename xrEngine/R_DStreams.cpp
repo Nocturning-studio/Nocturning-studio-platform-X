@@ -40,7 +40,7 @@ void* _VertexStream::Lock(u32 vl_Count, u32 Stride, u32& vOffset)
 	OPTICK_EVENT("_VertexStream::Lock");
 
 #ifdef DEBUG
-	PGO(Msg("PGO:VB_LOCK:%d", vl_Count));
+	OPTICK_EVENT("PGO:VB_LOCK:%d", vl_Count));
 	VERIFY(0 == dbg_lock);
 	dbg_lock++;
 #endif
@@ -82,7 +82,7 @@ void _VertexStream::Unlock(u32 Count, u32 Stride)
 	OPTICK_EVENT("_VertexStream::Unlock");
 
 #ifdef DEBUG
-	PGO(Msg("PGO:VB_UNLOCK:%d", Count));
+	OPTICK_EVENT("PGO:VB_UNLOCK:%d");
 	VERIFY(1 == dbg_lock);
 	dbg_lock--;
 #endif

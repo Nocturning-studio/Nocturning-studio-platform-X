@@ -32,6 +32,8 @@ void Fvisual::Release()
 
 void Fvisual::Load(const char* N, IReader* data, u32 dwFlags)
 {
+	OPTICK_EVENT("Fvisual::Load");
+
 	IRender_Visual::Load(N, data, dwFlags);
 
 	D3DVERTEXELEMENT9 dcl[MAX_FVF_DECL_SIZE];
@@ -180,6 +182,8 @@ void Fvisual::Load(const char* N, IReader* data, u32 dwFlags)
 
 void Fvisual::Render(float)
 {
+	OPTICK_EVENT("Fvisual::Render");
+
 	if (m_fast && RImplementation.phase == CRender::PHASE_SHADOW_DEPTH)
 	{
 		RCache.set_Geometry(m_fast->rm_geom);
@@ -197,6 +201,8 @@ void Fvisual::Render(float)
 #define PCOPY(a) a = pFrom->a
 void Fvisual::Copy(IRender_Visual* pSrc)
 {
+	OPTICK_EVENT("Fvisual::Copy");
+
 	IRender_Visual::Copy(pSrc);
 
 	Fvisual* pFrom = dynamic_cast<Fvisual*>(pSrc);

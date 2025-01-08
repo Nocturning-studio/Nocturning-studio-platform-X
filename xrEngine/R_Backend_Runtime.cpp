@@ -28,7 +28,6 @@ void CBackend::OnFrameBegin()
 	OPTICK_EVENT("CBackend::OnFrameBegin");
 
 #ifndef DEDICATED_SERVER
-	PGO(Msg("PGO:*****frame[%d]*****", Device.dwFrame));
 	Memory.mem_fill(&stat, 0, sizeof(stat));
 	Vertex.Flush();
 	Index.Flush();
@@ -153,7 +152,7 @@ void CBackend::set_Textures(STextureList* _T)
 #endif
 				if (load_surf)
 				{
-					PGO(Msg("PGO:tex%d:%s", load_id, load_surf->cName.c_str()));
+					OPTICK_EVENT("set_Textures - load_surf");
 					load_surf->bind(load_id);
 					//					load_surf->Apply	(load_id);
 				}
@@ -173,7 +172,7 @@ void CBackend::set_Textures(STextureList* _T)
 #endif
 				if (load_surf)
 				{
-					PGO(Msg("PGO:tex%d:%s", load_id, load_surf->cName.c_str()));
+					OPTICK_EVENT("set_Textures - load_surf");
 					load_surf->bind(load_id);
 					//					load_surf->Apply	(load_id);
 				}

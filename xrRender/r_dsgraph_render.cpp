@@ -15,17 +15,20 @@ extern float r_ssaGLOD_start, r_ssaGLOD_end;
 
 ICF float calcLOD(float ssa /*fDistSq*/, float R)
 {
+	OPTICK_EVENT("calcLOD");
 	return _sqrt(clampr((ssa - r_ssaGLOD_end) / (r_ssaGLOD_start - r_ssaGLOD_end), 0.f, 1.f));
 }
 
 // NORMAL
 IC bool cmp_normal_items(const _NormalItem& N1, const _NormalItem& N2)
 {
+	OPTICK_EVENT("cmp_normal_items");
 	return (N1.ssa > N2.ssa);
 }
 
 void __fastcall mapNormal_Render(mapNormalItems& N)
 {
+	OPTICK_EVENT("mapNormal_Render");
 	// *** DIRECT ***
 	std::sort(N.begin(), N.end(), cmp_normal_items);
 	_NormalItem *I = &*N.begin(), *E = &*N.end();
@@ -39,11 +42,15 @@ void __fastcall mapNormal_Render(mapNormalItems& N)
 // Matrix
 IC bool cmp_matrix_items(const _MatrixItem& N1, const _MatrixItem& N2)
 {
+	OPTICK_EVENT("cmp_matrix_items");
+
 	return (N1.ssa > N2.ssa);
 }
 
 void __fastcall mapMatrix_Render(mapMatrixItems& N)
 {
+	OPTICK_EVENT("mapMatrix_Render");
+
 	// *** DIRECT ***
 	std::sort(N.begin(), N.end(), cmp_matrix_items);
 	_MatrixItem *I = &*N.begin(), *E = &*N.end();
@@ -61,6 +68,8 @@ void __fastcall mapMatrix_Render(mapMatrixItems& N)
 // ALPHA
 void __fastcall sorted_L1(mapSorted_Node* N)
 {
+	OPTICK_EVENT("sorted_L1");
+
 	VERIFY(N);
 	IRender_Visual* V = N->val.pVisual;
 	VERIFY(V && V->shader._get());
@@ -73,42 +82,60 @@ void __fastcall sorted_L1(mapSorted_Node* N)
 
 IC bool cmp_vs_nrm(mapNormalVS::TNode* N1, mapNormalVS::TNode* N2)
 {
+	OPTICK_EVENT("cmp_vs_nrm");
+
 	return (N1->val.ssa > N2->val.ssa);
 }
 IC bool cmp_vs_mat(mapMatrixVS::TNode* N1, mapMatrixVS::TNode* N2)
 {
+	OPTICK_EVENT("cmp_vs_mat");
+
 	return (N1->val.ssa > N2->val.ssa);
 }
 
 IC bool cmp_ps_nrm(mapNormalPS::TNode* N1, mapNormalPS::TNode* N2)
 {
+	OPTICK_EVENT("cmp_ps_nrm");
+
 	return (N1->val.ssa > N2->val.ssa);
 }
 IC bool cmp_ps_mat(mapMatrixPS::TNode* N1, mapMatrixPS::TNode* N2)
 {
+	OPTICK_EVENT("cmp_ps_mat");
+
 	return (N1->val.ssa > N2->val.ssa);
 }
 
 IC bool cmp_cs_nrm(mapNormalCS::TNode* N1, mapNormalCS::TNode* N2)
 {
+	OPTICK_EVENT("cmp_cs_nrm");
+
 	return (N1->val.ssa > N2->val.ssa);
 }
 IC bool cmp_cs_mat(mapMatrixCS::TNode* N1, mapMatrixCS::TNode* N2)
 {
+	OPTICK_EVENT("cmp_cs_mat");
+
 	return (N1->val.ssa > N2->val.ssa);
 }
 
 IC bool cmp_states_nrm(mapNormalStates::TNode* N1, mapNormalStates::TNode* N2)
 {
+	OPTICK_EVENT("cmp_states_nrm");
+
 	return (N1->val.ssa > N2->val.ssa);
 }
 IC bool cmp_states_mat(mapMatrixStates::TNode* N1, mapMatrixStates::TNode* N2)
 {
+	OPTICK_EVENT("cmp_states_mat");
+
 	return (N1->val.ssa > N2->val.ssa);
 }
 
 IC bool cmp_textures_lex2_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::TNode* N2)
 {
+	OPTICK_EVENT("cmp_textures_lex2_nrm");
+
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	if ((*t1)[0] < (*t2)[0])
@@ -122,6 +149,8 @@ IC bool cmp_textures_lex2_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::T
 }
 IC bool cmp_textures_lex2_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::TNode* N2)
 {
+	OPTICK_EVENT("cmp_textures_lex2_mat");
+
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	if ((*t1)[0] < (*t2)[0])
@@ -135,6 +164,8 @@ IC bool cmp_textures_lex2_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::T
 }
 IC bool cmp_textures_lex3_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::TNode* N2)
 {
+	OPTICK_EVENT("cmp_textures_lex3_nrm");
+
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	if ((*t1)[0] < (*t2)[0])
@@ -152,6 +183,8 @@ IC bool cmp_textures_lex3_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::T
 }
 IC bool cmp_textures_lex3_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::TNode* N2)
 {
+	OPTICK_EVENT("cmp_textures_lex3_mat");
+
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	if ((*t1)[0] < (*t2)[0])
@@ -169,22 +202,30 @@ IC bool cmp_textures_lex3_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::T
 }
 IC bool cmp_textures_lexN_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::TNode* N2)
 {
+	OPTICK_EVENT("cmp_textures_lexN_nrm");
+
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	return std::lexicographical_compare(t1->begin(), t1->end(), t2->begin(), t2->end());
 }
 IC bool cmp_textures_lexN_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::TNode* N2)
 {
+	OPTICK_EVENT("cmp_textures_lexN_mat");
+
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	return std::lexicographical_compare(t1->begin(), t1->end(), t2->begin(), t2->end());
 }
 IC bool cmp_textures_ssa_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::TNode* N2)
 {
+	OPTICK_EVENT("cmp_textures_ssa_nrm");
+
 	return (N1->val.ssa > N2->val.ssa);
 }
 IC bool cmp_textures_ssa_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::TNode* N2)
 {
+	OPTICK_EVENT("cmp_textures_ssa_mat");
+
 	return (N1->val.ssa > N2->val.ssa);
 }
 
@@ -192,6 +233,8 @@ void sort_tlist_nrm(xr_vector<mapNormalTextures::TNode*, render_alloc<mapNormalT
 					xr_vector<mapNormalTextures::TNode*, render_alloc<mapNormalTextures::TNode*>>& temp,
 					mapNormalTextures& textures, BOOL bSSA)
 {
+	OPTICK_EVENT("sort_tlist_nrm");
+
 	int amount = textures.begin()->key->size();
 	if (bSSA)
 	{
@@ -243,6 +286,8 @@ void sort_tlist_mat(xr_vector<mapMatrixTextures::TNode*, render_alloc<mapMatrixT
 					xr_vector<mapMatrixTextures::TNode*, render_alloc<mapMatrixTextures::TNode*>>& temp,
 					mapMatrixTextures& textures, BOOL bSSA)
 {
+	OPTICK_EVENT("sort_tlist_mat");
+
 	int amount = textures.begin()->key->size();
 	if (bSSA)
 	{
@@ -299,6 +344,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 	// **************************************************** NORMAL
 	// Perform sorting based on ScreenSpaceArea
 	// Sorting by SSA and changes minimizations
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_graph - Normal");
 	{
 		RCache.set_xform_world(Fidentity);
 		mapNormalVS& vs = mapNormal[_priority];
@@ -376,6 +422,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 	// **************************************************** MATRIX
 	// Perform sorting based on ScreenSpaceArea
 	// Sorting by SSA and changes minimizations
+	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_graph - Matrix");
 	{
 		mapMatrixVS& vs = mapMatrix[_priority];
 		vs.getANY_P(matVS);
@@ -551,6 +598,8 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 
 	if (_precise_portals && RImplementation.rmPortals)
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_subspace - portals");
+
 		// Check if camera is too near to some portal - if so force DualRender
 		Fvector box_radius;
 		box_radius.set(EPS_L * 20, EPS_L * 20, EPS_L * 20);
@@ -571,6 +620,8 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 	// Determine visibility for static geometry hierrarhy
 	for (u32 s_it = 0; s_it < PortalTraverser.r_sectors.size(); s_it++)
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_subspace - sectors");
+
 		CSector* sector = (CSector*)PortalTraverser.r_sectors[s_it];
 		IRender_Visual* root = sector->root();
 		for (u32 v_it = 0; v_it < sector->r_frustums.size(); v_it++)
@@ -582,6 +633,8 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 
 	if (_dynamic)
 	{
+		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_subspace - dynamic");
+
 		set_Object(0);
 
 		// Traverse object database
@@ -620,82 +673,3 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 	View = 0;
 }
 
-
-#include "..\xrEngine\fhierrarhyvisual.h"
-#include "..\xrEngine\SkeletonCustom.h"
-#include "..\xrEngine\fmesh.h"
-#include "flod.h"
-
-void R_dsgraph_structure::r_dsgraph_render_R1_box(IRender_Sector* _S, Fbox& BB, int sh)
-{
-	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_R1_box");
-
-	CSector* S = (CSector*)_S;
-	lstVisuals.clear();
-	lstVisuals.push_back(S->root());
-
-	for (u32 test = 0; test < lstVisuals.size(); test++)
-	{
-		IRender_Visual* V = lstVisuals[test];
-
-		// Visual is 100% visible - simply add it
-		xr_vector<IRender_Visual*>::iterator I, E; // it may be usefull for 'hierrarhy' visuals
-
-		switch (V->Type)
-		{
-		case MT_HIERRARHY: {
-			// Add all children
-			FHierrarhyVisual* pV = (FHierrarhyVisual*)V;
-			I = pV->children.begin();
-			E = pV->children.end();
-			for (; I != E; I++)
-			{
-				IRender_Visual* T = *I;
-				if (BB.intersect(T->vis.box))
-					lstVisuals.push_back(T);
-			}
-		}
-		break;
-		case MT_SKELETON_ANIM:
-		case MT_SKELETON_RIGID: {
-			// Add all children	(s)
-			CKinematics* pV = (CKinematics*)V;
-			pV->CalculateBones(TRUE);
-			I = pV->children.begin();
-			E = pV->children.end();
-			for (; I != E; I++)
-			{
-				IRender_Visual* T = *I;
-				if (BB.intersect(T->vis.box))
-					lstVisuals.push_back(T);
-			}
-		}
-		break;
-		case MT_LOD: {
-			FLOD* pV = (FLOD*)V;
-			I = pV->children.begin();
-			E = pV->children.end();
-			for (; I != E; I++)
-			{
-				IRender_Visual* T = *I;
-				if (BB.intersect(T->vis.box))
-					lstVisuals.push_back(T);
-			}
-		}
-		break;
-		default: {
-			// Renderable visual
-			ShaderElement* SElem = V->shader->E[sh]._get();
-			if (SElem)
-			{
-				for (u32 pass = 0; pass < SElem->passes.size(); pass++)
-				{
-					RCache.set_Element(SElem, pass);
-					V->Render(-1.f);
-				}
-			}
-		}
-		break;
-		}
-	}
-}
