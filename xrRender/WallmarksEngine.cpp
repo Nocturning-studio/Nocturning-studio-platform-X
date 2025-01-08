@@ -9,8 +9,6 @@
 #include "..\xrEngine\GameFont.h"
 #include "..\xrEngine\SkeletonCustom.h"
 
-u32 g_r = 1;
-
 namespace WallmarksEngine
 {
 struct wm_slot
@@ -354,7 +352,7 @@ void CWallmarksEngine::AddSkeletonWallmark(intrusive_ptr<CSkeletonWallmark> wm)
 {
 	OPTICK_EVENT("CWallmarksEngine::AddSkeletonWallmark");
 
-	if (0 == g_r || (::RImplementation.phase != CRender::PHASE_NORMAL && ::RImplementation.phase != CRender::PHASE_DEPTH_PREPASS))
+	if (::RImplementation.phase != CRender::PHASE_NORMAL && ::RImplementation.phase != CRender::PHASE_DEPTH_PREPASS)
 		return;
 
 	if (!::RImplementation.val_bHUD)

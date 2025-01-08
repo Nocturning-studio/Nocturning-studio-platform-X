@@ -125,6 +125,7 @@ class CRender : public R_dsgraph_structure
 
 	bool m_bFirstFrameAfterReset; // Determines weather the frame is the first after resetting device.
 
+	bool m_need_render_sun;
 	xr_vector<sun::cascade> m_sun_cascades;
 
   private:
@@ -141,13 +142,29 @@ class CRender : public R_dsgraph_structure
 	void add_leafs_Static(IRender_Visual* pVisual);	 // if detected node's full visibility
 
   public:
+	bool need_render_sun();
+	void check_distort();
+
 	void render_main(Fmatrix& mCombined, bool _fportals);
-	void render_forward();
+	void query_wait();
 	void render_lights(light_Package& LP);
-	void render_menu();
 	void render_sun_cascade(u32 cascade_ind);
 	void init_cacades();
 	void render_sun_cascades();
+
+	void render_stage_hom();
+	void render_stage_depth_prepass();
+	void render_stage_gbuffer_main();
+	void render_stage_gbuffer_secondary();
+	void render_stage_occlusion_culling();
+	void render_stage_forward();
+	void update_shadow_map_visibility();
+	void render_stage_sun();
+	void render_stage_lights();
+	void render_stage_postprocess();
+
+	void RenderWorld();
+	void RenderMenu();
 
   public:
 	ShaderElement* rimp_select_sh_static(IRender_Visual* pVisual, float cdist_sq);

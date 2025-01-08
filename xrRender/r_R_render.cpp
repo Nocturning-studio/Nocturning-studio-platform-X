@@ -11,6 +11,20 @@ IC bool pred_sp_sort(ISpatial* _1, ISpatial* _2)
 	return d1 < d2;
 }
 
+IC bool CRender::need_render_sun()
+{
+	Fcolor sun_color = ((light*)Lights.sun_adapted._get())->color;
+	return ps_r_lighting_flags.test(RFLAG_SUN) && (u_diffuse2s(sun_color.r, sun_color.g, sun_color.b) > EPS);
+}
+
+IC void CRender::check_distort()
+{
+	if(!0 == mapDistort.size())
+	{
+		Msg("! mapDistort isn't deleted correctly!");
+	}
+}
+
 void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals)
 {
 	OPTICK_EVENT("CRender::render_main");
@@ -152,9 +166,39 @@ void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals)
 	}
 }
 
-void CRender::render_menu()
+void CRender::query_wait()
 {
-	OPTICK_EVENT("CRender::render_menu");
+	OPTICK_EVENT("CRender::Render - Sync point");
+
+	Device.Statistic->RenderDUMP_Wait_S.Begin();
+
+	CTimer Timer;
+	Timer.Start();
+
+	BOOL result = FALSE;
+	HRESULT hr = S_FALSE;
+
+	while ((hr = q_sync_point[q_sync_count]->GetData(&result, sizeof(result), D3DGETDATA_FLUSH)) == S_FALSE)
+	{
+		if (!SwitchToThread())
+			Sleep(ps_r_thread_wait_sleep);
+
+		if (Timer.GetElapsed_ms() > 500)
+		{
+			result = FALSE;
+			break;
+		}
+	}
+
+	Device.Statistic->RenderDUMP_Wait_S.End();
+
+	q_sync_count = (q_sync_count + 1) % HW.Caps.iGPUNum;
+	CHK_DX(q_sync_point[q_sync_count]->Issue(D3DISSUE_END));
+}
+
+void CRender::RenderMenu()
+{
+	OPTICK_EVENT("CRender::RenderMenu");
 
 	//	Globals
 	RCache.set_CullMode(CULL_CCW);
@@ -202,15 +246,23 @@ void CRender::render_menu()
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
-void CRender::render_forward()
+void CRender::render_stage_forward()
 {
-	OPTICK_EVENT("CRender::render_forward");
+	OPTICK_EVENT("CRender::render_stage_forward()");
 
 	VERIFY(0 == mapDistort.size());
 
 	//******* Main render - second order geometry (the one, that doesn't support deffering)
-	//.todo: should be done inside "combine" with estimation of of autoexposure, tone-mapping, etc.
 	{
+		Target->u_setrt(Target->rt_Generic_1, Target->rt_ZBuffer, NULL, NULL, HW.pBaseZB);
+
+		RCache.set_CullMode(CULL_CCW);
+		RCache.set_Stencil(FALSE);
+		RCache.set_ColorWriteEnable();
+
+		// if (g_pGamePersistent)
+		//	g_pGamePersistent->Environment().RenderClouds();
+
 		// level
 		r_pmask(false, true); // enable priority "1"
 		phase = PHASE_NORMAL;
@@ -234,114 +286,47 @@ void CRender::render_forward()
 	}
 }
 
-extern u32 g_r;
-void CRender::Render()
+void CRender::render_stage_depth_prepass()
 {
-	OPTICK_EVENT("CRender::Render");
+	OPTICK_EVENT("CRender::render_stage_depth_prepass()");
 
-	Device.Statistic->RenderCALC.Begin();
-	g_r = 1;
-	VERIFY(0 == mapDistort.size());
+	r_pmask(true, false); // enable priority "0"
 
-	bool _menu_pp = g_pGamePersistent ? g_pGamePersistent->OnRenderPPUI_query() : false;
-	if (_menu_pp)
-	{
-		render_menu();
-		return;
-	};
+	set_Recorder(NULL);
 
-	if (!(g_pGameLevel && g_pGameLevel->pHUD))
-		return;
+	phase = PHASE_DEPTH_PREPASS;
 
-	if (m_bFirstFrameAfterReset)
-	{
-		m_bFirstFrameAfterReset = false;
-		return;
-	}
+	render_main(Device.mFullTransform, false);
 
-	// Configure
-	Fcolor sun_color = ((light*)Lights.sun_adapted._get())->color;
-	BOOL bSUN = ps_r_lighting_flags.test(RFLAG_SUN) && (u_diffuse2s(sun_color.r, sun_color.g, sun_color.b) > EPS);
+	RCache.set_ColorWriteEnable(FALSE);
+	RCache.set_ZWriteEnable(TRUE);
 
-	// HOM
-	ViewBase.CreateFromMatrix(Device.mFullTransform, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
-	View = 0;
-	if (!ps_render_flags.test(RFLAG_EXP_MT_CALC))
-	{
-		HOM.Enable();
-		HOM.Render(ViewBase);
-	}
+	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL));
 
-	//*******
-	// Sync point
-	Device.Statistic->RenderDUMP_Wait_S.Begin();
-	if (1)
-	{
-		OPTICK_EVENT("CRender::Render - Sync point");
+	RCache.enable_anisotropy_filtering();
 
-		CTimer T;
-		T.Start();
-		BOOL result = FALSE;
-		HRESULT hr = S_FALSE;
-		while ((hr = q_sync_point[q_sync_count]->GetData(&result, sizeof(result), D3DGETDATA_FLUSH)) == S_FALSE)
-		{
-			if (!SwitchToThread())
-				Sleep(ps_r_thread_wait_sleep);
-			if (T.GetElapsed_ms() > 500)
-			{
-				result = FALSE;
-				break;
-			}
-		}
-	}
-	Device.Statistic->RenderDUMP_Wait_S.End();
-	q_sync_count = (q_sync_count + 1) % HW.Caps.iGPUNum;
-	CHK_DX(q_sync_point[q_sync_count]->Issue(D3DISSUE_END));
+	r_dsgraph_render_graph(0);
 
-	Target->clear_gbuffer();
+	if (Details)
+		Details->Render();
 
-	//******* Z-prefill calc - DEFERRER RENDERER
-	if (ps_r_ls_flags.test(RFLAG_Z_PREPASS))
-	{
-		OPTICK_EVENT("CRender::Render - Z-Prepass");
+	r_dsgraph_render_hud();
 
-		r_pmask(true, false); // enable priority "0"
+	r_dsgraph_render_lods(true, true);
 
-		set_Recorder(NULL);
+	RCache.disable_anisotropy_filtering();
 
-		phase = PHASE_DEPTH_PREPASS;
+	RCache.set_ColorWriteEnable(TRUE);
+	RCache.set_ZWriteEnable(FALSE);
+}
 
-		render_main(Device.mFullTransform, false);
-
-		RCache.set_ColorWriteEnable(FALSE);
-		RCache.set_ZWriteEnable(TRUE);
-
-		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL));
-
-		RCache.enable_anisotropy_filtering();
-
-		r_dsgraph_render_graph(0);
-
-		if (Details)
-			Details->Render();
-
-		r_dsgraph_render_hud();
-
-		r_dsgraph_render_lods(true, true);
-
-		RCache.disable_anisotropy_filtering();
-
-		RCache.set_ColorWriteEnable(TRUE);
-		RCache.set_ZWriteEnable(FALSE);
-	}
-
-	//******* Main calc - DEFERRER RENDERER
-	// Main calc
-	OPTICK_EVENT("CRender::Render - Main pass");
+void CRender::render_stage_gbuffer_main()
+{
+	OPTICK_EVENT("CRender::render_stage_gbuffer_main()");
 
 	r_pmask(true, false, true); // enable priority "0",+ capture wmarks
 
-	if (bSUN)
+	if (m_need_render_sun)
 		set_Recorder(&main_coarse_structure);
 	else
 		set_Recorder(NULL);
@@ -351,8 +336,6 @@ void CRender::Render()
 	set_Recorder(NULL);
 	r_pmask(true, false); // disable priority "1"
 
-	//******* Main render :: PART-0	-- first
-	// level, SPLIT
 	Device.Statistic->RenderCALC_GBuffer.Begin();
 	RCache.enable_anisotropy_filtering();
 
@@ -376,9 +359,39 @@ void CRender::Render()
 
 	RCache.disable_anisotropy_filtering();
 	Device.Statistic->RenderCALC_GBuffer.End();
+}
 
-	//******* Occlusion testing of volume-limited light-sources
-	OPTICK_EVENT("CRender::Render - Occlusion culling");
+void CRender::render_stage_gbuffer_secondary()
+{
+	OPTICK_EVENT("CRender::render_stage_gbuffer_secondary()");
+
+	PortalTraverser.fade_render();
+
+	RCache.enable_anisotropy_filtering();
+
+	Target->create_gbuffer();
+
+	if (psDeviceFlags.test(rsWireframe))
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
+
+	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL));
+
+	RCache.set_ZWriteEnable(FALSE);
+
+	r_dsgraph_render_hud();
+
+	r_dsgraph_render_lods(true, true);
+
+	if (psDeviceFlags.test(rsWireframe))
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
+
+	RCache.disable_anisotropy_filtering();
+}
+
+void CRender::render_stage_occlusion_culling()
+{
+	OPTICK_EVENT("CRender::OcclusionCulling");
+
 	Target->phase_occq();
 
 	LP_normal.clear();
@@ -433,77 +446,48 @@ void CRender::Render()
 
 	LP_normal.sort();
 	LP_pending.sort();
+}
 
-	//******* Main render :: PART-1 (second)
-	// level
-	OPTICK_EVENT("CRender::Render - Lods and hud pass");
+void CRender::update_shadow_map_visibility()
+{
+	OPTICK_EVENT("CRender::update_shadow_map_visibility()");
 
-	PortalTraverser.fade_render();
-
-	RCache.enable_anisotropy_filtering();
-
-	Target->create_gbuffer();
-
-	if (psDeviceFlags.test(rsWireframe))
-		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
-
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL));
-
-	RCache.set_ZWriteEnable(FALSE);
-
-	r_dsgraph_render_hud();
-
-	r_dsgraph_render_lods(true, true);
-
-	if (psDeviceFlags.test(rsWireframe))
-		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
-
-	RCache.disable_anisotropy_filtering();
-
-	// Wall marks
-	if (Wallmarks)
+	u32 it = 0;
+	for (it = 0; it < Lights_LastFrame.size(); it++)
 	{
-		Target->phase_wallmarks();
-
-		//g_r = 0;
-
-		Wallmarks->Render(); // wallmarks has priority as normal geometry
-	}
-
-	// Update incremental shadowmap-visibility solver
-	{
-		OPTICK_EVENT("CRender::Render - Shadow map visibility solver");
-
-		u32 it = 0;
-		for (it = 0; it < Lights_LastFrame.size(); it++)
+		if (0 == Lights_LastFrame[it])
+			continue;
+		try
 		{
-			if (0 == Lights_LastFrame[it])
-				continue;
-			try
-			{
-				Lights_LastFrame[it]->svis.flushoccq();
-			}
-			catch (...)
-			{
-				Msg("! Failed to flush-OCCq on light [%d] %X", it, *(u32*)(&Lights_LastFrame[it]));
-			}
+			Lights_LastFrame[it]->svis.flushoccq();
 		}
-		Lights_LastFrame.clear();
+		catch (...)
+		{
+			Msg("! Failed to flush-OCCq on light [%d] %X", it, *(u32*)(&Lights_LastFrame[it]));
+		}
 	}
+	Lights_LastFrame.clear();
+}
 
-	// Directional light - sun
-	if (bSUN)
-	{
-		OPTICK_EVENT("CRender::Render - Sun");
-		Device.Statistic->RenderCALC_SUN.Begin();
-		RImplementation.stats.l_visible++;
-		render_sun_cascades();
-		Target->dwLightMarkerID += 2;
-		Device.Statistic->RenderCALC_SUN.End();
-	}
+void CRender::render_stage_sun()
+{
+	OPTICK_EVENT("CRender::render_sun");
 
-	OPTICK_EVENT("CRender::Render - Lights");
+	Device.Statistic->RenderCALC_SUN.Begin();
+
+	RImplementation.stats.l_visible++;
+	render_sun_cascades();
+	Target->dwLightMarkerID += 2;
+
+	Device.Statistic->RenderCALC_SUN.End();
+}
+
+void CRender::render_stage_lights()
+{
+	OPTICK_EVENT("CRender::render_stage_lights()");
+
 	Device.Statistic->RenderCALC_LIGHTS.Begin();
+
 	// Lighting, non dependant on OCCQ
 	Target->phase_accumulator();
 
@@ -511,25 +495,16 @@ void CRender::Render()
 
 	// Lighting, dependant on OCCQ
 	render_lights(LP_pending);
+
 	Device.Statistic->RenderCALC_LIGHTS.End();
+}
 
-	HOM.Disable();
+void CRender::render_stage_postprocess()
+{
+	OPTICK_EVENT("CRender::render_stage_postprocess");
 
-	OPTICK_EVENT("CRender::Render - Ambient occlusion");
-	Device.Statistic->RenderCALC_AO.Begin();
-	Target->phase_ao();
-	Device.Statistic->RenderCALC_AO.End();
-
-	// Postprocess
 	Device.Statistic->RenderCALC_POSTPROCESS.Begin();
 
-	Target->phase_autoexposure_pipeline_start();
-
-	OPTICK_EVENT("CRender::Render - Scene combining");
-	Target->phase_combine();
-
-
-	OPTICK_EVENT("CRender::Render - Postprocess");
 	// Generic0 -> Generic1
 	Target->phase_antialiasing();
 
@@ -546,7 +521,7 @@ void CRender::Render()
 	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
 		Target->phase_autoexposure();
 
-	//if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
+	// if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
 	//	Target->motion_blur_phase_save_frame();
 
 	// Generic1 -> Generic0 -> Generic1
@@ -554,7 +529,7 @@ void CRender::Render()
 		Target->phase_depth_of_field();
 
 	// Generic1 -> Generic0 -> Generic1
-	//if (ps_r_postprocess_flags.test(RFLAG_BARREL_BLUR))
+	// if (ps_r_postprocess_flags.test(RFLAG_BARREL_BLUR))
 	//	Target->phase_barrel_blur();
 
 	if (ps_render_flags.test(RFLAG_LENS_FLARES))
@@ -566,17 +541,126 @@ void CRender::Render()
 	// Generic0 -> Generic1
 	Target->phase_effectors();
 
-	Device.Statistic->RenderCALC_POSTPROCESS.End();
-
 	// Generic1 -> Generic0
 	Target->draw_overlays();
+
+	Device.Statistic->RenderCALC_POSTPROCESS.End();
+}
+
+void CRender::render_stage_hom()
+{
+	OPTICK_EVENT("CRender::render_stage_hom");
+
+	ViewBase.CreateFromMatrix(Device.mFullTransform, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
+	View = 0;
+
+	if (!ps_render_flags.test(RFLAG_EXP_MT_CALC))
+	{
+		HOM.Enable();
+		HOM.Render(ViewBase);
+	}
+}
+
+void CRender::RenderWorld()
+{
+	OPTICK_EVENT("CRender::RenderWorld");
+
+	if (m_bFirstFrameAfterReset)
+	{
+		m_bFirstFrameAfterReset = false;
+		return;
+	}
+
+	// Configure
+	m_need_render_sun = need_render_sun();
+
+	// HOM
+	render_stage_hom();
+
+	//*******
+	// Sync point
+	query_wait();
+
+	Target->clear_gbuffer();
+
+	//******* Z-prefill calc - DEFERRER RENDERER
+	if (ps_r_ls_flags.test(RFLAG_Z_PREPASS))
+		render_stage_depth_prepass();
+
+	//******* Main render :: PART-0	-- first
+	// level, SPLIT
+	render_stage_gbuffer_main();
+
+	//******* Occlusion testing of volume-limited light-sources
+	render_stage_occlusion_culling();
+
+	//******* Main render :: PART-1 (second)
+	render_stage_gbuffer_secondary();
+
+	// Wall marks
+	if (Wallmarks)
+	{
+		Target->phase_wallmarks();
+		Wallmarks->Render(); // wallmarks has priority as normal geometry
+	}
+
+	// Update incremental shadowmap-visibility solver
+	update_shadow_map_visibility();
+
+	// Directional light - sun
+	if (m_need_render_sun)
+		render_stage_sun();
+
+	render_stage_lights();
+
+	HOM.Disable();
+
+	// Ambient occlusion rendering
+	Target->phase_ao();
+
+	Target->phase_autoexposure_pipeline_start();
+
+	// Scene combining stage
+	Target->phase_combine();
+
+	// Forward rendering
+	render_stage_forward();
+
+	// Add volumetric lights from buffer to screen
+	Target->phase_apply_volumetric();
+
+	// Postprocess
+	render_stage_postprocess();
+
+	if (g_pGamePersistent)
+		g_pGamePersistent->OnRenderPPUI_main();
 
 	Target->phase_output_to_screen();
 
 	Target->phase_autoexposure_pipeline_clear();
+}
 
-	VERIFY(0 == mapDistort.size());
+void CRender::Render()
+{
+	OPTICK_EVENT("CRender::Render");
+
+	Device.Statistic->RenderCALC.Begin();
+
+	bool _menu_pp = g_pGamePersistent ? g_pGamePersistent->OnRenderPPUI_query() : false;
+	if (_menu_pp)
+	{
+		RenderMenu();
+	}
+	else
+	{
+		if (!(g_pGameLevel && g_pGameLevel->pHUD))
+			return;
+
+		RenderWorld();
+	}
 
 	Device.Statistic->RenderCALC.End();
+
+	return;
 }
 

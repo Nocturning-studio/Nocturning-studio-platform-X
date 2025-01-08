@@ -10,6 +10,8 @@ void CRenderTarget::phase_ao()
 {
 	OPTICK_EVENT("CRenderTarget::phase_ao");
 
+	Device.Statistic->RenderCALC_AO.Begin();
+
 	u32 Offset = 0;
 	u32 C = color_rgba(0, 0, 0, 255);
 
@@ -66,5 +68,7 @@ void CRenderTarget::phase_ao()
 			RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 		}
 	}
+
+	Device.Statistic->RenderCALC_AO.End();
 }
 ///////////////////////////////////////////////////////////////////////////////////

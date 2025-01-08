@@ -173,26 +173,6 @@ void CRenderTarget::phase_combine()
 	RCache.set_c("env_color", envclr);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-	// Forward rendering
-#ifndef MASTER_GOLD
-	if (ps_r_debug_render == 0)
-#endif
-	{
-		u_setrt(rt_Generic_1, rt_ZBuffer, NULL, NULL, HW.pBaseZB);
-
-		RCache.set_CullMode(CULL_CCW);
-		RCache.set_Stencil(FALSE);
-		RCache.set_ColorWriteEnable();
-		//if (g_pGamePersistent)
-		//	g_pGamePersistent->Environment().RenderClouds();
-		RImplementation.render_forward();
-
-		if (g_pGamePersistent)
-			g_pGamePersistent->OnRenderPPUI_main(); // PP-UI
-	}
-
-	phase_apply_volumetric();
-
 #ifdef DEBUG
 	RCache.set_CullMode(CULL_CCW);
 	static xr_vector<Fplane> saved_dbg_planes;
