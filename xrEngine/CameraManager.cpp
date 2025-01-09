@@ -303,11 +303,13 @@ void CCameraManager::Update(const Fvector& P, const Fvector& D, const Fvector& N
 	}
 #endif // DEBUG
 	// camera
-	psCamInert *= 0.7f;
+	float inertion = psCamInert * 0.7f;
+
 	if (flags & CCameraBase::flPositionRigid)
 		m_cam_info.p.set(P);
 	else
-		m_cam_info.p.inertion(P, psCamInert);
+		m_cam_info.p.inertion(P, inertion);
+
 	if (flags & CCameraBase::flDirectionRigid)
 	{
 		m_cam_info.d.set(D);
@@ -315,8 +317,8 @@ void CCameraManager::Update(const Fvector& P, const Fvector& D, const Fvector& N
 	}
 	else
 	{
-		m_cam_info.d.inertion(D, psCamInert);
-		m_cam_info.n.inertion(N, psCamInert);
+		m_cam_info.d.inertion(D, inertion);
+		m_cam_info.n.inertion(N, inertion);
 	}
 
 	// Normalize
