@@ -27,6 +27,8 @@
 
 // Motion blur previous frame
 #define r_RT_mblur_saved_frame "$user$mblur_saved_frame"
+#define r_RT_mblur_dilation_map_0 "$user$mblur_dilation_map_0"
+#define r_RT_mblur_dilation_map_1 "$user$mblur_dilation_map_1"
 
 #define r_RT_reflections "$user$reflections"
 

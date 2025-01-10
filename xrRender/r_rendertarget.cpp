@@ -100,7 +100,9 @@ CRenderTarget::CRenderTarget()
 	rt_Generic_0.create(r_RT_generic0, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	rt_Generic_1.create(r_RT_generic1, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
-	//rt_Motion_Blur_Saved_Frame.create(r_RT_mblur_saved_frame, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	rt_Motion_Blur_Saved_Frame.create(r_RT_mblur_saved_frame, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	rt_Motion_Blur_Dilation_Map_0.create(r_RT_mblur_dilation_map_0, u32(dwWidth * 0.25f), u32(dwHeight * 0.25f), D3DFMT_G16R16);
+	rt_Motion_Blur_Dilation_Map_1.create(r_RT_mblur_dilation_map_1, u32(dwWidth * 0.25f), u32(dwHeight * 0.25f), D3DFMT_G16R16);
 
 	//rt_Reflections.create(r_RT_reflections, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 

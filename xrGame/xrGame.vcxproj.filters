@@ -2296,6 +2296,12 @@
     <Filter Include="UI\UIWindows\Hint">
       <UniqueIdentifier>{5a25bc1d-3532-4a55-ab2c-86c9ae0584de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Effectors\Actor\Core">
+      <UniqueIdentifier>{d6db79be-a775-4bb0-89bd-42fdda4e36da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Client\Effectors\Actor\Effectors">
+      <UniqueIdentifier>{108c44fd-c919-4153-806d-b71bf8a75195}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -4692,21 +4698,6 @@
     <ClInclude Include="cameralook.h">
       <Filter>Core\Client\Cameras</Filter>
     </ClInclude>
-    <ClInclude Include="ActorEffector.h">
-      <Filter>Core\Client\Effectors\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraEffector.h">
-      <Filter>Core\Client\Effectors\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="EffectorBobbing.h">
-      <Filter>Core\Client\Effectors\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="EffectorFall.h">
-      <Filter>Core\Client\Effectors\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="SleepEffector.h">
-      <Filter>Core\Client\Effectors\Actor</Filter>
-    </ClInclude>
     <ClInclude Include="ai\Monsters\ai_monster_effector.h">
       <Filter>Core\Client\Effectors\monsters_%3f%3f%3f</Filter>
     </ClInclude>
@@ -6564,6 +6555,21 @@
     <ClInclude Include="ui\UIHint.h">
       <Filter>UI\UIWindows\Hint</Filter>
     </ClInclude>
+    <ClInclude Include="ActorEffector.h">
+      <Filter>Core\Client\Effectors\Actor\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraEffector.h">
+      <Filter>Core\Client\Effectors\Actor\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectorBobbing.h">
+      <Filter>Core\Client\Effectors\Actor\Effectors</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectorFall.h">
+      <Filter>Core\Client\Effectors\Actor\Effectors</Filter>
+    </ClInclude>
+    <ClInclude Include="SleepEffector.h">
+      <Filter>Core\Client\Effectors\Actor\Effectors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -7804,24 +7810,6 @@
     </ClCompile>
     <ClCompile Include="cameralook.cpp">
       <Filter>Core\Client\Cameras</Filter>
-    </ClCompile>
-    <ClCompile Include="ActorEffector.cpp">
-      <Filter>Core\Client\Effectors\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="ActorEffector_script.cpp">
-      <Filter>Core\Client\Effectors\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraEffector.cpp">
-      <Filter>Core\Client\Effectors\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="EffectorBobbing.cpp">
-      <Filter>Core\Client\Effectors\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="EffectorFall.cpp">
-      <Filter>Core\Client\Effectors\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="SleepEffector.cpp">
-      <Filter>Core\Client\Effectors\Actor</Filter>
     </ClCompile>
     <ClCompile Include="ai\Monsters\ai_monster_effector.cpp">
       <Filter>Core\Client\Effectors\monsters_%3f%3f%3f</Filter>
@@ -9712,6 +9700,24 @@
     </ClCompile>
     <ClCompile Include="ui\UIHint.cpp">
       <Filter>UI\UIWindows\Hint</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorEffector.cpp">
+      <Filter>Core\Client\Effectors\Actor\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorEffector_script.cpp">
+      <Filter>Core\Client\Effectors\Actor\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraEffector.cpp">
+      <Filter>Core\Client\Effectors\Actor\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectorBobbing.cpp">
+      <Filter>Core\Client\Effectors\Actor\Effectors</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectorFall.cpp">
+      <Filter>Core\Client\Effectors\Actor\Effectors</Filter>
+    </ClCompile>
+    <ClCompile Include="SleepEffector.cpp">
+      <Filter>Core\Client\Effectors\Actor\Effectors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

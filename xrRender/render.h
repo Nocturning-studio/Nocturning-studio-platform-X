@@ -128,6 +128,9 @@ class CRender : public R_dsgraph_structure
 	bool m_need_render_sun;
 	xr_vector<sun::cascade> m_sun_cascades;
 
+	//Motion blur
+	Fmatrix m_saved_viewproj;
+
   private:
 	// Loading / Unloading
 	void LoadBuffers(CStreamReader* fs, BOOL _alternative);
@@ -164,7 +167,7 @@ class CRender : public R_dsgraph_structure
 	void render_stage_lights();
 	void render_stage_postprocess();
 
-	void RenderWorld();
+	void RenderScene();
 	void RenderMenu();
 
   public:

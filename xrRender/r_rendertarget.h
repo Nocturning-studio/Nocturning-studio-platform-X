@@ -101,6 +101,8 @@ class CRenderTarget : public IRender_Target
 	ref_texture t_LUT_1; // lut-1
 
 	ref_rt rt_Motion_Blur_Saved_Frame;
+	ref_rt rt_Motion_Blur_Dilation_Map_0;
+	ref_rt rt_Motion_Blur_Dilation_Map_1;
 
 	// smap
 	ref_rt rt_smap_surf;		   // 32bit,		color
@@ -286,6 +288,9 @@ class CRenderTarget : public IRender_Target
 
 	void motion_blur_phase_save_frame();
 	void motion_blur_phase_combine();
+	void motion_blur_phase_create_dilation_map();
+	void motion_blur_phase_blur_dilation_map();
+	void phase_motion_blur_pass_blur();
 	void phase_motion_blur();
 
 	void phase_fog_scattering();

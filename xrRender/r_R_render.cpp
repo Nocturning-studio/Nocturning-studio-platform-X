@@ -350,7 +350,7 @@ void CRender::render_stage_gbuffer_main()
 
 	if (Details)
 	{
-		Details->UpdateVisibleM();
+		//Details->UpdateVisibleM();
 		Details->Render();
 	}
 
@@ -521,9 +521,6 @@ void CRender::render_stage_postprocess()
 	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
 		Target->phase_autoexposure();
 
-	// if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
-	//	Target->motion_blur_phase_save_frame();
-
 	// Generic1 -> Generic0 -> Generic1
 	if (ps_r_postprocess_flags.test(RFLAG_DOF))
 		Target->phase_depth_of_field();
@@ -543,6 +540,9 @@ void CRender::render_stage_postprocess()
 
 	// Generic1 -> Generic0
 	Target->draw_overlays();
+
+	// Ceneric0 -> Generic1
+	Target->phase_motion_blur();
 
 	Device.Statistic->RenderCALC_POSTPROCESS.End();
 }
@@ -570,13 +570,14 @@ void CRender::render_stage_ao()
 	Device.Statistic->RenderCALC_AO.End();
 }
 
-void CRender::RenderWorld()
+void CRender::RenderScene()
 {
-	OPTICK_EVENT("CRender::RenderWorld");
+	OPTICK_EVENT("CRender::RenderScene");
 
 	if (m_bFirstFrameAfterReset)
 	{
 		m_bFirstFrameAfterReset = false;
+		m_saved_viewproj.set(Device.mFullTransform);
 		return;
 	}
 
@@ -647,6 +648,8 @@ void CRender::RenderWorld()
 	Target->phase_output_to_screen();
 
 	Target->phase_autoexposure_pipeline_clear();
+
+	m_saved_viewproj.set(Device.mFullTransform);
 }
 
 void CRender::Render()
@@ -665,7 +668,7 @@ void CRender::Render()
 		if (!(g_pGameLevel && g_pGameLevel->pHUD))
 			return;
 
-		RenderWorld();
+		RenderScene();
 	}
 
 	Device.Statistic->RenderCALC.End();
