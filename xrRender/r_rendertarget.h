@@ -288,8 +288,7 @@ class CRenderTarget : public IRender_Target
 
 	void motion_blur_phase_save_frame();
 	void motion_blur_phase_combine();
-	void motion_blur_phase_create_dilation_map();
-	void motion_blur_phase_blur_dilation_map();
+	void motion_blur_phase_prepare_dilation_map();
 	void phase_motion_blur_pass_blur();
 	void phase_motion_blur();
 
