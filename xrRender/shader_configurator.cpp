@@ -213,7 +213,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 			BumpType = 1; // normal
 		else if (ps_r_material_quality == 2 || !C.bSteepParallax)
 			BumpType = 2; // parallax
-		else if ((ps_r_material_quality == 3 || ps_r_material_quality == 4) && C.bSteepParallax)
+		else if ((ps_r_material_quality == 3) && C.bSteepParallax)
 			BumpType = 3; // steep parallax
 		else 
 			BumpType = 2; // parallax
