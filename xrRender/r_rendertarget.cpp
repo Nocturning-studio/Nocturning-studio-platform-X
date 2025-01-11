@@ -217,6 +217,8 @@ CRenderTarget::CRenderTarget()
 		// Create simple screen quad geom for postprocess shaders
 		g_simple_quad.create(D3DFVF_XYZRHW | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.QuadIB);
 
+		g_viewport.create(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
+
 		t_envmap_0.create(r_T_envs0);
 		t_envmap_1.create(r_T_envs1);
 

@@ -166,6 +166,8 @@ class CRenderTarget : public IRender_Target
 	ref_geom g_combine_2UV;
 	ref_geom g_combine_cuboid;
 
+	ref_geom g_viewport;
+
 	ref_geom g_simple_quad;
 
 	ref_shader s_combine;
@@ -257,12 +259,11 @@ class CRenderTarget : public IRender_Target
 
 	void phase_bloom();
 
+	void draw_ao(int pass, u32 Offset);
 	void phase_ao();
 
 	void phase_autoexposure();
-
 	void phase_autoexposure_pipeline_start();
-
 	void phase_autoexposure_pipeline_clear();
 
 	void phase_combine_postprocess();
@@ -375,6 +376,8 @@ class CRenderTarget : public IRender_Target
 	//	Don't clear when render for the first time
 	void reset_light_marker(bool bResetStencil = false);
 	void increment_light_marker();
+
+	void set_viewport_vertex_buffer(float w, float h, u32& vOffset);
 
 #ifdef DEBUG
 	IC void dbg_addline(Fvector& P0, Fvector& P1, u32 c)

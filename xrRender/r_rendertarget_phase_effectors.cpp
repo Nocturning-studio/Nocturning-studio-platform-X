@@ -54,35 +54,14 @@ void CRenderTarget::phase_effectors_pass_generate_noise0()
 
 	// Constants
 	u32 Offset = 0;
-	u32 C = color_rgba(0, 0, 0, 255);
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
 
-	float w = float(Device.dwWidth) * 0.25f;
-	float h = float(Device.dwHeight) * 0.25f;
-
-	float d_Z = EPS_S;
-	float d_W = 1.f;
-
-	Fvector2 p0, p1;
-	p0.set(0.5f / w, 0.5f / h);
-	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
-
-	// Fill vertex buffer
-	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
-	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
-	pv++;
-	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
-	pv++;
-	pv->set(w, h, d_Z, d_W, C, p1.x, p1.y);
-	pv++;
-	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
-	pv++;
-	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+	// Set geometry
+	set_viewport_vertex_buffer(w, h, Offset);
 
 	// Set pass
 	RCache.set_Element(s_effectors->E[1]);
-
-	// Set geometry
-	RCache.set_Geometry(g_combine);
 
 	// Set constants
 	RCache.set_c("noise_intesity", param_radiation_intensity, 0.33f, 0, 0);
@@ -101,35 +80,14 @@ void CRenderTarget::phase_effectors_pass_generate_noise1()
 
 	// Constants
 	u32 Offset = 0;
-	u32 C = color_rgba(0, 0, 0, 255);
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
 
-	float w = float(Device.dwWidth) * 0.5f;
-	float h = float(Device.dwHeight) * 0.5f;
-
-	float d_Z = EPS_S;
-	float d_W = 1.f;
-
-	Fvector2 p0, p1;
-	p0.set(0.5f / w, 0.5f / h);
-	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
-
-	// Fill vertex buffer
-	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
-	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
-	pv++;
-	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
-	pv++;
-	pv->set(w, h, d_Z, d_W, C, p1.x, p1.y);
-	pv++;
-	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
-	pv++;
-	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+	// Set geometry
+	set_viewport_vertex_buffer(w, h, Offset);
 
 	// Set pass
 	RCache.set_Element(s_effectors->E[1]);
-
-	// Set geometry
-	RCache.set_Geometry(g_combine);
 
 	// Set constants
 	RCache.set_c("noise_intesity", param_radiation_intensity, 0.66f, 0, 0);
@@ -149,35 +107,14 @@ void CRenderTarget::phase_effectors_pass_generate_noise2()
 
 	// Constants
 	u32 Offset = 0;
-	u32 C = color_rgba(0, 0, 0, 255);
-
 	float w = float(Device.dwWidth);
 	float h = float(Device.dwHeight);
 
-	float d_Z = EPS_S;
-	float d_W = 1.f;
-
-	Fvector2 p0, p1;
-	p0.set(0.5f / w, 0.5f / h);
-	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
-
-	// Fill vertex buffer
-	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
-	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
-	pv++;
-	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
-	pv++;
-	pv->set(w, h, d_Z, d_W, C, p1.x, p1.y);
-	pv++;
-	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
-	pv++;
-	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+	// Set geometry
+	set_viewport_vertex_buffer(w, h, Offset);
 
 	// Set pass
 	RCache.set_Element(s_effectors->E[1]);
-
-	// Set geometry
-	RCache.set_Geometry(g_combine);
 
 	// Set constants
 	RCache.set_c("noise_intesity", param_radiation_intensity, 1, 0, 0);
@@ -197,35 +134,14 @@ void CRenderTarget::phase_effectors_pass_night_vision()
 
 	// Constants
 	u32 Offset = 0;
-	u32 C = color_rgba(0, 0, 0, 255);
-
 	float w = float(Device.dwWidth);
 	float h = float(Device.dwHeight);
 
-	float d_Z = EPS_S;
-	float d_W = 1.f;
-
-	Fvector2 p0, p1;
-	p0.set(0.5f / w, 0.5f / h);
-	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
-
-	// Fill vertex buffer
-	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
-	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
-	pv++;
-	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
-	pv++;
-	pv->set(w, h, d_Z, d_W, C, p1.x, p1.y);
-	pv++;
-	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
-	pv++;
-	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+	// Set geometry
+	set_viewport_vertex_buffer(w, h, Offset);
 
 	// Set pass
 	RCache.set_Element(s_effectors->E[2]);
-
-	// Set geometry
-	RCache.set_Geometry(g_combine);
 
 	// Draw
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
@@ -269,8 +185,7 @@ void CRenderTarget::phase_effectors_pass_combine()
 
 	// Actual rendering
 	RCache.set_c("c_colormap", param_color_map_influence, param_color_map_interpolate, 0, 0);
-	RCache.set_c("c_brightness", color_get_R(p_brightness) / 255.f, color_get_G(p_brightness) / 255.f,
-				 color_get_B(p_brightness) / 255.f, param_noise);
+	RCache.set_c("c_brightness", color_get_R(p_brightness) / 255.f, color_get_G(p_brightness) / 255.f, color_get_B(p_brightness) / 255.f, param_noise);
 
 	RCache.set_Geometry(g_effectors);
 
@@ -288,29 +203,11 @@ void CRenderTarget::phase_effectors_pass_resolve_gamma()
 
 	// Constants
 	u32 Offset = 0;
-	u32 C = color_rgba(0, 0, 0, 255);
-
 	float w = float(Device.dwWidth);
 	float h = float(Device.dwHeight);
 
-	float d_Z = EPS_S;
-	float d_W = 1.f;
-
-	Fvector2 p0, p1;
-	p0.set(0.5f / w, 0.5f / h);
-	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
-
-	// Fill vertex buffer
-	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
-	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
-	pv++;
-	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
-	pv++;
-	pv->set(w, h, d_Z, d_W, C, p1.x, p1.y);
-	pv++;
-	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
-	pv++;
-	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+	// Set geometry
+	set_viewport_vertex_buffer(w, h, Offset);
 
 	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
 	IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
@@ -323,9 +220,6 @@ void CRenderTarget::phase_effectors_pass_resolve_gamma()
 
 	// Set pass
 	RCache.set_Element(s_effectors->E[3]);
-
-	// Set geometry
-	RCache.set_Geometry(g_combine);
 
 	// Draw
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
@@ -342,29 +236,11 @@ void CRenderTarget::phase_effectors_pass_lut()
 
 	// Constants
 	u32 Offset = 0;
-	u32 C = color_rgba(0, 0, 0, 255);
-
 	float w = float(Device.dwWidth);
 	float h = float(Device.dwHeight);
 
-	float d_Z = EPS_S;
-	float d_W = 1.f;
-
-	Fvector2 p0, p1;
-	p0.set(0.5f / w, 0.5f / h);
-	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
-
-	// Fill vertex buffer
-	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
-	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
-	pv++;
-	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
-	pv++;
-	pv->set(w, h, d_Z, d_W, C, p1.x, p1.y);
-	pv++;
-	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
-	pv++;
-	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+	// Set geometry
+	set_viewport_vertex_buffer(w, h, Offset);
 
 	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
 	IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
@@ -379,9 +255,6 @@ void CRenderTarget::phase_effectors_pass_lut()
 	RCache.set_Element(s_effectors->E[4]);
 
 	RCache.set_c("c_lut_params", envdesc->weight, 0, 0, 0);
-
-	// Set geometry
-	RCache.set_Geometry(g_combine);
 
 	// Draw
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
