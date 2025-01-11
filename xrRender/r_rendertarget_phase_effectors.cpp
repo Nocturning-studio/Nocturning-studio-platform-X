@@ -70,18 +70,19 @@ void CRenderTarget::phase_effectors_pass_generate_noise0()
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
-
 void CRenderTarget::phase_effectors_pass_generate_noise1()
 {
 	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_generate_noise1");
+
+	u_setrt(rt_Radiation_Noise1, NULL, NULL, NULL, NULL);
 
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
 
 	// Constants
 	u32 Offset = 0;
-	float w = float(Device.dwWidth);
-	float h = float(Device.dwHeight);
+	float w = float(Device.dwWidth * 0.5f);
+	float h = float(Device.dwHeight * 0.5f);
 
 	// Set geometry
 	set_viewport_vertex_buffer(w, h, Offset);
@@ -107,8 +108,8 @@ void CRenderTarget::phase_effectors_pass_generate_noise2()
 
 	// Constants
 	u32 Offset = 0;
-	float w = float(Device.dwWidth);
-	float h = float(Device.dwHeight);
+	float w = float(Device.dwWidth * 0.25f);
+	float h = float(Device.dwHeight * 0.25f);
 
 	// Set geometry
 	set_viewport_vertex_buffer(w, h, Offset);
@@ -264,7 +265,7 @@ void CRenderTarget::phase_effectors()
 {
 	OPTICK_EVENT("CRenderTarget::phase_effectors");
 
-	//Generic_0 -> Generic_0!
+	//Generic_0 -> Generic_1
 	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())
 		phase_effectors_pass_night_vision();
 
