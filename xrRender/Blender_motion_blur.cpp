@@ -26,8 +26,7 @@ void CBlender_motion_blur::Compile(CBlender_Compile& C)
 	case 0:
 		C.r_Pass("null", "postprocess_stage_motion_blur_pass_create_dilation_map", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
-		C.r_Sampler_rtf("s_previous_image", r_RT_mblur_saved_frame);
-		jitter(C);
+		C.r_Sampler_rtf("s_previous_depth", r_RT_mblur_previous_frame_depth);
 		gbuffer(C);
 		C.r_End();
 		break;
@@ -42,18 +41,16 @@ void CBlender_motion_blur::Compile(CBlender_Compile& C)
 		C.r_End();
 		break;
 	case 3:
-		C.r_Pass("null", "postprocess_stage_motion_blur_pass_save_frame", FALSE, FALSE, FALSE);
+		C.r_Pass("null", "postprocess_stage_motion_blur_pass_save_depth", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
-		jitter(C);
 		gbuffer(C);
 		C.r_End();
 		break;
 	case 4:
-		C.r_Pass("null", "postprocess_stage_motion_blur_pass_combine", FALSE, FALSE, FALSE);
+		C.r_Pass("null", "postprocess_stage_motion_blur_pass_blur", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
-		C.r_Sampler_rtf("s_previous_image", r_RT_mblur_saved_frame);
+		C.r_Sampler_rtf("s_previous_depth", r_RT_mblur_previous_frame_depth);
 		C.r_Sampler_gaussian("s_dilation_map", r_RT_mblur_dilation_map_0);
-		jitter(C);
 		gbuffer(C);
 		C.r_End();
 		break;

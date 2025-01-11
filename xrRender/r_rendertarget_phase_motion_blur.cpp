@@ -106,7 +106,7 @@ void CRenderTarget::phase_motion_blur_pass_blur()
 	RCache.set_Element(s_motion_blur->E[4]);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-	u_setrt(rt_Motion_Blur_Saved_Frame, NULL, NULL, NULL, NULL);
+	u_setrt(rt_Motion_Blur_Previous_Frame_Depth, NULL, NULL, NULL, NULL);
 	RCache.set_Element(s_motion_blur->E[3]);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }

@@ -100,7 +100,7 @@ class CRenderTarget : public IRender_Target
 	ref_texture t_LUT_0; // lut-0
 	ref_texture t_LUT_1; // lut-1
 
-	ref_rt rt_Motion_Blur_Saved_Frame;
+	ref_rt rt_Motion_Blur_Previous_Frame_Depth;
 	ref_rt rt_Motion_Blur_Dilation_Map_0;
 	ref_rt rt_Motion_Blur_Dilation_Map_1;
 
