@@ -286,8 +286,6 @@ class CRenderTarget : public IRender_Target
 
 	void phase_barrel_blur();
 
-	void motion_blur_phase_save_frame();
-	void motion_blur_phase_combine();
 	void motion_blur_phase_prepare_dilation_map();
 	void phase_motion_blur_pass_blur();
 	void phase_motion_blur();
