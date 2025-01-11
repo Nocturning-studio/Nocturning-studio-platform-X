@@ -19,8 +19,8 @@ void CRenderTarget::motion_blur_phase_prepare_dilation_map()
 	RCache.set_Stencil(FALSE);
 
 	u32 Offset = 0;
-	float w = float(Device.dwWidth * 0.05f);
-	float h = float(Device.dwHeight * 0.05f);
+	float w = float(Device.dwWidth * 0.25f);
+	float h = float(Device.dwHeight * 0.25f);
 
 	set_viewport_vertex_buffer(w, h, Offset);
 
@@ -31,16 +31,18 @@ void CRenderTarget::motion_blur_phase_prepare_dilation_map()
 	RCache.set_c("m_previous", m_previous);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-	if(0)//for (int i = 0; i < 1; i++)
-	{
+	//if(0)//for (int i = 0; i < 1; i++)
+	//{
 		u_setrt(rt_Motion_Blur_Dilation_Map_1, NULL, NULL, NULL, NULL);
 		RCache.set_Element(s_motion_blur->E[1]);
+		RCache.set_c("image_resolution", w, h, 1 / w, 1 / h);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
 		u_setrt(rt_Motion_Blur_Dilation_Map_0, NULL, NULL, NULL, NULL);
 		RCache.set_Element(s_motion_blur->E[2]);
+		RCache.set_c("image_resolution", w, h, 1 / w, 1 / h);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
-	}
+	//}
 }
 
 void CRenderTarget::phase_motion_blur_pass_blur()
