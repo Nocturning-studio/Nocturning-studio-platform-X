@@ -114,6 +114,7 @@ IC bool CSpaceRestriction::intersects(SpaceRestrictionHolder::CBaseRestrictionPt
 
 void CSpaceRestriction::merge_in_out_restrictions()
 {
+	OPTICK_EVENT("CSpaceRestriction::merge_in_out_restrictions");
 	START_PROFILE("Restricted Object/Merge In-Out");
 	xr_vector<u32> temp_border;
 

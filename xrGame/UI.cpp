@@ -56,6 +56,8 @@ void CUI::UnLoad()
 
 void CUI::UIOnFrame()
 {
+	OPTICK_EVENT("CUI::UIOnFrame");
+
 	CEntity* m_Actor = smart_cast<CEntity*>(Level().CurrentEntity());
 	if (m_Actor)
 	{
@@ -80,6 +82,8 @@ void CUI::UIOnFrame()
 #include "huditem.h"
 bool CUI::Render()
 {
+	OPTICK_EVENT("CUI::Render");
+
 	if (GameIndicatorsShown())
 	{
 		if (pUIGame)

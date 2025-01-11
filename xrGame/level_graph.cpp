@@ -78,6 +78,8 @@ u32 CLevelGraph::vertex(const Fvector& position) const
 
 u32 CLevelGraph::vertex(u32 current_node_id, const Fvector& position) const
 {
+	OPTICK_EVENT("CLevelGraph::vertex");
+
 	START_PROFILE("Level_Graph::find vertex")
 #ifndef AI_COMPILER
 	Device.Statistic->AI_Node.Begin();

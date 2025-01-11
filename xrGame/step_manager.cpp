@@ -107,6 +107,8 @@ void CStepManager::on_animation_start(MotionID motion_id, CBlend* blend)
 
 void CStepManager::update()
 {
+	OPTICK_EVENT("CStepManager::update");
+
 	START_PROFILE("Step Manager")
 
 	if (m_step_info.disable)

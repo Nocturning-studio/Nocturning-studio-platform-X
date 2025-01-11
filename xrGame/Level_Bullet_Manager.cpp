@@ -334,6 +334,8 @@ float SqrDistancePointToSegment(const Fvector& pt, const Fvector& orig, const Fv
 
 void CBulletManager::Render()
 {
+	OPTICK_EVENT("CBulletManager::Render");
+
 #ifdef DEBUG
 	// 0-рикошет
 	// 1-застрявание пули в материале

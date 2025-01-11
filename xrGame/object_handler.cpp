@@ -135,6 +135,8 @@ CInventoryItem* CObjectHandler::best_weapon() const
 
 void CObjectHandler::update()
 {
+	OPTICK_EVENT("CObjectHandler::update");
+
 	START_PROFILE("Object Handler")
 	planner().update();
 	STOP_PROFILE

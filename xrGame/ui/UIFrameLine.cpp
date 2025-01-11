@@ -122,6 +122,8 @@ void CUIFrameLine::UpdateSize()
 
 void CUIFrameLine::Render()
 {
+	OPTICK_EVENT("CUIFrameLine::Render");
+
 	// If size changed - update size
 	if (!(uFlags & flValidSize))
 		UpdateSize();

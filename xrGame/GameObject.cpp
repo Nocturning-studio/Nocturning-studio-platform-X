@@ -916,6 +916,8 @@ LPCSTR CGameObject::visual_name(CSE_Abstract* server_entity)
 
 void CGameObject::update_animation_movement_controller()
 {
+	OPTICK_EVENT("CGameObject::update_animation_movement_controller");
+
 	if (!animation_movement_controlled())
 		return;
 

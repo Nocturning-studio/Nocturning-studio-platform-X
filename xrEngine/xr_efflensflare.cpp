@@ -219,6 +219,8 @@ IC void blend_lerp(float& cur, float tgt, float speed, float dt)
 
 void CLensFlare::OnFrame(shared_str id)
 {
+	OPTICK_EVENT("CLensFlare::OnFrame");
+
 	if (dwFrame == Device.dwFrame)
 		return;
 #ifndef _EDITOR
@@ -386,6 +388,8 @@ void CLensFlare::OnFrame(shared_str id)
 
 void CLensFlare::Render(BOOL bSun, BOOL bFlares, BOOL bGradient)
 {
+	OPTICK_EVENT("CLensFlare::Render");
+
 	if (!bRender)
 		return;
 	if (!m_Current)

@@ -10,6 +10,8 @@
 
 IC void CDebugRenderer::render()
 {
+	OPTICK_EVENT("CDebugRenderer::Render");
+
 	if (m_line_vertices.empty())
 		return;
 

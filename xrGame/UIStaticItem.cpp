@@ -63,6 +63,8 @@ void CUIStaticItem::Init(LPCSTR tex, LPCSTR sh, float left, float top, u32 align
 
 void CUIStaticItem::Render()
 {
+	OPTICK_EVENT("CUIStaticItem::Render");
+
 	VERIFY(g_bRendering);
 	// установить обязательно перед вызовом CustomItem::Render() !!!
 	VERIFY(hShader);
@@ -114,6 +116,8 @@ void CUIStaticItem::Render()
 
 void CUIStaticItem::Render(float angle)
 {
+	OPTICK_EVENT("CUIStaticItem::Render");
+
 	VERIFY(g_bRendering);
 	// установить обязательно перед вызовом CustomItem::Render() !!!
 	VERIFY(hShader);

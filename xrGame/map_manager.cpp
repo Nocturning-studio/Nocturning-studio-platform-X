@@ -251,6 +251,8 @@ CMapLocation* CMapManager::GetMapLocation(const shared_str& spot_type, u16 id)
 
 void CMapManager::Update()
 {
+	OPTICK_EVENT("CMapManager::update");
+
 	Locations_it it = Locations().begin();
 	for (; it != Locations().end(); ++it)
 	{

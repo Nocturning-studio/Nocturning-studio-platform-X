@@ -63,6 +63,8 @@ void CWeaponShotEffector::Shot(float angle)
 
 void CWeaponShotEffector::Update()
 {
+	OPTICK_EVENT("CWeaponShotEffector::Update");
+
 	if (bActive)
 	{
 		float time_to_relax = _abs(fAngleVert) / fRelaxSpeed;

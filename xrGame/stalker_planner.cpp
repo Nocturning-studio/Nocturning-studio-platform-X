@@ -75,6 +75,8 @@ void CStalkerPlanner::setup(CAI_Stalker* object)
 
 void CStalkerPlanner::update(u32 time_delta)
 {
+	OPTICK_EVENT("CStalkerPlanner::update");
+
 #ifdef LOG_ACTION
 	if ((psAI_Flags.test(aiGOAP) && !m_use_log) || (!psAI_Flags.test(aiGOAP) && m_use_log))
 		set_use_log(!!psAI_Flags.test(aiGOAP));

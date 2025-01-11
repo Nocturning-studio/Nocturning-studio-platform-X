@@ -64,6 +64,8 @@ void CMaterialManager::reload(LPCSTR section)
 
 void CMaterialManager::update(float time_delta, float volume, float step_time, bool standing)
 {
+	OPTICK_EVENT("CMaterialManager::update");
+
 	VERIFY(GAMEMTL_NONE_IDX != m_my_material_idx);
 	VERIFY(GAMEMTL_NONE_IDX != m_last_material_idx);
 	SGameMtlPair* mtl_pair = GMLib.GetMaterialPair(m_my_material_idx, m_last_material_idx);

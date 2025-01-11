@@ -526,6 +526,8 @@ void CStats::OnDeviceDestroy()
 
 void CStats::OnRender()
 {
+	OPTICK_EVENT("CStats::OnRender");
+
 #ifdef DEBUG
 	if (g_stats_flags.is(st_sound))
 	{

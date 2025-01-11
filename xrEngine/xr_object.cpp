@@ -148,6 +148,8 @@ CObject::~CObject()
 
 void CObject::Load(LPCSTR section)
 {
+	OPTICK_EVENT("CObject::Load");
+
 	// Name
 	R_ASSERT(section);
 	cName_set(section);
@@ -169,6 +171,8 @@ void CObject::Load(LPCSTR section)
 
 BOOL CObject::net_Spawn(CSE_Abstract* data)
 {
+	OPTICK_EVENT("CObject::net_Spawn");
+
 	PositionStack.clear();
 
 	VERIFY(_valid(renderable.xform));
@@ -201,6 +205,8 @@ BOOL CObject::net_Spawn(CSE_Abstract* data)
 
 void CObject::net_Destroy()
 {
+	OPTICK_EVENT("CObject::net_Destroy");
+
 	VERIFY(getDestroy());
 	xr_delete(collidable.model);
 	if (register_schedule())
@@ -217,6 +223,8 @@ const float base_spu_epsP = 0.05f;
 const float base_spu_epsR = 0.05f;
 void CObject::spatial_update(float eps_P, float eps_R)
 {
+	OPTICK_EVENT("CObject::spatial_update");
+
 	//
 	BOOL bUpdate = FALSE;
 	if (PositionStack.empty())
@@ -278,6 +286,8 @@ void CObject::spatial_update(float eps_P, float eps_R)
 // Updates
 void CObject::UpdateCL()
 {
+	OPTICK_EVENT("CObjectList::UpdateCL");
+
 	// consistency check
 #ifdef DEBUG
 	VERIFY2(_valid(renderable.xform), *cName());
@@ -334,6 +344,8 @@ void CObject::spatial_unregister()
 
 void CObject::spatial_move()
 {
+	OPTICK_EVENT("CObject::spatial_move");
+
 	Center(spatial.sphere.P);
 	spatial.sphere.R = Radius();
 	ISpatial::spatial_move();
@@ -347,11 +359,15 @@ CObject::SavedPosition CObject::ps_Element(u32 ID) const
 
 void CObject::renderable_Render()
 {
+	OPTICK_EVENT("CObject::renderable_Render");
+
 	MakeMeCrow();
 }
 
 CObject* CObject::H_SetParent(CObject* new_parent, bool just_before_destroy)
 {
+	OPTICK_EVENT("CObject::H_SetParent");
+
 	if (new_parent == Parent)
 		return new_parent;
 
@@ -394,6 +410,8 @@ void CObject::OnH_B_Independent(bool just_before_destroy)
 }
 void CObject::MakeMeCrow()
 {
+	OPTICK_EVENT("CObject::MakeMeCrow");
+
 	if (Props.crow)
 		return;
 	if (!processing_enabled())
@@ -404,6 +422,8 @@ void CObject::MakeMeCrow()
 
 void CObject::setDestroy(BOOL _destroy)
 {
+	OPTICK_EVENT("CObject::setDestroy");
+
 	if (_destroy == (BOOL)Props.bDestroy)
 		return;
 

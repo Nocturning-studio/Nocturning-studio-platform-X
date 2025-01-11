@@ -267,6 +267,8 @@ void CPhysicsShellHolder::OnChangeVisual()
 
 void CPhysicsShellHolder::UpdateCL()
 {
+	OPTICK_EVENT("CPhysicsShellHolder::UpdateCL");
+
 	inherited::UpdateCL();
 	// обновить присоединенные партиклы
 	UpdateParticles();

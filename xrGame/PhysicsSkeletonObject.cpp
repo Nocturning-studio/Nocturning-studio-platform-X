@@ -65,6 +65,8 @@ void CPhysicsSkeletonObject::CreatePhysicsShell(CSE_Abstract* e)
 
 void CPhysicsSkeletonObject::shedule_Update(u32 dt)
 {
+	OPTICK_EVENT("CPhysicsSkeletonObject::shedule_Update");
+
 	inherited::shedule_Update(dt);
 
 	CPHSkeleton::Update(dt);

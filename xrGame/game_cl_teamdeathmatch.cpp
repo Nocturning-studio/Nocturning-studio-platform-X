@@ -493,6 +493,8 @@ bool game_cl_TeamDeathmatch::IsEnemy(CEntityAlive* ea1, CEntityAlive* ea2)
 
 void game_cl_TeamDeathmatch::OnRender()
 {
+	OPTICK_EVENT("game_cl_TeamDeathmatch::OnRender");
+
 	if (local_player)
 	{
 		cl_TeamStruct* pTS = &TeamList[ModifyTeam(local_player->team)];

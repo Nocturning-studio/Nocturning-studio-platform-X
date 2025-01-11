@@ -115,6 +115,8 @@ CFontManager::~CFontManager()
 
 void CFontManager::Render()
 {
+	OPTICK_EVENT("CFontManager::Render");
+
 	FONTS_VEC_IT it = m_all_fonts.begin();
 	FONTS_VEC_IT it_e = m_all_fonts.end();
 	for (; it != it_e; ++it)
@@ -156,6 +158,8 @@ void CHUDManager::Load()
 //--------------------------------------------------------------------
 void CHUDManager::OnFrame()
 {
+	OPTICK_EVENT("CHUDManager::OnFrame");
+
 	if (!b_online)
 		return;
 	if (pUI)

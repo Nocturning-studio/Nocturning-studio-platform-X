@@ -882,6 +882,8 @@ bool game_cl_Deathmatch::IsEnemy(CEntityAlive* ea1, CEntityAlive* ea2)
 
 void game_cl_Deathmatch::OnRender()
 {
+	OPTICK_EVENT("game_cl_Deathmatch::OnRender");
+
 	if (m_bDamageBlockIndicators && local_player)
 	{
 		PLAYERS_MAP_IT it = players.begin();

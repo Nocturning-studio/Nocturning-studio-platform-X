@@ -12,6 +12,8 @@
 
 void CBaseMonster::Think()
 {
+	OPTICK_EVENT("CBaseMonster::Think");
+
 	START_PROFILE("Base Monster/Think");
 
 	if (!g_Alive() || getDestroy())
@@ -41,6 +43,8 @@ void CBaseMonster::Think()
 
 void CBaseMonster::update_fsm()
 {
+	OPTICK_EVENT("CBaseMonster::update_fsm");
+
 	StateMan->update();
 
 	// завершить обработку установленных в FSM параметров

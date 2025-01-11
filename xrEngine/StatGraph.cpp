@@ -274,6 +274,8 @@ void CStatGraph::RenderMarkers(FVF::TL0uv** ppv, MarkersDeq* pmarkers)
 
 void CStatGraph::OnRender()
 {
+	OPTICK_EVENT("CStatGraph::OnRender");
+
 	RCache.OnFrameEnd();
 
 	RenderBack();

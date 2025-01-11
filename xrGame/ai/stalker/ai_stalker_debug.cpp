@@ -914,6 +914,8 @@ void CAI_Stalker::OnHUDDraw(CCustomHUD* hud)
 
 void CAI_Stalker::OnRender()
 {
+	OPTICK_EVENT("CAI_Stalker::OnRender");
+
 	if (inventory().ActiveItem())
 	{
 		Fvector position, direction, temp;

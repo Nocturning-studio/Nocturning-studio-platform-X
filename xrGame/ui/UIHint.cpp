@@ -17,6 +17,8 @@ CUIHint::~CUIHint()
 
 void CUIHint::OnRender()
 {
+	OPTICK_EVENT("CUIHint::OnRender");
+
 	m_hint->Update();
 	Draw();
 }

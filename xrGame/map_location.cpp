@@ -277,6 +277,8 @@ shared_str CMapLocation::LevelName()
 
 bool CMapLocation::Update() // returns actual
 {
+	OPTICK_EVENT("CMapLocation::update");
+
 	if (m_cached.m_updatedFrame == Device.dwFrame)
 		return m_cached.m_Actuality;
 

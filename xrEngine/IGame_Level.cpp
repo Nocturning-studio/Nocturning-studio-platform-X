@@ -137,6 +137,8 @@ BOOL IGame_Level::Load(u32 dwNum)
 int psNET_DedicatedSleep = 5;
 void IGame_Level::OnRender()
 {
+	OPTICK_EVENT("IGame_Level::OnRender");
+
 #ifndef DEDICATED_SERVER
 	// Level render, only when no client output required
 	if (!g_dedicated_server)
@@ -153,6 +155,8 @@ void IGame_Level::OnRender()
 
 void IGame_Level::OnFrame()
 {
+	OPTICK_EVENT("IGame_Level::OnFrame");
+
 	// Update all objects
 	VERIFY(bReady);
 	Objects.Update(false);

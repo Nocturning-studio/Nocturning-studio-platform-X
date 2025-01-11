@@ -174,6 +174,8 @@ u32 CGameFont::smart_strlen(const char* S)
 
 void CGameFont::OnRender()
 {
+	OPTICK_EVENT("CGameFont::OnRender");
+
 	VERIFY(g_bRendering);
 	if (pShader)
 		RCache.set_Shader(pShader);

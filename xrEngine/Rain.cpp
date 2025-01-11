@@ -122,6 +122,8 @@ void CEffect_Rain::RenewItem(Item& dest, float height, BOOL bHit)
 
 void CEffect_Rain::OnFrame()
 {
+	OPTICK_EVENT("CEffect_Rain::OnFrame");
+
 #ifndef _EDITOR
 	if (!g_pGameLevel)
 		return;
@@ -167,6 +169,8 @@ void CEffect_Rain::OnFrame()
 // #include "xr_input.h"
 void CEffect_Rain::Render()
 {
+	OPTICK_EVENT("CEffect_Rain::Render");
+
 #ifndef _EDITOR
 	if (!g_pGameLevel)
 		return;

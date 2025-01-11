@@ -194,6 +194,8 @@ void CEntityAlive::reload(LPCSTR section)
 
 void CEntityAlive::shedule_Update(u32 dt)
 {
+	OPTICK_EVENT("CEntityAlive::shedule_Update");
+
 	inherited::shedule_Update(dt);
 
 	// condition update with the game time pass

@@ -27,6 +27,8 @@ void Touch::feel_touch_deny(CObject* O, DWORD T)
 
 void Touch::feel_touch_update(Fvector& C, float R)
 {
+	OPTICK_EVENT("Touch::feel_touch_update");
+
 	// Check if denied objects expire in time
 	DWORD dwT = Device.dwTimeGlobal;
 	for (u32 dit = 0; dit < feel_touch_disable.size(); dit++)

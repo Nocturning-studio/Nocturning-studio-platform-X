@@ -339,6 +339,8 @@ void CTextConsole::IR_OnKeyboardPress( int dik ) !!!!!!!!!!!!!!!!!!!!!
 */
 void CTextConsole::OnFrame()
 {
+	OPTICK_EVENT("CTextConsole::OnFrame");
+
 	inherited::OnFrame();
 	/*	if ( !m_bNeedUpdate && m_dwLastUpdateTime + 1000/g_svTextConsoleUpdateRate > Device.dwTimeGlobal )
 		{

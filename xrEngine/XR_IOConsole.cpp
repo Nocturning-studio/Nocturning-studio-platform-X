@@ -210,6 +210,8 @@ void CConsole::RemoveCommand(IConsole_Command* cc)
 
 void CConsole::OnFrame()
 {
+	OPTICK_EVENT("CConsole::OnFrame");
+
 	m_editor->on_frame();
 
 	if (Device.dwFrame % 10 == 0)

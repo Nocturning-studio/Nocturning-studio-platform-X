@@ -97,6 +97,8 @@ BOOL CScriptZone::feel_touch_contact(CObject* O)
 #ifdef DEBUG
 void CScriptZone::OnRender()
 {
+	OPTICK_EVENT("CScriptZone::OnFrame");
+
 	if (!bDebug)
 		return;
 	RCache.OnFrameEnd();

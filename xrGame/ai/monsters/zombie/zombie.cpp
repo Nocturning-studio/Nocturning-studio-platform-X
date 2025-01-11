@@ -104,6 +104,8 @@ void CZombie::reload(LPCSTR section)
 
 void CZombie::BoneCallback(CBoneInstance* B)
 {
+	OPTICK_EVENT("CZombie::BoneCallback");
+
 	CZombie* this_class = static_cast<CZombie*>(B->Callback_Param);
 
 	START_PROFILE("Zombie/Bones Update");

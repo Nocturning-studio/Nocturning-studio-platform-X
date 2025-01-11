@@ -81,6 +81,8 @@ float CALifeUpdateManager::shedule_Scale()
 
 void CALifeUpdateManager::update_switch()
 {
+	OPTICK_EVENT("CALifeUpdateManager::update_switch");
+
 	init_ef_storage();
 
 	START_PROFILE("ALife/switch");
@@ -90,6 +92,8 @@ void CALifeUpdateManager::update_switch()
 
 void CALifeUpdateManager::update_scheduled(bool init_ef)
 {
+	OPTICK_EVENT("CALifeUpdateManager::update_scheduled");
+
 	if (init_ef)
 		init_ef_storage();
 
@@ -100,6 +104,8 @@ void CALifeUpdateManager::update_scheduled(bool init_ef)
 
 void CALifeUpdateManager::update()
 {
+	OPTICK_EVENT("CALifeUpdateManager::update");
+
 	update_switch();
 	update_scheduled(false);
 }

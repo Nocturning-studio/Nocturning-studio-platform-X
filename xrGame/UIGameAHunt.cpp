@@ -137,12 +137,16 @@ void CUIGameAHunt::SetBuyMsgCaption(LPCSTR str)
 
 void CUIGameAHunt::Render()
 {
+	OPTICK_EVENT("CUIGameAHunt::Render");
+
 	m_pReinforcementInidcator->Draw();
 	inherited::Render();
 }
 
 void CUIGameAHunt::OnFrame()
 {
+	OPTICK_EVENT("CUIGameAHunt::OnFrame");
+
 	inherited::OnFrame();
 	m_pReinforcementInidcator->Update();
 }

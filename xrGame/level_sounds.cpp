@@ -28,6 +28,8 @@ void SStaticSound::Load(IReader& F)
 
 void SStaticSound::Update(u32 game_time, u32 global_time)
 {
+	OPTICK_EVENT("SStaticSound::update");
+
 	if ((0 == m_ActiveTime.x) && (0 == m_ActiveTime.y) ||
 		((int(game_time) >= m_ActiveTime.x) && (int(game_time) < m_ActiveTime.y)))
 	{
@@ -204,6 +206,8 @@ void CLevelSoundManager::Unload()
 
 void CLevelSoundManager::Update()
 {
+	OPTICK_EVENT("CLevelSoundManager::update");
+
 	if (Device.Paused())
 		return;
 	if (Device.dwPrecacheFrame != 0)

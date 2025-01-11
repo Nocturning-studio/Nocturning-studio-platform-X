@@ -104,6 +104,8 @@ ICF static BOOL pick_trace_callback(collide::rq_result& result, LPVOID params)
 
 void CHUDTarget::CursorOnFrame()
 {
+	OPTICK_EVENT("CHUDTarget::OnFrame");
+
 	Fvector p1, dir;
 
 	p1 = Device.vCameraPosition;
@@ -127,6 +129,8 @@ void CHUDTarget::CursorOnFrame()
 extern ENGINE_API BOOL g_bRendering;
 void CHUDTarget::Render()
 {
+	OPTICK_EVENT("CHUDTarget::Render");
+
 	VERIFY(g_bRendering);
 
 	CObject* O = Level().CurrentEntity();

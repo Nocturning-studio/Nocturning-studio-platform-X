@@ -277,6 +277,8 @@ void CLevel::Send(NET_Packet& P, u32 dwFlags, u32 dwTimeout)
 
 void CLevel::net_Update()
 {
+	OPTICK_EVENT("CLevel::net_Update");
+
 	if (game_configured)
 	{
 		// If we have enought bandwidth - replicate client data on to server
@@ -297,6 +299,8 @@ struct _NetworkProcessor : public pureFrame
 {
 	virtual void OnFrame()
 	{
+		OPTICK_EVENT("_NetworkProcessor::OnFrame");
+
 		if (g_pGameLevel && !Device.Paused())
 			g_pGameLevel->net_Update();
 	}

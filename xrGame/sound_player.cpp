@@ -121,6 +121,8 @@ bool CSoundPlayer::check_sound_legacy(u32 internal_type) const
 
 void CSoundPlayer::update(float time_delta)
 {
+	OPTICK_EVENT("CSoundPlayer::Update");
+
 	START_PROFILE("Sound Player")
 	remove_inappropriate_sounds(m_sound_mask);
 	update_playing_sounds();

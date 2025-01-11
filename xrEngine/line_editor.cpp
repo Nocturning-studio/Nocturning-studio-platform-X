@@ -21,6 +21,8 @@ line_editor::~line_editor()
 
 void line_editor::on_frame()
 {
+	OPTICK_EVENT("line_editor::OnFrame");
+
 	m_control.on_frame();
 }
 

@@ -114,6 +114,8 @@ void CMemoryManager::update_enemies(const bool& registered_in_combat)
 
 void CMemoryManager::update(float time_delta)
 {
+	OPTICK_EVENT("CMemoryManager::update");
+
 	START_PROFILE("Memory Manager")
 
 	visual().update(time_delta);

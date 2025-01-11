@@ -30,6 +30,8 @@ void animation_movement_controller::deinitialize()
 }
 void animation_movement_controller::OnFrame()
 {
+	OPTICK_EVENT("animation_movement_controller::OnFrame");
+
 	m_pKinematicsC->CalculateBones();
 
 	if (CBlend::eFREE_SLOT == m_control_blend->blend)

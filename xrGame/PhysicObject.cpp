@@ -131,6 +131,8 @@ void CPhysicObject::Load(LPCSTR section)
 
 void CPhysicObject::shedule_Update(u32 dt)
 {
+	OPTICK_EVENT("CPhysicObject::shedule_Update");
+
 	inherited::shedule_Update(dt);
 	CPHSkeleton::Update(dt);
 }

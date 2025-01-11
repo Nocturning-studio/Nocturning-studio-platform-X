@@ -153,6 +153,8 @@ void CUISequencer::Stop()
 
 void CUISequencer::OnFrame()
 {
+	OPTICK_EVENT("CUISequencer::OnFrame");
+
 	if (!m_bActive)
 		return;
 
@@ -180,6 +182,8 @@ void CUISequencer::OnFrame()
 
 void CUISequencer::OnRender()
 {
+	OPTICK_EVENT("CUISequencer::OnRender");
+
 	if (m_UIWindow->IsShown())
 		m_UIWindow->Draw();
 	VERIFY(m_items.size());

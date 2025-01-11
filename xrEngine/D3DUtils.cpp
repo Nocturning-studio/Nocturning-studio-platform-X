@@ -1523,6 +1523,8 @@ void CDrawUtilities::DrawJoint(const Fvector& p, float radius, u32 clr)
 
 void CDrawUtilities::OnRender()
 {
+	OPTICK_EVENT("CDrawUtilities::OnRender");
+
 	m_Font->OnRender();
 }
 

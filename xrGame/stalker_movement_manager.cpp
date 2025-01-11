@@ -565,6 +565,8 @@ void CStalkerMovementManager::set_nearest_accessible_position(Fvector desired_po
 
 void CStalkerMovementManager::update(u32 time_delta)
 {
+	OPTICK_EVENT("CStalkerMovementManager::update");
+
 	if (!enabled())
 		return;
 

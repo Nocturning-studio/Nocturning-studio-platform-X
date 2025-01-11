@@ -690,18 +690,24 @@ void CGamePersistent::OnAppDeactivate()
 
 bool CGamePersistent::OnRenderPPUI_query()
 {
+	OPTICK_EVENT("CGamePersistent::OnRenderPPUI_query");
+
 	return MainMenu()->OnRenderPPUI_query();
 	// enable PP or not
 }
 
 void CGamePersistent::OnRenderPPUI_main()
 {
+	OPTICK_EVENT("CGamePersistent::OnRenderPPUI_main");
+
 	// always
 	MainMenu()->OnRenderPPUI_main();
 }
 
 void CGamePersistent::OnRenderPPUI_PP()
 {
+	OPTICK_EVENT("CGamePersistent::OnRenderPPUI_PP");
+
 	MainMenu()->OnRenderPPUI_PP();
 }
 #include "string_table.h"

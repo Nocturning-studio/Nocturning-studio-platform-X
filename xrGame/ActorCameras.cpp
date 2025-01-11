@@ -312,6 +312,8 @@ extern Flags32 dbg_net_Draw_Flags;
 
 void CActor::OnRender()
 {
+	OPTICK_EVENT("CActor::OnRender");
+
 	if (!bDebug)
 		return;
 

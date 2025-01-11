@@ -99,6 +99,8 @@ void CObjectList::o_sleep(CObject* O)
 
 void CObjectList::SingleUpdate(CObject* O)
 {
+	OPTICK_EVENT("CObjectList::SingleUpdate");
+
 	if (O->processing_enabled() && (Device.dwFrame != O->dwFrame_UpdateCL))
 	{
 		if (O->H_Parent())
@@ -143,6 +145,8 @@ void clear_crow_vec(xr_vector<CObject*>& o)
 
 void CObjectList::Update(bool bForce)
 {
+	OPTICK_EVENT("CObjectList::Update");
+
 	if (!(Device.Paused() && !bForce))
 	{
 		// Clients

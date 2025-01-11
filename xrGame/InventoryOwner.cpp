@@ -194,6 +194,8 @@ void CInventoryOwner::load(IReader& input_packet)
 
 void CInventoryOwner::UpdateInventoryOwner(u32 deltaT)
 {
+	OPTICK_EVENT("CInventoryOwner::UpdateInventoryOwner");
+
 	inventory().Update();
 	if (m_pTrade)
 		m_pTrade->UpdateTrade();

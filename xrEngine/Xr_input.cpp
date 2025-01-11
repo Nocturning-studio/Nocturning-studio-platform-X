@@ -478,6 +478,8 @@ void CInput::OnAppDeactivate(void)
 
 void CInput::OnFrame(void)
 {
+	OPTICK_EVENT("CInput::OnFrame");
+
 	Device.Statistic->Input.Begin();
 	dwCurTime = Device.TimerAsync_MMT();
 	if (pKeyboard)

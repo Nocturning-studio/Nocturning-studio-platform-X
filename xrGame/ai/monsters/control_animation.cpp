@@ -33,6 +33,8 @@ void CControlAnimation::reset_data()
 
 void CControlAnimation::update_frame()
 {
+	OPTICK_EVENT("CControlAnimation::update_frame");
+
 	if (m_freeze)
 		return;
 
@@ -74,6 +76,8 @@ static void torso_animation_end_callback(CBlend* B)
 
 void CControlAnimation::play()
 {
+	OPTICK_EVENT("CControlAnimation::play");
+
 	if (!m_data.global.actual)
 	{
 		play_part(m_data.global, global_animation_end_callback);
@@ -175,6 +179,8 @@ void CControlAnimation::add_anim_event(MotionID motion, float time_perc, u32 id)
 
 void CControlAnimation::check_events(SAnimationPart& part)
 {
+	OPTICK_EVENT("CControlAnimation::check_events");
+
 	if (part.motion.valid() && part.actual && part.blend)
 	{
 		ANIMATION_EVENT_MAP_IT it = m_anim_events.find(part.motion);
@@ -202,6 +208,8 @@ void CControlAnimation::check_events(SAnimationPart& part)
 
 void CControlAnimation::check_callbacks()
 {
+	OPTICK_EVENT("CControlAnimation::check_callbacks");
+
 	if (m_global_animation_end)
 	{
 		m_man->notify(ControlCom::eventAnimationEnd, 0);
