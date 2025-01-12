@@ -525,12 +525,6 @@
     <ClInclude Include="perlin.h">
       <Filter>Engine\Noise</Filter>
     </ClInclude>
-    <ClInclude Include="R_Backend_hemi.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="R_Backend_tree.h">
-      <Filter>Render</Filter>
-    </ClInclude>
     <ClInclude Include="edit_actions.h">
       <Filter>Engine\text_editor\edit_actions</Filter>
     </ClInclude>
@@ -575,6 +569,12 @@
     </ClInclude>
     <ClInclude Include="Optick_Capture.h">
       <Filter>Engine\Profiling</Filter>
+    </ClInclude>
+    <ClInclude Include="R_Backend_hemi.h">
+      <Filter>Render\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="R_Backend_tree.h">
+      <Filter>Render\Backend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -944,12 +944,6 @@
     <ClCompile Include="perlin.cpp">
       <Filter>Engine\Noise</Filter>
     </ClCompile>
-    <ClCompile Include="R_Backend_hemi.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="R_Backend_tree.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
     <ClCompile Include="edit_actions.cpp">
       <Filter>Engine\text_editor\edit_actions</Filter>
     </ClCompile>
@@ -994,6 +988,12 @@
     </ClCompile>
     <ClCompile Include="Optick_Capture.cpp">
       <Filter>Engine\Profiling</Filter>
+    </ClCompile>
+    <ClCompile Include="R_Backend_hemi.cpp">
+      <Filter>Render\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="R_Backend_tree.cpp">
+      <Filter>Render\Backend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

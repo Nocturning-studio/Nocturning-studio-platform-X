@@ -289,6 +289,7 @@ class CRenderTarget : public IRender_Target
 
 	void motion_blur_phase_prepare_dilation_map();
 	void phase_motion_blur_pass_blur();
+	void phase_motion_blur_pass_save_depth();
 	void phase_motion_blur();
 
 	void phase_fog_scattering();

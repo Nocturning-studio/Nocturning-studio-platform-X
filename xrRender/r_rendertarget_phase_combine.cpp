@@ -57,57 +57,20 @@ void CRenderTarget::phase_combine()
 {
 	OPTICK_EVENT("CRenderTarget::phase_combine");
 
-	u32 Offset = 0;
-	Fvector2 p0, p1;
-
-	// low/hi RTs
-	u_setrt(rt_Generic_1, NULL, NULL, NULL, HW.pBaseZB);
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_Stencil(FALSE);
 
-	// Draw full-screen quad textured with our scene image
-	// draw skybox
-	RCache.set_ColorWriteEnable();
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
-	g_pGamePersistent->Environment().RenderSky();
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
-
-	RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
-	if (RImplementation.o.nvstencil)
-	{
-		u_stencil_optimize(FALSE);
-		RCache.set_ColorWriteEnable();
-	}
-
-	// Compute params
+	// Constants
+	u32 Offset = 0;
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
 	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
-	const float minamb = 0.001f;
-	Fvector4 ambclr = {_max(sRgbToLinear(envdesc->ambient.x), minamb), _max(sRgbToLinear(envdesc->ambient.y), minamb),
-					   _max(sRgbToLinear(envdesc->ambient.z), minamb), ps_r_ao_brightness};
-	Fvector4 envclr = {sRgbToLinear(envdesc->hemi_color.x), sRgbToLinear(envdesc->hemi_color.y),
-					   sRgbToLinear(envdesc->hemi_color.z), envdesc->weight};
 
-	//----------------------
-	// Start combine stage
-	//----------------------
+	// Set output texture
+	u_setrt(rt_Generic_1, NULL, NULL, NULL, NULL);
 
-	// Fill VB
-	float _w = float(Device.dwWidth);
-	float _h = float(Device.dwHeight);
-	p0.set(.5f / _w, .5f / _h);
-	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
-
-	// Fill vertex buffer
-	Fvector4* pv = (Fvector4*)RCache.Vertex.Lock(4, g_combine_VP->vb_stride, Offset);
-	pv->set(hclip(EPS, _w), hclip(_h + EPS, _h), p0.x, p1.y);
-	pv++;
-	pv->set(hclip(EPS, _w), hclip(EPS, _h), p0.x, p0.y);
-	pv++;
-	pv->set(hclip(_w + EPS, _w), hclip(_h + EPS, _h), p1.x, p1.y);
-	pv++;
-	pv->set(hclip(_w + EPS, _w), hclip(EPS, _h), p1.x, p0.y);
-	pv++;
-	RCache.Vertex.Unlock(4, g_combine_VP->vb_stride);
+	// Fill vertex buffer and set geometry
+	set_viewport_vertex_buffer(w, h, Offset);
 
 	// Setup textures
 	IDirect3DBaseTexture9* e0 = envdesc->sky_r_textures_env[0].second->surface_get();
@@ -118,17 +81,31 @@ void CRenderTarget::phase_combine()
 	t_envmap_1->surface_set(e1);
 	_RELEASE(e1);
 
-	// Draw
+	// Set shader pass
 	RCache.set_Element(s_combine->E[1]);
 
-	RCache.set_Geometry(g_combine_VP);
-
-	Fvector4 debug_mode = {(float)ps_r_debug_render, 0, 0, 0};
-	RCache.set_c("debug_mode", debug_mode);
-
+	// Set shader constants
+	const float minamb = 0.001f;
+	Fvector4 ambclr = 
+	{
+		_max(sRgbToLinear(envdesc->ambient.x), minamb), 
+		_max(sRgbToLinear(envdesc->ambient.y), minamb),
+		_max(sRgbToLinear(envdesc->ambient.z), minamb), 
+		ps_r_ao_brightness
+	};
 	RCache.set_c("ambient_color", ambclr);
 
+	Fvector4 envclr = 
+	{
+		sRgbToLinear(envdesc->hemi_color.x), 
+		sRgbToLinear(envdesc->hemi_color.y),
+		sRgbToLinear(envdesc->hemi_color.z), 
+		envdesc->weight
+	};
 	RCache.set_c("env_color", envclr);
+
+	RCache.set_c("debug_mode", (float)ps_r_debug_render, 0, 0, 0);
+
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
 #ifdef DEBUG

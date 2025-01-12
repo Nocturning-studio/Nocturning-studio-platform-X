@@ -157,6 +157,7 @@ class CRender : public R_dsgraph_structure
 
 	void render_stage_hom();
 	void render_stage_ao();
+	void render_stage_sky();
 	void render_stage_depth_prepass();
 	void render_stage_gbuffer_main();
 	void render_stage_gbuffer_secondary();

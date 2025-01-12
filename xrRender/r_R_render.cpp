@@ -570,14 +570,32 @@ void CRender::render_stage_ao()
 	Device.Statistic->RenderCALC_AO.End();
 }
 
+void CRender::render_stage_sky()
+{
+	OPTICK_EVENT("CRender::render_stage_sky");
+
+	RCache.set_CullMode(CULL_NONE);
+	RCache.set_Stencil(FALSE);
+
+	Target->u_setrt(Target->rt_Generic_1, NULL, NULL, NULL, NULL);
+
+	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
+
+	g_pGamePersistent->Environment().RenderSky();
+
+	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
+}
+
 void CRender::RenderScene()
 {
 	OPTICK_EVENT("CRender::RenderScene");
 
 	if (m_bFirstFrameAfterReset)
 	{
-		m_bFirstFrameAfterReset = false;
 		m_saved_viewproj.set(Device.mFullTransform);
+		Target->phase_motion_blur_pass_save_depth();
+
+		m_bFirstFrameAfterReset = false;
 		return;
 	}
 
@@ -629,6 +647,9 @@ void CRender::RenderScene()
 	render_stage_ao();
 
 	Target->phase_autoexposure_pipeline_start();
+
+	// Render skybox
+	render_stage_sky();
 
 	// Scene combining stage
 	Target->phase_combine();
