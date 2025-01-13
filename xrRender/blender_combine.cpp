@@ -18,7 +18,7 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 	switch (C.iElement)
 	{
 	case 0: //pre combine
-		C.r_Pass("null", "scene_combine_stage_pass_precombine", FALSE, FALSE, FALSE, TRUE, D3DBLEND_INVSRCALPHA,
+		C.r_Pass("scene_combine_stage", "scene_combine_stage_pass_precombine", FALSE, FALSE, FALSE, TRUE, D3DBLEND_INVSRCALPHA,
 				 D3DBLEND_SRCALPHA); //. MRT-blend?
 		gbuffer(C);
 		C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
@@ -34,7 +34,7 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_End();
 		break;
 	case 1: // combine
-		C.r_Pass("null", "scene_combine_stage", FALSE, FALSE, FALSE, TRUE, D3DBLEND_INVSRCALPHA, D3DBLEND_SRCALPHA); //. MRT-blend?
+		C.r_Pass("scene_combine_stage", "scene_combine_stage", FALSE, FALSE, FALSE, TRUE, D3DBLEND_INVSRCALPHA, D3DBLEND_SRCALPHA); //. MRT-blend?
 		gbuffer(C);
 		C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
 		C.r_Sampler_gaussian("s_ao", r_RT_ao);
