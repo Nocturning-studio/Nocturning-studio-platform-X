@@ -128,6 +128,9 @@ void CGrenade::State(u32 state)
 
 void CGrenade::Throw()
 {
+	if (IsGameTypeSingle() && !Actor()->g_Alive())
+		return;
+
 	if (!m_fake_missile || m_thrown)
 		return;
 
