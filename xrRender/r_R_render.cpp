@@ -254,7 +254,7 @@ void CRender::render_stage_forward()
 
 	//******* Main render - second order geometry (the one, that doesn't support deffering)
 	{
-		Target->u_setrt(Target->rt_Generic_1, Target->rt_ZBuffer, NULL, NULL, HW.pBaseZB);
+		Target->u_setrt(Target->rt_Generic_1, Target->rt_GBuffer_4, NULL, NULL, HW.pBaseZB);
 
 		RCache.set_CullMode(CULL_CCW);
 		RCache.set_Stencil(FALSE);

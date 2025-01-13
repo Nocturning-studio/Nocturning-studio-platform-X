@@ -82,14 +82,15 @@ CRenderTarget::CRenderTarget()
 		{
 			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_R16F);
 		}
 		else
 		{
 			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+			rt_GBuffer_4.create(r_RT_GBuffer_4, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 		}
-		rt_ZBuffer.create(r_RT_ZBuffer, dwWidth, dwHeight, D3DFMT_R16F);
 	}
 
 	rt_Light_Accumulator.create(r_RT_Light_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);

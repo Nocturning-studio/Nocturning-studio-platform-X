@@ -4,7 +4,7 @@
 #define r_RT_GBuffer_1 "$user$gbuffer_1"
 #define r_RT_GBuffer_2 "$user$gbuffer_2"
 #define r_RT_GBuffer_3 "$user$gbuffer_3"
-#define r_RT_ZBuffer "$user$zbuffer"
+#define r_RT_GBuffer_4 "$user$gbuffer_4"
 
 // Light Accumulating
 #define r_RT_Light_Accumulator "$user$accumulator"

@@ -58,7 +58,7 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_GBuffer_1;
 	ref_rt rt_GBuffer_2;
 	ref_rt rt_GBuffer_3;
-	ref_rt rt_ZBuffer;
+	ref_rt rt_GBuffer_4;
 
 	// Accumulation Buffer
 	ref_rt rt_Light_Accumulator;
