@@ -29,9 +29,10 @@ class CRender : public R_dsgraph_structure
   public:
 	enum
 	{
-		PHASE_NORMAL = 0, // E[0]
-		PHASE_SHADOW_DEPTH = 1,	  // E[1]
+		PHASE_NORMAL = 0,		// E[0]
+		PHASE_SHADOW_DEPTH = 1, // E[1]
 		PHASE_DEPTH_PREPASS = 2,
+		PHASE_HUD = 3
 	};
 
   public:
@@ -305,7 +306,12 @@ class CRender : public R_dsgraph_structure
 	// KD: need to know, what R2 phase is active now
 	virtual u32 active_phase()
 	{
-		return phase;
+		return render_phase;
+	};
+
+	virtual void set_active_phase(int active_phase)
+	{
+		render_phase = active_phase;
 	};
 
 	BOOL is_sun();

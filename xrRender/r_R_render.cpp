@@ -48,7 +48,7 @@ void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals)
 			// Determine visibility for dynamic part of scene
 			set_Object(0);
 			u32 uID_LTRACK = 0xffffffff;
-			if (phase == PHASE_NORMAL)
+			if (active_phase() == PHASE_NORMAL)
 			{
 				uLastLTRACK++;
 				if (lstRenderables.size())
@@ -155,13 +155,13 @@ void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals)
 				break; // exit loop on frustums
 			}
 		}
-		if (g_pGameLevel && (phase == PHASE_NORMAL || phase == PHASE_DEPTH_PREPASS))
+		if (g_pGameLevel && !(active_phase() == PHASE_SHADOW_DEPTH))
 			g_pGameLevel->pHUD->Render_Last(); // HUD
 	}
 	else
 	{
 		set_Object(0);
-		if (g_pGameLevel && (phase == PHASE_NORMAL || phase == PHASE_DEPTH_PREPASS))
+		if (g_pGameLevel && !(active_phase() == PHASE_SHADOW_DEPTH))
 			g_pGameLevel->pHUD->Render_Last(); // HUD
 	}
 }
@@ -265,7 +265,7 @@ void CRender::render_stage_forward()
 
 		// level
 		r_pmask(false, true); // enable priority "1"
-		phase = PHASE_NORMAL;
+		set_active_phase(PHASE_NORMAL);
 		render_main(Device.mFullTransform, false); //
 
 		RCache.enable_anisotropy_filtering();
@@ -294,7 +294,7 @@ void CRender::render_stage_depth_prepass()
 
 	set_Recorder(NULL);
 
-	phase = PHASE_DEPTH_PREPASS;
+	set_active_phase(PHASE_DEPTH_PREPASS);
 
 	render_main(Device.mFullTransform, false);
 
@@ -331,7 +331,7 @@ void CRender::render_stage_gbuffer_main()
 	else
 		set_Recorder(NULL);
 
-	phase = PHASE_NORMAL;
+	set_active_phase(PHASE_NORMAL);
 	render_main(Device.mFullTransform, true);
 	set_Recorder(NULL);
 	r_pmask(true, false); // disable priority "1"
@@ -378,9 +378,10 @@ void CRender::render_stage_gbuffer_secondary()
 
 	RCache.set_ZWriteEnable(FALSE);
 
-	r_dsgraph_render_hud();
-
 	r_dsgraph_render_lods(true, true);
+
+	set_active_phase(PHASE_HUD);
+	r_dsgraph_render_hud();
 
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));

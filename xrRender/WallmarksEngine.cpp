@@ -335,7 +335,8 @@ void CWallmarksEngine::AddSkeletonWallmark(const Fmatrix* xf, CKinematics* obj, 
 {
 	OPTICK_EVENT("CWallmarksEngine::AddSkeletonWallmark");
 
-	if (::RImplementation.phase != CRender::PHASE_NORMAL && ::RImplementation.phase != CRender::PHASE_DEPTH_PREPASS)
+	if (::RImplementation.active_phase() != CRender::PHASE_NORMAL &&
+		::RImplementation.active_phase() != CRender::PHASE_DEPTH_PREPASS)
 		return;
 
 	// optimization cheat: don't allow wallmarks more than 50 m from viewer/actor
@@ -352,7 +353,8 @@ void CWallmarksEngine::AddSkeletonWallmark(intrusive_ptr<CSkeletonWallmark> wm)
 {
 	OPTICK_EVENT("CWallmarksEngine::AddSkeletonWallmark");
 
-	if (::RImplementation.phase != CRender::PHASE_NORMAL && ::RImplementation.phase != CRender::PHASE_DEPTH_PREPASS)
+	if (::RImplementation.active_phase() != CRender::PHASE_NORMAL &&
+		::RImplementation.active_phase() != CRender::PHASE_DEPTH_PREPASS)
 		return;
 
 	if (!::RImplementation.val_bHUD)

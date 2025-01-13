@@ -839,7 +839,7 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 	bool bSpecialFull = mapNormal[1].size() || mapMatrix[1].size() || mapSorted.size();
 	VERIFY(!bSpecialFull);
 	HOM.Disable();
-	phase = PHASE_SHADOW_DEPTH;
+	set_active_phase(PHASE_SHADOW_DEPTH);
 	r_pmask(true, false);
 
 	// Fill the database

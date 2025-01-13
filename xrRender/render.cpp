@@ -58,8 +58,9 @@ ShaderElement* CRender::rimp_select_sh_dynamic(IRender_Visual* pVisual, float cd
 
 	int id = 0;
 
-	switch (RImplementation.phase)
+	switch (active_phase())
 	{
+	case CRender::PHASE_HUD:
 	case CRender::PHASE_NORMAL:
 		id = ((_sqrt(cdist_sq) - pVisual->vis.sphere.R) < r_dtex_range) ? SE_NORMAL_HQ : SE_NORMAL_LQ;
 		break;
@@ -80,8 +81,9 @@ ShaderElement* CRender::rimp_select_sh_static(IRender_Visual* pVisual, float cdi
 
 	int id = 0;
 
-	switch (RImplementation.phase)
+	switch (active_phase())
 	{
+	case CRender::PHASE_HUD:
 	case CRender::PHASE_NORMAL:
 		id = ((_sqrt(cdist_sq) - pVisual->vis.sphere.R) < r_dtex_range) ? SE_NORMAL_HQ : SE_NORMAL_LQ;
 		break;
@@ -152,6 +154,19 @@ static class cl_ao_brightness : public R_constant_setup
 		RCache.set_c("ao_brightness", ps_r_ao_brightness, 0, 0, 0);
 	}
 } binder_ao_brightness;
+//////////////////////////////////////////////////////////////////////////
+static class cl_is_hud_render_phase : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		int is_hud_render_phase = 0;
+
+		if (RImplementation.active_phase() == CRender::PHASE_HUD)
+			is_hud_render_phase = 1;
+
+		RCache.set_c("is_hud_render_phase", is_hud_render_phase, 0, 0, 0);
+	}
+} binder_is_hud_render_phase;
 //////////////////////////////////////////////////////////////////////////
 void CRender::CheckHWRenderSupporting()
 {
@@ -277,6 +292,7 @@ void CRender::create()
 	::Device.Resources->RegisterConstantSetup("sun_color", &binder_sun_color);
 	::Device.Resources->RegisterConstantSetup("hdr_params", &binder_hdr_params);
 	::Device.Resources->RegisterConstantSetup("ao_brightness", &binder_ao_brightness);
+	::Device.Resources->RegisterConstantSetup("is_hud_render_phase", &binder_is_hud_render_phase);
 
 	c_lmaterial = "L_material";
 	c_sbase = "s_base";

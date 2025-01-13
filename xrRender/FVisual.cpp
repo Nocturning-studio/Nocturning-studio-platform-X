@@ -184,7 +184,7 @@ void Fvisual::Render(float)
 {
 	OPTICK_EVENT("Fvisual::Render");
 
-	if (m_fast && RImplementation.phase == CRender::PHASE_SHADOW_DEPTH)
+	if (m_fast && RImplementation.active_phase() == CRender::PHASE_SHADOW_DEPTH)
 	{
 		RCache.set_Geometry(m_fast->rm_geom);
 		RCache.Render(D3DPT_TRIANGLELIST, m_fast->vBase, 0, m_fast->vCount, m_fast->iBase, m_fast->dwPrimitives);

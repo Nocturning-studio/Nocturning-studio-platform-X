@@ -665,7 +665,7 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 		}
 	}
 
-	if (g_pGameLevel && (phase == RImplementation.PHASE_SHADOW_DEPTH))
+	if (g_pGameLevel && (RImplementation.active_phase() == RImplementation.PHASE_SHADOW_DEPTH))
 		g_pGameLevel->pHUD->Render_Actor_Shadow(); // ACtor Shadow
 
 	// Restore

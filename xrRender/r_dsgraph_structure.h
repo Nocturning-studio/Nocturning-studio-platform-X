@@ -28,7 +28,7 @@ class R_dsgraph_structure : public IRender_interface, public pureFrame
 	R_feedback* val_feedback;							 // feedback for geometry being rendered
 	u32 val_feedback_breakp;							 // breakpoint
 	xr_vector<Fbox3, render_alloc<Fbox3>>* val_recorder; // coarse structure recorder
-	u32 phase;
+	u32 render_phase;
 	u32 marker;
 	bool pmask[2];
 	bool pmask_wmark;

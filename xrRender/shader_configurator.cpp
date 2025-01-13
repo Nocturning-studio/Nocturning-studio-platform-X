@@ -228,6 +228,13 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 	C.sh_macro(bUseDetailBump, "USE_DETAIL_BUMP", "1");
 
+	// If actially we rendering hud
+	if (RImplementation.active_phase() == CRender::PHASE_HUD)
+	{
+		Msg("- HUD phase");
+		C.sh_macro("IS_HUD", "1");
+	}
+
 	// Create shader pass
 	strconcat(sizeof(NewPixelShaderName), NewPixelShaderName, "gbuffer_stage_", PixelShaderName);
 	strconcat(sizeof(NewVertexShaderName), NewVertexShaderName, "gbuffer_stage_", VertexShaderName);
