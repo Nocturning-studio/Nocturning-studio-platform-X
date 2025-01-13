@@ -134,18 +134,26 @@ void CGrenade::Throw()
 	if (!m_fake_missile || m_thrown)
 		return;
 
-	CGrenade* pGrenade = smart_cast<CGrenade*>(m_fake_missile);
-	VERIFY(pGrenade);
-
-	if (pGrenade)
+	if (H_Parent())
 	{
-		pGrenade->set_destroy_time(m_dwDestroyTimeMax);
-		// установить ID того кто кинул гранату
-		pGrenade->SetInitiator(H_Parent()->ID());
+		CGrenade* pGrenade = smart_cast<CGrenade*>(m_fake_missile);
+		VERIFY(pGrenade);
+
+		if (pGrenade)
+		{
+			pGrenade->set_destroy_time(m_dwDestroyTimeMax);
+			// установить ID того кто кинул гранату
+			pGrenade->SetInitiator(H_Parent()->ID());
+		}
+
+		inherited::Throw();
+		m_fake_missile->processing_activate(); //@sliph
+		m_thrown = true;
 	}
-	inherited::Throw();
-	m_fake_missile->processing_activate(); //@sliph
-	m_thrown = true;
+	else
+	{
+		Msg("! Grenade try to throw without has a parent!");
+	}
 }
 
 void CGrenade::Destroy()
