@@ -246,7 +246,7 @@ void CPHShell::Deactivate()
 	R_ASSERT2(!CPHObject::IsFreezed(), "can not deactivate freezed !!!");
 	ZeroCallbacks();
 	VERIFY(ph_world && ph_world->Exist());
-	if (isFullActive())
+	if (0)//(isFullActive())
 	{
 		vis_update_deactivate();
 		CPHObject::activate();
