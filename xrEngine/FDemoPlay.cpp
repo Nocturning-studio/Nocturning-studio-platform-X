@@ -9,6 +9,7 @@
 #include "motion.h"
 #include "Render.h"
 #include "CameraManager.h"
+#include "Benchmark.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

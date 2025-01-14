@@ -1,70 +1,56 @@
-#ifndef __X_RAY_H__
-#define __X_RAY_H__
-
-// refs
+////////////////////////////////////////////////////////////////////////////////
+// Created: 14.01.2025
+// Author: Deathman
+// Refactored code: X-Ray class realization
+////////////////////////////////////////////////////////////////////////////////
+#pragma once
+////////////////////////////////////////////////////////////////////////////////
 class ENGINE_API CGameFont;
-
-// definition
-class ENGINE_API CApplication : public pureFrame, public IEventReceiver
+////////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
+#include "Application.h"
+////////////////////////////////////////////////////////////////////////////////
+class ENGINE_API CXRay
 {
-	// levels
-	struct sLevelInfo
+private:
+	BOOL m_bIntroState;
+
+public:
+	HWND logoWindow;
+
+	void InitEngine();
+	void destroyEngine();
+
+	void SetIntroState(bool state)
 	{
-		char* folder;
-		char* name;
+		  m_bIntroState = state;
 	};
-	string256 app_title;
 
-  private:
-	//	ref_shader				ll_hLogo;
-	//	ref_shader				ll_hLogo1;
-	ref_shader hLevelLogo;
-	ref_geom ll_hGeom;
-	ref_geom ll_hGeom2;
+	BOOL GetIntroState()
+	{
+		  return m_bIntroState;
+	};
 
-	ref_shader sh_progress;
-	//	ref_shader				sh_progress2;
-	int load_stage;
+	void execUserScript();
+	void Startup();
 
-	u32 ll_dwReference;
+	void DecodeResources();
 
-  private:
-	EVENT eQuit;
-	EVENT eStart;
-	EVENT eStartLoad;
-	EVENT eDisconnect;
+	void InitSettings();
+	void destroySettings();
 
-	void Level_Append(LPCSTR lname);
+	void InitConsole();
+	void destroyConsole();
 
-  public:
-	CGameFont* pFontSystem;
+	void InitInput();
+	void destroyInput();
 
-	// Levels
-	xr_vector<sLevelInfo> Levels;
-	u32 Level_Current;
-	void Level_Scan();
-	int Level_ID(LPCSTR name);
-	void Level_Set(u32 ID);
+	void InitSound();
+	void destroySound();
 
-	// Loading
-	void LoadBegin();
-	void LoadEnd();
-	void LoadTitleInt(LPCSTR str);
-	void SetLoadLogo(ref_shader NewLoadLogo);
-	void LoadSwitch();
-	void LoadDraw();
-
-	virtual void OnEvent(EVENT E, u64 P1, u64 P2);
-
-	// Other
-	CApplication();
-	~CApplication();
-
-	virtual void OnFrame();
-	void load_draw_internal();
-	void destroy_loading_shaders();
+	CXRay();
+	~CXRay() = default;
 };
-
-extern ENGINE_API CApplication* pApp;
-
-#endif //__XR_BASE_H__
+////////////////////////////////////////////////////////////////////////////////
+extern ENGINE_API CXRay* pXRay;
+////////////////////////////////////////////////////////////////////////////////

@@ -1475,10 +1475,13 @@
     <ClInclude Include="ai_script_lua_extension.h" />
     <ClInclude Include="ai_script_lua_space.h" />
     <ClInclude Include="ai_script_space.h" />
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="Benchmark.h" />
     <ClInclude Include="Blenders\Blender.h" />
     <ClInclude Include="Blenders\Blender_CLSID.h" />
     <ClInclude Include="Blenders\Blender_Recorder.h" />
     <ClInclude Include="bone.h" />
+    <ClInclude Include="build_identificator.h" />
     <ClInclude Include="CameraBase.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="CameraDefs.h" />
@@ -1534,6 +1537,7 @@
     <ClInclude Include="IRenderDetailModel.h" />
     <ClInclude Include="ISheduled.h" />
     <ClInclude Include="ISpatial.h" />
+    <ClInclude Include="Launcher.h" />
     <ClInclude Include="LightAnimLibrary.h" />
     <ClInclude Include="line_editor.h" />
     <ClInclude Include="line_edit_control.h" />
@@ -1613,6 +1617,7 @@
   <ItemGroup>
     <ClCompile Include="ai_script_lua_debug.cpp" />
     <ClCompile Include="ai_script_lua_extension.cpp" />
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="Blenders\Blender.cpp" />
     <ClCompile Include="Blenders\Blender_Palette.cpp" />
     <ClCompile Include="Blenders\Blender_Recorder.cpp" />
@@ -1889,6 +1894,7 @@
     <ClCompile Include="thunderbolt.cpp" />
     <ClCompile Include="tntQAVI.cpp" />
     <ClCompile Include="tss_def.cpp" />
+    <ClCompile Include="win_entry_point.cpp" />
     <ClCompile Include="xrHemisphere.cpp" />
     <ClCompile Include="xrImage_Resampler.cpp" />
     <ClCompile Include="xrSheduler.cpp" />

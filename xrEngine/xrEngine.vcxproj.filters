@@ -4,9 +4,6 @@
     <Filter Include="General">
       <UniqueIdentifier>{0a603d98-4302-49b1-847e-fc4f6bf60ac6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="General\Resources">
-      <UniqueIdentifier>{76026d3d-ba7c-42b6-9e81-684b3a5a9ae6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Interfaces">
       <UniqueIdentifier>{5eedd12d-df79-4474-bd26-420643f25696}</UniqueIdentifier>
     </Filter>
@@ -163,28 +160,31 @@
     <Filter Include="Game API\Photo mode">
       <UniqueIdentifier>{227abcdc-449a-4663-a476-96aca17ddd7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="General\Kernel">
+      <UniqueIdentifier>{109dc807-b1be-46d5-b006-c2b448dd9175}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="General\Kernel\Resources">
+      <UniqueIdentifier>{76026d3d-ba7c-42b6-9e81-684b3a5a9ae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="General\Defines">
+      <UniqueIdentifier>{7c9382ce-d352-456c-9a03-11f55a545226}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="General\Application">
+      <UniqueIdentifier>{da16bb34-ac2e-4739-84c6-4ddcbaa016a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="General\Core">
+      <UniqueIdentifier>{3d1057e9-5839-455b-bdbe-453c68af805c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="General\Helpers">
+      <UniqueIdentifier>{219f6925-2cde-4ef3-a739-235121f5a5c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="General\Core\Additional">
+      <UniqueIdentifier>{cafdd3d6-74f2-41c8-852b-37627efb72c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="_d3d_extensions.h">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="CopyProtection.h">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="defines.h">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="trivial_encryptor.h">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="x_ray.h">
-      <Filter>General</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>General\Resources</Filter>
+      <Filter>General\Kernel\Resources</Filter>
     </ClInclude>
     <ClInclude Include="psystem.h">
       <Filter>Interfaces</Filter>
@@ -576,17 +576,38 @@
     <ClInclude Include="R_Backend_tree.h">
       <Filter>Render\Backend</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>General\Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="defines.h">
+      <Filter>General\Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>General\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="x_ray.h">
+      <Filter>General\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="_d3d_extensions.h">
+      <Filter>General\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="CopyProtection.h">
+      <Filter>General\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="trivial_encryptor.h">
+      <Filter>General\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="build_identificator.h">
+      <Filter>General\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Launcher.h">
+      <Filter>General\Core\Additional</Filter>
+    </ClInclude>
+    <ClInclude Include="Benchmark.h">
+      <Filter>General\Core\Additional</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="defines.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="x_ray.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="IInputReceiver.cpp">
       <Filter>Interfaces\Input</Filter>
     </ClCompile>
@@ -995,23 +1016,38 @@
     <ClCompile Include="R_Backend_tree.cpp">
       <Filter>Render\Backend</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>General\Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="defines.cpp">
+      <Filter>General\Defines</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>General\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="win_entry_point.cpp">
+      <Filter>General\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="x_ray.cpp">
+      <Filter>General\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="OutOfVirtError.RES">
-      <Filter>General\Resources</Filter>
+      <Filter>General\Kernel\Resources</Filter>
     </Resource>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
-      <Filter>General\Resources</Filter>
+      <Filter>General\Kernel\Resources</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="stalker.ico">
-      <Filter>General\Resources</Filter>
+      <Filter>General\Kernel\Resources</Filter>
     </Image>
     <Image Include="ui_splash3.bmp">
-      <Filter>General\Resources</Filter>
+      <Filter>General\Kernel\Resources</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
