@@ -21,15 +21,18 @@
 #include "../xrDiscordAPI/DiscordAPI.h"
 #include "Application.h"
 //////////////////////////////////////////////////////////////////////////
+#define TRIVIAL_ENCRYPTOR_DECODER
+#include "trivial_encryptor.h"
+
+typedef void DUMMY_STUFF(const void*, const u32&, void*);
+XRCORE_API DUMMY_STUFF* g_temporary_stuff;
+//////////////////////////////////////////////////////////////////////////
 extern CRenderDevice Device;
 //////////////////////////////////////////////////////////////////////////
 ENGINE_API CApplication* pApp = NULL;
 ENGINE_API CInifile* pGameIni = NULL;
-
 ENGINE_API bool g_bBenchmark = false;
 //////////////////////////////////////////////////////////////////////////
-// -------------------------------------------
-// startup point
 CXRay::CXRay()
 {
 	m_bIntroState = TRUE;
@@ -41,7 +44,7 @@ void CXRay::InitEngine()
 
 	Engine.Initialize();
 
-	while (GetIntroState() == true)
+	while (GetIntroState())
 		Sleep(100);
 
 	Device.Initialize();
@@ -140,7 +143,6 @@ void CXRay::destroyEngine()
 
 void CXRay::execUserScript()
 {
-	// Execute script
 	Console->Execute("unbindall");
 	Console->ExecuteScript(Console->ConfigFile);
 }
@@ -223,7 +225,6 @@ void CXRay::Startup()
 
 void CXRay::ProcessEventLoop()
 {
-	// Main cycle
 	Device.PrepareEventLoop();
 	Device.StartEventLoop();
 	Device.EndEventLoop();
@@ -231,7 +232,6 @@ void CXRay::ProcessEventLoop()
 
 void CXRay::Destroy()
 {
-	// Destroy APP
 	xr_delete(g_SpatialSpacePhysic);
 	xr_delete(g_SpatialSpace);
 	DEL_INSTANCE(g_pGamePersistent);
@@ -254,12 +254,6 @@ void CXRay::Destroy()
 
 	destroyEngine();
 }
-
-typedef void DUMMY_STUFF(const void*, const u32&, void*);
-XRCORE_API DUMMY_STUFF* g_temporary_stuff;
-
-#define TRIVIAL_ENCRYPTOR_DECODER
-#include "trivial_encryptor.h"
 
 void CXRay::DecodeResources()
 {

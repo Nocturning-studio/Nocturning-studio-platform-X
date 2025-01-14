@@ -23,9 +23,6 @@ class ENGINE_API CGammaControl;
 extern DWORD gMainThreadId;
 extern DWORD gSecondaryThreadId;
 
-ENGINE_API bool IsMainThread();
-ENGINE_API bool IsSecondaryThread();
-
 #define VIEWPORT_NEAR 0.01f
 
 #define DEVICE_RESET_PRECACHE_FRAME_COUNT 10

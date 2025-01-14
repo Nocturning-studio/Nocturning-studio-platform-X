@@ -89,21 +89,23 @@ BOOL IsOutOfVirtualMemory()
 	return 1;
 }
 
-int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lpCmdLine, int nCmdShow)
+int APIENTRY WinMain_implementation(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lpCmdLine, int nCmdShow)
 {
+	// Title window
+	logoWindow = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_STARTUP), 0, logoDlgProc);
+	SetWindowPos(logoWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+
 #ifndef DEDICATED_SERVER
+	Debug._initialize(false);
 	// Check for virtual memory
 	if ((strstr(lpCmdLine, "--skipmemcheck") == NULL) && IsOutOfVirtualMemory())
 		return 0;
 #else  // DEDICATED_SERVER
+	Debug._initialize(true);
 	g_dedicated_server = true;
 #endif // DEDICATED_SERVER
 
 	pXRay = xr_new<CXRay>();
-
-	// Title window
-	logoWindow = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_STARTUP), 0, logoDlgProc);
-	SetWindowPos(logoWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 
 	// AVI
 	pXRay->SetIntroState(FALSE);
@@ -143,11 +145,10 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lp
 
 	Core._destroy();
 
-	char* _args[3];
-
 	// check for need to execute something external
 	if (xr_strlen(g_sLaunchOnExit_app))
 	{
+		char* _args[3];
 		string4096 ModuleFileName = "";
 		GetModuleFileName(NULL, ModuleFileName, 4096);
 
@@ -170,13 +171,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lpCmdLi
 {
 	__try
 	{
-#ifdef DEDICATED_SERVER
-		Debug._initialize(true);
-#else  // DEDICATED_SERVER
-		Debug._initialize(false);
-#endif // DEDICATED_SERVER
-
-		WinMain_impl(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+		WinMain_implementation(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 	}
 	__except (stack_overflow_exception_filter(GetExceptionCode()))
 	{

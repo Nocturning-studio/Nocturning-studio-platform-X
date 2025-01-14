@@ -169,16 +169,16 @@
     <Filter Include="General\Defines">
       <UniqueIdentifier>{7c9382ce-d352-456c-9a03-11f55a545226}</UniqueIdentifier>
     </Filter>
-    <Filter Include="General\Application">
-      <UniqueIdentifier>{da16bb34-ac2e-4739-84c6-4ddcbaa016a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="General\Core">
       <UniqueIdentifier>{3d1057e9-5839-455b-bdbe-453c68af805c}</UniqueIdentifier>
     </Filter>
     <Filter Include="General\Helpers">
       <UniqueIdentifier>{219f6925-2cde-4ef3-a739-235121f5a5c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="General\Core\Additional">
+    <Filter Include="General\Application">
+      <UniqueIdentifier>{da16bb34-ac2e-4739-84c6-4ddcbaa016a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="General\Additional">
       <UniqueIdentifier>{cafdd3d6-74f2-41c8-852b-37627efb72c6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -601,10 +601,10 @@
       <Filter>General\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Launcher.h">
-      <Filter>General\Core\Additional</Filter>
+      <Filter>General\Additional</Filter>
     </ClInclude>
     <ClInclude Include="Benchmark.h">
-      <Filter>General\Core\Additional</Filter>
+      <Filter>General\Additional</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

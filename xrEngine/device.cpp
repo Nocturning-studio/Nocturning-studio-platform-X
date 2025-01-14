@@ -15,6 +15,10 @@
 
 #include "x_ray.h"
 #include "render.h"
+#include <ppl.h>
+#include "resourcemanager.h"
+#include <optick/optick.h>
+#include "IGame_Persistent.h"
 
 ENGINE_API CRenderDevice Device;
 ENGINE_API BOOL g_bRendering = FALSE;
@@ -25,17 +29,6 @@ ref_light precache_light = 0;
 DWORD gMainThreadId = 0xFFFFFFFF;
 DWORD gSecondaryThreadId = std::thread::hardware_concurrency(); // 0xFFFFFFFF;
 /////////////////////////////////////
-
-ENGINE_API bool IsMainThread()
-{
-	return GetCurrentThreadId() == gMainThreadId;
-}
-
-ENGINE_API bool IsSecondaryThread()
-{
-	return GetCurrentThreadId() == gSecondaryThreadId;
-}
-
 BOOL CRenderDevice::Begin()
 {
 #ifndef DEDICATED_SERVER
@@ -79,8 +72,6 @@ void CRenderDevice::Clear()
 }
 
 extern void CheckPrivilegySlowdown();
-#include "resourcemanager.h"
-#include <optick/optick.h>
 
 void CRenderDevice::End(void)
 {
@@ -211,7 +202,6 @@ void CRenderDevice::PrepareEventLoop()
 	OPTICK_THREAD(MainThreadName);
 
 	Threading::SpawnThread(SecondaryThreadProc, "X-RAY Secondary thread", 0, this);
-	// thread_spawn(RenderThreadProc, "X-RAY Render thread", 0, this);
 
 	// Startup timers and calculate timer delta
 	dwTimeGlobal = 0;
@@ -409,7 +399,6 @@ void ProcessLoading(RP_FUNC* f)
 }
 
 ENGINE_API BOOL bShowPauseString = TRUE;
-#include "IGame_Persistent.h"
 
 void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
 {

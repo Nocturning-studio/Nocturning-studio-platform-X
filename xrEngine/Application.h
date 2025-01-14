@@ -10,28 +10,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 class ENGINE_API CApplication : public pureFrame, public IEventReceiver
 {
-	// levels
-	struct sLevelInfo
-	{
-		char* folder;
-		char* name;
-	};
+  private:
 	string256 app_title;
 
-  private:
-	//	ref_shader				ll_hLogo;
-	//	ref_shader				ll_hLogo1;
 	ref_shader hLevelLogo;
 	ref_geom ll_hGeom;
 	ref_geom ll_hGeom2;
 
 	ref_shader sh_progress;
-	//	ref_shader				sh_progress2;
 	int load_stage;
 
 	u32 ll_dwReference;
 
-  private:
 	EVENT eQuit;
 	EVENT eStart;
 	EVENT eStartLoad;
@@ -43,6 +33,11 @@ class ENGINE_API CApplication : public pureFrame, public IEventReceiver
 	CGameFont* pFontSystem;
 
 	// Levels
+	struct sLevelInfo
+	{
+		char* folder;
+		char* name;
+	};
 	xr_vector<sLevelInfo> Levels;
 	u32 Level_Current;
 	void Level_Scan();

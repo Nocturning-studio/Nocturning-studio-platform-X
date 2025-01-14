@@ -224,7 +224,7 @@ HRESULT CResourceManager::CompileShader(
 	bool bWarningsAsErrors = false;
 	bool bErrorsAsWarnings = false;
 
-#ifdef MASTER_GOLD
+#ifndef MASTER_GOLD
 	bUseShaderCache = !strstr(Core.Params, "-do_not_use_shader_cache");
 	bDisassebleShader = strstr(Core.Params, "-save_disassembled_shaders");
 	bWarningsAsErrors = strstr(Core.Params, "-shader_warnings_as_errors");
