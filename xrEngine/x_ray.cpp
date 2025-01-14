@@ -201,27 +201,28 @@ void CXRay::Startup()
 	}
 	if (strstr(Core.Params, "-load_last_save"))
 	{
-			Console->Execute("load_last_save");
+		Console->Execute("load_last_save");
 	}
 	if (strstr(Core.Params, "-load_last_quick_save"))
 	{
 		Console->Execute("load_last_quick_save");
 	}
 
-	// Initialize APP
-	// #ifndef DEDICATED_SERVER
-	ShowWindow(Device.m_hWnd, SW_SHOWNORMAL);
-	Device.Create();
-	// #endif
-	LALib.OnCreate();
-	pApp = xr_new<CApplication>();
-	g_pGamePersistent = (IGame_Persistent*)NEW_INSTANCE(CLSID_GAME_PERSISTANT);
-	g_SpatialSpace = xr_new<ISpatial_DB>();
-	g_SpatialSpacePhysic = xr_new<ISpatial_DB>();
-
 	// Destroy LOGO
 	DestroyWindow(logoWindow);
 	logoWindow = NULL;
+
+	ShowWindow(Device.m_hWnd, SW_SHOWNORMAL);
+
+	Device.Create();
+	LALib.OnCreate();
+
+	pApp = xr_new<CApplication>();
+
+	g_pGamePersistent = (IGame_Persistent*)NEW_INSTANCE(CLSID_GAME_PERSISTANT);
+
+	g_SpatialSpace = xr_new<ISpatial_DB>();
+	g_SpatialSpacePhysic = xr_new<ISpatial_DB>();
 
 	// Main cycle
 	Memory.mem_usage();
