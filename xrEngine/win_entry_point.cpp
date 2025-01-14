@@ -15,7 +15,7 @@ ENGINE_API bool g_dedicated_server = false;
 
 ENGINE_API CXRay* pXRay = NULL;
 ////////////////////////////////////////////////////////////////////////////////
-static BOOL CALLBACK logDlgProc(HWND hw, UINT msg, WPARAM wp, LPARAM lp)
+static BOOL CALLBACK logoDlgProc(HWND hw, UINT msg, WPARAM wp, LPARAM lp)
 {
 	switch (msg)
 	{
@@ -99,7 +99,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lp
 	pXRay = xr_new<CXRay>();
 
 	// Title window
-	pXRay->logoWindow = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_STARTUP), 0, logDlgProc);
+	pXRay->logoWindow = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_STARTUP), 0, logoDlgProc);
 	SetWindowPos(pXRay->logoWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 
 	// AVI
