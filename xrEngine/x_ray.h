@@ -16,40 +16,38 @@ private:
 	BOOL m_bIntroState;
 
 public:
-	HWND logoWindow;
-
 	void InitEngine();
+	void InitSettings();
+	void InitConsole();
+	void InitInput();
+	void InitSound();
+	
 	void destroyEngine();
+	void destroySettings();
+	void destroyConsole();
+	void destroyInput();
+	void destroySound();
+
+	void execUserScript();
+
+	void Startup();
+	void ProcessEventLoop();
+	void Destroy();
+
+	void DecodeResources();
+
+	CXRay();
+	~CXRay() = default;
 
 	void SetIntroState(bool state)
 	{
-		  m_bIntroState = state;
+		m_bIntroState = state;
 	};
 
 	BOOL GetIntroState()
 	{
-		  return m_bIntroState;
+		return m_bIntroState;
 	};
-
-	void execUserScript();
-	void Startup();
-
-	void DecodeResources();
-
-	void InitSettings();
-	void destroySettings();
-
-	void InitConsole();
-	void destroyConsole();
-
-	void InitInput();
-	void destroyInput();
-
-	void InitSound();
-	void destroySound();
-
-	CXRay();
-	~CXRay() = default;
 };
 ////////////////////////////////////////////////////////////////////////////////
 extern ENGINE_API CXRay* pXRay;

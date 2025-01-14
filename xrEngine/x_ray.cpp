@@ -33,7 +33,6 @@ ENGINE_API bool g_bBenchmark = false;
 CXRay::CXRay()
 {
 	m_bIntroState = TRUE;
-	logoWindow = NULL;
 }
 
 void CXRay::InitEngine()
@@ -142,7 +141,6 @@ void CXRay::destroyEngine()
 void CXRay::execUserScript()
 {
 	// Execute script
-
 	Console->Execute("unbindall");
 	Console->ExecuteScript(Console->ConfigFile);
 }
@@ -208,10 +206,6 @@ void CXRay::Startup()
 		Console->Execute("load_last_quick_save");
 	}
 
-	// Destroy LOGO
-	DestroyWindow(logoWindow);
-	logoWindow = NULL;
-
 	ShowWindow(Device.m_hWnd, SW_SHOWNORMAL);
 
 	Device.Create();
@@ -224,10 +218,19 @@ void CXRay::Startup()
 	g_SpatialSpace = xr_new<ISpatial_DB>();
 	g_SpatialSpacePhysic = xr_new<ISpatial_DB>();
 
-	// Main cycle
 	Memory.mem_usage();
-	Device.Run();
+}
 
+void CXRay::ProcessEventLoop()
+{
+	// Main cycle
+	Device.PrepareEventLoop();
+	Device.StartEventLoop();
+	Device.EndEventLoop();
+}
+
+void CXRay::Destroy()
+{
 	// Destroy APP
 	xr_delete(g_SpatialSpacePhysic);
 	xr_delete(g_SpatialSpace);
@@ -252,8 +255,6 @@ void CXRay::Startup()
 	destroyEngine();
 }
 
-#include "xr_ioc_cmd.h"
-
 typedef void DUMMY_STUFF(const void*, const u32&, void*);
 XRCORE_API DUMMY_STUFF* g_temporary_stuff;
 
@@ -265,3 +266,4 @@ void CXRay::DecodeResources()
 	g_temporary_stuff = &trivial_encryptor::decode;
 }
 
+//////////////////////////////////////////////////////////////////////////

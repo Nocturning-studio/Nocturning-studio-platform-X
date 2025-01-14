@@ -3,6 +3,9 @@
 // Author: Deathman
 // Refactored code: Windows application entry point
 ////////////////////////////////////////////////////////////////////////////////
+#pragma todo(Deathman to Deathman : Реализовать бенчмарк)
+#pragma todo(Deathman to Deathman : Реализовать лаунчер)
+////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "build_identificator.h"
 #include "resource.h"
@@ -99,8 +102,8 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lp
 	pXRay = xr_new<CXRay>();
 
 	// Title window
-	pXRay->logoWindow = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_STARTUP), 0, logoDlgProc);
-	SetWindowPos(pXRay->logoWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+	logoWindow = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_STARTUP), 0, logoDlgProc);
+	SetWindowPos(logoWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 
 	// AVI
 	pXRay->SetIntroState(FALSE);
@@ -119,42 +122,29 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lp
 	pXRay->DecodeResources();
 
 	compute_build_id();
+
 	Core._initialize("X-Ray Engine", "xray_engine", NULL, TRUE, fsgame[0] ? fsgame : NULL);
 
 	FPU::m24r();
 	
 	pXRay->InitEngine();
 
-	#pragma todo(Deathman to Deathman: Реализовать бенчмарк)
-	/*
-	LPCSTR benchName = "-batch_benchmark ";
-	if (strstr(lpCmdLine, benchName))
-	{
-		int sz = xr_strlen(benchName);
-		string64 b_name;
-		sscanf(strstr(Core.Params, benchName) + sz, "%[^ ] ", b_name);
-		doBenchmark(b_name);
-		return 0;
-	}
-	*/
-
-	#pragma todo(Deathman to Deathman : Реализовать лаунчер)
-	/*
-	if (strstr(lpCmdLine, "-launcher"))
-	{
-		int l_res = doLauncher();
-		if (l_res != 0)
-			return 0;
-	};
-	*/
-
 	Engine.External.Initialize();
 
+	// Destroy LOGO
+	DestroyWindow(logoWindow);
+	logoWindow = NULL;
+
 	pXRay->Startup();
+
+	pXRay->ProcessEventLoop();
+
+	pXRay->Destroy();
 
 	Core._destroy();
 
 	char* _args[3];
+
 	// check for need to execute something external
 	if (xr_strlen(g_sLaunchOnExit_app))
 	{

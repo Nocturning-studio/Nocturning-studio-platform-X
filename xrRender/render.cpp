@@ -164,7 +164,7 @@ static class cl_is_hud_render_phase : public R_constant_setup
 		if (RImplementation.active_phase() == CRender::PHASE_HUD)
 			is_hud_render_phase = 1;
 
-		RCache.set_c("is_hud_render_phase", is_hud_render_phase, 0, 0, 0);
+		RCache.set_c("is_hud_render_phase", (float)is_hud_render_phase, 0, 0, 0);
 	}
 } binder_is_hud_render_phase;
 //////////////////////////////////////////////////////////////////////////
