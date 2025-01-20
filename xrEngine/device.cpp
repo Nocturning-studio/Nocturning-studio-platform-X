@@ -9,7 +9,6 @@
 #define MMNOMIXER
 #define MMNOJOY
 #include <mmsystem.h>
-// d3dx9.h
 #include <d3dx9.h>
 #pragma warning(default : 4995)
 

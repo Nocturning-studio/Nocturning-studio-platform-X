@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="DiscordAPI.cpp" />
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="..\third-party\include\DiscordGameSDK\achievement_manager.cpp">
       <Filter>DiscordGameSDK\Managers\Achievement manager</Filter>
     </ClCompile>
@@ -45,10 +44,10 @@
     <ClCompile Include="..\third-party\include\DiscordGameSDK\types.cpp">
       <Filter>DiscordGameSDK\Types</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DiscordAPI.h" />
-    <ClInclude Include="stdafx.h" />
     <ClInclude Include="..\third-party\include\DiscordGameSDK\achievement_manager.h">
       <Filter>DiscordGameSDK\Managers\Achievement manager</Filter>
     </ClInclude>
@@ -100,6 +99,7 @@
     <ClInclude Include="..\third-party\include\DiscordGameSDK\ffi.h">
       <Filter>DiscordGameSDK\Kernel</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="DiscordGameSDK">

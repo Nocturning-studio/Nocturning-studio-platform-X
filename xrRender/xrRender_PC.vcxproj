@@ -293,7 +293,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -372,7 +372,7 @@
       <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
@@ -421,7 +421,7 @@
       <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
@@ -471,7 +471,7 @@
       <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
@@ -520,7 +520,7 @@
       <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -738,7 +738,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\dll\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">

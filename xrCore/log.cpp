@@ -98,7 +98,7 @@ void Log(const char* s)
 	AddOne(split);
 
 	// Output text to external console (THNKS VAX)
-	if (strstr(GetCommandLine(), "-external_console_log"))
+	if ((LPCSTR)strstr(GetCommandLine(), "-external_console_log"))
 		printf("%s\n", s);
 }
 
