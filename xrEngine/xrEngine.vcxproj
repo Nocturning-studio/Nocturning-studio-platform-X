@@ -458,8 +458,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\Imgui.dll" "$(OutDir)Imgui.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -570,8 +569,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\Imgui.dll" "$(OutDir)Imgui.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">
@@ -686,8 +684,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\Imgui.dll" "$(OutDir)Imgui.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
@@ -749,8 +746,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\Imgui.dll" "$(OutDir)Imgui.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
@@ -813,8 +809,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\Imgui.dll" "$(OutDir)Imgui.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
@@ -876,8 +871,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\Imgui.dll" "$(OutDir)Imgui.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -1198,8 +1192,7 @@
       <ImportLibrary>$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\Imgui.dll" "$(OutDir)Imgui.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|x64'">
@@ -1305,8 +1298,7 @@
       <ImportLibrary>$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\Imgui.dll" "$(OutDir)Imgui.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|x64'">
@@ -1413,8 +1405,7 @@
       </ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\Imgui.dll" "$(OutDir)Imgui.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|x64'">
@@ -1495,6 +1486,7 @@
     <ClInclude Include="CPhotoMode.h" />
     <ClInclude Include="CustomHUD.h" />
     <ClInclude Include="D3DUtils.h" />
+    <ClInclude Include="debug_ui.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="device.h" />
     <ClInclude Include="doug_lea_memory_allocator.h" />
@@ -1537,6 +1529,7 @@
     <ClInclude Include="IGame_ObjectPool.h" />
     <ClInclude Include="IGame_Persistent.h" />
     <ClInclude Include="IInputReceiver.h" />
+    <ClInclude Include="ImGui_API.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IRenderDetailModel.h" />
     <ClInclude Include="ISheduled.h" />
@@ -1632,6 +1625,7 @@
     <ClCompile Include="CPhotoMode.cpp" />
     <ClCompile Include="CustomHUD.cpp" />
     <ClCompile Include="D3DUtils.cpp" />
+    <ClCompile Include="debug_ui.cpp" />
     <ClCompile Include="defines.cpp" />
     <ClCompile Include="device.cpp" />
     <ClCompile Include="Device_create.cpp" />
@@ -1761,6 +1755,7 @@
     <ClCompile Include="IGame_ObjectPool.cpp" />
     <ClCompile Include="IGame_Persistent.cpp" />
     <ClCompile Include="IInputReceiver.cpp" />
+    <ClCompile Include="ImGui_API.cpp" />
     <ClCompile Include="interp.cpp" />
     <ClCompile Include="IRenderable.cpp" />
     <ClCompile Include="ISheduled.cpp" />

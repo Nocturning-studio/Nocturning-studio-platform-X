@@ -20,6 +20,9 @@
 #include <process.h>
 #include "../xrDiscordAPI/DiscordAPI.h"
 #include "Application.h"
+#include "debug_ui.h"
+//////////////////////////////////////////////////////////////////////////
+ENGINE_API CDebugUI* DebugUI = nullptr;
 //////////////////////////////////////////////////////////////////////////
 #define TRIVIAL_ENCRYPTOR_DECODER
 #include "trivial_encryptor.h"
@@ -210,7 +213,12 @@ void CXRay::Startup()
 
 	ShowWindow(Device.m_hWnd, SW_SHOWNORMAL);
 
+	DebugUI = new CDebugUI();
+
 	Device.Create();
+
+	DebugUI->Initialize();
+
 	LALib.OnCreate();
 
 	pApp = xr_new<CApplication>();
@@ -253,6 +261,9 @@ void CXRay::Destroy()
 		Console->Destroy();
 
 	destroyEngine();
+
+	DebugUI->Destroy();
+	delete DebugUI;
 }
 
 void CXRay::DecodeResources()

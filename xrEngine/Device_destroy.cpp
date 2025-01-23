@@ -3,6 +3,7 @@
 #include "ResourceManager.h"
 #include "render.h"
 #include "IGame_Persistent.h"
+#include "debug_ui.h"
 
 void CRenderDevice::_Destroy(BOOL bKeepTextures)
 {
@@ -60,6 +61,8 @@ void CRenderDevice::Reset(bool precache)
 {
 	OPTICK_EVENT("CRenderDevice::Reset");
 
+	DebugUI->OnResetBegin();
+
 #ifdef DEBUG
 	_SHOW_REF("*ref -CRenderDevice::ResetTotal: DeviceREF:", HW.pDevice);
 #endif // DEBUG
@@ -100,6 +103,8 @@ void CRenderDevice::Reset(bool precache)
 	bool b_16_after = (float)dwWidth / (float)dwHeight > (1024.0f / 768.0f + 0.01f);
 	if (b_16_after != b_16_before && g_pGameLevel && g_pGameLevel->pHUD)
 		g_pGameLevel->pHUD->OnScreenRatioChanged();
+
+	DebugUI->OnResetEnd();
 
 #ifdef DEBUG
 	_SHOW_REF("*ref +CRenderDevice::ResetTotal: DeviceREF:", HW.pDevice);

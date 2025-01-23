@@ -19,6 +19,8 @@
 #include <optick/optick.h>
 #include "IGame_Persistent.h"
 
+#include "debug_ui.h"
+
 ENGINE_API CRenderDevice Device;
 ENGINE_API BOOL g_bRendering = FALSE;
 
@@ -51,7 +53,10 @@ BOOL CRenderDevice::Begin()
 		}
 	}
 
+	DebugUI->OnFrameBegin();
+
 	CHK_DX(HW.pDevice->BeginScene());
+
 	RCache.OnFrameBegin();
 	RCache.set_CullMode(CULL_CW);
 	RCache.set_CullMode(CULL_CCW);
@@ -109,6 +114,8 @@ void CRenderDevice::End(void)
 	RCache.OnFrameEnd();
 	Memory.dbg_check();
 	CHK_DX(HW.pDevice->EndScene());
+
+	DebugUI->OnFrameEnd();
 
 	HRESULT _hr = HW.pDevice->Present(NULL, NULL, NULL, NULL);
 	if (D3DERR_DEVICELOST == _hr)
@@ -194,7 +201,7 @@ void CRenderDevice::PrepareEventLoop()
 
 	g_bLoaded = FALSE;
 
-	Log("\Preparing event loop...");
+	Msg("Preparing event loop...");
 
 	LPCSTR MainThreadName = "X-RAY Primary thread";
 	Msg("Setting main thread name: %s", MainThreadName);
@@ -293,6 +300,8 @@ void CRenderDevice::StartEventLoop()
 				{
 					if (Begin())
 					{
+						DebugUI->Render();
+
 						//renderProcessFrame.Set(); // allow render thread to do its job
 						//renderFrameDone.Wait();	  // wait until render thread finish its job
 						seqRender.Process(rp_Render);
@@ -333,7 +342,7 @@ void CRenderDevice::EndEventLoop()
 {
 	OPTICK_EVENT("CRenderDevice::EndEventLoop");
 
-	Log("\Ending event loop...");
+	Msg("Ending event loop...");
 
 	seqAppEnd.Process(rp_AppEnd);
 

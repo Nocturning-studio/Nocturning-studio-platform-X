@@ -181,6 +181,9 @@
     <Filter Include="General\Additional">
       <UniqueIdentifier>{cafdd3d6-74f2-41c8-852b-37627efb72c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Interfaces\UI">
+      <UniqueIdentifier>{83fb0322-54fe-475c-b767-42e276abd678}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -606,6 +609,12 @@
     <ClInclude Include="Benchmark.h">
       <Filter>General\Additional</Filter>
     </ClInclude>
+    <ClInclude Include="ImGui_API.h">
+      <Filter>Interfaces\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_ui.h">
+      <Filter>Interfaces\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IInputReceiver.cpp">
@@ -1030,6 +1039,12 @@
     </ClCompile>
     <ClCompile Include="x_ray.cpp">
       <Filter>General\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui_API.cpp">
+      <Filter>Interfaces\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="debug_ui.cpp">
+      <Filter>Interfaces\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

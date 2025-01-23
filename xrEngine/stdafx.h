@@ -63,6 +63,8 @@ extern ENGINE_API CInifile* pGameIni;
 
 //#pragma comment(lib, "xrDiscordAPI.lib")
 
+#pragma comment(lib, "Imgui.lib")
+
 #include <optick/optick.h>
 #ifdef ENABLE_PROFILING
 #pragma comment(lib, "OptickCore.lib")
