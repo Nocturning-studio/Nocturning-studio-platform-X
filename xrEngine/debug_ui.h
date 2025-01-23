@@ -20,7 +20,7 @@ class ENGINE_API CDebugUI
 	void OnFrameBegin();
 	void OnFrame();
 	void OnFrameEnd();
-	void Render();
+	void DrawUI();
 	void OnResetBegin();
 	void OnResetEnd();
 	void Destroy();

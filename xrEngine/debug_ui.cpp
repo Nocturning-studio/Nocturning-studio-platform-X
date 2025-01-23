@@ -39,25 +39,26 @@ void CDebugUI::OnFrameEnd()
 	ImguiAPI->RenderFrame();
 }
 
-void CDebugUI::Render()
+void CDebugUI::DrawUI()
 {
-	if (m_bNeedDraw)
-	{
-		ImGui::PushFont(ImguiAPI->font_letterica_big);
-		ImGui::Begin("ImGui Window");
-		ImGui::PopFont();
+	//ImGui::PushFont(ImguiAPI->font_letterica_big);
+	ImGui::Begin("ImGui Window");
+	//ImGui::PopFont();
 
-		ImGui::PushFont(ImguiAPI->font_letterica_medium);
+	//ImGui::PushFont(ImguiAPI->font_letterica_medium);
 
-		ImGui::Button("asdlfn");
+	ImGui::Text("1");
 
-		//if (ImGui::Button("Test btn"))
-		//	Sleep(0);
+	//ImGui::Button("asdlfn");
 
-		ImGui::PopFont();
+	ImGui::SmallButton("123");
 
-		ImGui::End();
-	}
+	//if (ImGui::Button("Test btn"))
+	//	Sleep(0);
+
+	//ImGui::PopFont();
+
+	ImGui::End();
 }
 
 void CDebugUI::OnResetBegin()

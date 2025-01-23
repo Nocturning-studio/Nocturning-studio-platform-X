@@ -300,7 +300,7 @@ void CRenderDevice::StartEventLoop()
 				{
 					if (Begin())
 					{
-						DebugUI->Render();
+						DebugUI->DrawUI();
 
 						//renderProcessFrame.Set(); // allow render thread to do its job
 						//renderFrameDone.Wait();	  // wait until render thread finish its job
