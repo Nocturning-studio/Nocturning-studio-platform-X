@@ -44,8 +44,8 @@ void CDebugUI::OnFrameEnd()
 
 void CDebugUI::DrawUI()
 {
-	ImGuiIO& io = ImGui::GetIO();
-	io.MouseDrawCursor = true;
+	ImGuiIO& InputOutputParams = ImGui::GetIO();
+	InputOutputParams.MouseDrawCursor = true;
 
 	//ImGui::PushFont(ImguiAPI->font_letterica_big);
 	ImGui::Begin("ImGui Window");
@@ -100,7 +100,19 @@ void CDebugUI::IR_OnMouseHold(int key)
 
 void CDebugUI::IR_OnMousePress(int key)
 {
-	if (key == MOUSE_1)
-		Msg("Mouse pressed");
+	ImGuiIO& InputOutputParams = ImGui::GetIO();
+
+	switch (key)
+	{
+	case MOUSE_1:
+		InputOutputParams.MouseDown[0] = true;
+		break;
+	case MOUSE_2:
+		InputOutputParams.MouseDown[1] = true;
+		break;
+	case MOUSE_3:
+		InputOutputParams.MouseDown[2] = true;
+		break;
+	}
 }
 ///////////////////////////////////////////////////////////////
