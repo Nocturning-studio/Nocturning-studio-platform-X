@@ -89,5 +89,9 @@ ENGINE_API void throw_exception(const std::exception& A);
 #endif
 #define LUABIND_DONT_COPY_STRINGS
 
+#pragma warning(disable : 4995)
+#include <xmmintrin.h>
+#pragma warning(default : 4995)
+
 #endif // !M_BORLAND
 #endif // !defined STDAFX_3DA

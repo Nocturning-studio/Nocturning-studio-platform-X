@@ -21,26 +21,19 @@ CEngine::~CEngine()
 }
 
 extern void msCreate(LPCSTR name);
+extern void __cdecl xrBind_PSGP(xrDispatchTable* T, DWORD dwFeatures);
 
 void CEngine::Initialize(void)
 {
 	Msg("Initializing Engine...");
 
 	// Bind PSGP
-	LPCSTR xrCPUPipeDllName = "xrCPU_Pipe.dll";
-	Msg("Loading DLL: %s", xrCPUPipeDllName);
-	hPSGP = LoadLibrary(xrCPUPipeDllName);
-	if (!hPSGP)
-		make_string("Can't load xrCPU_Pipe.dll, please reinstall application");
-
-	xrBinder* bindCPU = (xrBinder*)GetProcAddress(hPSGP, "xrBind_PSGP");
-	R_ASSERT(bindCPU);
-	bindCPU(&PSGP, true);
+	xrBind_PSGP(&PSGP, true);
 
 	// Other stuff
 	Msg("Initializing Engine Sheduler...");
 	Engine.Sheduler.Initialize();
-	//
+
 #ifdef DEBUG
 	msCreate("game");
 #endif
@@ -55,13 +48,4 @@ void CEngine::Destroy()
 		dbg_dump_leaks_prepare();
 #endif // DEBUG_MEMORY_MANAGER
 	Engine.External.Destroy();
-
-
-
-	if (hPSGP)
-	{
-		FreeLibrary(hPSGP);
-		hPSGP = 0;
-		ZeroMemory(&PSGP, sizeof(PSGP));
-	}
 }

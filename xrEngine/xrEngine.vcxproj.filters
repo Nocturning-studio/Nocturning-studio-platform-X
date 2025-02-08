@@ -184,6 +184,21 @@
     <Filter Include="Interfaces\UI">
       <UniqueIdentifier>{83fb0322-54fe-475c-b767-42e276abd678}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CPU Pipe">
+      <UniqueIdentifier>{9e9e5c50-5961-4cb8-a665-2b7c7524ad52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CPU Pipe\3DNow!">
+      <UniqueIdentifier>{cfd46291-ffec-41b3-ab30-e9f565c91bb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CPU Pipe\Generic x86">
+      <UniqueIdentifier>{a8867817-45f2-41a0-8ef6-2cf973739098}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CPU Pipe\Kernel">
+      <UniqueIdentifier>{e9c49a80-d1d7-4fe9-89e4-6adde51291e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CPU Pipe\SSE">
+      <UniqueIdentifier>{0ca130e5-468e-4c97-8940-43dac64dbd50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -615,6 +630,9 @@
     <ClInclude Include="debug_ui.h">
       <Filter>Interfaces\UI</Filter>
     </ClInclude>
+    <ClInclude Include="xrCPU_Pipe\xrCPU_Pipe.h">
+      <Filter>CPU Pipe\Kernel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IInputReceiver.cpp">
@@ -1045,6 +1063,54 @@
     </ClCompile>
     <ClCompile Include="debug_ui.cpp">
       <Filter>Interfaces\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\3DNow!Lib.cpp">
+      <Filter>CPU Pipe\3DNow!</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrBoneLerp_3DNow!.cpp">
+      <Filter>CPU Pipe\3DNow!</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrM44mul_3DNow!.cpp">
+      <Filter>CPU Pipe\3DNow!</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrMemCopy8_3DNow!.cpp">
+      <Filter>CPU Pipe\3DNow!</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrMemFill32_3DNow!.cpp">
+      <Filter>CPU Pipe\3DNow!</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrSkin1W_3DNow!.cpp">
+      <Filter>CPU Pipe\3DNow!</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrSkin2W_3DNow!.cpp">
+      <Filter>CPU Pipe\3DNow!</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrBoneLerp.cpp">
+      <Filter>CPU Pipe\Generic x86</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrM44mul.cpp">
+      <Filter>CPU Pipe\Generic x86</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrQuatSlerp.cpp">
+      <Filter>CPU Pipe\Generic x86</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrSkin1W.cpp">
+      <Filter>CPU Pipe\Generic x86</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrSkin2W.cpp">
+      <Filter>CPU Pipe\Generic x86</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrTransfer.cpp">
+      <Filter>CPU Pipe\Generic x86</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrCPU_Pipe.cpp">
+      <Filter>CPU Pipe\Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrSkin1W_SSE.cpp">
+      <Filter>CPU Pipe\SSE</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCPU_Pipe\xrSkin2W_SSE.cpp">
+      <Filter>CPU Pipe\SSE</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

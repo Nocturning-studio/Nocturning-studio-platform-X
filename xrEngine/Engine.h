@@ -13,8 +13,6 @@
 
 class ENGINE_API CEngine
 {
-	HMODULE hPSGP;
-
   public:
 	// DLL api stuff
 	CEngineAPI External;

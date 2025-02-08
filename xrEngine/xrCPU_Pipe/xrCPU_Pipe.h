@@ -2,6 +2,8 @@
 #define xrCPU_PipeH
 #pragma once
 
+#include "StdAfx.h"
+
 // Forward references
 struct ENGINE_API vertRender;
 struct ENGINE_API vertBoned1W;
