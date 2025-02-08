@@ -22,7 +22,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>-center_screen -disasm -external_console_log -forbid_shader_cache</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-center_screen -disasm -external_console_log -forbid_shader_cache -i</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)..\bin\</LocalDebuggerWorkingDirectory>
   </PropertyGroup>

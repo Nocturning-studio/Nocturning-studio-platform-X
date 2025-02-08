@@ -9,7 +9,12 @@
 extern xr_vector<flags8> gl_cl_tries_state;
 extern xr_vector<int>::iterator I, E, B;
 
+#ifdef CONTACT
+#undef CONTACT
+#endif
+
 #define CONTACT(Ptr, Stride) ((dContactGeom*)(((byte*)Ptr) + (Stride)))
+
 #define SURFACE(Ptr, Stride) ((dSurfaceParameters*)(((byte*)Ptr) + (Stride - sizeof(dSurfaceParameters))))
 #define NUMC_MASK (0xffff)
 

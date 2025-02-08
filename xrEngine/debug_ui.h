@@ -23,6 +23,12 @@ class ENGINE_API CDebugUI
 	void DrawUI();
 	void OnResetBegin();
 	void OnResetEnd();
+	void IR_OnKeyboardPress(int key);
+	void IR_OnKeyboardHold(int key);
+	void IR_OnMouseMove(int key);
+	void IR_OnMouseWheel(int key);
+	void IR_OnMouseHold(int key);
+	void IR_OnMousePress(int key);
 	void Destroy();
 };
 ///////////////////////////////////////////////////////////////

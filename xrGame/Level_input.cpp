@@ -27,6 +27,7 @@
 #ifdef DEBUG
 #include "ai/monsters/BaseMonster/base_monster.h"
 #endif
+#include "../xrEngine/debug_ui.h"
 
 #ifdef DEBUG
 extern void try_change_current_entity();
@@ -65,6 +66,8 @@ static int mouse_button_2_key[] = {MOUSE_1, MOUSE_2, MOUSE_3};
 
 void CLevel::IR_OnMousePress(int btn)
 {
+	DebugUI->IR_OnMousePress(mouse_button_2_key[btn]);
+
 	IR_OnKeyboardPress(mouse_button_2_key[btn]);
 }
 void CLevel::IR_OnMouseRelease(int btn)
@@ -73,6 +76,8 @@ void CLevel::IR_OnMouseRelease(int btn)
 }
 void CLevel::IR_OnMouseHold(int btn)
 {
+	DebugUI->IR_OnMouseHold(mouse_button_2_key[btn]);
+
 	IR_OnKeyboardHold(mouse_button_2_key[btn]);
 }
 
@@ -132,6 +137,10 @@ void CLevel::IR_OnKeyboardPress(int key)
 	//.	if (DIK_F11 == key)		vtune.disable();
 
 	EGameActions _curr = get_binded_action(key);
+
+	Msg("Keyboard pressed");
+	DebugUI->IR_OnKeyboardPress(key);
+
 	switch (_curr)
 	{
 
@@ -427,6 +436,8 @@ void CLevel::IR_OnKeyboardRelease(int key)
 
 void CLevel::IR_OnKeyboardHold(int key)
 {
+	DebugUI->IR_OnKeyboardHold(key);
+
 	if (g_bDisableAllInput)
 		return;
 

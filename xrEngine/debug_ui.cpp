@@ -8,6 +8,9 @@
 ///////////////////////////////////////////////////////////////
 #include "imgui_api.h"
 ///////////////////////////////////////////////////////////////
+#include "xr_input.h"
+#include "../xrGame/xr_level_controller.h"
+///////////////////////////////////////////////////////////////
 CImguiAPI* ImguiAPI = nullptr;
 ///////////////////////////////////////////////////////////////
 void CDebugUI::Initialize()
@@ -41,6 +44,9 @@ void CDebugUI::OnFrameEnd()
 
 void CDebugUI::DrawUI()
 {
+	ImGuiIO& io = ImGui::GetIO();
+	io.MouseDrawCursor = true;
+
 	//ImGui::PushFont(ImguiAPI->font_letterica_big);
 	ImGui::Begin("ImGui Window");
 	//ImGui::PopFont();
@@ -69,5 +75,32 @@ void CDebugUI::OnResetBegin()
 void CDebugUI::OnResetEnd()
 {
 	ImguiAPI->OnResetEnd();
+}
+
+void CDebugUI::IR_OnKeyboardPress(int key)
+{
+	Msg("Keyboard pressed");
+}
+
+void CDebugUI::IR_OnKeyboardHold(int key)
+{
+}
+
+void CDebugUI::IR_OnMouseMove(int key)
+{
+}
+
+void CDebugUI::IR_OnMouseWheel(int key)
+{
+}
+
+void CDebugUI::IR_OnMouseHold(int key)
+{
+}
+
+void CDebugUI::IR_OnMousePress(int key)
+{
+	if (key == MOUSE_1)
+		Msg("Mouse pressed");
 }
 ///////////////////////////////////////////////////////////////
