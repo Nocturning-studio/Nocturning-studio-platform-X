@@ -349,7 +349,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 		RCache.set_xform_world(Fidentity);
 		mapNormalVS& vs = mapNormal[_priority];
 		vs.getANY_P(nrmVS);
-		concurrency::parallel_sort(nrmVS.begin(), nrmVS.end(), cmp_vs_nrm);
+		//concurrency::parallel_sort(nrmVS.begin(), nrmVS.end(), cmp_vs_nrm);
 		for (u32 vs_id = 0; vs_id < nrmVS.size(); vs_id++)
 		{
 			mapNormalVS::TNode* Nvs = nrmVS[vs_id];
@@ -358,7 +358,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 			mapNormalPS& ps = Nvs->val;
 			ps.ssa = 0;
 			ps.getANY_P(nrmPS);
-			concurrency::parallel_sort(nrmPS.begin(), nrmPS.end(), cmp_ps_nrm);
+			//concurrency::parallel_sort(nrmPS.begin(), nrmPS.end(), cmp_ps_nrm);
 			for (u32 ps_id = 0; ps_id < nrmPS.size(); ps_id++)
 			{
 				mapNormalPS::TNode* Nps = nrmPS[ps_id];
@@ -367,7 +367,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 				mapNormalCS& cs = Nps->val;
 				cs.ssa = 0;
 				cs.getANY_P(nrmCS);
-				concurrency::parallel_sort(nrmCS.begin(), nrmCS.end(), cmp_cs_nrm);
+				//concurrency::parallel_sort(nrmCS.begin(), nrmCS.end(), cmp_cs_nrm);
 				for (u32 cs_id = 0; cs_id < nrmCS.size(); cs_id++)
 				{
 					mapNormalCS::TNode* Ncs = nrmCS[cs_id];
@@ -376,7 +376,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 					mapNormalStates& states = Ncs->val;
 					states.ssa = 0;
 					states.getANY_P(nrmStates);
-					concurrency::parallel_sort(nrmStates.begin(), nrmStates.end(), cmp_states_nrm);
+					//concurrency::parallel_sort(nrmStates.begin(), nrmStates.end(), cmp_states_nrm);
 					for (u32 state_id = 0; state_id < nrmStates.size(); state_id++)
 					{
 						mapNormalStates::TNode* Nstate = nrmStates[state_id];
@@ -426,7 +426,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 	{
 		mapMatrixVS& vs = mapMatrix[_priority];
 		vs.getANY_P(matVS);
-		concurrency::parallel_sort(matVS.begin(), matVS.end(), cmp_vs_mat);
+		//concurrency::parallel_sort(matVS.begin(), matVS.end(), cmp_vs_mat);
 		for (u32 vs_id = 0; vs_id < matVS.size(); vs_id++)
 		{
 			mapMatrixVS::TNode* Nvs = matVS[vs_id];
@@ -435,7 +435,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 			mapMatrixPS& ps = Nvs->val;
 			ps.ssa = 0;
 			ps.getANY_P(matPS);
-			concurrency::parallel_sort(matPS.begin(), matPS.end(), cmp_ps_mat);
+			//concurrency::parallel_sort(matPS.begin(), matPS.end(), cmp_ps_mat);
 			for (u32 ps_id = 0; ps_id < matPS.size(); ps_id++)
 			{
 				mapMatrixPS::TNode* Nps = matPS[ps_id];
@@ -444,7 +444,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 				mapMatrixCS& cs = Nps->val;
 				cs.ssa = 0;
 				cs.getANY_P(matCS);
-				concurrency::parallel_sort(matCS.begin(), matCS.end(), cmp_cs_mat);
+				//concurrency::parallel_sort(matCS.begin(), matCS.end(), cmp_cs_mat);
 				for (u32 cs_id = 0; cs_id < matCS.size(); cs_id++)
 				{
 					mapMatrixCS::TNode* Ncs = matCS[cs_id];
@@ -453,7 +453,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 					mapMatrixStates& states = Ncs->val;
 					states.ssa = 0;
 					states.getANY_P(matStates);
-					concurrency::parallel_sort(matStates.begin(), matStates.end(), cmp_states_mat);
+					//concurrency::parallel_sort(matStates.begin(), matStates.end(), cmp_states_mat);
 					for (u32 state_id = 0; state_id < matStates.size(); state_id++)
 					{
 						mapMatrixStates::TNode* Nstate = matStates[state_id];
@@ -508,8 +508,7 @@ void R_dsgraph_structure::r_dsgraph_render_hud()
 	// Change projection
 	Fmatrix Pold = Device.mProject;
 	Fmatrix FTold = Device.mFullTransform;
-	Device.mProject.build_projection(deg2rad(psHUD_FOV * Device.fFOV /* *Device.fASPECT*/), Device.fASPECT,
-									 VIEWPORT_NEAR, g_pGamePersistent->Environment().CurrentEnv->far_plane);
+	Device.mProject.build_projection(deg2rad(psHUD_FOV * Device.fFOV), Device.fASPECT, VIEWPORT_NEAR_HUD, g_pGamePersistent->Environment().CurrentEnv->far_plane);
 
 	Device.mFullTransform.mul(Device.mProject, Device.mView);
 	RCache.set_xform_project(Device.mProject);
