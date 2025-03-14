@@ -234,7 +234,7 @@ float ps_r_mblur = 0.5f;
 
 Fvector3 ps_r_dof = Fvector3().set(-1.25f, 1.4f, 600.f); //	x - min (0), y - focus (1.4), z - max (100)
 float ps_r_dof_sky = 300;								  //	distance to sky
-float ps_r_dof_kernel_size = 5.0f;
+float ps_r_dof_diaphragm_size = 5.0f;
 
 float ps_r_ls_depth_scale = 1.00001f;
 float ps_r_ls_depth_bias = -0.0001f;
@@ -247,9 +247,11 @@ float ps_r_sun_far = 200.f;
 float ps_r_sun_depth_far_scale = 1.00000f;
 float ps_r_sun_depth_far_bias = -0.002f;
 float ps_r_sun_depth_middle_scale = 1.0000f;
-float ps_r_sun_depth_middle_bias = -0.0001;
+float ps_r_sun_depth_middle_bias = -0.00002f;
 float ps_r_sun_depth_near_scale = 1.0000f;
-float ps_r_sun_depth_near_bias = -0.0001f;
+float ps_r_sun_depth_near_bias = 0.00028f;
+float ps_r_sun_depth_normal_bias = 0.01700f;
+float ps_r_sun_depth_directional_bias = -0.1000f;
 float ps_r_sun_lumscale = 1.0f;
 float ps_r_sun_lumscale_hemi = 1.0f;
 float ps_r_sun_lumscale_amb = 1.0f;
@@ -596,6 +598,24 @@ class CCC_Dof : public CCC_Vector3
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////
+class CCC_DofDiaphragm : public CCC_Float
+{
+  public:
+	CCC_DofDiaphragm(LPCSTR N, float* V, float _min = 1.0f, float _max = 10.0f) : CCC_Float(N, V, _min, _max)
+	{
+	}
+
+	virtual void Execute(LPCSTR args)
+	{
+		float v = float(atof(args));
+
+		CCC_Float::Execute(args);
+		if (g_pGamePersistent)
+			g_pGamePersistent->SetDofDiaphragm(ps_r_dof_diaphragm_size);
+
+	}
+};
+///////////////////////////////////////////////////////////////////////////////////
 void xrRender_initconsole()
 {
 	Fvector tw_min, tw_max;
@@ -684,7 +704,7 @@ void xrRender_initconsole()
 	CMD4(CCC_DofNear, "r_dof_near", &ps_r_dof.x, tw_min.x, tw_max.x);
 	CMD4(CCC_DofFocus, "r_dof_focus", &ps_r_dof.y, tw_min.y, tw_max.y);
 	CMD4(CCC_DofFar, "r_dof_far", &ps_r_dof.z, tw_min.z, tw_max.z);
-	CMD4(CCC_Float, "r_dof_kernel", &ps_r_dof_kernel_size, .0f, 10.f);
+	CMD4(CCC_DofDiaphragm, "r_dof_diaphragm", &ps_r_dof_diaphragm_size, 1.0f, 10.f);
 	CMD4(CCC_Float, "r_dof_sky", &ps_r_dof_sky, -10000.f, 10000.f);
 	CMD3(CCC_Mask, "r_dof_enabled", &ps_r_postprocess_flags, RFLAG_DOF);
 	CMD3(CCC_Token, "r_dof_quality", &ps_r_dof_quality, dof_quality_token);
@@ -708,12 +728,16 @@ void xrRender_initconsole()
 	CMD4(CCC_Float, "r_sun_tsm_bias", &ps_r_sun_tsm_bias, -0.5, +0.5);
 	CMD4(CCC_Float, "r_sun_near", &ps_r_sun_near, 1.f, 50.f);
 	CMD4(CCC_Float, "r_sun_far", &ps_r_sun_far, 100.f, 360.f);
+
 	CMD4(CCC_Float, "r_sun_depth_far_scale", &ps_r_sun_depth_far_scale, 0.5, 1.5);
 	CMD4(CCC_Float, "r_sun_depth_far_bias", &ps_r_sun_depth_far_bias, -0.5, +0.5);
 	CMD4(CCC_Float, "r_sun_depth_middle_scale", &ps_r_sun_depth_middle_scale, 0.5, 1.5);
 	CMD4(CCC_Float, "r_sun_depth_middle_bias", &ps_r_sun_depth_middle_bias, -0.5, +0.5);
 	CMD4(CCC_Float, "r_sun_depth_near_scale", &ps_r_sun_depth_near_scale, 0.5, 1.5);
 	CMD4(CCC_Float, "r_sun_depth_near_bias", &ps_r_sun_depth_near_bias, -0.5, +0.5);
+	CMD4(CCC_Float, "r_sun_depth_normal_bias", &ps_r_sun_depth_normal_bias, -0.5, +0.5);
+	CMD4(CCC_Float, "r_sun_depth_directional_bias", &ps_r_sun_depth_directional_bias, -0.5, +0.5);
+
 	CMD4(CCC_Float, "r_sun_lumscale", &ps_r_sun_lumscale, -1.0, +3.0);
 	CMD4(CCC_Float, "r_sun_lumscale_hemi", &ps_r_sun_lumscale_hemi, 0.0, +3.0);
 	CMD4(CCC_Float, "r_sun_lumscale_amb", &ps_r_sun_lumscale_amb, 0.0, +3.0);

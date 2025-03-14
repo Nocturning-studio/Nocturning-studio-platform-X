@@ -1216,6 +1216,22 @@ struct CCC_JumpToLevel : public IConsole_Command
 			}
 		Msg("! There is no level \"%s\" in the game graph!", level);
 	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		if (!ai().get_alife())
+		{
+			Msg("! ALife simulator is needed to perform specified command!");
+			return;
+		}
+
+		GameGraph::LEVEL_MAP::const_iterator itb = ai().game_graph().header().levels().begin();
+		GameGraph::LEVEL_MAP::const_iterator ite = ai().game_graph().header().levels().end();
+		for (; itb != ite; ++itb)
+		{
+			tips.push_back((itb)._Ptr->second.name());
+		}
+	}
 };
 
 class CCC_Spawn : public IConsole_Command
@@ -1294,7 +1310,7 @@ class CCC_SetWeather : public IConsole_Command
 
 	void Execute(LPCSTR args) override
 	{
-		if (!strnlen_s(args, sizeof(args)))
+		if (!strlen(args))
 			return;
 		if (!g_pGameLevel)
 			return;
@@ -1302,6 +1318,17 @@ class CCC_SetWeather : public IConsole_Command
 			return;
 
 		g_pGamePersistent->Environment().SetWeather(args, true);
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		auto& cycles = g_pGamePersistent->Environment().WeatherCycles;
+		for (auto& cycle : cycles)
+		{
+			tips.push_back(cycle.first);
+		}
+
+		IConsole_Command::fill_tips(tips, mode);
 	}
 };
 
@@ -1314,7 +1341,7 @@ class CCC_SetWeatherFX : public IConsole_Command
 
 	void Execute(LPCSTR args) override
 	{
-		if (!strnlen_s(args, sizeof(args)))
+		if (!strlen(args))
 			return;
 		if (!g_pGameLevel)
 			return;

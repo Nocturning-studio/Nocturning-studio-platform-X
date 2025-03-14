@@ -75,7 +75,7 @@ class ENGINE_API CDemoRecord : public CEffectorCam, public IInputReceiver
 	CDemoRecord(const char* name, float life_time = 60 * 60 * 1000);
 	virtual ~CDemoRecord();
 
-	void ChangeDepthOfField(int direction);
+	void ChangeDepthOfFieldFar(int direction);
 	void ChangeFieldOfView(int direction);
 	void SwitchAutofocusState();
 	void SwitchGridState();

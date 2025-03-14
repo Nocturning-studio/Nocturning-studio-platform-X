@@ -16,6 +16,10 @@
 #include <DPlay\dplay8.h>
 #pragma warning(pop)
 
+#ifdef ENABLE_PROFILING
+#define USE_OPTICK
+#endif
+
 #include <optick/optick.h>
 #ifdef ENABLE_PROFILING
 #pragma comment(lib, "OptickCore.lib")

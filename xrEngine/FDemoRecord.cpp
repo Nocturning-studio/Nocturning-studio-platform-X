@@ -710,7 +710,7 @@ void CDemoRecord::IR_OnMouseHold(int btn)
 	update_whith_timescale(m_vT, vT_delta);
 }
 
-void CDemoRecord::ChangeDepthOfField(int direction)
+void CDemoRecord::ChangeDepthOfFieldFar(int direction)
 {
 	Fvector3 dof_params_old;
 	Fvector3 dof_params_actual;
@@ -729,7 +729,7 @@ void CDemoRecord::ChangeDepthOfField(int direction)
 		if (dof_params_actual.z <= 4.999f)
 		{
 #ifdef DEBUG_DEMO_RECORD
-			Msg("CDemoRecord::ChangeDepthOfField - far parameter < 5");
+			Msg("CDemoRecord::ChangeDepthOfFieldFar - far parameter < 5");
 #endif
 			dof_params_actual.z = 5.0f;
 		}
@@ -738,17 +738,17 @@ void CDemoRecord::ChangeDepthOfField(int direction)
 		g_pGamePersistent->SetBaseDof(m_fDOF);
 
 #ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::ChangeDepthOfField - method successfully change depth of field parameters");
-		Msg("CDemoRecord::ChangeDepthOfField - depth of field parameters old: near = %d, focus = %d, far = %d",
+		Msg("CDemoRecord::ChangeDepthOfFieldFar - method successfully change depth of field parameters");
+		Msg("CDemoRecord::ChangeDepthOfFieldFar - depth of field parameters old: near = %d, focus = %d, far = %d",
 			dof_params_old.x, dof_params_old.y, dof_params_old.z);
-		Msg("CDemoRecord::ChangeDepthOfField - depth of field parameters actual: near = %d, focus = %d, far = %d",
+		Msg("CDemoRecord::ChangeDepthOfFieldFar - depth of field parameters actual: near = %d, focus = %d, far = %d",
 			dof_params_actual.x, dof_params_actual.y, dof_params_actual.z);
 #endif
 	}
 #ifdef DEBUG_DEMO_RECORD
 	else
 	{
-		Msg("CDemoRecord::ChangeDepthOfField - method was called before create IGame_Persistent. Going next");
+		Msg("CDemoRecord::ChangeDepthOfFieldFar - method was called before create IGame_Persistent. Going next");
 	}
 #endif
 }
@@ -807,7 +807,7 @@ void CDemoRecord::IR_OnMouseWheel(int direction)
 #ifdef DEBUG_DEMO_RECORD
 		Msg("CDemoRecord::IR_OnMouseWheel - Whell mode is DepthOfFieldChanger");
 #endif
-		ChangeDepthOfField(direction);
+		ChangeDepthOfFieldFar(direction);
 	}
 	else if (IR_GetKeyState(DIK_F))
 	{

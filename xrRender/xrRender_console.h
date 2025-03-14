@@ -108,7 +108,7 @@ extern ECORE_API float ps_r_mblur; // .5f
 
 extern ECORE_API Fvector3 ps_r_dof;		  //	x - min (0), y - focus (1.4), z - max (100)
 extern ECORE_API float ps_r_dof_sky;		  //	distance to sky
-extern ECORE_API float ps_r_dof_kernel_size; //	7.0f
+extern ECORE_API float ps_r_dof_diaphragm_size; //	7.0f
 extern ECORE_API u32 ps_r_dof_quality;
 
 extern ECORE_API float ps_r_ls_depth_scale; // 1.0f
@@ -125,6 +125,8 @@ extern ECORE_API float ps_r_sun_depth_middle_scale; // 1.00001f
 extern ECORE_API float ps_r_sun_depth_middle_bias;	 // -0.0001f
 extern ECORE_API float ps_r_sun_depth_near_scale; // 1.00001f
 extern ECORE_API float ps_r_sun_depth_near_bias;  // -0.0001f
+extern ECORE_API float ps_r_sun_depth_normal_bias;
+extern ECORE_API float ps_r_sun_depth_directional_bias;
 extern ECORE_API float ps_r_sun_lumscale;		   // 0.5f
 extern ECORE_API float ps_r_sun_lumscale_hemi;	   // 1.0f
 extern ECORE_API float ps_r_sun_lumscale_amb;	   // 1.0f

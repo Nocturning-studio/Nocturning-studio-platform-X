@@ -25,8 +25,8 @@
 #define CROUCH_BOBBING_INTENCITY_FACTOR 0.5f
 #define ZOOM_BOBBING_INTENCITY_FACTOR 0.5f
 
-#define SPRINT_FOV_MODIFIER_FACTOR 1.0075
-#define WALK_FOV_MODIFIER_FACTOR 1.0025f
+#define SPRINT_FOV_MODIFIER_FACTOR 1.005f
+#define WALK_FOV_MODIFIER_FACTOR 1.0015f
 #define BACKWARD_WALK_FOV_MODIFIER_FACTOR 0.9975f
 #define CROUCH_WALK_FOV_MODIFIER_FACTOR 0.9975f
 
@@ -88,18 +88,6 @@ BOOL CEffectorBobbing::ProcessCam(SCamEffectorInfo& info)
 		M.i.crossproduct(info.n, info.d);
 		M.c.set(info.p);
 
-		if (ps_effectors_ls_flags.test(DYNAMIC_FOV_ENABLED))
-		{
-			if (dwMState & ACTOR_DEFS::mcSprint)
-				info.fFov *= SPRINT_FOV_MODIFIER_FACTOR;
-			if (dwMState & ACTOR_DEFS::mcFwd)
-				info.fFov *= WALK_FOV_MODIFIER_FACTOR;
-			if (dwMState & ACTOR_DEFS::mcBack)
-				info.fFov *= BACKWARD_WALK_FOV_MODIFIER_FACTOR;
-			if (dwMState & ACTOR_DEFS::mcCrouch)
-				info.fFov *= CROUCH_WALK_FOV_MODIFIER_FACTOR;
-		}
-
 		// apply footstep bobbing effect
 		float k = GLOBAL_VIEW_BOBBING_FACTOR;
 
@@ -139,6 +127,22 @@ BOOL CEffectorBobbing::ProcessCam(SCamEffectorInfo& info)
 		{
 			A = m_fAmplitudeWalk * k;
 			ST = m_fSpeedWalk * fTime * k;
+		}
+
+		if (ps_effectors_ls_flags.test(DYNAMIC_FOV_ENABLED))
+		{
+			float fov_modifier = 1.0f;
+
+			if (dwMState & ACTOR_DEFS::mcSprint)
+				fov_modifier = SPRINT_FOV_MODIFIER_FACTOR;
+			if (dwMState & ACTOR_DEFS::mcFwd)
+				fov_modifier = WALK_FOV_MODIFIER_FACTOR;
+			if (dwMState & ACTOR_DEFS::mcBack)
+				fov_modifier = BACKWARD_WALK_FOV_MODIFIER_FACTOR;
+			if (dwMState & ACTOR_DEFS::mcCrouch)
+				fov_modifier = CROUCH_WALK_FOV_MODIFIER_FACTOR;
+
+			info.fFov *= fov_modifier + Device.fTimeDelta;
 		}
 
 		float _sinA = _abs(_sin(ST * Intencity) * A) * fReminderFactor;

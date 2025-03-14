@@ -130,6 +130,22 @@ static class cl_sun_dir : public R_constant_setup
 	}
 } binder_sun_dir;
 //////////////////////////////////////////////////////////////////////////
+static class cl_sun_normal_bias : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_r_sun_depth_normal_bias, 0, 0, 0);
+	}
+} binder_sun_normal_bias;
+//////////////////////////////////////////////////////////////////////////
+static class cl_sun_directional_bias : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_r_sun_depth_directional_bias, 0, 0, 0);
+	}
+} binder_sun_directional_bias;
+//////////////////////////////////////////////////////////////////////////
 static class cl_sun_color : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -289,6 +305,8 @@ void CRender::create()
 	::Device.Resources->RegisterConstantSetup("parallax_heigt", &binder_parallax);
 	::Device.Resources->RegisterConstantSetup("sun_far", &binder_sun_far);
 	::Device.Resources->RegisterConstantSetup("sun_dir", &binder_sun_dir);
+	::Device.Resources->RegisterConstantSetup("sun_normal_bias", &binder_sun_normal_bias);
+	::Device.Resources->RegisterConstantSetup("sun_directional_bias", &binder_sun_directional_bias);
 	::Device.Resources->RegisterConstantSetup("sun_color", &binder_sun_color);
 	::Device.Resources->RegisterConstantSetup("hdr_params", &binder_hdr_params);
 	::Device.Resources->RegisterConstantSetup("ao_brightness", &binder_ao_brightness);

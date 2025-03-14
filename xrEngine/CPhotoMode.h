@@ -35,7 +35,11 @@ class ENGINE_API CPhotoMode : public CEffectorCam, public IInputReceiver
 	Fvector m_vR;
 	Fvector m_vVelocity;
 	Fvector m_vAngularVelocity;
+	float m_fGlobalDiaphragm;
+	float m_fDiaphragm;
 	float m_fFov;
+	float m_fGlobalFov;
+	float m_fFovNeeded;
 	Fvector3 m_fDOF;
 	Fvector m_vGlobalDepthOfFieldParameters;
 	float m_fGlobalTimeFactor;
@@ -76,8 +80,13 @@ class ENGINE_API CPhotoMode : public CEffectorCam, public IInputReceiver
 	CPhotoMode(float life_time = 60 * 60 * 1000);
 	virtual ~CPhotoMode();
 
-	void ChangeDepthOfField(int direction);
+	void ResetParameters();
+
+	void ChangeDepthOfFieldFar(int direction);
+	void ChangeDepthOfFieldNear(int direction);
+	void ChangeDepthOfFieldFocus(int direction);
 	void ChangeFieldOfView(int direction);
+	void ChangeDiaphragm(int direction);
 	void SwitchAutofocusState();
 	void SwitchGridState();
 	void SwitchCinemaBordersState();

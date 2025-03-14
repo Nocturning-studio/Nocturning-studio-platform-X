@@ -123,6 +123,11 @@ CGamePersistent::CGamePersistent(void)
 
 	Fvector3* DofValue = Console->GetFVectorPtr("r_dof");
 	SetBaseDof(*DofValue);
+
+	float cmd_min = 1.0f, cmd_max = 10.0f;
+	float DofDiaphragm = Console->GetFloat("r_dof_diaphragm", cmd_min, cmd_max);
+	SetDofDiaphragm(DofDiaphragm);
+
 	SetNightVisionState(false);
 }
 
@@ -784,3 +789,12 @@ void CGamePersistent::UpdateDof()
 	(m_dof[0].z < m_dof[2].z) ? clamp(m_dof[1].z, m_dof[0].z, m_dof[2].z) : clamp(m_dof[1].z, m_dof[2].z, m_dof[0].z);
 }
 
+void CGamePersistent::SetDofDiaphragm(float value)
+{
+	m_dofDiaphragm = value;
+};
+
+void CGamePersistent::GetDofDiaphragm(float& value)
+{
+	value = m_dofDiaphragm;
+};

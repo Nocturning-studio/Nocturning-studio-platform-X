@@ -113,6 +113,12 @@ class ENGINE_API IGame_Persistent :
 	virtual void SetEffectorDOF(const Fvector& needed_dof){};
 	virtual void RestoreEffectorDOF(){};
 
+	virtual void SetDofDiaphragm(float value){};
+	virtual void GetDofDiaphragm(float& value)
+	{
+		value = 1.0f;
+	};
+
 	// Night vision
 	virtual bool GetNightVisionState()
 	{

@@ -31,6 +31,7 @@ class CGamePersistent : public IGame_Persistent, public IEventReceiver
 	float m_PickDofNear;
 	float m_DofChangeSpeed;
 	Fvector m_dof[4]; // 0-dest 1-current 2-from 3-original
+	float m_dofDiaphragm;
 	bool m_bNightVisionState;
 
 	fastdelegate::FastDelegate0<> m_intro_event;
@@ -47,6 +48,9 @@ class CGamePersistent : public IGame_Persistent, public IEventReceiver
 
 	void WeathersUpdate();
 	void UpdateDof();
+
+	void SetDofDiaphragm(float value);
+	void GetDofDiaphragm(float& value);
 
   public:
 	ui_core* m_pUI_core;

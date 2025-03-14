@@ -70,10 +70,14 @@ void CLevel::IR_OnMousePress(int btn)
 
 	IR_OnKeyboardPress(mouse_button_2_key[btn]);
 }
+
 void CLevel::IR_OnMouseRelease(int btn)
 {
+	DebugUI->IR_OnMouseRelease(mouse_button_2_key[btn]);
+
 	IR_OnKeyboardRelease(mouse_button_2_key[btn]);
 }
+
 void CLevel::IR_OnMouseHold(int btn)
 {
 	DebugUI->IR_OnMouseHold(mouse_button_2_key[btn]);
@@ -414,6 +418,8 @@ void CLevel::IR_OnKeyboardPress(int key)
 void CLevel::IR_OnKeyboardRelease(int key)
 {
 	bool b_ui_exist = (pHUD && pHUD->GetUI());
+
+	DebugUI->IR_OnKeyboardRelease(key);
 
 	if (g_bDisableAllInput)
 		return;

@@ -85,16 +85,19 @@ CPhotoMode::CPhotoMode(float life_time) : CEffectorCam(cefDemo, life_time)
 	m_vVelocity.set(0, 0, 0);
 	m_vAngularVelocity.set(0, 0, 0);
 
-	m_fFov = Device.fFOV;
-
-	m_vGlobalDepthOfFieldParameters.set(0, 0, 0);
-	m_fDOF.set(0, 0, 0);
+	m_fGlobalFov = Device.fFOV;
+	m_fFov = m_fGlobalFov;
 
 	m_fGlobalTimeFactor = Device.time_factor();
 	Device.stop_time();
 
 	g_pGamePersistent->GetCurrentDof(m_vGlobalDepthOfFieldParameters);
 	m_fDOF.set(m_vGlobalDepthOfFieldParameters);
+	m_fDOF.z = 100.0f;
+	g_pGamePersistent->SetBaseDof(m_fDOF);
+
+	g_pGamePersistent->GetDofDiaphragm(m_fGlobalDiaphragm);
+	m_fDiaphragm = 2.0f;
 
 	m_bAutofocusEnabled = false;
 	m_bGridEnabled = false;
@@ -139,13 +142,29 @@ CPhotoMode::CPhotoMode(float life_time) : CEffectorCam(cefDemo, life_time)
 
 CPhotoMode::~CPhotoMode()
 {
-	IR_Release(); // release input
+	IR_Release();
 
 	music.stop();
 	music.destroy();
 
-	g_pGamePersistent->SetBaseDof(m_vGlobalDepthOfFieldParameters);
+	ResetParameters();
+
+	psHUD_Flags.assign(s_hud_flag);
+
+	psHUD_Flags.set(HUD_DRAW, m_bGlobalHudDraw);
+	psHUD_Flags.set(HUD_CROSSHAIR, m_bGlobalCrosshairDraw);
+
+	Device.time_factor(m_fGlobalTimeFactor);
+}
+
+void CPhotoMode::ResetParameters()
+{
+	m_fDOF = m_vGlobalDepthOfFieldParameters;
+	g_pGamePersistent->SetBaseDof(m_fDOF);
 	g_pGamePersistent->SetPickableEffectorDOF(false);
+	g_pGamePersistent->SetDofDiaphragm(m_fGlobalDiaphragm);
+
+	m_fFov = m_fGlobalFov;
 
 	Console->Execute("r_photo_grid off");
 	Console->Execute("r_cinema_borders off");
@@ -154,13 +173,6 @@ CPhotoMode::~CPhotoMode()
 #ifndef MASTER_GOLD
 	Console->Execute("r_debug_render disabled");
 #endif
-
-	psHUD_Flags.assign(s_hud_flag);
-
-	psHUD_Flags.set(HUD_DRAW, m_bGlobalHudDraw);
-	psHUD_Flags.set(HUD_CROSSHAIR, m_bGlobalCrosshairDraw);
-
-	Device.time_factor(m_fGlobalTimeFactor);
 }
 
 void CPhotoMode::MakeScreenshotFace()
@@ -221,6 +233,7 @@ void CPhotoMode::ShowInputInfo()
 
 	pApp->pFontSystem->OutNext("%s", "Photo mode");
 	pApp->pFontSystem->OutNext("Depth of field focus distance: %f", m_fDOF.z);
+	pApp->pFontSystem->OutNext("Depth of field diaphragm size: %f", m_fDiaphragm);
 	pApp->pFontSystem->OutNext("Field of view: %f", m_fFov);
 
 	pApp->pFontSystem->SetAligment(CGameFont::alLeft);
@@ -230,11 +243,13 @@ void CPhotoMode::ShowInputInfo()
 	pApp->pFontSystem->OutNext("ESC");
 	pApp->pFontSystem->OutNext("F12");
 	pApp->pFontSystem->OutNext("G + Mouse Wheel");
+	pApp->pFontSystem->OutNext("T + Mouse Wheel");
 	pApp->pFontSystem->OutNext("F + Mouse Wheel");
 	pApp->pFontSystem->OutNext("H");
 	pApp->pFontSystem->OutNext("V");
 	pApp->pFontSystem->OutNext("B");
 	pApp->pFontSystem->OutNext("P");
+	pApp->pFontSystem->OutNext("DELETE");
 
 #ifndef MASTER_GOLD
 	pApp->pFontSystem->OutNext("1, 2, ..., 0");
@@ -248,11 +263,13 @@ void CPhotoMode::ShowInputInfo()
 	pApp->pFontSystem->OutNext("= Quit");
 	pApp->pFontSystem->OutNext("= ScreenShot");
 	pApp->pFontSystem->OutNext("= Depth of field");
+	pApp->pFontSystem->OutNext("= Depth of field diaphragm size");
 	pApp->pFontSystem->OutNext("= Field of view");
 	pApp->pFontSystem->OutNext("= Autofocus");
 	pApp->pFontSystem->OutNext("= Grid");
 	pApp->pFontSystem->OutNext("= Cinema borders");
 	pApp->pFontSystem->OutNext("= Switch show actor");
+	pApp->pFontSystem->OutNext("= Reset parameters");
 
 #ifndef MASTER_GOLD
 	pApp->pFontSystem->OutNext("= Render debugging");
@@ -438,7 +455,7 @@ void CPhotoMode::SwitchActorVisibility()
 	}
 }
 
-void CPhotoMode::ChangeDepthOfField(int direction)
+void CPhotoMode::ChangeDepthOfFieldFar(int direction)
 {
 	Fvector3 dof_params_old;
 	Fvector3 dof_params_actual;
@@ -452,6 +469,9 @@ void CPhotoMode::ChangeDepthOfField(int direction)
 	else
 		dof_params_actual.z = dof_params_old.z - 10.0f;
 
+	if (dof_params_actual.z < dof_params_actual.x)
+		dof_params_actual.z = dof_params_actual.x + 1.0f;
+
 	if (dof_params_actual.z <= 4.999f)
 		dof_params_actual.z = 5.0f;
 
@@ -459,30 +479,84 @@ void CPhotoMode::ChangeDepthOfField(int direction)
 	g_pGamePersistent->SetBaseDof(m_fDOF);
 }
 
-void CPhotoMode::ChangeFieldOfView(int direction)
+void CPhotoMode::ChangeDepthOfFieldNear(int direction)
 {
-	float m_fFov_old = Device.fFOV;
-	float m_fFov_actual;
+	Fvector3 dof_params_old;
+	Fvector3 dof_params_actual;
+
+	g_pGamePersistent->GetCurrentDof(dof_params_old);
+
+	dof_params_actual = dof_params_old;
 
 	if (direction > 0)
-		m_fFov_actual = m_fFov_old + 0.5f;
+		dof_params_actual.x = dof_params_old.x + 5.0f;
 	else
-		m_fFov_actual = m_fFov_old - 0.5f;
+		dof_params_actual.x = dof_params_old.x - 5.0f;
 
-	if (m_fFov_actual <= 2.28f)
-		m_fFov_actual = 2.28f;
-	else if (m_fFov_actual >= 113.001f)
-		m_fFov_actual = 113.0f;
+	dof_params_actual.y = dof_params_actual.x + 10.0f;
 
-	while (m_fFov < m_fFov_actual)
-	{
-		m_fFov += 0.00001f;
-	}
+	//if (dof_params_actual.x <= 0.1f)
+	//	dof_params_actual.x = 0.1f;
 
-	while (m_fFov > m_fFov_actual)
-	{
-		m_fFov -= 0.00001f;
-	}
+	m_fDOF = dof_params_actual;
+	g_pGamePersistent->SetBaseDof(m_fDOF);
+}
+
+void CPhotoMode::ChangeDepthOfFieldFocus(int direction)
+{
+	Fvector3 dof_params_old;
+	Fvector3 dof_params_actual;
+
+	g_pGamePersistent->GetCurrentDof(dof_params_old);
+
+	dof_params_actual = dof_params_old;
+
+	if (direction > 0)
+		dof_params_actual.y = dof_params_old.y + 1.f;
+	else
+		dof_params_actual.y = dof_params_old.y - 1.0f;
+
+	//if (dof_params_actual.y <= 0.1f)
+	//	dof_params_actual.y = 0.1f;
+
+	m_fDOF = dof_params_actual;
+	g_pGamePersistent->SetBaseDof(m_fDOF);
+}
+
+void CPhotoMode::ChangeFieldOfView(int direction)
+{
+	float m_fFov_actual = Device.fFOV;
+
+	if (direction > 0)
+		m_fFov = m_fFov_actual + 0.5f;
+	else
+		m_fFov = m_fFov_actual - 0.5f;
+
+	if (m_fFov <= 2.28f)
+		m_fFov = 2.28f;
+	else if (m_fFov >= 113.001f)
+		m_fFov = 113.0f;
+}
+
+void CPhotoMode::ChangeDiaphragm(int direction)
+{
+	float m_fDiaphragm_old = 1.0f;
+	g_pGamePersistent->GetDofDiaphragm(m_fDiaphragm_old);
+	float m_fDiaphragm_actual = m_fDiaphragm_old;
+
+	if (direction > 0)
+		m_fDiaphragm_actual = m_fDiaphragm_old + 0.5f;
+	else
+		m_fDiaphragm_actual = m_fDiaphragm_old - 0.5f;
+
+	if (m_fDiaphragm_actual < 1.0f)
+		m_fDiaphragm_actual = 1.0f;
+	else if (m_fDiaphragm_actual > 10.0f)
+		m_fDiaphragm_actual = 10.0f;
+
+	m_fDiaphragm = m_fDiaphragm_actual;
+
+	g_pGamePersistent->SetDofDiaphragm(m_fDiaphragm);
 }
 
 void CPhotoMode::MakeCubemap()
@@ -510,6 +584,9 @@ void CPhotoMode::IR_OnKeyboardPress(int dik)
 
 	if (dik == DIK_ESCAPE)
 		fLifeTime = -1;
+
+	if (dik == DIK_DELETE)
+		ResetParameters();
 
 	if (dik == DIK_H)
 		SwitchAutofocusState();
@@ -639,11 +716,23 @@ void CPhotoMode::IR_OnMouseWheel(int direction)
 {
 	if (IR_GetKeyState(DIK_G))
 	{
-		ChangeDepthOfField(direction);
+		ChangeDepthOfFieldFar(direction);
+	}
+	else if (IR_GetKeyState(DIK_U))
+	{
+		ChangeDepthOfFieldNear(direction);
+	}
+	else if (IR_GetKeyState(DIK_I))
+	{
+		ChangeDepthOfFieldFocus(direction);
 	}
 	else if (IR_GetKeyState(DIK_F))
 	{
 		ChangeFieldOfView(direction);
+	}
+	else if (IR_GetKeyState(DIK_T))
+	{
+		ChangeDiaphragm(direction);
 	}
 }
 

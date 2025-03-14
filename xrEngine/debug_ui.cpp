@@ -44,8 +44,9 @@ void CDebugUI::OnFrameEnd()
 
 void CDebugUI::DrawUI()
 {
+	/*
 	ImGuiIO& InputOutputParams = ImGui::GetIO();
-	InputOutputParams.MouseDrawCursor = true;
+	InputOutputParams.MouseDrawCursor = false;
 
 	//ImGui::PushFont(ImguiAPI->font_letterica_big);
 	ImGui::Begin("ImGui Window");
@@ -65,6 +66,7 @@ void CDebugUI::DrawUI()
 	//ImGui::PopFont();
 
 	ImGui::End();
+	*/
 }
 
 void CDebugUI::OnResetBegin()
@@ -79,7 +81,12 @@ void CDebugUI::OnResetEnd()
 
 void CDebugUI::IR_OnKeyboardPress(int key)
 {
-	Msg("Keyboard pressed");
+	//Msg("Keyboard pressed");
+}
+
+void CDebugUI::IR_OnKeyboardRelease(int key)
+{
+	//Msg("Keyboard released");
 }
 
 void CDebugUI::IR_OnKeyboardHold(int key)
@@ -112,6 +119,26 @@ void CDebugUI::IR_OnMousePress(int key)
 		break;
 	case MOUSE_3:
 		InputOutputParams.MouseDown[2] = true;
+		break;
+	}
+}
+
+void CDebugUI::IR_OnMouseRelease(int key)
+{
+	//Msg("Mouse released");
+
+	ImGuiIO& InputOutputParams = ImGui::GetIO();
+
+	switch (key)
+	{
+	case MOUSE_1:
+		InputOutputParams.MouseDown[0] = false;
+		break;
+	case MOUSE_2:
+		InputOutputParams.MouseDown[1] = false;
+		break;
+	case MOUSE_3:
+		InputOutputParams.MouseDown[2] = false;
 		break;
 	}
 }
