@@ -31,8 +31,8 @@ void CRenderTarget::phase_bloom()
 		break;
 	}
 
-	float w = 128; // float(Device.dwWidth) * BloomResolutionMultiplier;
-	float h = 128; // float(Device.dwHeight) * BloomResolutionMultiplier;
+	float w = float(Device.dwWidth) * BloomResolutionMultiplier;
+	float h = float(Device.dwHeight) * BloomResolutionMultiplier;
 
 	set_viewport_vertex_buffer(w, h, Offset);
 

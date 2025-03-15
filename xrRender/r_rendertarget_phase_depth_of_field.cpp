@@ -26,7 +26,7 @@ void CRenderTarget::phase_depth_of_field()
 	g_pGamePersistent->GetDofDiaphragm(DofDiaphragm);
 	vDofKernel.mul(ps_r_dof_diaphragm_size);
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
 		RCache.set_Element(s_dof->E[0]);
