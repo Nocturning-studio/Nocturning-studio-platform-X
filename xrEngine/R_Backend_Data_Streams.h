@@ -1,25 +1,30 @@
+//////////////////////////////////////////////////////////////////////
 #ifndef r_DStreamsH
 #define r_DStreamsH
+//////////////////////////////////////////////////////////////////////
 #pragma once
-
+//////////////////////////////////////////////////////////////////////
 enum
 {
 	LOCKFLAGS_FLUSH = D3DLOCK_DISCARD,
 	LOCKFLAGS_APPEND = D3DLOCK_NOOVERWRITE
 };
 
-class ENGINE_API _VertexStream
+class ENGINE_API VertexStream
 {
   private:
 	IDirect3DVertexBuffer9* pVB;
 	u32 mSize;		// size in bytes
 	u32 mPosition;	// position in bytes
 	u32 mDiscardID; // ID of discard - usually for caching
+
   public:
 	IDirect3DVertexBuffer9* old_pVB;
+
 #ifdef DEBUG
 	u32 dbg_lock;
 #endif
+
   private:
 	void _clear()
 	{
@@ -54,17 +59,18 @@ class ENGINE_API _VertexStream
 	void* Lock(u32 vl_Count, u32 Stride, u32& vOffset);
 	void Unlock(u32 Count, u32 Stride);
 
-	_VertexStream()
+	VertexStream()
 	{
 		_clear();
 	};
-	~_VertexStream()
+
+	~VertexStream()
 	{
 		Destroy();
 	};
 };
 
-class ENGINE_API _IndexStream
+class ENGINE_API IndexStream
 {
   private:
 	IDirect3DIndexBuffer9* pIB;
@@ -106,13 +112,16 @@ class ENGINE_API _IndexStream
 	u16* Lock(u32 Count, u32& vOffset);
 	void Unlock(u32 RealCount);
 
-	_IndexStream()
+	IndexStream()
 	{
 		_clear();
 	};
-	~_IndexStream()
+
+	~IndexStream()
 	{
 		Destroy();
 	};
 };
+//////////////////////////////////////////////////////////////////////
 #endif
+//////////////////////////////////////////////////////////////////////

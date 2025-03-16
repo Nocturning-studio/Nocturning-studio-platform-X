@@ -266,7 +266,7 @@ void CSkeletonX::_Render_soft(ref_geom& hGeom, u32 vCount, u32 iOffset, u32 pCou
 {
 	u32 vOffset = cache_vOffset;
 
-	_VertexStream& _VS = RenderBackend.Vertex;
+	VertexStream& _VS = RenderBackend.Vertex;
 	if (cache_DiscardID != _VS.DiscardID() || vCount >= cache_vCount)
 	{
 		vertRender* Dest = (vertRender*)_VS.Lock(vCount, hGeom->vb_stride, vOffset);

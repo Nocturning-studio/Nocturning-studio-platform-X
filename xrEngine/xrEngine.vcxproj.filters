@@ -495,7 +495,7 @@
     <ClInclude Include="R_Backend_xform.h">
       <Filter>Render\Backend</Filter>
     </ClInclude>
-    <ClInclude Include="R_DStreams.h">
+    <ClInclude Include="R_Backend_Data_Streams.h">
       <Filter>Render\Backend</Filter>
     </ClInclude>
     <ClInclude Include="Properties.h">
@@ -953,7 +953,7 @@
     <ClCompile Include="R_Backend_xform.cpp">
       <Filter>Render\Backend</Filter>
     </ClCompile>
-    <ClCompile Include="R_DStreams.cpp">
+    <ClCompile Include="R_Backend_Data_Streams.cpp">
       <Filter>Render\Backend</Filter>
     </ClCompile>
     <ClCompile Include="pure.cpp">

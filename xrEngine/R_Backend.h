@@ -10,7 +10,7 @@
 #define PGO(a)
 #endif
 
-#include "r_DStreams.h"
+#include "R_Backend_Data_Streams.h"
 #include "r_constants_cache.h"
 #include "r_backend_xform.h"
 #include "r_backend_hemi.h"
@@ -49,8 +49,8 @@ class ENGINE_API CBackend
 {
   public:
 	// Dynamic geometry streams
-	_VertexStream Vertex;
-	_IndexStream Index;
+	VertexStream Vertex;
+	IndexStream Index;
 	IDirect3DIndexBuffer9* QuadIB;
 	IDirect3DIndexBuffer9* old_QuadIB;
 	R_xforms xforms;

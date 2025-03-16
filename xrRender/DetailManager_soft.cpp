@@ -30,8 +30,8 @@ void CDetailManager::soft_Render()
 	// float	fPhaseZ		= _sin(Device.fTimeGlobal*0.11f)*fPhaseRange;
 
 	// Get index-stream
-	_IndexStream& _IS = RenderBackend.Index;
-	_VertexStream& _VS = RenderBackend.Vertex;
+	IndexStream& _IS = RenderBackend.Index;
+	VertexStream& _VS = RenderBackend.Vertex;
 	for (u32 O = 0; O < objects.size(); O++)
 	{
 		CDetail& Object = *objects[O];

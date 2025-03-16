@@ -338,7 +338,7 @@ void CEffect_Rain::Render()
 
 	{
 		float dt = Device.fTimeDelta;
-		_IndexStream& _IS = RenderBackend.Index;
+		IndexStream& _IS = RenderBackend.Index;
 		RenderBackend.set_Shader(DM_Drop->shader);
 
 		Fmatrix mXform, mScale;

@@ -508,23 +508,13 @@ static class cl_screen_res : public R_constant_setup
 	}
 } binder_screen_res;
 
-static class cl_v2w final : public R_constant_setup
-{
-	void setup(R_constant* C) override
-	{
-		Fmatrix m_v2w;
-		m_v2w.invert(Device.mView);
-		RenderBackend.set_Constant(C, m_v2w);
-	}
-} binder_v2w;
-
 static class cl_invP final : public R_constant_setup
 {
 	void setup(R_constant* C) override
 	{
-		Fmatrix m_invP;
-		m_invP.invert(Device.mProject);
-		RenderBackend.set_Constant(C, m_invP);
+		Fmatrix m_invProject;
+		m_invProject.invert(Device.mProject);
+		RenderBackend.set_Constant(C, m_invProject);
 	}
 } binder_invP;
 
@@ -532,16 +522,15 @@ static class cl_invP final : public R_constant_setup
 void CBlender_Compile::SetMapping()
 {
 	// matrices
-	r_Constant("m_W", &binder_w);
-	r_Constant("m_invW", &binder_invw);
-	r_Constant("m_V", &binder_v);
-	r_Constant("m_invV", &binder_invv);
-	r_Constant("m_P", &binder_p);
-	r_Constant("m_invP", &binder_invP);
-	r_Constant("m_WV", &binder_wv);
-	r_Constant("m_VP", &binder_vp);
-	r_Constant("m_WVP", &binder_wvp);
-	r_Constant("m_v2w", &binder_v2w);
+	r_Constant("m_World", &binder_w);
+	r_Constant("m_invWorld", &binder_invw);
+	r_Constant("m_View", &binder_v);
+	r_Constant("m_invView", &binder_invv);
+	r_Constant("m_Project", &binder_p);
+	r_Constant("m_invProject", &binder_invP);
+	r_Constant("m_WorldView", &binder_wv);
+	r_Constant("m_ViewProject", &binder_vp);
+	r_Constant("m_WorldViewProject", &binder_wvp);
 
 	r_Constant("m_xform_v", &tree_binder_m_xform_v);
 	r_Constant("m_xform", &tree_binder_m_xform);
