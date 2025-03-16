@@ -267,7 +267,7 @@ class CRenderTarget : public IRender_Target
 
 	void phase_bloom();
 
-	void draw_ao(int pass, u32 Offset);
+	void draw_ao(int pass);
 	void phase_ao();
 
 	void phase_autoexposure();
@@ -304,9 +304,7 @@ class CRenderTarget : public IRender_Target
 
 	bool u_need_CM();
 
-	void phase_effectors_pass_generate_noise0();
-	void phase_effectors_pass_generate_noise1();
-	void phase_effectors_pass_generate_noise2();
+	void phase_effectors_pass_generate_radiation_noise();
 	void phase_effectors_pass_night_vision();
 	void phase_effectors_pass_lut();
 	void phase_effectors_pass_combine();
@@ -388,6 +386,14 @@ class CRenderTarget : public IRender_Target
 
 	void set_viewport_geometry(float w, float h, u32& vOffset);
 	void set_viewport_geometry(u32& vOffset);
+
+	void RenderViewportSurface();
+
+	void RenderViewportSurface(const ref_rt& _1);
+
+	void RenderViewportSurface(float w, float h, const ref_rt& _1);
+
+	void ClearTexture(const ref_rt& _1);
 
 #ifdef DEBUG
 	IC void dbg_addline(Fvector& P0, Fvector& P1, u32 c)

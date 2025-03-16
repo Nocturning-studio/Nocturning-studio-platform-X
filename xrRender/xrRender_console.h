@@ -26,6 +26,9 @@ extern ECORE_API u32 ps_r1_aa_transluency;
 
 extern ECORE_API int ps_r_LightSleepFrames;
 
+extern ECORE_API float ps_r_ao_radius;
+extern ECORE_API float ps_r_ao_bias;
+
 extern ECORE_API float ps_r_hdr_white_intensity;
 extern ECORE_API float ps_r_hdr_gamma;
 extern ECORE_API float ps_r_hdr_brightness;

@@ -43,111 +43,39 @@ struct TL_2c3uv
 	}
 };
 
-void CRenderTarget::phase_effectors_pass_generate_noise0()
+void CRenderTarget::phase_effectors_pass_generate_radiation_noise()
 {
-	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_generate_noise0");
-
-	set_Render_Target_Surface(rt_Radiation_Noise0);
-	set_Depth_Buffer(NULL);
+	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_generate_radiation_noise");
 
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	// Constants
-	u32 Offset = 0;
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
 
-	// Set geometry
-	set_viewport_geometry(Offset);
-
-	// Set pass
 	RenderBackend.set_Element(s_effectors->E[1]);
-
-	// Set constants
 	RenderBackend.set_Constant("noise_intesity", param_radiation_intensity, 1);
+	RenderViewportSurface(rt_Radiation_Noise0);
 
-	// Draw
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
-}
-
-void CRenderTarget::phase_effectors_pass_generate_noise1()
-{
-	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_generate_noise1");
-
-	set_Render_Target_Surface(rt_Radiation_Noise1);
-	set_Depth_Buffer(NULL);
-
-	RenderBackend.set_CullMode(CULL_NONE);
-	RenderBackend.set_Stencil(FALSE);
-
-	// Constants
-	u32 Offset = 0;
-	float w = float(Device.dwWidth * 0.5f);
-	float h = float(Device.dwHeight * 0.5f);
-
-	// Set geometry
-	set_viewport_geometry(w, h, Offset);
-
-	// Set pass
 	RenderBackend.set_Element(s_effectors->E[1]);
-
-	// Set constants
 	RenderBackend.set_Constant("noise_intesity", param_radiation_intensity, 0.66f);
+	RenderViewportSurface(w * 0.5f, h * 0.5f, rt_Radiation_Noise1);
 
-	// Draw
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
-}
-
-void CRenderTarget::phase_effectors_pass_generate_noise2()
-{
-	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_generate_noise2");
-
-	set_Render_Target_Surface(rt_Radiation_Noise2);
-	set_Depth_Buffer(NULL);
-
-	RenderBackend.set_CullMode(CULL_NONE);
-	RenderBackend.set_Stencil(FALSE);
-
-	// Constants
-	u32 Offset = 0;
-	float w = float(Device.dwWidth * 0.25f);
-	float h = float(Device.dwHeight * 0.25f);
-
-	// Set geometry
-	set_viewport_geometry(w, h, Offset);
-
-	// Set pass
 	RenderBackend.set_Element(s_effectors->E[1]);
-
-	// Set constants
 	RenderBackend.set_Constant("noise_intesity", param_radiation_intensity, 0.33f);
-
-	// Draw
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderViewportSurface(w * 0.25f, h * 0.25f, rt_Radiation_Noise2);
 }
 
 void CRenderTarget::phase_effectors_pass_night_vision()
 {
 	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_night_vision");
 
-	set_Render_Target_Surface(rt_Generic_0);
-	set_Depth_Buffer(NULL);
-
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	// Constants
-	u32 Offset = 0;
-	float w = float(Device.dwWidth);
-	float h = float(Device.dwHeight);
-
-	// Set geometry
-	set_viewport_geometry(w, h, Offset);
-
-	// Set pass
 	RenderBackend.set_Element(s_effectors->E[2]);
 
-	// Draw
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderViewportSurface(rt_Generic_0);
 }
 
 void CRenderTarget::phase_effectors_pass_combine()
@@ -200,19 +128,8 @@ void CRenderTarget::phase_effectors_pass_resolve_gamma()
 {
 	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_resolve_gamma");
 
-	set_Render_Target_Surface(rt_Generic_0);
-	set_Depth_Buffer(NULL);
-
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
-
-	// Constants
-	u32 Offset = 0;
-	float w = float(Device.dwWidth);
-	float h = float(Device.dwHeight);
-
-	// Set geometry
-	set_viewport_geometry(w, h, Offset);
 
 	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
 	IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
@@ -223,30 +140,17 @@ void CRenderTarget::phase_effectors_pass_resolve_gamma()
 	t_LUT_1->surface_set(e1);
 	_RELEASE(e1);
 
-	// Set pass
 	RenderBackend.set_Element(s_effectors->E[3]);
 
-	// Draw
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderViewportSurface(rt_Generic_0);
 }
 
 void CRenderTarget::phase_effectors_pass_lut()
 {
 	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_lut");
 
-	set_Render_Target_Surface(rt_Generic_1);
-	set_Depth_Buffer(NULL);
-
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
-
-	// Constants
-	u32 Offset = 0;
-	float w = float(Device.dwWidth);
-	float h = float(Device.dwHeight);
-
-	// Set geometry
-	set_viewport_geometry(w, h, Offset);
 
 	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
 	IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
@@ -257,13 +161,11 @@ void CRenderTarget::phase_effectors_pass_lut()
 	t_LUT_1->surface_set(e1);
 	_RELEASE(e1);
 
-	// Set pass
 	RenderBackend.set_Element(s_effectors->E[4]);
 
 	RenderBackend.set_Constant("c_lut_params", envdesc->weight, 0, 0, 0);
 
-	// Draw
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderViewportSurface(rt_Generic_1);
 }
 
 void CRenderTarget::phase_effectors()
@@ -275,9 +177,7 @@ void CRenderTarget::phase_effectors()
 		phase_effectors_pass_night_vision();
 
 	//Radiation
-	phase_effectors_pass_generate_noise0();
-	phase_effectors_pass_generate_noise1();
-	phase_effectors_pass_generate_noise2();
+	phase_effectors_pass_generate_radiation_noise();
 
 	//"Postprocess" params and colormapping (Generic_0 -> Generic_1)
 	phase_effectors_pass_combine();

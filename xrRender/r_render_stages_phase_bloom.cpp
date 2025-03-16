@@ -42,9 +42,9 @@ void CRenderTarget::phase_bloom()
 		set_Depth_Buffer(NULL);
 		RenderBackend.set_Element(s_bloom->E[0]);
 		RenderBackend.set_Constant("bloom_parameters", ps_r_bloom_threshold, 
-										 ps_r_bloom_brightness, 
-										 ps_r_bloom_blades_threshold, 
-										 ps_r_bloom_blades_brightness);
+														ps_r_bloom_brightness, 
+														ps_r_bloom_blades_threshold, 
+														ps_r_bloom_blades_brightness);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
 		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}

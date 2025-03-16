@@ -231,4 +231,37 @@ void CRenderTarget::set_viewport_geometry(u32& vOffset)
 	float h = float(Device.dwHeight);
 	set_viewport_geometry(w, h, vOffset);
 }
+
+void CRenderTarget::RenderViewportSurface()
+{
+	u32 Offset = 0;
+	set_viewport_geometry(Offset);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+}
+
+void CRenderTarget::RenderViewportSurface(const ref_rt& _1)
+{
+	set_Render_Target_Surface(_1);
+	set_Depth_Buffer(NULL);
+
+	u32 Offset = 0;
+	set_viewport_geometry(Offset);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+}
+
+void CRenderTarget::RenderViewportSurface(float w, float h, const ref_rt& _1)
+{
+	set_Render_Target_Surface(_1);
+	set_Depth_Buffer(NULL);
+
+	u32 Offset = 0;
+	set_viewport_geometry(w, h, Offset);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+}
+
+void CRenderTarget::ClearTexture(const ref_rt& _1)
+{
+	set_Render_Target_Surface(rt_Distortion_Mask);
+	CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, color_rgba(127, 127, 0, 127), 1.0f, 0L));
+}
 ////////////////////////////////////////////////////////////////////////////////

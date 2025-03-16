@@ -638,7 +638,7 @@
     <ClCompile Include="Blender_distortion.cpp">
       <Filter>Render pipeline\Blenders\Postprocess stage\Distortion</Filter>
     </ClCompile>
-    <ClCompile Include="r_render_stages_phase_barrel_blur.cpp">
+    <ClCompile Include="r_render_stages_phase_fog_scattering.cpp">
       <Filter>Render pipeline\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="Blender_barrel_blur.cpp">
@@ -649,9 +649,6 @@
     </ClCompile>
     <ClCompile Include="blender_autoexposure.cpp">
       <Filter>Render pipeline\Blenders\Postprocess stage\Autoexposure</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_stages_phase_contrast_adaptive_sharpening.cpp">
-      <Filter>Render pipeline\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="Blender_contrast_adaptive_sharpening.cpp">
       <Filter>Render pipeline\Blenders\Postprocess stage\Contrast adaptive sharpening</Filter>
@@ -667,9 +664,6 @@
     </ClCompile>
     <ClCompile Include="Blender_reflections.cpp">
       <Filter>Render pipeline\Blenders\Reflections stage</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_stages_phase_fog_scattering.cpp">
-      <Filter>Render pipeline\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="blender_fog_scattering.cpp">
       <Filter>Render pipeline\Blenders\Postprocess stage\Fog</Filter>

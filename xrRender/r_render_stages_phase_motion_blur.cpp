@@ -18,35 +18,28 @@ void CRenderTarget::motion_blur_phase_prepare_dilation_map()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	u32 Offset = 0;
 	float w = float(Device.dwWidth * 0.25f);
 	float h = float(Device.dwHeight * 0.25f);
 	float Power = ps_r_mblur * 0.25f;
 
-	set_viewport_geometry(w, h, Offset);
-
 	// Create dilation map
-	set_Render_Target_Surface(rt_Motion_Blur_Dilation_Map_0);
-	set_Depth_Buffer(NULL);
 	RenderBackend.set_Element(s_motion_blur->E[0]);
 	RenderBackend.set_Constant("m_blur_power", Power);
 	RenderBackend.set_Constant("m_current", m_current);
 	RenderBackend.set_Constant("m_previous", m_previous);
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderViewportSurface(w, h, rt_Motion_Blur_Dilation_Map_0);
 
 	// Blur (pass 1)
 	set_Render_Target_Surface(rt_Motion_Blur_Dilation_Map_1);
 	set_Depth_Buffer(NULL);
 	RenderBackend.set_Element(s_motion_blur->E[1]);
 	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderViewportSurface(w, h, rt_Motion_Blur_Dilation_Map_1);
 
 	// Blur (pass 2)
-	set_Render_Target_Surface(rt_Motion_Blur_Dilation_Map_0);
-	set_Depth_Buffer(NULL);
 	RenderBackend.set_Element(s_motion_blur->E[2]);
 	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderViewportSurface(w, h, rt_Motion_Blur_Dilation_Map_0);
 }
 
 void CRenderTarget::phase_motion_blur_pass_blur()
@@ -56,20 +49,12 @@ void CRenderTarget::phase_motion_blur_pass_blur()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	// Constants
-	u32 Offset = 0;
-	set_viewport_geometry(Offset);
-
 	// Blur
-	set_Render_Target_Surface(rt_Generic_1);
-	set_Depth_Buffer(NULL);
 	RenderBackend.set_Element(s_motion_blur->E[4]);
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderViewportSurface(rt_Generic_1);
 
-	set_Render_Target_Surface(rt_Generic_0);
-	set_Depth_Buffer(NULL);
 	RenderBackend.set_Element(s_motion_blur->E[5]);
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderViewportSurface(rt_Generic_0);
 }
 
 void CRenderTarget::phase_motion_blur_pass_save_depth()
@@ -79,13 +64,8 @@ void CRenderTarget::phase_motion_blur_pass_save_depth()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	u32 Offset = 0;
-	set_viewport_geometry(Offset);
-
-	set_Render_Target_Surface(rt_Motion_Blur_Previous_Frame_Depth);
-	set_Depth_Buffer(NULL);
 	RenderBackend.set_Element(s_motion_blur->E[3]);
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderViewportSurface(rt_Motion_Blur_Previous_Frame_Depth);
 }
 
 void CRenderTarget::phase_motion_blur()

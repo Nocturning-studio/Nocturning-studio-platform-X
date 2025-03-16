@@ -11,8 +11,6 @@ void CRenderTarget::phase_wallmarks()
 	OPTICK_EVENT("CRenderTarget::phase_wallmarks");
 
 	// Targets
-	RenderBackend.setRenderTarget(NULL, 2);
-	RenderBackend.setRenderTarget(NULL, 1);
 	set_Render_Target_Surface(rt_GBuffer_1);
 	set_Depth_Buffer(HW.pBaseZB);
 

@@ -167,6 +167,7 @@ class CRender : public R_dsgraph_structure
 	void update_shadow_map_visibility();
 	void render_stage_sun();
 	void render_stage_lights();
+	void render_sky_box();
 	void render_stage_postprocess();
 
 	void RenderScene();

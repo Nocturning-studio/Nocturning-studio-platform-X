@@ -485,9 +485,8 @@ void CRender::render_stage_postprocess()
 	if (ps_r_postprocess_flags.test(RFLAG_DOF))
 		RenderTarget->phase_depth_of_field();
 
-	// Generic1 -> Generic0 -> Generic1
-	// if (ps_r_postprocess_flags.test(RFLAG_BARREL_BLUR))
-	//	RenderTarget->phase_barrel_blur();
+	// Generic1 -> Generic0
+	RenderTarget->phase_fog_scattering();
 
 	if (ps_render_flags.test(RFLAG_LENS_FLARES))
 		g_pGamePersistent->Environment().RenderFlares();

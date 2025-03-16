@@ -170,6 +170,9 @@ xr_token ps_rt_format[] =
 /*-------------------------------------------------------------------------------*/
 int ps_r_LightSleepFrames = 10;
 
+float ps_r_ao_radius = 2.0f;
+float ps_r_ao_bias = 0.01f;
+
 float ps_r_hdr_white_intensity = 1.2f;
 float ps_r_hdr_gamma = 1.0f;
 float ps_r_hdr_brightness = 1.2f;
@@ -625,6 +628,9 @@ void xrRender_initconsole()
 	CMD3(CCC_EffPreset, "eff_preset", &ps_EffPreset, qeffpreset_token);
 
 	CMD1(CCC_Screenshot, "screenshot");
+	
+	CMD4(CCC_Float, "r_ao_radius", &ps_r_ao_radius, 1, 10);
+	CMD4(CCC_Float, "r_ao_bias", &ps_r_ao_bias, -1.0f, 1.0f);
 
 	CMD4(CCC_Integer, "r_lsleep_frames", &ps_r_LightSleepFrames, 4, 30);
 	CMD4(CCC_Float, "r_ssa_glod_start", &ps_r_GLOD_ssa_start, 128, 512);

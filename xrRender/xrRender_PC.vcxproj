@@ -987,13 +987,11 @@
     <ClCompile Include="r_render_stages_light_accumulator_point_geometry.cpp" />
     <ClCompile Include="r_render_stages_light_accumulator_spot.cpp" />
     <ClCompile Include="r_render_stages_light_accumulator_spot_geometry.cpp" />
-    <ClCompile Include="r_render_stages_phase_barrel_blur.cpp" />
-    <ClCompile Include="r_render_stages_phase_contrast_adaptive_sharpening.cpp" />
+    <ClCompile Include="r_render_stages_phase_fog_scattering.cpp" />
     <ClCompile Include="r_render_stages_phase_antialiasing.cpp" />
     <ClCompile Include="r_render_stages_draw_volume.cpp" />
     <ClCompile Include="r_render_stages_enable_scissor.cpp" />
     <ClCompile Include="r_render_stages_phase_distortion.cpp" />
-    <ClCompile Include="r_render_stages_phase_fog_scattering.cpp" />
     <ClCompile Include="r_render_stages_phase_motion_blur.cpp" />
     <ClCompile Include="r_render_stages_phase_light_accumulator.cpp" />
     <ClCompile Include="r_render_stages_phase_ao.cpp" />

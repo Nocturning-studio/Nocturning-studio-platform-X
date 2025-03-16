@@ -15,11 +15,7 @@ void CRenderTarget::calc_screen_space_reflections()
 
 	// Constants
 	u32 Offset = 0;
-	float w = float(Device.dwWidth);
-	float h = float(Device.dwHeight);
-
-	// Set geometry
-	set_viewport_geometry(w, h, Offset);
+	set_viewport_geometry(Offset);
 
 	for (u32 i = 0; i < s_reflections->E[0]->passes.size(); i++)
 	{
