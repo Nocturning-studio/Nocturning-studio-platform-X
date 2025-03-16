@@ -128,7 +128,7 @@ void CActor::net_Export(NET_Packet& P) // export to server
 	/////////////////////////////////////////////////
 	u16 NumItems = PHGetSyncItemsNumber();
 
-	// FIX BY IXRAY (THANKS BY DEATHMAN)
+	// FIX BY IXRAY (THANKS BY NSDeathman)
 	if (H_Parent() || ((NumItems > 1) && OnClient()))
 		NumItems = 0;
 
@@ -596,7 +596,7 @@ BOOL CActor::net_Spawn(CSE_Abstract* DC)
 	unaffected_r_torso.pitch = r_torso.pitch;
 	unaffected_r_torso.roll = r_torso.roll;
 
-#pragma todo("Deathman to Deathman : Разобраться с небоходимостью перезапуска игры после изменения состояния cam_psp")
+#pragma todo("NSDeathman to NSDeathman : Разобраться с небоходимостью перезапуска игры после изменения состояния cam_psp")
 	// if (psActorFlags.test(AF_PSP))
 	//	cam_Set(eacLookAt);
 	// else

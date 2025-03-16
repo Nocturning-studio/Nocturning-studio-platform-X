@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Created: 14.01.2025
-// Author: Deathman
+// Author: NSDeathman
 // Refactored code: Benchmark realization
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
@@ -37,8 +37,8 @@ void doBenchmark(LPCSTR name)
 
 		Engine.External.Initialize();
 
-#pragma todo("Deathman to Deathman: Починить бенчмарк")
-#pragma todo("Deathman to Deathman: Отдельное сообщение DiscordAPI для бенчмарка")
+#pragma todo("NSDeathman to NSDeathman: Починить бенчмарк")
+#pragma todo("NSDeathman to NSDeathman: Отдельное сообщение DiscordAPI для бенчмарка")
 
 		Startup();
 	}

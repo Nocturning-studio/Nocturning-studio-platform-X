@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Created: 14.01.2025
-// Author: Deathman
+// Author: NSDeathman
 // Refactored code: Windows application entry point
 ////////////////////////////////////////////////////////////////////////////////
-#pragma todo(Deathman to Deathman : Реализовать бенчмарк)
-#pragma todo(Deathman to Deathman : Реализовать лаунчер)
+#pragma todo(NSDeathman to NSDeathman : Реализовать бенчмарк)
+#pragma todo(NSDeathman to NSDeathman : Реализовать лаунчер)
 ////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "build_identificator.h"

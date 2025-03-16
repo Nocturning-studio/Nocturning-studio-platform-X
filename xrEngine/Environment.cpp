@@ -170,7 +170,7 @@ float CEnvironment::TimeWeight(float val, float min_t, float max_t)
 	return weight;
 }
 
-#pragma todo("Deathman to Deathman: Сделать setenvtime для одиночной игры")
+#pragma todo("NSDeathman to NSDeathman: Сделать setenvtime для одиночной игры")
 // Kondr48: ������� ��������� �������
 void CEnvironment::ChangeGameTime(float game_time)
 {
@@ -510,7 +510,7 @@ void CEnvironment::OnFrame()
 	eff_Rain->OnFrame();
 
 	// ******************** Environment params (setting) (R1 specific fog)
-#pragma todo("Deathman to Deathman: Отрефакторить Environment")
+#pragma todo("NSDeathman to NSDeathman: Отрефакторить Environment")
 	/*
 	u32 FogFar = CurrentEnv->far_plane;
 	u32 FogNear = FogFar * (1.0f - CurrentEnv->fog_density * 10.0f);

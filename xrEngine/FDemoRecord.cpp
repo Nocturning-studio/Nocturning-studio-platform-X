@@ -612,7 +612,7 @@ void CDemoRecord::IR_OnKeyboardPress(int dik)
 		Device.Pause(!Device.Paused(), TRUE, TRUE, "demo_record");
 
 #ifndef MASTER_GOLD
-#pragma todo("Deathman to all: Переделать быструю отладку рендера под удобный вид")
+#pragma todo("NSDeathman to all: Переделать быструю отладку рендера под удобный вид")
 	if (dik == DIK_1)
 		Console->Execute("r_debug_render gbuffer_albedo");
 	if (dik == DIK_2)

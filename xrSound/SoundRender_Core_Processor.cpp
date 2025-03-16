@@ -104,7 +104,7 @@ void CSoundRender_Core::update(const Fvector& P, const Fvector& D, const Fvector
 			s_targets_defer[it]->fill_parameters();
 	}
 
-#pragma todo(Deathman to Deathman: Доделать Dynamic EAX и вырезать или скомбинировать EAX на коробках)
+#pragma todo(NSDeathman to NSDeathman: Доделать Dynamic EAX и вырезать или скомбинировать EAX на коробках)
 	// update EAX
 	if (psSoundFlags.test(ss_EAX) && bEAX && bNeedToUpdateEnvironment)
 	{

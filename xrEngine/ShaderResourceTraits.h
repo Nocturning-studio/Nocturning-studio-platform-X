@@ -4,7 +4,7 @@
 
 template <typename T> struct ShaderTypeTraits;
 
-#pragma todo("Deathman to Deathman: Изменить расширения шейдеров")
+#pragma todo("NSDeathman to NSDeathman: Изменить расширения шейдеров")
 
 template <> struct ShaderTypeTraits<SVS>
 {

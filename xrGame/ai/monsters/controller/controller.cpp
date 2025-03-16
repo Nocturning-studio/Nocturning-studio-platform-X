@@ -73,7 +73,7 @@ CController::~CController()
 	xr_delete(m_aura);
 }
 
-#pragma todo("Deathman to Deathman: Отрефакторить")
+#pragma todo("NSDeathman to NSDeathman: Отрефакторить")
 void CController::Load(LPCSTR section)
 {
 	inherited::Load(section);

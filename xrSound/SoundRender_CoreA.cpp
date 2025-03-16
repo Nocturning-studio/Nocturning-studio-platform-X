@@ -144,7 +144,7 @@ void CSoundRender_CoreA::_initialize(u64 window)
 	A_CHK(alListenerf(AL_GAIN, 1.f));
 
 	// Check for EAX extension
-#pragma todo("Deathman to ALL: Починить EAX без хардкода")
+#pragma todo("NSDeathman to ALL: Починить EAX без хардкода")
 	bEAX = true;//deviceDesc.eax && !deviceDesc.eax_unwanted;
 	eaxSet = (EAXSet)alGetProcAddress((const ALchar*)"EAXSet");
 	if (eaxSet == NULL)

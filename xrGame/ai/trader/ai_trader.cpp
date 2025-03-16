@@ -103,7 +103,7 @@ void CAI_Trader::LookAtActor(CBoneInstance* B)
 	XFORM().getHPB(h, p, b);
 	float cur_yaw = h;
 	float dy = _abs(angle_normalize_signed(yaw - cur_yaw));
-	clamp(dy, 0.f, 1.f); // FIX BY IXRAY(THANKS BY DEATHMAN)
+	clamp(dy, 0.f, 1.f); // FIX BY IXRAY(THANKS BY NSDeathman)
 
 	if (angle_normalize_signed(yaw - cur_yaw) > 0)
 		dy *= -1.f;

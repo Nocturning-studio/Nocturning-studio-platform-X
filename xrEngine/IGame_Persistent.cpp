@@ -130,7 +130,7 @@ void IGame_Persistent::OnGameStart()
 	Log("Loading models...");
 	Render->models_Prefetch();
 
-	#pragma todo("Deathman to all: Так не должно быть - вернуть при фиксе бага с использованием старых lmap на новом уровне, и уборке кастыля с перезагрузкой текстур")
+	#pragma todo("NSDeathman to all: Так не должно быть - вернуть при фиксе бага с использованием старых lmap на новом уровне, и уборке кастыля с перезагрузкой текстур")
 	//Log("Loading textures...");
 	//Device.Resources->DeferredUpload();
 

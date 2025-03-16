@@ -330,7 +330,7 @@ void CWeapon::Load(LPCSTR section)
 	camDispertionFrac = READ_IF_EXISTS(pSettings, r_float, section, "cam_dispertion_frac", 0.7f);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//(Deathman, подглядев у Morrey) дисперсия стрельбы в прицеле
+	//(NSDeathman, подглядев у Morrey) дисперсия стрельбы в прицеле
 	zoom_camMaxAngle = camMaxAngle;
 	zoom_camRelaxSpeed = camRelaxSpeed;
 	zoom_camRelaxSpeed_AI = camRelaxSpeed_AI;
@@ -1642,7 +1642,7 @@ float CWeapon::Weight()
 	return res;
 }
 
-#pragma todo(Deathman to Deathman: Вернуть при полной переделке оружия)
+#pragma todo(NSDeathman to NSDeathman: Вернуть при полной переделке оружия)
 void CWeapon::Hide()
 {
 	//if (IsGameTypeSingle())

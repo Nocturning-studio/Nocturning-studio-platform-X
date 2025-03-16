@@ -12,7 +12,7 @@
 //////////////////////////////////////////////////////////////////////////
 CRender RenderImplementation;
 //////////////////////////////////////////////////////////////////////////
-#pragma todo(Deathman to Deathman: Добавить поддержку Glow)
+#pragma todo(NSDeathman to NSDeathman: Добавить поддержку Glow)
 class CGlow : public IRender_Glow
 {
   public:
@@ -343,7 +343,7 @@ void CRender::destroy()
 	xr_delete(RenderTarget);
 	PSLibrary.OnDestroy();
 	Device.seqFrame.Remove(this);
-	r_dsgraph_destroy(); // FIX BY IXRAY (THANKS BY DEATHMAN)
+	r_dsgraph_destroy(); // FIX BY IXRAY (THANKS BY NSDeathman)
 }
 
 void CRender::reset_begin()

@@ -41,7 +41,7 @@ float CWeapon::GetFireDispersion(float cartridge_k)
 	if (ParentIsActor() &&
 		g_SingleGameDifficulty == egdNovice) // Если орудие принадлежит гг и уровень сложности новичковый
 		fire_disp /= 1.5;					 // То делим разброс на 1.5 чтобы облегчить игроку стрельбу
-	// Здесь был Джок... Deathman
+	// Здесь был Джок... NSDeathman
 
 	// вычислить дисперсию, вносимую самим стрелком
 	const CInventoryOwner* pOwner = smart_cast<const CInventoryOwner*>(H_Parent());

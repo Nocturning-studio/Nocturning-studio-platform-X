@@ -113,7 +113,7 @@ void CHW::DestroyD3D()
 //////////////////////////////////////////////////////////////////////
 D3DFORMAT CHW::selectDepthStencil(D3DFORMAT fTarget)
 {
-#pragma todo("Deathman to Deathman: Отрефакторить")
+#pragma todo("NSDeathman to NSDeathman: Отрефакторить")
 	return D3DFMT_D24S8;
 	/*
 	static D3DFORMAT fDS_Try1[6] = {D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, D3DFMT_D15S1};

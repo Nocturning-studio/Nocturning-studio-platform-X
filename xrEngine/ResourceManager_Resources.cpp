@@ -282,7 +282,7 @@ void CResourceManager::DeleteGeom(const SGeometry* Geom)
 }
 
 //--------------------------------------------------------------------------------------------------------------
-#pragma todo("Deathman to Deathman: Вынести на второй поток")
+#pragma todo("NSDeathman to NSDeathman: Вынести на второй поток")
 CTexture* CResourceManager::_CreateTexture(LPCSTR _Name)
 {
 	if (0 == xr_strcmp(_Name, "null"))

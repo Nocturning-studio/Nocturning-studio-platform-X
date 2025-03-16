@@ -19,7 +19,7 @@ CPolterFlame::~CPolterFlame()
 {
 }
 
-#pragma todo("Deathman to Deathman: Отрефакторить")
+#pragma todo("NSDeathman to NSDeathman: Отрефакторить")
 void CPolterFlame::load(LPCSTR section)
 {
 	inherited::load(section);

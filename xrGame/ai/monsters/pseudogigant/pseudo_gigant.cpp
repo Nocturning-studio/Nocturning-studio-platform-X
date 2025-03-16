@@ -33,7 +33,7 @@ CPseudoGigant::~CPseudoGigant()
 	xr_delete(StateMan);
 }
 
-#pragma todo("Deathman to Deathman: Отрефакторить")
+#pragma todo("NSDeathman to NSDeathman: Отрефакторить")
 void CPseudoGigant::Load(LPCSTR section)
 {
 	inherited::Load(section);

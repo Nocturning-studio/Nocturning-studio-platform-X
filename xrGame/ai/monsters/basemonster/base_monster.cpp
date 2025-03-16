@@ -492,7 +492,7 @@ void CBaseMonster::on_restrictions_change()
 		StateMan->reinit();
 }
 
-#pragma todo("Deathman to Deathman: Отрефакторить")
+#pragma todo("NSDeathman to NSDeathman: Отрефакторить")
 void CBaseMonster::load_effector(LPCSTR section, LPCSTR line, SAttackEffector& effector)
 {
 	LPCSTR ppi_section = pSettings->r_string(section, line);

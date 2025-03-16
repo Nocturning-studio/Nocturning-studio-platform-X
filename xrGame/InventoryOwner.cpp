@@ -64,7 +64,7 @@ CInventoryOwner::~CInventoryOwner()
 	xr_delete(m_purchase_list);
 }
 
-#pragma todo("Deathman to all: переработать вариант диалогов под озвученных персонажей при помощи need_osoznanie_mode")
+#pragma todo("NSDeathman to all: переработать вариант диалогов под озвученных персонажей при помощи need_osoznanie_mode")
 void CInventoryOwner::Load(LPCSTR section)
 {
 	if (pSettings->line_exist(section, "inv_max_weight"))

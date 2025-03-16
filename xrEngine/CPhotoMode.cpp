@@ -359,7 +359,7 @@ BOOL CPhotoMode::ProcessCam(SCamEffectorInfo& info)
 		vmove.mul(m_vT.y);
 		m_Position.add(vmove);
 
-		#pragma todo(Deathman to Deathman: Добавить ограничение дальности полета для избегания читинга)
+		#pragma todo(NSDeathman to NSDeathman: Добавить ограничение дальности полета для избегания читинга)
 		//Fvector CameraToActorDistance;
 		//CameraToActorDistance.set(m_Position).sub(m_ActorPosition);
 
@@ -618,7 +618,7 @@ void CPhotoMode::IR_OnKeyboardPress(int dik)
 	//	Device.Pause(!Device.Paused(), TRUE, TRUE, "photo_mode");
 
 #ifndef MASTER_GOLD
-#pragma todo("Deathman to all: Переделать быструю отладку рендера под удобный вид")
+#pragma todo("NSDeathman to all: Переделать быструю отладку рендера под удобный вид")
 	if (dik == DIK_1)
 		Console->Execute("r_debug_render gbuffer_albedo");
 	if (dik == DIK_2)

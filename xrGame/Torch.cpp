@@ -19,7 +19,7 @@
 #include "CustomOutfit.h"
 #include "../xrEngine/IGame_Persistent.h"
 
-#pragma todo("Deathman to Deathman: Отрефакторить и разделить ответственности")
+#pragma todo("NSDeathman to NSDeathman: Отрефакторить и разделить ответственности")
 
 static const float TIME_2_HIDE = 5.f;
 static const float TORCH_INERTION_CLAMP = PI_DIV_6;

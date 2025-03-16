@@ -50,7 +50,7 @@ void CRT::create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f)
 	if (h > caps.MaxTextureHeight)
 		return;
 	
-#pragma todo("Deathman to ALL: Разобраться с предупреждением")
+#pragma todo("NSDeathman to ALL: Разобраться с предупреждением")
 #pragma warning(disable: 4063)
 	// Select usage
 	u32 usage = 0;

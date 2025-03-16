@@ -1,12 +1,12 @@
 ﻿/////////////////////////////////////////////////////////////////////
 //	Created: 17.11.2024
-//	Authors: Maks0, morrazzzz, NS_Deathman
+//	Authors: Maks0, morrazzzz, NS_NSDeathman
 /////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "DiscordAPI.h"
 /////////////////////////////////////////////////////////////////////
-#pragma todo(Deathman to Deathman : Проверить функциональность)
-#pragma todo(Deathman to Deathman : Добавить скриптовую систему достижений и интеграцию ее в DiscordAPI)
+#pragma todo(NSDeathman to NSDeathman : Проверить функциональность)
+#pragma todo(NSDeathman to NSDeathman : Добавить скриптовую систему достижений и интеграцию ее в DiscordAPI)
 /////////////////////////////////////////////////////////////////////
 DISCORDAPI_API CDiscordAPI DiscordAPI;
 /////////////////////////////////////////////////////////////////////

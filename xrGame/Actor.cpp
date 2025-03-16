@@ -372,7 +372,7 @@ void CActor::Load(LPCSTR section)
 			m_BloodSnd.create(pSettings->r_string(section, "heavy_blood_snd"), st_Effect, SOUND_TYPE_MONSTER_INJURING);
 		}
 	}
-#pragma todo("Deathman to Deathman : Разобраться с небоходимостью перезапуска игры после изменения состояния cam_psp")
+#pragma todo("NSDeathman to NSDeathman : Разобраться с небоходимостью перезапуска игры после изменения состояния cam_psp")
 	// if (psActorFlags.test(AF_PSP))
 	//	cam_Set(eacLookAt);
 	// else

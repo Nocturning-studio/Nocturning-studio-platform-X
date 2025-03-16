@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Created: 14.01.2025
-// Author: Deathman
+// Author: NSDeathman
 // Refactored code: Launcher realization
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
@@ -40,7 +40,7 @@ void FreeLauncher()
 
 int doLauncher()
 {
-#pragma todo("Deathman to Deathman: Починить лаунчер и режим бенчмарка")
+#pragma todo("NSDeathman to NSDeathman: Починить лаунчер и режим бенчмарка")
 	/*
 		execUserScript();
 		InitLauncher();

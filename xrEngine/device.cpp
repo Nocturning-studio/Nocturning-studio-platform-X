@@ -426,7 +426,7 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
 
 	if (bOn)
 	{
-#pragma todo("Deathman to Deathman: ƒобавить сюда проверку на разрешение отрисовку HUD")
+#pragma todo("NSDeathman to NSDeathman: ƒобавить сюда проверку на разрешение отрисовку HUD")
 		if (!Paused())
 			bShowPauseString = TRUE;
 

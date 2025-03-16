@@ -682,7 +682,7 @@ void CUIStatic::OnFocusLost()
 		GetMessageTarget()->SendMessage(this, STATIC_FOCUS_LOST, NULL);
 }
 
-#pragma todo("Deathman to all: Ќеобходимо переписать этот метод, дл€ того чтобы хинты работали адекватно на всех разрешени€х")
+#pragma todo("NSDeathman to all: Ќеобходимо переписать этот метод, дл€ того чтобы хинты работали адекватно на всех разрешени€х")
 void CUIStatic::AdjustHeightToText()
 {
 	m_pLines->SetWidth(GetWidth());

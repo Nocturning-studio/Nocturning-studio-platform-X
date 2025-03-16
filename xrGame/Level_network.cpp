@@ -128,7 +128,7 @@ void CLevel::net_Stop()
 
 void CLevel::ClientSend()
 {
-	// FIX BY IXRAY (THANKS BY DEATHMAN)
+	// FIX BY IXRAY (THANKS BY NSDeathman)
 	if (OnClient())
 		if (!net_HasBandwidth())
 			return;

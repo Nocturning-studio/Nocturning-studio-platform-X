@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Created: 14.01.2025
-// Author: Deathman
+// Author: NSDeathman
 // Refactored code: Application class realization
 ////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
@@ -21,10 +21,10 @@
 #include "xr_ioconsole.h"
 #include "../xrDiscordAPI/DiscordAPI.h"
 ////////////////////////////////////////////////////////////////////////////////
-#pragma todo(Deathman to Deathman : Отрефакторить)
+#pragma todo(NSDeathman to NSDeathman : Отрефакторить)
 int max_load_stage = 0;
 ////////////////////////////////////////////////////////////////////////////////
-#pragma todo(Deathman to Deathman : Отрефакторить)
+#pragma todo(NSDeathman to NSDeathman : Отрефакторить)
 struct _SoundProcessor : public pureFrame
 {
 	virtual void OnFrame()
@@ -178,7 +178,7 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 		{
 			Console->Execute("main_menu off");
 			Console->Hide();
-			// FIX BY IXRAY (THANKS BY DEATHMAN)
+			// FIX BY IXRAY (THANKS BY NSDeathman)
 			// Device.Reset(false);
 			//-----------------------------------------------------------
 			g_pGamePersistent->PreStart(op_server);

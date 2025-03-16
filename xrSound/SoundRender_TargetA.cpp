@@ -49,7 +49,7 @@ void CSoundRender_TargetA::_destroy()
 	A_CHK(alDeleteBuffers(sdef_target_count, pBuffers));
 }
 
-#pragma todo(Deathman to Deathman : Исправить _restart)
+#pragma todo(NSDeathman to NSDeathman : Исправить _restart)
 void CSoundRender_TargetA::_restart()
 {
 	_destroy();
