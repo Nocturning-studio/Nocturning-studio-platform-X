@@ -5,7 +5,7 @@ extern Fvector du_cone_vertices[DU_CONE_NUMVERTEX];
 void CRenderTarget::accum_spot(light* L)
 {
 	phase_accumulator();
-	RImplementation.stats.l_visible++;
+	RenderImplementation.stats.l_visible++;
 
 	// *** assume accumulator setted up ***
 	// *****************************	Mask by stencil		*************************************
@@ -53,7 +53,7 @@ void CRenderTarget::accum_spot(light* L)
 	}
 
 	// nv-stencil recompression
-	if (RImplementation.o.nvstencil)
+	if (RenderImplementation.o.nvstencil)
 		u_stencil_optimize();
 
 	// *****************************	Minimize overdraw	*************************************
@@ -70,7 +70,7 @@ void CRenderTarget::accum_spot(light* L)
 	// Shadow xform (+texture adjustment matrix)
 	Fmatrix m_Shadow, m_Lmap;
 	{
-		float smapsize = float(RImplementation.o.smapsize);
+		float smapsize = float(RenderImplementation.o.smapsize);
 		float fTexelOffs = (.5f / smapsize);
 		float view_dim = float(L->X.S.size - 2) / smapsize;
 		float view_sx = float(L->X.S.posX + 1) / smapsize;
@@ -146,7 +146,7 @@ void CRenderTarget::accum_spot(light* L)
 		u32 _id = 0;
 		if (L->flags.bShadow)
 		{
-			bool bFullSize = (L->X.S.size == RImplementation.o.smapsize);
+			bool bFullSize = (L->X.S.size == RenderImplementation.o.smapsize);
 			if (L->X.S.transluent)
 				_id = SE_L_TRANSLUENT;
 			else if (bFullSize)

@@ -471,7 +471,7 @@ template <bool _debug> class DumbConvexVolume
 
 	void compute_caster_model(xr_vector<Fplane>& dest, Fvector3 direction)
 	{
-		CRenderTarget& T = *RImplementation.Target;
+		CRenderTarget& T = *RenderImplementation.RenderTarget;
 
 		// COG
 		Fvector3 cog = {0, 0, 0};
@@ -732,7 +732,7 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 								   map_size * 0.5f, 0.1, dist + map_size);
 
 		// build viewport xform
-		float view_dim = float(RImplementation.o.smapsize);
+		float view_dim = float(RenderImplementation.o.smapsize);
 		Fmatrix m_viewport = {view_dim / 2.f, 0.0f, 0.0f, 0.0f, 0.0f,			-view_dim / 2.f, 0.0f, 0.0f,
 							  0.0f,			  0.0f, 1.0f, 0.0f, view_dim / 2.f, view_dim / 2.f,	 0.0f, 1.0f};
 		Fmatrix m_viewport_inv;
@@ -772,7 +772,7 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 		static bool draw_debug = false;
 		if (draw_debug && cascade_ind == 0)
 			for (u32 it = 0; it < cull_planes.size(); it++)
-				RImplementation.Target->dbg_addplane(cull_planes[it], it * 0xFFF);
+				RenderImplementation.RenderTarget->dbg_addplane(cull_planes[it], it * 0xFFF);
 #endif
 
 		Fvector cam_shifted = L_pos;
@@ -827,9 +827,9 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 		m_sun_cascades[cascade_ind].xform = cull_xform;
 
 		sun->X.D.minX = 0;
-		sun->X.D.maxX = RImplementation.o.smapsize;
+		sun->X.D.maxX = RenderImplementation.o.smapsize;
 		sun->X.D.minY = 0;
-		sun->X.D.maxY = RImplementation.o.smapsize;
+		sun->X.D.maxY = RenderImplementation.o.smapsize;
 
 		// full-xform
 		FPU::m24r();
@@ -856,11 +856,11 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 	if (bNormal || bSpecial)
 	{
 		if (cascade_ind == 0)
-			Target->phase_smap_direct(sun, SE_SUN_NEAR);
+			RenderTarget->phase_smap_direct(sun, SE_SUN_NEAR);
 		else if (cascade_ind < m_sun_cascades.size() - 1)
-			Target->phase_smap_direct(sun, SE_SUN_MIDDLE);
+			RenderTarget->phase_smap_direct(sun, SE_SUN_MIDDLE);
 		else
-			Target->phase_smap_direct(sun, SE_SUN_FAR);
+			RenderTarget->phase_smap_direct(sun, SE_SUN_FAR);
 
 		RenderBackend.set_xform_world(Fidentity);
 		RenderBackend.set_xform_view(Fidentity);
@@ -879,7 +879,7 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 		//if (bSpecial || (cascade_ind < m_sun_cascades.size() - 1))
 		//{
 		//	sun->X.D.transluent = TRUE;
-		//	Target->phase_smap_direct_tsh(sun, SE_SUN_FAR);
+		//	RenderTarget->phase_smap_direct_tsh(sun, SE_SUN_FAR);
 		//	r_dsgraph_render_graph(1); // normal level, secondary priority
 		//	r_dsgraph_render_sorted(); // strict-sorted geoms
 		//}
@@ -889,16 +889,16 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 	r_pmask(true, false);
 
 	// Accumulate
-	Target->phase_accumulator();
+	RenderTarget->phase_accumulator();
 
 	if (cascade_ind == 0)
-		Target->accum_direct_cascade(SE_SUN_NEAR, m_sun_cascades[cascade_ind].xform, m_sun_cascades[cascade_ind].xform,
+		RenderTarget->accum_direct_cascade(SE_SUN_NEAR, m_sun_cascades[cascade_ind].xform, m_sun_cascades[cascade_ind].xform,
 									 m_sun_cascades[cascade_ind].bias);
 	else if (cascade_ind < m_sun_cascades.size() - 1)
-		Target->accum_direct_cascade(SE_SUN_MIDDLE, m_sun_cascades[cascade_ind].xform,
+		RenderTarget->accum_direct_cascade(SE_SUN_MIDDLE, m_sun_cascades[cascade_ind].xform,
 									 m_sun_cascades[cascade_ind - 1].xform, m_sun_cascades[cascade_ind].bias);
 	else
-		Target->accum_direct_cascade(SE_SUN_FAR, m_sun_cascades[cascade_ind].xform,
+		RenderTarget->accum_direct_cascade(SE_SUN_FAR, m_sun_cascades[cascade_ind].xform,
 									 m_sun_cascades[cascade_ind - 1].xform, m_sun_cascades[cascade_ind].bias);
 
 	// Restore XForms

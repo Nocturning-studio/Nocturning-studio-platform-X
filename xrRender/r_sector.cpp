@@ -53,7 +53,7 @@ void CPortal::OnRender()
 		// draw wire
 		if (bDebug)
 		{
-			RImplementation.rmNear();
+			RenderImplementation.rmNear();
 		}
 		else
 		{
@@ -63,7 +63,7 @@ void CPortal::OnRender()
 		RenderBackend.dbg_Draw(D3DPT_LINESTRIP, &*(V.begin() + 1), V.size() - 2);
 		if (bDebug)
 		{
-			RImplementation.rmNormal();
+			RenderImplementation.rmNormal();
 		}
 		else
 		{
@@ -233,7 +233,7 @@ void CSector::traverse(CFrustum& F, _scissor& R_scissor)
 				scissor = R_scissor;
 
 				// Cull by HOM (slower algo)
-				if ((PortalTraverser.i_options & CPortalTraverser::VQ_HOM) && (!RImplementation.HOM.visible(*P)))
+				if ((PortalTraverser.i_options & CPortalTraverser::VQ_HOM) && (!RenderImplementation.HOM.visible(*P)))
 					continue;
 			}
 			else
@@ -266,7 +266,7 @@ void CSector::traverse(CFrustum& F, _scissor& R_scissor)
 
 				// Cull by HOM (faster algo)
 				if ((PortalTraverser.i_options & CPortalTraverser::VQ_HOM) &&
-					(!RImplementation.HOM.visible(scissor, depth)))
+					(!RenderImplementation.HOM.visible(scissor, depth)))
 					continue;
 			}
 		}
@@ -275,7 +275,7 @@ void CSector::traverse(CFrustum& F, _scissor& R_scissor)
 			scissor = R_scissor;
 
 			// Cull by HOM (slower algo)
-			if ((PortalTraverser.i_options & CPortalTraverser::VQ_HOM) && (!RImplementation.HOM.visible(*P)))
+			if ((PortalTraverser.i_options & CPortalTraverser::VQ_HOM) && (!RenderImplementation.HOM.visible(*P)))
 				continue;
 		}
 
@@ -300,7 +300,7 @@ void CSector::load(IReader& fs)
 	while (count)
 	{
 		u16 ID = fs.r_u16();
-		CPortal* P = (CPortal*)RImplementation.getPortal(ID);
+		CPortal* P = (CPortal*)RenderImplementation.getPortal(ID);
 		m_portals.push_back(P);
 		count--;
 	}
@@ -312,6 +312,6 @@ void CSector::load(IReader& fs)
 		// Assign visual
 		size = fs.find_chunk(fsP_Root);
 		R_ASSERT(size == 4);
-		m_root = RImplementation.getVisual(fs.r_u32());
+		m_root = RenderImplementation.getVisual(fs.r_u32());
 	}
 }

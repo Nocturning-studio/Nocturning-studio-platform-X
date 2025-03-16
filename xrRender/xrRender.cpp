@@ -10,7 +10,7 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserve
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		::Render = &RImplementation;
+		::Render = &RenderImplementation;
 		xrRender_initconsole();
 		break;
 	case DLL_THREAD_ATTACH:

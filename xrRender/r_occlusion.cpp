@@ -76,7 +76,7 @@ u32 R_occlusion::occq_begin(u32& ID)
 	if (!enabled)
 		return 0;
 
-	RImplementation.stats.o_queries++;
+	RenderImplementation.stats.o_queries++;
 	if (!fids.empty())
 	{
 		ID = fids.back();
@@ -137,7 +137,7 @@ u32 R_occlusion::occq_get(u32& ID)
 		fragments = 0xffffffff;
 
 	if (0 == fragments)
-		RImplementation.stats.o_culled++;
+		RenderImplementation.stats.o_culled++;
 
 	// insert into pool (sorting in decreasing order)
 	_Q& Q = used[ID];

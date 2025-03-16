@@ -3,7 +3,7 @@
 void CRenderTarget::phase_smap_spot_clear()
 {
 	/*
-	if (RImplementation.b_HW_smap)		set_Render_Target_Surface	(rt_smap_surf, NULL, NULL, NULL, rt_smap_d_depth->pRT);
+	if (RenderImplementation.b_HW_smap)		set_Render_Target_Surface	(rt_smap_surf, NULL, NULL, NULL, rt_smap_d_depth->pRT);
 	else								set_Render_Target_Surface	(rt_smap_surf, NULL, NULL, NULL, rt_smap_d_ZB);
 	CHK_DX								(HW.pDevice->Clear( 0L, NULL, D3DCLEAR_ZBUFFER,	0xffffffff,	1.0f, 0L));
 	*/
@@ -30,7 +30,7 @@ void CRenderTarget::phase_smap_spot(light* L)
 
 void CRenderTarget::phase_smap_spot_tsh(light* L)
 {
-	VERIFY(RImplementation.o.Tshadows);
+	VERIFY(RenderImplementation.o.Tshadows);
 	RenderBackend.set_ColorWriteEnable();
 	if (IRender_Light::OMNIPART == L->flags.type)
 	{

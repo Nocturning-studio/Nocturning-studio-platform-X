@@ -19,7 +19,7 @@ void smapvis::invalidate()
 }
 void smapvis::begin()
 {
-	RImplementation.clear_Counters();
+	RenderImplementation.clear_Counters();
 	switch (state)
 	{
 	case state_counting:
@@ -30,7 +30,7 @@ void smapvis::begin()
 		testQ_V = 0;
 		testQ_id = 0;
 		mark();
-		RImplementation.set_Feedback(this, test_current);
+		RenderImplementation.set_Feedback(this, test_current);
 		break;
 	case state_usingTC:
 		// just mark
@@ -42,9 +42,9 @@ void smapvis::end()
 {
 	// Gather stats
 	u32 ts, td;
-	RImplementation.get_Counters(ts, td);
-	RImplementation.stats.ic_total += ts;
-	RImplementation.set_Feedback(0, 0);
+	RenderImplementation.get_Counters(ts, td);
+	RenderImplementation.stats.ic_total += ts;
+	RenderImplementation.set_Feedback(0, 0);
 
 	switch (state)
 	{
@@ -62,11 +62,11 @@ void smapvis::end()
 		// issue query
 		if (testQ_V)
 		{
-			RImplementation.occq_begin(testQ_id);
-			RImplementation.marker += 1;
-			RImplementation.r_dsgraph_insert_static(testQ_V);
-			RImplementation.r_dsgraph_render_graph(0);
-			RImplementation.occq_end(testQ_id);
+			RenderImplementation.occq_begin(testQ_id);
+			RenderImplementation.marker += 1;
+			RenderImplementation.r_dsgraph_insert_static(testQ_V);
+			RenderImplementation.r_dsgraph_render_graph(0);
+			RenderImplementation.occq_end(testQ_id);
 			testQ_frame = Device.dwFrame + 1; // get result on next frame
 		}
 		break;
@@ -81,7 +81,7 @@ void smapvis::flushoccq()
 	// the tough part
 	if (testQ_frame != Device.dwFrame)
 		return;
-	u32 fragments = RImplementation.occq_get(testQ_id);
+	u32 fragments = RenderImplementation.occq_get(testQ_id);
 	if (0 == fragments)
 	{
 		// this is invisible shadow-caster, register it
@@ -111,8 +111,8 @@ void smapvis::resetoccq()
 
 void smapvis::mark()
 {
-	RImplementation.stats.ic_culled += invisible.size();
-	u32 marker = RImplementation.marker + 1; // we are called befor marker increment
+	RenderImplementation.stats.ic_culled += invisible.size();
+	u32 marker = RenderImplementation.marker + 1; // we are called befor marker increment
 	for (u32 it = 0; it < invisible.size(); it++)
 		invisible[it]->vis.marker = marker; // this effectively disables processing
 }
@@ -120,5 +120,5 @@ void smapvis::mark()
 void smapvis::rfeedback_static(IRender_Visual* V)
 {
 	testQ_V = V;
-	RImplementation.set_Feedback(0, 0);
+	RenderImplementation.set_Feedback(0, 0);
 }

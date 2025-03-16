@@ -22,7 +22,7 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 	phase_accumulator();
 
 	// *** assume accumulator setted up ***
-	light* sun = (light*)RImplementation.Lights.sun_adapted._get();
+	light* sun = (light*)RenderImplementation.Lights.sun_adapted._get();
 
 	// Common calc for quad-rendering
 	u32 Offset;
@@ -77,7 +77,7 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 	d_Z = center_pt.z;
 
 	// nv-stencil recompression
-	if (RImplementation.o.nvstencil && (SE_SUN_NEAR == sub_phase))
+	if (RenderImplementation.o.nvstencil && (SE_SUN_NEAR == sub_phase))
 		u_stencil_optimize();
 
 	// Perform lighting
@@ -88,7 +88,7 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 		RenderBackend.set_ColorWriteEnable();
 
 		// texture adjustment matrix
-		float fTexelOffs = (0.5f / float(RImplementation.o.smapsize));
+		float fTexelOffs = (0.5f / float(RenderImplementation.o.smapsize));
 
 		float fRange = 0.0f;
 		fBias = 0.0f;

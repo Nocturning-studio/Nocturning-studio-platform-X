@@ -229,7 +229,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	C.sh_macro(bUseDetailBump, "USE_DETAIL_BUMP", "1");
 
 	// If actially we rendering hud
-	if (RImplementation.active_phase() == CRender::PHASE_HUD)
+	if (RenderImplementation.active_phase() == CRender::PHASE_HUD)
 	{
 		Msg("- HUD phase");
 		C.sh_macro("IS_HUD", "1");

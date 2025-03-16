@@ -928,6 +928,8 @@
     <ClCompile Include="r_dsgraph_render_lods.cpp" />
     <ClCompile Include="r_occlusion.cpp" />
     <ClCompile Include="r_rendertarget_backend.cpp" />
+    <ClCompile Include="r_render_pipeline_scene.cpp" />
+    <ClCompile Include="r_render_pipeline_ui.cpp" />
     <ClCompile Include="r_render_stages_output_to_screen.cpp" />
     <ClCompile Include="r_screenshot.cpp" />
     <ClCompile Include="r_sector.cpp" />
@@ -1007,10 +1009,10 @@
     <ClCompile Include="r_render_stages_phase_shadow_map_Spot.cpp" />
     <ClCompile Include="r_render_stages_phase_ssr.cpp" />
     <ClCompile Include="r_render_stages_phase_wallmarks.cpp" />
-    <ClCompile Include="r_R_calculate.cpp" />
-    <ClCompile Include="r_R_lights.cpp" />
-    <ClCompile Include="r_R_render.cpp" />
-    <ClCompile Include="r_R_sun.cpp" />
+    <ClCompile Include="r_calculate.cpp" />
+    <ClCompile Include="r_lights.cpp" />
+    <ClCompile Include="r_render_pipeline.cpp" />
+    <ClCompile Include="r_sun.cpp" />
     <ClCompile Include="r_sector_detect.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

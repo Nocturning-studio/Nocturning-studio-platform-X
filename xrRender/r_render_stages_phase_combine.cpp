@@ -76,7 +76,7 @@ void CRenderTarget::phase_combine()
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
 
 	RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
-	if (RImplementation.o.nvstencil)
+	if (RenderImplementation.o.nvstencil)
 	{
 		u_stencil_optimize(FALSE);
 		RenderBackend.set_ColorWriteEnable();

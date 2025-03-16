@@ -38,10 +38,10 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 	if (!Device.b_is_Ready)
 		return;
 
-	R_CHK(HW.pDevice->GetRenderTargetData(HW.pBaseRT, Target->surf_screenshot_normal));
+	R_CHK(HW.pDevice->GetRenderTargetData(HW.pBaseRT, RenderTarget->surf_screenshot_normal));
 
 	D3DLOCKED_RECT rect;
-	R_CHK(Target->surf_screenshot_normal->LockRect(&rect, 0, D3DLOCK_NOSYSLOCK));
+	R_CHK(RenderTarget->surf_screenshot_normal->LockRect(&rect, 0, D3DLOCK_NOSYSLOCK));
 
 	u32* pPixel = (u32*)rect.pBits;
 	u32* pEnd = pPixel + (Device.dwWidth * Device.dwHeight);
@@ -52,7 +52,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		*pPixel = color_xrgb(color_get_R(p), color_get_G(p), color_get_B(p));
 	}
 
-	R_CHK(Target->surf_screenshot_normal->UnlockRect());
+	R_CHK(RenderTarget->surf_screenshot_normal->UnlockRect());
 
 	string64 t_stemp;
 	string_path file_name;
@@ -61,11 +61,11 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 	{
 	case IRender_interface::SM_FOR_GAMESAVE: 
 	{
-		R_CHK(D3DXLoadSurfaceFromSurface(Target->surf_screenshot_gamesave, NULL, NULL, 
-			Target->surf_screenshot_normal, NULL, NULL, D3DX_DEFAULT, NULL));
+		R_CHK(D3DXLoadSurfaceFromSurface(RenderTarget->surf_screenshot_gamesave, NULL, NULL, 
+			RenderTarget->surf_screenshot_normal, NULL, NULL, D3DX_DEFAULT, NULL));
 
 		ID3DXBuffer* saved = 0;
-		R_CHK(D3DXSaveTextureToFileInMemory(&saved, D3DXIFF_DDS, Target->tex_screenshot_gamesave, NULL));
+		R_CHK(D3DXSaveTextureToFileInMemory(&saved, D3DXIFF_DDS, RenderTarget->tex_screenshot_gamesave, NULL));
 
 		IWriter* fs = FS.w_open(name);
 
@@ -96,12 +96,12 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		if (UsePngFormat)
 		{
 			strconcat(sizeof(file_name), file_name, file_name, ".png");
-			R_CHK(D3DXSaveSurfaceToFileInMemory(&saved, D3DXIFF_PNG, Target->surf_screenshot_normal, NULL, NULL));
+			R_CHK(D3DXSaveSurfaceToFileInMemory(&saved, D3DXIFF_PNG, RenderTarget->surf_screenshot_normal, NULL, NULL));
 		}
 		else
 		{
 			strconcat(sizeof(file_name), file_name, file_name, ".jpg");
-			R_CHK(D3DXSaveSurfaceToFileInMemory(&saved, D3DXIFF_JPG, Target->surf_screenshot_normal, NULL, NULL));
+			R_CHK(D3DXSaveSurfaceToFileInMemory(&saved, D3DXIFF_JPG, RenderTarget->surf_screenshot_normal, NULL, NULL));
 		}
 
 		IWriter* fs = FS.w_open("$screenshots$", file_name);
@@ -131,7 +131,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		IDirect3DSurface9* surface;
 		R_CHK(texture->GetSurfaceLevel(0, &surface));
 		
-		R_CHK(D3DXLoadSurfaceFromSurface(surface, NULL, NULL, Target->surf_screenshot_normal, NULL, NULL, D3DX_DEFAULT, NULL));
+		R_CHK(D3DXLoadSurfaceFromSurface(surface, NULL, NULL, RenderTarget->surf_screenshot_normal, NULL, NULL, D3DX_DEFAULT, NULL));
 
 		ID3DXBuffer* saved = 0;
 		R_CHK(D3DXSaveSurfaceToFileInMemory(&saved, D3DXIFF_DDS, surface, NULL, NULL));
@@ -167,7 +167,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 
 		D3DCUBEMAP_FACES face = (D3DCUBEMAP_FACES)id;
 		cubemap->GetCubeMapSurface(face, 0, &surface[id]);
-		R_CHK(D3DXLoadSurfaceFromSurface(surface[id], NULL, NULL, Target->surf_screenshot_normal, NULL, NULL, D3DX_DEFAULT, NULL));
+		R_CHK(D3DXLoadSurfaceFromSurface(surface[id], NULL, NULL, RenderTarget->surf_screenshot_normal, NULL, NULL, D3DX_DEFAULT, NULL));
 
 		// end
 		if (id == 5)

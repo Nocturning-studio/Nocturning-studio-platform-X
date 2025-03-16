@@ -58,8 +58,8 @@ void __fastcall mapMatrix_Render(mapMatrixItems& N)
 	{
 		_MatrixItem& Ni = *I;
 		RenderBackend.set_xform_world(Ni.Matrix);
-		RImplementation.apply_object(Ni.pObject);
-		RImplementation.apply_lmaterial();
+		RenderImplementation.apply_object(Ni.pObject);
+		RenderImplementation.apply_lmaterial();
 		Ni.pVisual->Render(calcLOD(Ni.ssa, Ni.pVisual->vis.sphere.R));
 	}
 	N.clear();
@@ -75,8 +75,8 @@ void __fastcall sorted_L1(mapSorted_Node* N)
 	VERIFY(V && V->shader._get());
 	RenderBackend.set_Element(N->val.se);
 	RenderBackend.set_xform_world(N->val.Matrix);
-	RImplementation.apply_object(N->val.pObject);
-	RImplementation.apply_lmaterial();
+	RenderImplementation.apply_object(N->val.pObject);
+	RenderImplementation.apply_lmaterial();
 	V->Render(calcLOD(N->key, V->vis.sphere.R));
 }
 
@@ -389,7 +389,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 						{
 							mapNormalTextures::TNode* Ntex = nrmTextures[tex_id];
 							RenderBackend.set_Textures(Ntex->key);
-							RImplementation.apply_lmaterial();
+							RenderImplementation.apply_lmaterial();
 
 							mapNormalItems& items = Ntex->val;
 							items.ssa = 0;
@@ -466,7 +466,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 						{
 							mapMatrixTextures::TNode* Ntex = matTextures[tex_id];
 							RenderBackend.set_Textures(Ntex->key);
-							RImplementation.apply_lmaterial();
+							RenderImplementation.apply_lmaterial();
 
 							mapMatrixItems& items = Ntex->val;
 							items.ssa = 0;
@@ -588,27 +588,27 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_subspace");
 
 	VERIFY(_sector);
-	RImplementation.marker++; // !!! critical here
+	RenderImplementation.marker++; // !!! critical here
 
 	// Save and build new frustum, disable HOM
 	CFrustum ViewSave = ViewBase;
 	ViewBase = *_frustum;
 	View = &ViewBase;
 
-	if (_precise_portals && RImplementation.rmPortals)
+	if (_precise_portals && RenderImplementation.rmPortals)
 	{
 		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_subspace - portals");
 
 		// Check if camera is too near to some portal - if so force DualRender
 		Fvector box_radius;
 		box_radius.set(EPS_L * 20, EPS_L * 20, EPS_L * 20);
-		RImplementation.Sectors_xrc.box_options(CDB::OPT_FULL_TEST);
-		RImplementation.Sectors_xrc.box_query(RImplementation.rmPortals, _cop, box_radius);
-		for (int K = 0; K < RImplementation.Sectors_xrc.r_count(); K++)
+		RenderImplementation.Sectors_xrc.box_options(CDB::OPT_FULL_TEST);
+		RenderImplementation.Sectors_xrc.box_query(RenderImplementation.rmPortals, _cop, box_radius);
+		for (int K = 0; K < RenderImplementation.Sectors_xrc.r_count(); K++)
 		{
 			CPortal* pPortal =
-				(CPortal*)RImplementation
-					.Portals[RImplementation.rmPortals->get_tris()[RImplementation.Sectors_xrc.r_begin()[K].id].dummy];
+				(CPortal*)RenderImplementation
+					.Portals[RenderImplementation.rmPortals->get_tris()[RenderImplementation.Sectors_xrc.r_begin()[K].id].dummy];
 			pPortal->bDualRender = TRUE;
 		}
 	}
@@ -664,7 +664,7 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 		}
 	}
 
-	if (g_pGameLevel && (RImplementation.active_phase() == RImplementation.PHASE_SHADOW_DEPTH))
+	if (g_pGameLevel && (RenderImplementation.active_phase() == RenderImplementation.PHASE_SHADOW_DEPTH))
 		g_pGameLevel->pHUD->Render_Actor_Shadow(); // ACtor Shadow
 
 	// Restore

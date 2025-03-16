@@ -112,7 +112,7 @@ CRenderTarget::CRenderTarget()
 
 	// DIRECT (spot)
 
-	u32 size = RImplementation.o.smapsize;
+	u32 size = RenderImplementation.o.smapsize;
 	rt_smap_depth.create(r_RT_smap_depth, size, size, D3DFMT_D24X8);
 	rt_smap_surf.create(r_RT_smap_surf, size, size, (D3DFORMAT)MAKEFOURCC('N', 'U', 'L', 'L'));
 	rt_smap_ZB = NULL;

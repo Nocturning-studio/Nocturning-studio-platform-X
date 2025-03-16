@@ -378,7 +378,7 @@ class CCC_ModelPoolStat : public IConsole_Command
 	};
 	virtual void Execute(LPCSTR args)
 	{
-		RImplementation.Models->dump();
+		RenderImplementation.Models->dump();
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////

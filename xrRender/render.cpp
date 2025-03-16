@@ -10,7 +10,7 @@
 #include <boost/crc.hpp>
 #include "../xrEngine\r_constants.h"
 //////////////////////////////////////////////////////////////////////////
-CRender RImplementation;
+CRender RenderImplementation;
 //////////////////////////////////////////////////////////////////////////
 #pragma todo(Deathman to Deathman: Добавить поддержку Glow)
 class CGlow : public IRender_Glow
@@ -120,7 +120,7 @@ static class cl_sun_dir : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		light* sun = (light*)RImplementation.Lights.sun_adapted._get();
+		light* sun = (light*)RenderImplementation.Lights.sun_adapted._get();
 
 		Fvector L_dir;
 		Device.mView.transform_dir(L_dir, sun->direction);
@@ -150,7 +150,7 @@ static class cl_sun_color : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		light* sun = (light*)RImplementation.Lights.sun_adapted._get();
+		light* sun = (light*)RenderImplementation.Lights.sun_adapted._get();
 		RenderBackend.set_Constant(C, sRgbToLinear(sun->color.r), sRgbToLinear(sun->color.g), sRgbToLinear(sun->color.b), 0);
 	}
 } binder_sun_color;
@@ -177,7 +177,7 @@ static class cl_is_hud_render_phase : public R_constant_setup
 	{
 		int is_hud_render_phase = 0;
 
-		if (RImplementation.active_phase() == CRender::PHASE_HUD)
+		if (RenderImplementation.active_phase() == CRender::PHASE_HUD)
 			is_hud_render_phase = 1;
 
 		RenderBackend.set_Constant("is_hud_render_phase", (float)is_hud_render_phase, 0, 0, 0);
@@ -316,7 +316,7 @@ void CRender::create()
 	c_sbase = "s_base";
 
 	update_options();
-	Target = xr_new<CRenderTarget>(); // Main target
+	RenderTarget = xr_new<CRenderTarget>(); // Main target
 
 	Models = xr_new<CModelPool>();
 	PSLibrary.OnCreate();
@@ -340,7 +340,7 @@ void CRender::destroy()
 	_RELEASE(q_sync_point[0]);
 	HWOCC.occq_destroy();
 	xr_delete(Models);
-	xr_delete(Target);
+	xr_delete(RenderTarget);
 	PSLibrary.OnDestroy();
 	Device.seqFrame.Remove(this);
 	r_dsgraph_destroy(); // FIX BY IXRAY (THANKS BY DEATHMAN)
@@ -370,7 +370,7 @@ void CRender::reset_begin()
 		Lights_LastFrame.clear();
 	}
 
-	xr_delete(Target);
+	xr_delete(RenderTarget);
 	HWOCC.occq_destroy();
 	_RELEASE(q_sync_point[1]);
 	_RELEASE(q_sync_point[0]);
@@ -385,7 +385,7 @@ void CRender::reset_end()
 	HWOCC.occq_create(occq_size);
 
 	update_options();
-	Target = xr_new<CRenderTarget>();
+	RenderTarget = xr_new<CRenderTarget>();
 
 	xrRender_apply_tf();
 
@@ -618,7 +618,7 @@ IRender_Target* CRender::getTarget()
 {
 	OPTICK_EVENT("CRender::getTarget");
 
-	return Target;
+	return RenderTarget;
 }
 
 IRender_Light* CRender::light_create()

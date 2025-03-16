@@ -106,7 +106,7 @@ class CRender : public R_dsgraph_structure
 	CModelPool* Models;
 	CWallmarksEngine* Wallmarks;
 
-	CRenderTarget* Target; // Render-target
+	CRenderTarget* RenderTarget; // Render-target
 
 	CLight_DB Lights;
 	CLight_Compute_XFORM_and_VIS LR;
@@ -328,4 +328,4 @@ class CRender : public R_dsgraph_structure
 	FS_FileSet m_file_set;
 };
 
-extern CRender RImplementation;
+extern CRender RenderImplementation;

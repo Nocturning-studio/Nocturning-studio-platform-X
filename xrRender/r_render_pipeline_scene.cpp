@@ -1,9 +1,14 @@
+////////////////////////////////////////////////////////////////////////////////
+// Created: 16.03.2025
+// Author: Deathman
+// Nocturning studio for NS Project X
+////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "..\xrEngine\igame_persistent.h"
 #include "..\xrEngine\fbasicvisual.h"
 #include "..\xrEngine\customhud.h"
 #include "..\xrEngine\xr_object.h"
-
+////////////////////////////////////////////////////////////////////////////////
 IC bool pred_sp_sort(ISpatial* _1, ISpatial* _2)
 {
 	float d1 = _1->spatial.sphere.P.distance_to_sqr(Device.vCameraPosition);
@@ -19,7 +24,7 @@ IC bool CRender::need_render_sun()
 
 IC void CRender::check_distort()
 {
-	if(!0 == mapDistort.size())
+	if (!0 == mapDistort.size())
 	{
 		Msg("! mapDistort isn't deleted correctly!");
 	}
@@ -39,8 +44,7 @@ void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals)
 		//!!!
 		{
 			// Traverse object database
-			g_SpatialSpace->q_frustum(lstRenderables, ISpatial_DB::O_ORDERED, STYPE_RENDERABLE + STYPE_LIGHTSOURCE,
-									  ViewBase);
+			g_SpatialSpace->q_frustum(lstRenderables, ISpatial_DB::O_ORDERED, STYPE_RENDERABLE + STYPE_LIGHTSOURCE, ViewBase);
 
 			// (almost) Exact sorting order (front-to-back)
 			concurrency::parallel_sort(lstRenderables.begin(), lstRenderables.end(), pred_sp_sort);
@@ -79,11 +83,11 @@ void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals)
 		}
 
 		// Traverse sector/portal structure
-		PortalTraverser.traverse(
-			pLastSector, ViewBase, Device.vCameraPosition, m_ViewProjection,
-			CPortalTraverser::VQ_HOM + CPortalTraverser::VQ_SSA + CPortalTraverser::VQ_FADE
-			//. disabled scissoring (HW.Caps.bScissor?CPortalTraverser::VQ_SCISSOR:0)	// generate scissoring info
-		);
+		PortalTraverser.traverse(pLastSector, 
+								ViewBase, 
+								Device.vCameraPosition, 
+								m_ViewProjection,
+								CPortalTraverser::VQ_HOM + CPortalTraverser::VQ_SSA + CPortalTraverser::VQ_FADE);
 
 		// Determine visibility for static geometry hierrarhy
 		for (u32 s_it = 0; s_it < PortalTraverser.r_sectors.size(); s_it++)
@@ -123,9 +127,11 @@ void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals)
 
 			if (PortalTraverser.i_marker != sector->r_marker)
 				continue; // inactive (untouched) sector
+
 			for (u32 v_it = 0; v_it < sector->r_frustums.size(); v_it++)
 			{
 				CFrustum& view = sector->r_frustums[v_it];
+
 				if (!view.testSphere_dirty(spatial->spatial.sphere.P, spatial->spatial.sphere.R))
 					continue;
 
@@ -155,12 +161,14 @@ void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals)
 				break; // exit loop on frustums
 			}
 		}
+
 		if (g_pGameLevel && !(active_phase() == PHASE_SHADOW_DEPTH))
 			g_pGameLevel->pHUD->Render_Last(); // HUD
 	}
 	else
 	{
 		set_Object(0);
+
 		if (g_pGameLevel && !(active_phase() == PHASE_SHADOW_DEPTH))
 			g_pGameLevel->pHUD->Render_Last(); // HUD
 	}
@@ -196,100 +204,6 @@ void CRender::query_wait()
 	CHK_DX(q_sync_point[q_sync_count]->Issue(D3DISSUE_END));
 }
 
-void CRender::RenderMenu()
-{
-	OPTICK_EVENT("CRender::RenderMenu");
-
-	//	Globals
-	RenderBackend.set_CullMode(CULL_CCW);
-	RenderBackend.set_Stencil(FALSE);
-	RenderBackend.set_ColorWriteEnable();
-
-	// Main Render
-	{
-		Target->set_Render_Target_Surface(Target->rt_Generic_0);
-		Target->set_Depth_Buffer(HW.pBaseZB);
-		g_pGamePersistent->OnRenderPPUI_main();					 // PP-UI
-	}
-
-	// Distort
-	{
-		Target->set_Render_Target_Surface(Target->rt_Distortion_Mask);
-		Target->set_Depth_Buffer(HW.pBaseZB);
-		CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, color_rgba(127, 127, 0, 127), 1.0f, 0L));
-		g_pGamePersistent->OnRenderPPUI_PP(); // PP-UI
-	}
-
-	// Actual Display
-	Target->set_Render_Target_Surface(Device.dwWidth, Device.dwHeight, HW.pBaseRT);
-	Target->set_Depth_Buffer(HW.pBaseZB);
-	RenderBackend.set_Shader(Target->s_menu);
-	RenderBackend.set_Geometry(Target->g_menu);
-
-	Fvector2 p0, p1;
-	u32 Offset;
-	u32 C = color_rgba(255, 255, 255, 255);
-	float _w = float(Device.dwWidth);
-	float _h = float(Device.dwHeight);
-	float d_Z = EPS_S;
-	float d_W = 1.f;
-	p0.set(.5f / _w, .5f / _h);
-	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
-
-	FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, Target->g_menu->vb_stride, Offset);
-	pv->set(EPS, float(_h + EPS), d_Z, d_W, C, p0.x, p1.y);
-	pv++;
-	pv->set(EPS, EPS, d_Z, d_W, C, p0.x, p0.y);
-	pv++;
-	pv->set(float(_w + EPS), float(_h + EPS), d_Z, d_W, C, p1.x, p1.y);
-	pv++;
-	pv->set(float(_w + EPS), EPS, d_Z, d_W, C, p1.x, p0.y);
-	pv++;
-	RenderBackend.Vertex.Unlock(4, Target->g_menu->vb_stride);
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
-}
-
-void CRender::render_stage_forward()
-{
-	OPTICK_EVENT("CRender::render_stage_forward()");
-
-	VERIFY(0 == mapDistort.size());
-
-	//******* Main render - second order geometry (the one, that doesn't support deffering)
-	{
-		Target->set_Render_Target_Surface(Target->rt_Generic_1, Target->rt_GBuffer_4, NULL, NULL);
-		Target->set_Depth_Buffer(HW.pBaseZB);
-
-		RenderBackend.set_CullMode(CULL_CCW);
-		RenderBackend.set_Stencil(FALSE);
-		RenderBackend.set_ColorWriteEnable();
-
-		// if (g_pGamePersistent)
-		//	g_pGamePersistent->Environment().RenderClouds();
-
-		// level
-		r_pmask(false, true); // enable priority "1"
-		set_active_phase(PHASE_NORMAL);
-		render_main(Device.mFullTransform, false); //
-
-		RenderBackend.enable_anisotropy_filtering();
-
-		if (psDeviceFlags.test(rsWireframe))
-			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
-
-		r_dsgraph_render_graph(1); // normal level, secondary priority
-		r_dsgraph_render_sorted(); // strict-sorted geoms
-
-		if (psDeviceFlags.test(rsWireframe))
-			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
-
-		RenderBackend.disable_anisotropy_filtering();
-
-		g_pGamePersistent->Environment().RenderThunderbolt();
-		g_pGamePersistent->Environment().RenderRain();
-	}
-}
-
 void CRender::render_stage_depth_prepass()
 {
 	OPTICK_EVENT("CRender::render_stage_depth_prepass()");
@@ -309,7 +223,7 @@ void CRender::render_stage_depth_prepass()
 
 	RenderBackend.enable_anisotropy_filtering();
 
-	//r_dsgraph_render_graph(0);
+	// r_dsgraph_render_graph(0);
 
 	if (Details)
 		Details->Render();
@@ -343,7 +257,7 @@ void CRender::render_stage_gbuffer_main()
 	Device.Statistic->RenderCALC_GBuffer.Begin();
 	RenderBackend.enable_anisotropy_filtering();
 
-	Target->create_gbuffer();
+	RenderTarget->create_gbuffer();
 
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL));
 
@@ -354,7 +268,7 @@ void CRender::render_stage_gbuffer_main()
 
 	if (Details)
 	{
-		//Details->UpdateVisibleM();
+		// Details->UpdateVisibleM();
 		Details->Render();
 	}
 
@@ -373,7 +287,7 @@ void CRender::render_stage_gbuffer_secondary()
 
 	RenderBackend.enable_anisotropy_filtering();
 
-	Target->create_gbuffer();
+	RenderTarget->create_gbuffer();
 
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
@@ -393,11 +307,52 @@ void CRender::render_stage_gbuffer_secondary()
 	RenderBackend.disable_anisotropy_filtering();
 }
 
+void CRender::render_stage_forward()
+{
+	OPTICK_EVENT("CRender::render_stage_forward()");
+
+	VERIFY(0 == mapDistort.size());
+
+	//******* Main render - second order geometry (the one, that doesn't support deffering)
+	{
+		RenderTarget->set_Render_Target_Surface(RenderTarget->rt_Generic_1, RenderTarget->rt_GBuffer_4, NULL, NULL);
+		RenderTarget->set_Depth_Buffer(HW.pBaseZB);
+
+		RenderBackend.set_CullMode(CULL_CCW);
+		RenderBackend.set_Stencil(FALSE);
+		RenderBackend.set_ColorWriteEnable();
+
+		// if (g_pGamePersistent)
+		//	g_pGamePersistent->Environment().RenderClouds();
+
+		// level
+		r_pmask(false, true); // enable priority "1"
+		set_active_phase(PHASE_NORMAL);
+		render_main(Device.mFullTransform, false); //
+
+		RenderBackend.enable_anisotropy_filtering();
+
+		if (psDeviceFlags.test(rsWireframe))
+			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
+
+		r_dsgraph_render_graph(1); // normal level, secondary priority
+		r_dsgraph_render_sorted(); // strict-sorted geoms
+
+		if (psDeviceFlags.test(rsWireframe))
+			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
+
+		RenderBackend.disable_anisotropy_filtering();
+
+		g_pGamePersistent->Environment().RenderThunderbolt();
+		g_pGamePersistent->Environment().RenderRain();
+	}
+}
+
 void CRender::render_stage_occlusion_culling()
 {
 	OPTICK_EVENT("CRender::OcclusionCulling");
 
-	Target->phase_occq();
+	RenderTarget->phase_occq();
 
 	LP_normal.clear();
 	LP_pending.clear();
@@ -480,9 +435,9 @@ void CRender::render_stage_sun()
 
 	Device.Statistic->RenderCALC_SUN.Begin();
 
-	RImplementation.stats.l_visible++;
+	RenderImplementation.stats.l_visible++;
 	render_sun_cascades();
-	Target->dwLightMarkerID += 2;
+	RenderTarget->dwLightMarkerID += 2;
 
 	Device.Statistic->RenderCALC_SUN.End();
 }
@@ -494,7 +449,7 @@ void CRender::render_stage_lights()
 	Device.Statistic->RenderCALC_LIGHTS.Begin();
 
 	// Lighting, non dependant on OCCQ
-	Target->phase_accumulator();
+	RenderTarget->phase_accumulator();
 
 	render_lights(LP_normal);
 
@@ -511,43 +466,43 @@ void CRender::render_stage_postprocess()
 	Device.Statistic->RenderCALC_POSTPROCESS.Begin();
 
 	// Generic0 -> Generic1
-	Target->phase_antialiasing();
+	RenderTarget->phase_antialiasing();
 
-	Target->phase_create_distortion_mask();
+	RenderTarget->phase_create_distortion_mask();
 
 	if (g_pGamePersistent)
 		g_pGamePersistent->OnRenderPPUI_PP();
 
-	Target->phase_distortion();
+	RenderTarget->phase_distortion();
 
 	if (ps_r_postprocess_flags.test(RFLAG_BLOOM))
-		Target->phase_bloom();
+		RenderTarget->phase_bloom();
 
 	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
-		Target->phase_autoexposure();
+		RenderTarget->phase_autoexposure();
 
 	// Generic1 -> Generic0 -> Generic1
 	if (ps_r_postprocess_flags.test(RFLAG_DOF))
-		Target->phase_depth_of_field();
+		RenderTarget->phase_depth_of_field();
 
 	// Generic1 -> Generic0 -> Generic1
-	//if (ps_r_postprocess_flags.test(RFLAG_BARREL_BLUR))
-	//	Target->phase_barrel_blur();
+	// if (ps_r_postprocess_flags.test(RFLAG_BARREL_BLUR))
+	//	RenderTarget->phase_barrel_blur();
 
 	if (ps_render_flags.test(RFLAG_LENS_FLARES))
 		g_pGamePersistent->Environment().RenderFlares();
 
 	// Generic1 -> Generic0
-	Target->phase_combine_postprocess();
+	RenderTarget->phase_combine_postprocess();
 
 	// Generic0 -> Generic1
-	Target->phase_effectors();
+	RenderTarget->phase_effectors();
 
 	// Generic1 -> Generic0
-	Target->draw_overlays();
+	RenderTarget->draw_overlays();
 
 	// Ceneric0 -> Generic1
-	Target->phase_motion_blur();
+	RenderTarget->phase_motion_blur();
 
 	Device.Statistic->RenderCALC_POSTPROCESS.End();
 }
@@ -571,7 +526,7 @@ void CRender::render_stage_ao()
 	OPTICK_EVENT("CRender::render_stage_ao");
 
 	Device.Statistic->RenderCALC_AO.Begin();
-	Target->phase_ao();
+	RenderTarget->phase_ao();
 	Device.Statistic->RenderCALC_AO.End();
 }
 
@@ -596,7 +551,7 @@ void CRender::RenderScene()
 	// Sync point
 	query_wait();
 
-	Target->clear_gbuffer();
+	RenderTarget->clear_gbuffer();
 
 	//******* Z-prefill calc - DEFERRER RENDERER
 	if (ps_r_ls_flags.test(RFLAG_Z_PREPASS))
@@ -614,14 +569,14 @@ void CRender::RenderScene()
 
 	if (m_bFirstFrameAfterReset)
 	{
-		Target->phase_motion_blur_pass_save_depth();
+		RenderTarget->phase_motion_blur_pass_save_depth();
 		return;
 	}
 
 	// Wall marks
 	if (Wallmarks)
 	{
-		Target->phase_wallmarks();
+		RenderTarget->phase_wallmarks();
 		Wallmarks->Render(); // wallmarks has priority as normal geometry
 	}
 
@@ -639,16 +594,16 @@ void CRender::RenderScene()
 	// Ambient occlusion rendering
 	render_stage_ao();
 
-	Target->phase_autoexposure_pipeline_start();
+	RenderTarget->phase_autoexposure_pipeline_start();
 
 	// Scene combining stage
-	Target->phase_combine();
+	RenderTarget->phase_combine();
 
 	// Forward rendering
 	render_stage_forward();
 
 	// Add volumetric lights from buffer to screen
-	Target->phase_apply_volumetric();
+	RenderTarget->phase_apply_volumetric();
 
 	// Postprocess
 	render_stage_postprocess();
@@ -656,35 +611,11 @@ void CRender::RenderScene()
 	if (g_pGamePersistent)
 		g_pGamePersistent->OnRenderPPUI_main();
 
-	Target->phase_output_to_screen();
+	RenderTarget->phase_output_to_screen();
 
-	Target->phase_autoexposure_pipeline_clear();
+	RenderTarget->phase_autoexposure_pipeline_clear();
 
 	m_saved_viewproj.set(Device.mFullTransform);
 	m_saved_invview.invert(Device.mView);
 }
-
-void CRender::Render()
-{
-	OPTICK_EVENT("CRender::Render");
-
-	Device.Statistic->RenderCALC.Begin();
-
-	bool _menu_pp = g_pGamePersistent ? g_pGamePersistent->OnRenderPPUI_query() : false;
-	if (_menu_pp)
-	{
-		RenderMenu();
-	}
-	else
-	{
-		if (!(g_pGameLevel && g_pGameLevel->pHUD))
-			return;
-
-		RenderScene();
-	}
-
-	Device.Statistic->RenderCALC.End();
-
-	return;
-}
-
+////////////////////////////////////////////////////////////////////////////////

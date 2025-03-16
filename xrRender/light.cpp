@@ -47,9 +47,9 @@ light::~light()
 	TryToDeactivateLight();
 
 	// remove from Lights_LastFrame
-	for (u32 it = 0; it < RImplementation.Lights_LastFrame.size(); it++)
-		if (this == RImplementation.Lights_LastFrame[it])
-			RImplementation.Lights_LastFrame[it] = 0;
+	for (u32 it = 0; it < RenderImplementation.Lights_LastFrame.size(); it++)
+		if (this == RenderImplementation.Lights_LastFrame[it])
+			RenderImplementation.Lights_LastFrame[it] = 0;
 }
 
 void light::set_texture(LPCSTR name)
@@ -64,8 +64,8 @@ void light::set_texture(LPCSTR name)
 
 #pragma todo("Only shadowed spot implements projective texture")
 	string256 temp;
-	s_spot.create(RImplementation.Target->b_accum_spot, strconcat(sizeof(temp), temp, "r\\accum_spot_", name), name);
-	s_spot.create(RImplementation.Target->b_accum_spot, strconcat(sizeof(temp), temp, "r\\accum_spot_", name), name);
+	s_spot.create(RenderImplementation.RenderTarget->b_accum_spot, strconcat(sizeof(temp), temp, "r\\accum_spot_", name), name);
+	s_spot.create(RenderImplementation.RenderTarget->b_accum_spot, strconcat(sizeof(temp), temp, "r\\accum_spot_", name), name);
 }
 
 void light::set_active(bool a)

@@ -36,7 +36,7 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 {
 	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_dynamic");
 
-	CRender& RI = RImplementation;
+	CRender& RI = RenderImplementation;
 
 	if (pVisual->vis.marker == RI.marker)
 		return;
@@ -66,7 +66,7 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 	}
 
 	// Select shader
-	ShaderElement* sh = RImplementation.rimp_select_sh_dynamic(pVisual, distSQ);
+	ShaderElement* sh = RenderImplementation.rimp_select_sh_dynamic(pVisual, distSQ);
 
 	if (0 == sh)
 		return;
@@ -204,7 +204,7 @@ void R_dsgraph_structure::r_dsgraph_insert_static(IRender_Visual* pVisual)
 {
 	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_insert_static");
 
-	CRender& RI = RImplementation;
+	CRender& RI = RenderImplementation;
 
 	if (pVisual->vis.marker == RI.marker)
 		return;
@@ -233,7 +233,7 @@ void R_dsgraph_structure::r_dsgraph_insert_static(IRender_Visual* pVisual)
 	}
 
 	// Select shader
-	ShaderElement* sh = RImplementation.rimp_select_sh_static(pVisual, distSQ);
+	ShaderElement* sh = RenderImplementation.rimp_select_sh_static(pVisual, distSQ);
 
 	if (0 == sh)
 		return;

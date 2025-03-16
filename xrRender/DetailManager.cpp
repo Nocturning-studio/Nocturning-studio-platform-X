@@ -230,7 +230,7 @@ void CDetailManager::UpdateVisibleM()
 						continue; // invisible-view frustum
 				}
 #ifndef _EDITOR
-				if (!RImplementation.HOM.visible(S.vis))
+				if (!RenderImplementation.HOM.visible(S.vis))
 					continue; // invisible-occlusion
 #endif
 				// Add to visibility structures
@@ -329,7 +329,7 @@ void __stdcall CDetailManager::MT_CALC()
 	OPTICK_EVENT("CDetailManager::MT_CALC");
 
 #ifndef _EDITOR
-	if (0 == RImplementation.Details)
+	if (0 == RenderImplementation.Details)
 		return; // possibly deleted
 	if (0 == dtFS)
 		return;

@@ -200,7 +200,7 @@ void CDetailManager::hw_Render_dump(ref_constant x_array, u32 var_id, u32 lod_id
 			// Setup matrices + colors (and flush it as nesessary)
 			int id = 0;
 
-			//switch (RImplementation.phase)
+			//switch (RenderImplementation.phase)
 			//{
 			//case CRender::PHASE_NORMAL:
 				if(lod_id == 0)
@@ -224,7 +224,7 @@ void CDetailManager::hw_Render_dump(ref_constant x_array, u32 var_id, u32 lod_id
 
 			RenderBackend.set_Element(Object.shader->E[id]);
 
-			RImplementation.apply_lmaterial();
+			RenderImplementation.apply_lmaterial();
 			u32 c_base = x_array->vs.index;
 			Fvector4* c_storage = RenderBackend.get_ConstantCache_Vertex().get_array_f().access(c_base);
 

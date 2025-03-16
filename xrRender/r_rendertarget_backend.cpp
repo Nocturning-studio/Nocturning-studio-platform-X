@@ -99,7 +99,7 @@ void CRenderTarget::set_Depth_Buffer(IDirect3DSurface9* zb)
 
 void CRenderTarget::u_stencil_optimize(BOOL common_stencil)
 {
-	VERIFY(RImplementation.o.nvstencil);
+	VERIFY(RenderImplementation.o.nvstencil);
 	RenderBackend.set_ColorWriteEnable(FALSE);
 	u32 Offset;
 	float _w = float(Device.dwWidth);

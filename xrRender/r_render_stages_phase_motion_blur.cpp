@@ -12,7 +12,7 @@ void CRenderTarget::motion_blur_phase_prepare_dilation_map()
 	// (new-camera) -> (world) -> (old_viewproj)
 	Fmatrix m_previous, m_current, m_invview;
 	m_invview.invert(Device.mView);
-	m_previous.mul(RImplementation.m_saved_viewproj, m_invview);
+	m_previous.mul(RenderImplementation.m_saved_viewproj, m_invview);
 	m_current.set(Device.mProject);
 
 	RenderBackend.set_CullMode(CULL_NONE);

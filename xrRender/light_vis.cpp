@@ -49,9 +49,9 @@ void light::vis_prepare()
 	vis.pending = true;
 	xform_calc();
 	RenderBackend.set_xform_world(m_xform);
-	vis.query_order = RImplementation.occq_begin(vis.query_id);
-	RImplementation.Target->draw_volume(this);
-	RImplementation.occq_end(vis.query_id);
+	vis.query_order = RenderImplementation.occq_begin(vis.query_id);
+	RenderImplementation.RenderTarget->draw_volume(this);
+	RenderImplementation.occq_end(vis.query_id);
 }
 
 void light::vis_update()
@@ -68,7 +68,7 @@ void light::vis_update()
 		return;
 
 	u32 frame = Device.dwFrame;
-	u32 fragments = RImplementation.occq_get(vis.query_id);
+	u32 fragments = RenderImplementation.occq_get(vis.query_id);
 	// Log					("",fragments);
 	vis.visible = (fragments > cullfragments);
 	vis.pending = false;

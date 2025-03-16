@@ -335,8 +335,8 @@ void CWallmarksEngine::AddSkeletonWallmark(const Fmatrix* xf, CKinematics* obj, 
 {
 	OPTICK_EVENT("CWallmarksEngine::AddSkeletonWallmark");
 
-	if (::RImplementation.active_phase() != CRender::PHASE_NORMAL &&
-		::RImplementation.active_phase() != CRender::PHASE_DEPTH_PREPASS)
+	if (::RenderImplementation.active_phase() != CRender::PHASE_NORMAL &&
+		::RenderImplementation.active_phase() != CRender::PHASE_DEPTH_PREPASS)
 		return;
 
 	// optimization cheat: don't allow wallmarks more than 50 m from viewer/actor
@@ -353,11 +353,11 @@ void CWallmarksEngine::AddSkeletonWallmark(intrusive_ptr<CSkeletonWallmark> wm)
 {
 	OPTICK_EVENT("CWallmarksEngine::AddSkeletonWallmark");
 
-	if (::RImplementation.active_phase() != CRender::PHASE_NORMAL &&
-		::RImplementation.active_phase() != CRender::PHASE_DEPTH_PREPASS)
+	if (::RenderImplementation.active_phase() != CRender::PHASE_NORMAL &&
+		::RenderImplementation.active_phase() != CRender::PHASE_DEPTH_PREPASS)
 		return;
 
-	if (!::RImplementation.val_bHUD)
+	if (!::RenderImplementation.val_bHUD)
 	{
 		lock.Enter();
 		// search if similar wallmark exists
@@ -435,7 +435,7 @@ void CWallmarksEngine::Render()
 		for (StaticWMVecIt w_it = slot->static_items.begin(); w_it != slot->static_items.end();)
 		{
 			static_wallmark* W = *w_it;
-			if (RImplementation.ViewBase.testSphere_dirty(W->bounds.P, W->bounds.R))
+			if (RenderImplementation.ViewBase.testSphere_dirty(W->bounds.P, W->bounds.R))
 			{
 				Device.Statistic->RenderDUMP_WMS_Count++;
 				float dst = Device.vCameraPosition.distance_to_sqr(W->bounds.P);
@@ -525,7 +525,7 @@ void CWallmarksEngine::Render()
 	lock.Leave(); // Physics may add wallmarks in parallel with rendering
 
 	// Level-wmarks
-	RImplementation.r_dsgraph_render_wmarks();
+	RenderImplementation.r_dsgraph_render_wmarks();
 	Device.Statistic->RenderDUMP_WM.End();
 
 	// Projection

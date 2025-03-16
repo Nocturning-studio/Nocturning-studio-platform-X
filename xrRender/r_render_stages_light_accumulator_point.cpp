@@ -3,7 +3,7 @@
 void CRenderTarget::accum_point(light* L)
 {
 	phase_accumulator();
-	RImplementation.stats.l_visible++;
+	RenderImplementation.stats.l_visible++;
 
 	ref_shader shader = L->s_point;
 	if (!shader)
@@ -46,7 +46,7 @@ void CRenderTarget::accum_point(light* L)
 	draw_volume(L);
 
 	// nv-stencil recompression
-	if (RImplementation.o.nvstencil)
+	if (RenderImplementation.o.nvstencil)
 		u_stencil_optimize();
 
 	// *****************************	Minimize overdraw	*************************************
@@ -70,7 +70,7 @@ void CRenderTarget::accum_point(light* L)
 		u32 _id = 0;
 		if (L->flags.bShadow)
 		{
-			bool bFullSize = (L->X.S.size == u32(RImplementation.o.smapsize));
+			bool bFullSize = (L->X.S.size == u32(RenderImplementation.o.smapsize));
 			if (L->X.S.transluent)
 				_id = SE_L_TRANSLUENT;
 			else if (bFullSize)

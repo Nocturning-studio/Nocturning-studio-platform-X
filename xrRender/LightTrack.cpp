@@ -104,7 +104,7 @@ void CROS_impl::update(IRenderable* O)
 	direction.random_dir();
 
 	// sun-tracing
-	light* sun = (light*)RImplementation.Lights.sun_adapted._get();
+	light* sun = (light*)RenderImplementation.Lights.sun_adapted._get();
 
 	if (MODE & IRender_ObjectSpecific::TRACE_SUN)
 	{
@@ -171,10 +171,10 @@ void CROS_impl::update(IRenderable* O)
 	{
 		// Select nearest lights
 		Fvector bb_size = {radius, radius, radius};
-		g_SpatialSpace->q_box(RImplementation.lstSpatial, 0, STYPE_LIGHTSOURCE, position, bb_size);
-		for (u32 o_it = 0; o_it < RImplementation.lstSpatial.size(); o_it++)
+		g_SpatialSpace->q_box(RenderImplementation.lstSpatial, 0, STYPE_LIGHTSOURCE, position, bb_size);
+		for (u32 o_it = 0; o_it < RenderImplementation.lstSpatial.size(); o_it++)
 		{
-			ISpatial* spatial = RImplementation.lstSpatial[o_it];
+			ISpatial* spatial = RenderImplementation.lstSpatial[o_it];
 			light* source = (light*)(spatial->dcast_Light());
 			VERIFY(source); // sanity check
 			float R = radius + source->range;
