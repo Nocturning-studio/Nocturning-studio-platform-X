@@ -57,7 +57,7 @@ void __fastcall mapMatrix_Render(mapMatrixItems& N)
 	for (; I != E; I++)
 	{
 		_MatrixItem& Ni = *I;
-		RCache.set_xform_world(Ni.Matrix);
+		RenderBackend.set_xform_world(Ni.Matrix);
 		RImplementation.apply_object(Ni.pObject);
 		RImplementation.apply_lmaterial();
 		Ni.pVisual->Render(calcLOD(Ni.ssa, Ni.pVisual->vis.sphere.R));
@@ -73,8 +73,8 @@ void __fastcall sorted_L1(mapSorted_Node* N)
 	VERIFY(N);
 	IRender_Visual* V = N->val.pVisual;
 	VERIFY(V && V->shader._get());
-	RCache.set_Element(N->val.se);
-	RCache.set_xform_world(N->val.Matrix);
+	RenderBackend.set_Element(N->val.se);
+	RenderBackend.set_xform_world(N->val.Matrix);
 	RImplementation.apply_object(N->val.pObject);
 	RImplementation.apply_lmaterial();
 	V->Render(calcLOD(N->key, V->vis.sphere.R));
@@ -346,14 +346,14 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 	// Sorting by SSA and changes minimizations
 	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_graph - Normal");
 	{
-		RCache.set_xform_world(Fidentity);
+		RenderBackend.set_xform_world(Fidentity);
 		mapNormalVS& vs = mapNormal[_priority];
 		vs.getANY_P(nrmVS);
 		//concurrency::parallel_sort(nrmVS.begin(), nrmVS.end(), cmp_vs_nrm);
 		for (u32 vs_id = 0; vs_id < nrmVS.size(); vs_id++)
 		{
 			mapNormalVS::TNode* Nvs = nrmVS[vs_id];
-			RCache.set_VS(Nvs->key);
+			RenderBackend.set_Vertex_Shader(Nvs->key);
 
 			mapNormalPS& ps = Nvs->val;
 			ps.ssa = 0;
@@ -362,7 +362,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 			for (u32 ps_id = 0; ps_id < nrmPS.size(); ps_id++)
 			{
 				mapNormalPS::TNode* Nps = nrmPS[ps_id];
-				RCache.set_PS(Nps->key);
+				RenderBackend.set_Pixel_Shader(Nps->key);
 
 				mapNormalCS& cs = Nps->val;
 				cs.ssa = 0;
@@ -371,7 +371,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 				for (u32 cs_id = 0; cs_id < nrmCS.size(); cs_id++)
 				{
 					mapNormalCS::TNode* Ncs = nrmCS[cs_id];
-					RCache.set_Constants(Ncs->key);
+					RenderBackend.set_Constants(Ncs->key);
 
 					mapNormalStates& states = Ncs->val;
 					states.ssa = 0;
@@ -380,7 +380,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 					for (u32 state_id = 0; state_id < nrmStates.size(); state_id++)
 					{
 						mapNormalStates::TNode* Nstate = nrmStates[state_id];
-						RCache.set_States(Nstate->key);
+						RenderBackend.set_States(Nstate->key);
 
 						mapNormalTextures& tex = Nstate->val;
 						tex.ssa = 0;
@@ -388,7 +388,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 						for (u32 tex_id = 0; tex_id < nrmTextures.size(); tex_id++)
 						{
 							mapNormalTextures::TNode* Ntex = nrmTextures[tex_id];
-							RCache.set_Textures(Ntex->key);
+							RenderBackend.set_Textures(Ntex->key);
 							RImplementation.apply_lmaterial();
 
 							mapNormalItems& items = Ntex->val;
@@ -430,7 +430,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 		for (u32 vs_id = 0; vs_id < matVS.size(); vs_id++)
 		{
 			mapMatrixVS::TNode* Nvs = matVS[vs_id];
-			RCache.set_VS(Nvs->key);
+			RenderBackend.set_Vertex_Shader(Nvs->key);
 
 			mapMatrixPS& ps = Nvs->val;
 			ps.ssa = 0;
@@ -439,7 +439,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 			for (u32 ps_id = 0; ps_id < matPS.size(); ps_id++)
 			{
 				mapMatrixPS::TNode* Nps = matPS[ps_id];
-				RCache.set_PS(Nps->key);
+				RenderBackend.set_Pixel_Shader(Nps->key);
 
 				mapMatrixCS& cs = Nps->val;
 				cs.ssa = 0;
@@ -448,7 +448,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 				for (u32 cs_id = 0; cs_id < matCS.size(); cs_id++)
 				{
 					mapMatrixCS::TNode* Ncs = matCS[cs_id];
-					RCache.set_Constants(Ncs->key);
+					RenderBackend.set_Constants(Ncs->key);
 
 					mapMatrixStates& states = Ncs->val;
 					states.ssa = 0;
@@ -457,7 +457,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 					for (u32 state_id = 0; state_id < matStates.size(); state_id++)
 					{
 						mapMatrixStates::TNode* Nstate = matStates[state_id];
-						RCache.set_States(Nstate->key);
+						RenderBackend.set_States(Nstate->key);
 
 						mapMatrixTextures& tex = Nstate->val;
 						tex.ssa = 0;
@@ -465,7 +465,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 						for (u32 tex_id = 0; tex_id < matTextures.size(); tex_id++)
 						{
 							mapMatrixTextures::TNode* Ntex = matTextures[tex_id];
-							RCache.set_Textures(Ntex->key);
+							RenderBackend.set_Textures(Ntex->key);
 							RImplementation.apply_lmaterial();
 
 							mapMatrixItems& items = Ntex->val;
@@ -511,7 +511,7 @@ void R_dsgraph_structure::r_dsgraph_render_hud()
 	Device.mProject.build_projection(deg2rad(psHUD_FOV * Device.fFOV), Device.fASPECT, VIEWPORT_NEAR_HUD, g_pGamePersistent->Environment().CurrentEnv->far_plane);
 
 	Device.mFullTransform.mul(Device.mProject, Device.mView);
-	RCache.set_xform_project(Device.mProject);
+	RenderBackend.set_xform_project(Device.mProject);
 
 	// Rendering
 	rmNear();
@@ -522,7 +522,7 @@ void R_dsgraph_structure::r_dsgraph_render_hud()
 	// Restore projection
 	Device.mProject = Pold;
 	Device.mFullTransform = FTold;
-	RCache.set_xform_project(Device.mProject);
+	RenderBackend.set_xform_project(Device.mProject);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -70,7 +70,7 @@ void CRenderDevice::_Create(LPCSTR shName)
 	_SetupStates();
 
 	// Signal everyone - device created
-	RCache.OnDeviceCreate();
+	RenderBackend.OnDeviceCreate();
 	Gamma.Update();
 	Resources->OnDeviceCreate(shName);
 	::Render->create();

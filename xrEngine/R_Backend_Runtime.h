@@ -13,7 +13,7 @@ IC void R_xforms::set_c_w(R_constant* C)
 	OPTICK_EVENT("R_xforms::set_c_w");
 
 	c_w = C;
-	RCache.set_c(C, m_w);
+	RenderBackend.set_Constant(C, m_w);
 };
 IC void R_xforms::set_c_invw(R_constant* C)
 {
@@ -27,35 +27,35 @@ IC void R_xforms::set_c_v(R_constant* C)
 	OPTICK_EVENT("R_xforms::set_c_v");
 
 	c_v = C;
-	RCache.set_c(C, m_v);
+	RenderBackend.set_Constant(C, m_v);
 };
 IC void R_xforms::set_c_p(R_constant* C)
 {
 	OPTICK_EVENT("R_xforms::set_c_p");
 
 	c_p = C;
-	RCache.set_c(C, m_p);
+	RenderBackend.set_Constant(C, m_p);
 };
 IC void R_xforms::set_c_wv(R_constant* C)
 {
 	OPTICK_EVENT("R_xforms::set_c_wv");
 
 	c_wv = C;
-	RCache.set_c(C, m_wv);
+	RenderBackend.set_Constant(C, m_wv);
 };
 IC void R_xforms::set_c_vp(R_constant* C)
 {
 	OPTICK_EVENT("R_xforms::set_c_vp");
 
 	c_vp = C;
-	RCache.set_c(C, m_vp);
+	RenderBackend.set_Constant(C, m_vp);
 };
 IC void R_xforms::set_c_wvp(R_constant* C)
 {
 	OPTICK_EVENT("R_xforms::set_c_wvp");
 
 	c_wvp = C;
-	RCache.set_c(C, m_wvp);
+	RenderBackend.set_Constant(C, m_wvp);
 };
 
 IC void CBackend::set_xform(u32 ID, const Fmatrix& Matrix)
@@ -102,7 +102,7 @@ IC const Fmatrix& CBackend::get_xform_project()
 	return xforms.get_P();
 }
 
-IC void CBackend::set_RT(IDirect3DSurface9* RT, u32 ID)
+IC void CBackend::setRenderTarget(IDirect3DSurface9* RT, u32 ID)
 {		
 	OPTICK_EVENT("CBackend:setRT");
 
@@ -114,7 +114,7 @@ IC void CBackend::set_RT(IDirect3DSurface9* RT, u32 ID)
 	}
 }
 
-IC void CBackend::set_ZB(IDirect3DSurface9* ZB)
+IC void CBackend::setDepthBuffer(IDirect3DSurface9* ZB)
 {
 	OPTICK_EVENT("CBackend:setZB");
 
@@ -195,8 +195,8 @@ IC void CBackend::set_Element(ShaderElement* S, u32 pass)
 
 	SPass& P = *(S->passes[pass]);
 	set_States(P.state);
-	set_PS(P.ps);
-	set_VS(P.vs);
+	set_Pixel_Shader(P.ps);
+	set_Vertex_Shader(P.vs);
 	set_Constants(P.constants);
 	set_Textures(P.T);
 #ifdef _EDITOR
@@ -218,14 +218,14 @@ ICF void CBackend::set_Format(IDirect3DVertexDeclaration9* _decl)
 	}
 }
 
-ICF void CBackend::set_PS(IDirect3DPixelShader9* _ps, LPCSTR _n)
+ICF void CBackend::set_Pixel_Shader(IDirect3DPixelShader9* _ps, LPCSTR _n)
 {
-	OPTICK_EVENT("CBackend::set_PS");
+	OPTICK_EVENT("CBackend::set_Pixel_Shader");
 
 	if (ps != _ps)
 	{
 		//shared_str str;
-		//str.sprintf("CBackend::set_PS: %s", _n);
+		//str.sprintf("CBackend::set_Pixel_Shader: %s", _n);
 		//OPTICK_EVENT_DYNAMIC(str.c_str());
 
 		stat.ps++;
@@ -237,14 +237,14 @@ ICF void CBackend::set_PS(IDirect3DPixelShader9* _ps, LPCSTR _n)
 	}
 }
 
-ICF void CBackend::set_VS(IDirect3DVertexShader9* _vs, LPCSTR _n)
+ICF void CBackend::set_Vertex_Shader(IDirect3DVertexShader9* _vs, LPCSTR _n)
 {
-	OPTICK_EVENT("CBackend::set_VS");
+	OPTICK_EVENT("CBackend::set_Vertex_Shader");
 
 	if (vs != _vs)
 	{
 		//shared_str str;
-		//str.sprintf("CBackend::set_VS: %s", _n);
+		//str.sprintf("CBackend::set_Vertex_Shader: %s", _n);
 		//OPTICK_EVENT_DYNAMIC(str.c_str());
 
 		stat.vs++;

@@ -165,13 +165,13 @@ CRenderTarget::CRenderTarget()
 	rt_Bloom_2.create(r_RT_bloom2, w, h, D3DFMT_A16B16G16R16F);
 	rt_Bloom_Blades_1.create(r_RT_bloom_blades1, w, h, D3DFMT_A16B16G16R16F);
 	rt_Bloom_Blades_2.create(r_RT_bloom_blades2, w, h, D3DFMT_A16B16G16R16F);
-	g_bloom_build.create(fvf_build, RCache.Vertex.Buffer(), RCache.QuadIB);
-	g_bloom_filter.create(fvf_filter, RCache.Vertex.Buffer(), RCache.QuadIB);
+	g_bloom_build.create(fvf_build, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
+	g_bloom_filter.create(fvf_filter, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 	s_bloom.create(b_bloom, "r\\bloom");
 
-	rt_Radiation_Noise0.create(r_RT_radiation_noise0, u32(dwWidth * 0.25f), u32(dwHeight * 0.25f), D3DFMT_L8);
+	rt_Radiation_Noise0.create(r_RT_radiation_noise0, dwWidth, dwHeight, D3DFMT_L8);
 	rt_Radiation_Noise1.create(r_RT_radiation_noise1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_L8);
-	rt_Radiation_Noise2.create(r_RT_radiation_noise2, dwWidth, dwHeight, D3DFMT_L8);
+	rt_Radiation_Noise2.create(r_RT_radiation_noise2, u32(dwWidth * 0.25f), u32(dwHeight * 0.25f), D3DFMT_L8);
 
 	// AO
 	// Create rendertarget
@@ -199,7 +199,8 @@ CRenderTarget::CRenderTarget()
 			string256 name;
 			sprintf(name, "%s_%d", r_RT_autoexposure_pool, it);
 			rt_LUM_pool[it].create(name, 1, 1, D3DFMT_L8);
-			u_setrt(rt_LUM_pool[it], NULL, NULL, NULL, NULL);
+			set_Render_Target_Surface(rt_LUM_pool[it]);
+			set_Depth_Buffer(NULL);
 			CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0x7f7f7f7f, 1.0f, 0L));
 		}
 	}
@@ -210,15 +211,15 @@ CRenderTarget::CRenderTarget()
 			{0, 0, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0}, // pos+uv
 			D3DDECL_END()};
 		s_combine.create(b_combine, "r\\combine");
-		g_combine_VP.create(dwDecl, RCache.Vertex.Buffer(), RCache.QuadIB);
-		g_combine.create(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
-		g_combine_2UV.create(FVF::F_TL2uv, RCache.Vertex.Buffer(), RCache.QuadIB);
-		g_combine_cuboid.create(FVF::F_L, RCache.Vertex.Buffer(), RCache.Index.Buffer());
+		g_combine_VP.create(dwDecl, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
+		g_combine.create(FVF::F_TL, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
+		g_combine_2UV.create(FVF::F_TL2uv, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
+		g_combine_cuboid.create(FVF::F_L, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
 
 		// Create simple screen quad geom for postprocess shaders
-		g_simple_quad.create(D3DFVF_XYZRHW | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.QuadIB);
+		g_simple_quad.create(D3DFVF_XYZRHW | D3DFVF_TEX1, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 
-		g_viewport.create(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
+		g_viewport.create(FVF::F_TL, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 
 		t_envmap_0.create(r_T_envs0);
 		t_envmap_1.create(r_T_envs1);
@@ -247,11 +248,11 @@ CRenderTarget::CRenderTarget()
 
 	// PP
 	s_effectors.create(b_effectors, "postprocess_stage_pass_effectors");
-	g_effectors.create(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX3, RCache.Vertex.Buffer(), RCache.QuadIB);
+	g_effectors.create(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX3, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 
 	// Menu
 	s_menu.create("distort");
-	g_menu.create(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
+	g_menu.create(FVF::F_TL, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 
 	s_output_to_screen.create(b_output_to_screen, "output_to_screen_stage");
 }

@@ -613,7 +613,7 @@ class CCC_tf_Aniso : public CCC_Integer
 		int val = *value;
 		clamp(val, 2, 16);
 
-		RCache.set_anisotropy_filtering(val);
+		RenderBackend.set_anisotropy_filtering(val);
 	}
 	CCC_tf_Aniso(LPCSTR N, int* v) : CCC_Integer(N, v, 2, 16){};
 	virtual void Execute(LPCSTR args)

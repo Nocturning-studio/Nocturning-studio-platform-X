@@ -148,26 +148,26 @@ void CDetailManager::hw_Render()
 	dir2.set(_sin(tm_rot2), 0, _cos(tm_rot2), 0).normalize().mul(swing_current.amp2);
 
 	// Setup geometry and DMA
-	RCache.set_Geometry(hw_Geom);
+	RenderBackend.set_Geometry(hw_Geom);
 
 	// Wave0
 	float scale = 1.f / float(quant);
 	Fvector4 wave;
 	wave.set(1.f / 5.f, 1.f / 7.f, 1.f / 3.f, Device.fTimeGlobal * swing_current.speed);
-	RCache.set_c(&*hwc_consts, scale, scale, ps_r_Detail_l_aniso, ps_r_Detail_l_ambient); // consts
-	RCache.set_c(&*hwc_wave, wave.div(PI_MUL_2));											// wave
-	RCache.set_c(&*hwc_wind, dir1);															// wind-dir
+	RenderBackend.set_Constant(&*hwc_consts, scale, scale, ps_r_Detail_l_aniso, ps_r_Detail_l_ambient); // consts
+	RenderBackend.set_Constant(&*hwc_wave, wave.div(PI_MUL_2));											// wave
+	RenderBackend.set_Constant(&*hwc_wind, dir1);															// wind-dir
 	hw_Render_dump(&*hwc_array, 1, 0, c_hdr);
 
 	// Wave1
 	wave.set(1.f / 3.f, 1.f / 7.f, 1.f / 5.f, Device.fTimeGlobal * swing_current.speed);
-	RCache.set_c(&*hwc_wave, wave.div(PI_MUL_2)); // wave
-	RCache.set_c(&*hwc_wind, dir2);				  // wind-dir
+	RenderBackend.set_Constant(&*hwc_wave, wave.div(PI_MUL_2)); // wave
+	RenderBackend.set_Constant(&*hwc_wind, dir2);				  // wind-dir
 	hw_Render_dump(&*hwc_array, 2, 0, c_hdr);
 
 	// Still
-	RCache.set_c(&*hwc_s_consts, scale, scale, scale, 1.f);
-	RCache.set_c(&*hwc_s_xform, Device.mFullTransform);
+	RenderBackend.set_Constant(&*hwc_s_consts, scale, scale, scale, 1.f);
+	RenderBackend.set_Constant(&*hwc_s_xform, Device.mFullTransform);
 	hw_Render_dump(&*hwc_s_array, 0, 1, c_hdr);
 }
 
@@ -222,11 +222,11 @@ void CDetailManager::hw_Render_dump(ref_constant x_array, u32 var_id, u32 lod_id
 			//	break;
 			//}
 
-			RCache.set_Element(Object.shader->E[id]);
+			RenderBackend.set_Element(Object.shader->E[id]);
 
 			RImplementation.apply_lmaterial();
 			u32 c_base = x_array->vs.index;
-			Fvector4* c_storage = RCache.get_ConstantCache_Vertex().get_array_f().access(c_base);
+			Fvector4* c_storage = RenderBackend.get_ConstantCache_Vertex().get_array_f().access(c_base);
 
 			u32 dwBatch = 0;
 
@@ -260,10 +260,10 @@ void CDetailManager::hw_Render_dump(ref_constant x_array, u32 var_id, u32 lod_id
 						Device.Statistic->RenderDUMP_DT_Count += dwBatch;
 						u32 dwCNT_verts = dwBatch * Object.number_vertices;
 						u32 dwCNT_prims = (dwBatch * Object.number_indices) / 3;
-						RCache.get_ConstantCache_Vertex().b_dirty = TRUE;
-						RCache.get_ConstantCache_Vertex().get_array_f().dirty(c_base, c_base + dwBatch * 4);
-						RCache.Render(D3DPT_TRIANGLELIST, vOffset, 0, dwCNT_verts, iOffset, dwCNT_prims);
-						RCache.stat.r.s_details.add(dwCNT_verts);
+						RenderBackend.get_ConstantCache_Vertex().b_dirty = TRUE;
+						RenderBackend.get_ConstantCache_Vertex().get_array_f().dirty(c_base, c_base + dwBatch * 4);
+						RenderBackend.Render(D3DPT_TRIANGLELIST, vOffset, 0, dwCNT_verts, iOffset, dwCNT_prims);
+						RenderBackend.stat.r.s_details.add(dwCNT_verts);
 
 						// restart
 						dwBatch = 0;
@@ -276,10 +276,10 @@ void CDetailManager::hw_Render_dump(ref_constant x_array, u32 var_id, u32 lod_id
 				Device.Statistic->RenderDUMP_DT_Count += dwBatch;
 				u32 dwCNT_verts = dwBatch * Object.number_vertices;
 				u32 dwCNT_prims = (dwBatch * Object.number_indices) / 3;
-				RCache.get_ConstantCache_Vertex().b_dirty = TRUE;
-				RCache.get_ConstantCache_Vertex().get_array_f().dirty(c_base, c_base + dwBatch * 4);
-				RCache.Render(D3DPT_TRIANGLELIST, vOffset, 0, dwCNT_verts, iOffset, dwCNT_prims);
-				RCache.stat.r.s_details.add(dwCNT_verts);
+				RenderBackend.get_ConstantCache_Vertex().b_dirty = TRUE;
+				RenderBackend.get_ConstantCache_Vertex().get_array_f().dirty(c_base, c_base + dwBatch * 4);
+				RenderBackend.Render(D3DPT_TRIANGLELIST, vOffset, 0, dwCNT_verts, iOffset, dwCNT_prims);
+				RenderBackend.stat.r.s_details.add(dwCNT_verts);
 			}
 			// Clean up
 			vis.clear_not_free();

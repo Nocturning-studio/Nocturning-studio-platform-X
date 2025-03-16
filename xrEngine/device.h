@@ -78,7 +78,7 @@ class ENGINE_API CRenderDevice
 			m_bNearer = FALSE;
 			mProject._43 += EPS_L;
 		}
-		RCache.set_xform_project(mProject);
+		RenderBackend.set_xform_project(mProject);
 	}
 
   public:

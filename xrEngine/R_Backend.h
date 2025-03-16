@@ -156,8 +156,8 @@ class ENGINE_API CBackend
 	IC const Fmatrix& get_xform_view();
 	IC const Fmatrix& get_xform_project();
 
-	IC void set_RT(IDirect3DSurface9* RT, u32 ID = 0);
-	IC void set_ZB(IDirect3DSurface9* ZB);
+	IC void setRenderTarget(IDirect3DSurface9* RT, u32 ID = 0);
+	IC void setDepthBuffer(IDirect3DSurface9* ZB);
 
 	IC void set_Constants(R_constant_table* C);
 	IC void set_Constants(ref_ctable& CTable)
@@ -199,16 +199,16 @@ class ENGINE_API CBackend
 
 	ICF void set_Format(IDirect3DVertexDeclaration9* _decl);
 
-	ICF void set_PS(IDirect3DPixelShader9* _ps, LPCSTR _n = 0);
-	ICF void set_PS(ref_ps& _ps)
+	ICF void set_Pixel_Shader(IDirect3DPixelShader9* _ps, LPCSTR _n = 0);
+	ICF void set_Pixel_Shader(ref_ps& _ps)
 	{
-		set_PS(_ps->sh, _ps->cName.c_str());
+		set_Pixel_Shader(_ps->sh, _ps->cName.c_str());
 	}
 
-	ICF void set_VS(IDirect3DVertexShader9* _vs, LPCSTR _n = 0);
-	ICF void set_VS(ref_vs& _vs)
+	ICF void set_Vertex_Shader(IDirect3DVertexShader9* _vs, LPCSTR _n = 0);
+	ICF void set_Vertex_Shader(ref_vs& _vs)
 	{
-		set_VS(_vs->sh, _vs->cName.c_str());
+		set_Vertex_Shader(_vs->sh, _vs->cName.c_str());
 	}
 
 	ICF void set_Vertices(IDirect3DVertexBuffer9* _vb, u32 _vb_stride);
@@ -238,14 +238,14 @@ class ENGINE_API CBackend
 	void set_anisotropy_filtering(int max_anisothropy);
 
 	// constants
-	ICF ref_constant get_c(LPCSTR n)
+	ICF ref_constant get_Constant(LPCSTR n)
 	{
 		if (ctable)
 			return ctable->get(n);
 		else
 			return 0;
 	}
-	ICF ref_constant get_c(shared_str& n)
+	ICF ref_constant get_Constant(shared_str& n)
 	{
 		if (ctable)
 			return ctable->get(n);
@@ -254,99 +254,114 @@ class ENGINE_API CBackend
 	}
 
 	// constants - direct (fast)
-	ICF void set_c(R_constant* Const, const Fmatrix& A)
+	ICF void set_Constant(R_constant* Const, const Fmatrix& A)
 	{
 		if (Const)
 			constants.set(Const, A);
 	}
-	ICF void set_c(R_constant* Const, const Fvector4& A)
+	ICF void set_Constant(R_constant* Const, const Fvector4& A)
 	{
 		if (Const)
 			constants.set(Const, A);
 	}
-	ICF void set_c(R_constant* Const, float x, float y, float z, float w)
+	ICF void set_Constant(R_constant* Const, float x, float y, float z, float w)
 	{
 		if (Const)
 			constants.set(Const, x, y, z, w);
 	}
-	ICF void set_ca(R_constant* Const, u32 e, const Fmatrix& A)
+	ICF void set_Array_Constant(R_constant* Const, u32 e, const Fmatrix& A)
 	{
 		if (Const)
 			constants.seta(Const, e, A);
 	}
-	ICF void set_ca(R_constant* Const, u32 e, const Fvector4& A)
+	ICF void set_Array_Constant(R_constant* Const, u32 e, const Fvector4& A)
 	{
 		if (Const)
 			constants.seta(Const, e, A);
 	}
-	ICF void set_ca(R_constant* Const, u32 e, float x, float y, float z, float w)
+	ICF void set_Array_Constant(R_constant* Const, u32 e, float x, float y, float z, float w)
 	{
 		if (Const)
 			constants.seta(Const, e, x, y, z, w);
 	}
 
 	// constants - LPCSTR (slow)
-	ICF void set_c(LPCSTR n, const Fmatrix& A)
+	ICF void set_Constant(LPCSTR n, const Fmatrix& A)
 	{
 		if (ctable)
-			set_c(&*ctable->get(n), A);
+			set_Constant(&*ctable->get(n), A);
 	}
-	ICF void set_c(LPCSTR n, const Fvector4& A)
+	ICF void set_Constant(LPCSTR n, const Fvector4& A)
 	{
 		if (ctable)
-			set_c(&*ctable->get(n), A);
+			set_Constant(&*ctable->get(n), A);
 	}
-	ICF void set_c(LPCSTR n, float x, float y, float z, float w)
+	ICF void set_Constant(LPCSTR n, float x)
 	{
 		if (ctable)
-			set_c(&*ctable->get(n), x, y, z, w);
+			set_Constant(&*ctable->get(n), x, 0, 0, 0);
 	}
-	ICF void set_ca(LPCSTR n, u32 e, const Fmatrix& A)
+	ICF void set_Constant(LPCSTR n, float x, float y)
 	{
 		if (ctable)
-			set_ca(&*ctable->get(n), e, A);
+			set_Constant(&*ctable->get(n), x, y, 0, 0);
 	}
-	ICF void set_ca(LPCSTR n, u32 e, const Fvector4& A)
+	ICF void set_Constant(LPCSTR n, float x, float y, float z)
 	{
 		if (ctable)
-			set_ca(&*ctable->get(n), e, A);
+			set_Constant(&*ctable->get(n), x, y, z, 0);
 	}
-	ICF void set_ca(LPCSTR n, u32 e, float x, float y, float z, float w)
+	ICF void set_Constant(LPCSTR n, float x, float y, float z, float w)
 	{
 		if (ctable)
-			set_ca(&*ctable->get(n), e, x, y, z, w);
+			set_Constant(&*ctable->get(n), x, y, z, w);
+	}
+	ICF void set_Array_Constant(LPCSTR n, u32 e, const Fmatrix& A)
+	{
+		if (ctable)
+			set_Array_Constant(&*ctable->get(n), e, A);
+	}
+	ICF void set_Array_Constant(LPCSTR n, u32 e, const Fvector4& A)
+	{
+		if (ctable)
+			set_Array_Constant(&*ctable->get(n), e, A);
+	}
+	ICF void set_Array_Constant(LPCSTR n, u32 e, float x, float y, float z, float w)
+	{
+		if (ctable)
+			set_Array_Constant(&*ctable->get(n), e, x, y, z, w);
 	}
 
 	// constants - shared_str (average)
-	ICF void set_c(shared_str& n, const Fmatrix& A)
+	ICF void set_Constant(shared_str& n, const Fmatrix& A)
 	{
 		if (ctable)
-			set_c(&*ctable->get(n), A);
+			set_Constant(&*ctable->get(n), A);
 	}
-	ICF void set_c(shared_str& n, const Fvector4& A)
+	ICF void set_Constant(shared_str& n, const Fvector4& A)
 	{
 		if (ctable)
-			set_c(&*ctable->get(n), A);
+			set_Constant(&*ctable->get(n), A);
 	}
-	ICF void set_c(shared_str& n, float x, float y, float z, float w)
+	ICF void set_Constant(shared_str& n, float x, float y, float z, float w)
 	{
 		if (ctable)
-			set_c(&*ctable->get(n), x, y, z, w);
+			set_Constant(&*ctable->get(n), x, y, z, w);
 	}
-	ICF void set_ca(shared_str& n, u32 e, const Fmatrix& A)
+	ICF void set_Array_Constant(shared_str& n, u32 e, const Fmatrix& A)
 	{
 		if (ctable)
-			set_ca(&*ctable->get(n), e, A);
+			set_Array_Constant(&*ctable->get(n), e, A);
 	}
-	ICF void set_ca(shared_str& n, u32 e, const Fvector4& A)
+	ICF void set_Array_Constant(shared_str& n, u32 e, const Fvector4& A)
 	{
 		if (ctable)
-			set_ca(&*ctable->get(n), e, A);
+			set_Array_Constant(&*ctable->get(n), e, A);
 	}
-	ICF void set_ca(shared_str& n, u32 e, float x, float y, float z, float w)
+	ICF void set_Array_Constant(shared_str& n, u32 e, float x, float y, float z, float w)
 	{
 		if (ctable)
-			set_ca(&*ctable->get(n), e, x, y, z, w);
+			set_Array_Constant(&*ctable->get(n), e, x, y, z, w);
 	}
 
 	ICF void Render(D3DPRIMITIVETYPE T, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC);
@@ -397,7 +412,7 @@ class ENGINE_API CBackend
 	};
 };
 
-extern ENGINE_API CBackend RCache;
+extern ENGINE_API CBackend RenderBackend;
 
 #ifndef _EDITOR
 #include "D3DUtils.h"

@@ -1430,10 +1430,10 @@ void dbg_draw_piramid(Fvector pos, Fvector dir, float size, float xdir, u32 colo
 
 	if (!Double)
 	{
-		RCache.dbg_DrawTRI(t, p0, p1, p4, color);
-		RCache.dbg_DrawTRI(t, p1, p2, p4, color);
-		RCache.dbg_DrawTRI(t, p2, p3, p4, color);
-		RCache.dbg_DrawTRI(t, p3, p0, p4, color);
+		RenderBackend.dbg_DrawTRI(t, p0, p1, p4, color);
+		RenderBackend.dbg_DrawTRI(t, p1, p2, p4, color);
+		RenderBackend.dbg_DrawTRI(t, p2, p3, p4, color);
+		RenderBackend.dbg_DrawTRI(t, p3, p0, p4, color);
 	}
 	else
 	{
@@ -1458,7 +1458,7 @@ void CActor::OnRender_Network()
 {
 	OPTICK_EVENT("CActor::OnRender_Network");
 
-	RCache.OnFrameEnd();
+	RenderBackend.OnFrameEnd();
 
 	//-----------------------------------------------------------------------------------------------------
 	float size = 0.2f;

@@ -27,27 +27,27 @@ void CRenderTarget::accum_spot(light* L)
 	{
 		// setup xform
 		L->xform_calc();
-		RCache.set_xform_world(L->m_xform);
-		RCache.set_xform_view(Device.mView);
-		RCache.set_xform_project(Device.mProject);
+		RenderBackend.set_xform_world(L->m_xform);
+		RenderBackend.set_xform_view(Device.mView);
+		RenderBackend.set_xform_project(Device.mProject);
 		bIntersect = enable_scissor(L);
 		enable_dbt_bounds(L);
 
 		// *** similar to "Carmack's reverse", but assumes convex, non intersecting objects,
 		// *** thus can cope without stencil clear with 127 lights
 		// *** in practice, 'cause we "clear" it back to 0x1 it usually allows us to > 200 lights :)
-		RCache.set_ColorWriteEnable(FALSE);
-		RCache.set_Element(s_accum_mask->E[SE_MASK_SPOT]); // masker
+		RenderBackend.set_ColorWriteEnable(FALSE);
+		RenderBackend.set_Element(s_accum_mask->E[SE_MASK_SPOT]); // masker
 
 		// backfaces: if (stencil>=1 && zfail)			stencil = light_id
-		RCache.set_CullMode(CULL_CW);
-		RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0x01, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_KEEP,
+		RenderBackend.set_CullMode(CULL_CW);
+		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0x01, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_KEEP,
 						   D3DSTENCILOP_REPLACE);
 		draw_volume(L);
 
 		// frontfaces: if (stencil>=light_id && zfail)	stencil = 0x1
-		RCache.set_CullMode(CULL_CCW);
-		RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_KEEP,
+		RenderBackend.set_CullMode(CULL_CCW);
+		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_KEEP,
 						   D3DSTENCILOP_REPLACE);
 		draw_volume(L);
 	}
@@ -58,8 +58,8 @@ void CRenderTarget::accum_spot(light* L)
 
 	// *****************************	Minimize overdraw	*************************************
 	// Select shader (front or back-faces), *** back, if intersect near plane
-	RCache.set_ColorWriteEnable();
-	RCache.set_CullMode(CULL_CW); // back
+	RenderBackend.set_ColorWriteEnable();
+	RenderBackend.set_CullMode(CULL_CW); // back
 
 	// 2D texgens
 	Fmatrix m_Texgen;
@@ -159,20 +159,20 @@ void CRenderTarget::accum_spot(light* L)
 			_id = SE_L_UNSHADOWED;
 			m_Shadow = m_Lmap;
 		}
-		RCache.set_Element(shader->E[_id]);
+		RenderBackend.set_Element(shader->E[_id]);
 
 		// Constants
 		float att_R = L->range * .95f;
 		float att_factor = 1.f / (att_R * att_R);
-		RCache.set_c("Ldynamic_pos", L_pos.x, L_pos.y, L_pos.z, att_factor);
-		RCache.set_c("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
-		RCache.set_c("m_texgen", m_Texgen);
-		RCache.set_c("m_texgen_J", m_Texgen_J);
-		RCache.set_c("m_shadow", m_Shadow);
-		RCache.set_ca("m_lmap", 0, m_Lmap._11, m_Lmap._21, m_Lmap._31, m_Lmap._41);
-		RCache.set_ca("m_lmap", 1, m_Lmap._12, m_Lmap._22, m_Lmap._32, m_Lmap._42);
+		RenderBackend.set_Constant("Ldynamic_pos", L_pos.x, L_pos.y, L_pos.z, att_factor);
+		RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
+		RenderBackend.set_Constant("m_texgen", m_Texgen);
+		RenderBackend.set_Constant("m_texgen_J", m_Texgen_J);
+		RenderBackend.set_Constant("m_shadow", m_Shadow);
+		RenderBackend.set_Array_Constant("m_lmap", 0, m_Lmap._11, m_Lmap._21, m_Lmap._31, m_Lmap._41);
+		RenderBackend.set_Array_Constant("m_lmap", 1, m_Lmap._12, m_Lmap._22, m_Lmap._32, m_Lmap._42);
 
-		RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0x00);
+		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0x00);
 		draw_volume(L);
 	}
 

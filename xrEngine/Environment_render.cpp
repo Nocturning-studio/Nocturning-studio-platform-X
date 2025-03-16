@@ -103,9 +103,9 @@ void CEnvironment::RenderSky()
 	if (bNeed_re_create_env)
 	{
 		sh_2sky.create(&m_b_skybox, "skybox_2t");
-		sh_2geom.create(v_skybox_fvf, RCache.Vertex.Buffer(), RCache.Index.Buffer());
+		sh_2geom.create(v_skybox_fvf, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
 		clouds_sh.create("clouds", "null");
-		clouds_geom.create(v_clouds_fvf, RCache.Vertex.Buffer(), RCache.Index.Buffer());
+		clouds_geom.create(v_clouds_fvf, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
 		bNeed_re_create_env = FALSE;
 	}
 	::Render->rmFar();
@@ -120,22 +120,22 @@ void CEnvironment::RenderSky()
 					   iFloor(CurrentEnv->sky_color.z * 255.f), iFloor(CurrentEnv->weight * 255.f));
 
 	// Fill index buffer
-	u16* pib = RCache.Index.Lock(20 * 3, i_offset);
+	u16* pib = RenderBackend.Index.Lock(20 * 3, i_offset);
 	CopyMemory(pib, hbox_faces, 20 * 3 * 2);
-	RCache.Index.Unlock(20 * 3);
+	RenderBackend.Index.Unlock(20 * 3);
 
 	// Fill vertex buffer
-	v_skybox* pv = (v_skybox*)RCache.Vertex.Lock(12, sh_2geom.stride(), v_offset);
+	v_skybox* pv = (v_skybox*)RenderBackend.Vertex.Lock(12, sh_2geom.stride(), v_offset);
 	for (u32 v = 0; v < 12; v++)
 		pv[v].set(hbox_verts[v * 2], C, hbox_verts[v * 2 + 1]);
-	RCache.Vertex.Unlock(12, sh_2geom.stride());
+	RenderBackend.Vertex.Unlock(12, sh_2geom.stride());
 
 	// Render
-	RCache.set_xform_world(mSky);
-	RCache.set_Geometry(sh_2geom);
-	RCache.set_Shader(sh_2sky);
-	RCache.set_Textures(&CurrentEnv->sky_r_textures);
-	RCache.Render(D3DPT_TRIANGLELIST, v_offset, 0, 12, i_offset, 20);
+	RenderBackend.set_xform_world(mSky);
+	RenderBackend.set_Geometry(sh_2geom);
+	RenderBackend.set_Shader(sh_2sky);
+	RenderBackend.set_Textures(&CurrentEnv->sky_r_textures);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, v_offset, 0, 12, i_offset, 20);
 
 	// Sun
 	::Render->rmNormal();
@@ -174,22 +174,22 @@ void CEnvironment::RenderClouds()
 						iFloor(CurrentEnv->clouds_color.z * 255.f), iFloor(CurrentEnv->clouds_color.w * 255.f));
 
 	// Fill index buffer
-	u16* pib = RCache.Index.Lock(CloudsIndices.size(), i_offset);
+	u16* pib = RenderBackend.Index.Lock(CloudsIndices.size(), i_offset);
 	CopyMemory(pib, &CloudsIndices.front(), CloudsIndices.size() * sizeof(u16));
-	RCache.Index.Unlock(CloudsIndices.size());
+	RenderBackend.Index.Unlock(CloudsIndices.size());
 
 	// Fill vertex buffer
-	v_clouds* pv = (v_clouds*)RCache.Vertex.Lock(CloudsVerts.size(), clouds_geom.stride(), v_offset);
+	v_clouds* pv = (v_clouds*)RenderBackend.Vertex.Lock(CloudsVerts.size(), clouds_geom.stride(), v_offset);
 	for (FvectorIt it = CloudsVerts.begin(); it != CloudsVerts.end(); it++, pv++)
 		pv->set(*it, C0, C1);
-	RCache.Vertex.Unlock(CloudsVerts.size(), clouds_geom.stride());
+	RenderBackend.Vertex.Unlock(CloudsVerts.size(), clouds_geom.stride());
 
 	// Render
-	RCache.set_xform_world(mXFORM);
-	RCache.set_Geometry(clouds_geom);
-	RCache.set_Shader(clouds_sh);
-	RCache.set_Textures(&CurrentEnv->clouds_r_textures);
-	RCache.Render(D3DPT_TRIANGLELIST, v_offset, 0, CloudsVerts.size(), i_offset, CloudsIndices.size() / 3);
+	RenderBackend.set_xform_world(mXFORM);
+	RenderBackend.set_Geometry(clouds_geom);
+	RenderBackend.set_Shader(clouds_sh);
+	RenderBackend.set_Textures(&CurrentEnv->clouds_r_textures);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, v_offset, 0, CloudsVerts.size(), i_offset, CloudsIndices.size() / 3);
 
 	::Render->rmNormal();
 }
@@ -236,9 +236,9 @@ void CEnvironment::OnDeviceCreate()
 
 	//.	bNeed_re_create_env			= TRUE;
 	sh_2sky.create(&m_b_skybox, "skybox_2t");
-	sh_2geom.create(v_skybox_fvf, RCache.Vertex.Buffer(), RCache.Index.Buffer());
+	sh_2geom.create(v_skybox_fvf, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
 	clouds_sh.create("clouds", "null");
-	clouds_geom.create(v_clouds_fvf, RCache.Vertex.Buffer(), RCache.Index.Buffer());
+	clouds_geom.create(v_clouds_fvf, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
 
 	// weathers
 	{

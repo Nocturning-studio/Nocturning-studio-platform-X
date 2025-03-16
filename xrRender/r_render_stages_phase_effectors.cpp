@@ -47,37 +47,37 @@ void CRenderTarget::phase_effectors_pass_generate_noise0()
 {
 	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_generate_noise0");
 
-	u_setrt(rt_Radiation_Noise0, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Radiation_Noise0);
+	set_Depth_Buffer(NULL);
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	// Constants
 	u32 Offset = 0;
-	float w = float(Device.dwWidth);
-	float h = float(Device.dwHeight);
 
 	// Set geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(Offset);
 
 	// Set pass
-	RCache.set_Element(s_effectors->E[1]);
+	RenderBackend.set_Element(s_effectors->E[1]);
 
 	// Set constants
-	RCache.set_c("noise_intesity", param_radiation_intensity, 0.33f, 0, 0);
+	RenderBackend.set_Constant("noise_intesity", param_radiation_intensity, 1);
 
 	// Draw
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
 void CRenderTarget::phase_effectors_pass_generate_noise1()
 {
 	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_generate_noise1");
 
-	u_setrt(rt_Radiation_Noise1, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Radiation_Noise1);
+	set_Depth_Buffer(NULL);
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	// Constants
 	u32 Offset = 0;
@@ -85,26 +85,27 @@ void CRenderTarget::phase_effectors_pass_generate_noise1()
 	float h = float(Device.dwHeight * 0.5f);
 
 	// Set geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(w, h, Offset);
 
 	// Set pass
-	RCache.set_Element(s_effectors->E[1]);
+	RenderBackend.set_Element(s_effectors->E[1]);
 
 	// Set constants
-	RCache.set_c("noise_intesity", param_radiation_intensity, 0.66f, 0, 0);
+	RenderBackend.set_Constant("noise_intesity", param_radiation_intensity, 0.66f);
 
 	// Draw
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
 void CRenderTarget::phase_effectors_pass_generate_noise2()
 {
 	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_generate_noise2");
 
-	u_setrt(rt_Radiation_Noise2, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Radiation_Noise2);
+	set_Depth_Buffer(NULL);
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	// Constants
 	u32 Offset = 0;
@@ -112,26 +113,27 @@ void CRenderTarget::phase_effectors_pass_generate_noise2()
 	float h = float(Device.dwHeight * 0.25f);
 
 	// Set geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(w, h, Offset);
 
 	// Set pass
-	RCache.set_Element(s_effectors->E[1]);
+	RenderBackend.set_Element(s_effectors->E[1]);
 
 	// Set constants
-	RCache.set_c("noise_intesity", param_radiation_intensity, 1, 0, 0);
+	RenderBackend.set_Constant("noise_intesity", param_radiation_intensity, 0.33f);
 
 	// Draw
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
 void CRenderTarget::phase_effectors_pass_night_vision()
 {
 	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_night_vision");
 
-	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Generic_0);
+	set_Depth_Buffer(NULL);
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	// Constants
 	u32 Offset = 0;
@@ -139,13 +141,13 @@ void CRenderTarget::phase_effectors_pass_night_vision()
 	float h = float(Device.dwHeight);
 
 	// Set geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(w, h, Offset);
 
 	// Set pass
-	RCache.set_Element(s_effectors->E[2]);
+	RenderBackend.set_Element(s_effectors->E[2]);
 
 	// Draw
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
 void CRenderTarget::phase_effectors_pass_combine()
@@ -153,9 +155,10 @@ void CRenderTarget::phase_effectors_pass_combine()
 	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_combine");
 
 	// combination/postprocess
-	u_setrt(rt_Generic_1, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Generic_1);
+	set_Depth_Buffer(NULL);
 
-	RCache.set_Element(s_effectors->E[0]);
+	RenderBackend.set_Element(s_effectors->E[0]);
 
 	int gblend = clampr(iFloor((1 - param_gray) * 255.f), 0, 255);
 	int nblend = clampr(iFloor((1 - param_noise) * 255.f), 0, 255);
@@ -173,7 +176,7 @@ void CRenderTarget::phase_effectors_pass_combine()
 
 	// Fill vertex buffer
 	float du = ps_pps_u, dv = ps_pps_v;
-	TL_2c3uv* pv = (TL_2c3uv*)RCache.Vertex.Lock(4, g_effectors.stride(), Offset);
+	TL_2c3uv* pv = (TL_2c3uv*)RenderBackend.Vertex.Lock(4, g_effectors.stride(), Offset);
 	pv->set(du + 0, dv + float(_h), p_color, p_gray, r0.x, r1.y, l0.x, l1.y, 0, 0);
 	pv++;
 	pv->set(du + 0, dv + 0, p_color, p_gray, r0.x, r0.y, l0.x, l0.y, 0, 0);
@@ -182,25 +185,26 @@ void CRenderTarget::phase_effectors_pass_combine()
 	pv++;
 	pv->set(du + float(_w), dv + 0, p_color, p_gray, r1.x, r0.y, l1.x, l0.y, 0, 0);
 	pv++;
-	RCache.Vertex.Unlock(4, g_effectors.stride());
+	RenderBackend.Vertex.Unlock(4, g_effectors.stride());
 
 	// Actual rendering
-	RCache.set_c("c_colormap", param_color_map_influence, param_color_map_interpolate, 0, 0);
-	RCache.set_c("c_brightness", color_get_R(p_brightness) / 255.f, color_get_G(p_brightness) / 255.f, color_get_B(p_brightness) / 255.f, param_noise);
+	RenderBackend.set_Constant("c_colormap", param_color_map_influence, param_color_map_interpolate, 0, 0);
+	RenderBackend.set_Constant("c_brightness", color_get_R(p_brightness) / 255.f, color_get_G(p_brightness) / 255.f, color_get_B(p_brightness) / 255.f, param_noise);
 
-	RCache.set_Geometry(g_effectors);
+	RenderBackend.set_Geometry(g_effectors);
 
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
 void CRenderTarget::phase_effectors_pass_resolve_gamma()
 {
 	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_resolve_gamma");
 
-	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Generic_0);
+	set_Depth_Buffer(NULL);
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	// Constants
 	u32 Offset = 0;
@@ -208,7 +212,7 @@ void CRenderTarget::phase_effectors_pass_resolve_gamma()
 	float h = float(Device.dwHeight);
 
 	// Set geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(w, h, Offset);
 
 	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
 	IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
@@ -220,20 +224,21 @@ void CRenderTarget::phase_effectors_pass_resolve_gamma()
 	_RELEASE(e1);
 
 	// Set pass
-	RCache.set_Element(s_effectors->E[3]);
+	RenderBackend.set_Element(s_effectors->E[3]);
 
 	// Draw
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
 void CRenderTarget::phase_effectors_pass_lut()
 {
 	OPTICK_EVENT("CRenderTarget::phase_effectors_pass_lut");
 
-	u_setrt(rt_Generic_1, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Generic_1);
+	set_Depth_Buffer(NULL);
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	// Constants
 	u32 Offset = 0;
@@ -241,7 +246,7 @@ void CRenderTarget::phase_effectors_pass_lut()
 	float h = float(Device.dwHeight);
 
 	// Set geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(w, h, Offset);
 
 	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
 	IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
@@ -253,12 +258,12 @@ void CRenderTarget::phase_effectors_pass_lut()
 	_RELEASE(e1);
 
 	// Set pass
-	RCache.set_Element(s_effectors->E[4]);
+	RenderBackend.set_Element(s_effectors->E[4]);
 
-	RCache.set_c("c_lut_params", envdesc->weight, 0, 0, 0);
+	RenderBackend.set_Constant("c_lut_params", envdesc->weight, 0, 0, 0);
 
 	// Draw
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
 void CRenderTarget::phase_effectors()

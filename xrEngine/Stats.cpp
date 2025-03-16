@@ -170,7 +170,7 @@ void CStats::Show()
 
 		if (RenderTOTAL.result > EPS_S)
 		{
-			fTPS = fInv * fTPS + fOne * float(RCache.stat.polys) / (RenderTOTAL.result * 1000.f);
+			fTPS = fInv * fTPS + fOne * float(RenderBackend.stat.polys) / (RenderTOTAL.result * 1000.f);
 			fRFPS = fInv * fRFPS + fOne * 1000.f / RenderTOTAL.result;
 		}
 	}
@@ -230,21 +230,21 @@ void CStats::Show()
 		F.OutNext("FPS:			%3.1ff", fFPS);
 		F.OutNext("RFPS:		%3.1f", fRFPS);
 		F.OutNext("TPS:         %2.2f M", fTPS);
-		F.OutNext("VERT:        %d/%d", RCache.stat.verts,
-				  RCache.stat.calls ? RCache.stat.verts / RCache.stat.calls : 0);
-		F.OutNext("POLY:        %d/%d", RCache.stat.polys,
-				  RCache.stat.calls ? RCache.stat.polys / RCache.stat.calls : 0);
-		F.OutNext("DIP/DP:      %d", RCache.stat.calls);
+		F.OutNext("VERT:        %d/%d", RenderBackend.stat.verts,
+				  RenderBackend.stat.calls ? RenderBackend.stat.verts / RenderBackend.stat.calls : 0);
+		F.OutNext("POLY:        %d/%d", RenderBackend.stat.polys,
+				  RenderBackend.stat.calls ? RenderBackend.stat.polys / RenderBackend.stat.calls : 0);
+		F.OutNext("DIP/DP:      %d", RenderBackend.stat.calls);
 #ifdef DEBUG
 		F.OutSkip();
 		F.OutNext("mapped:      %d", g_file_mapped_memory);
 		F.OutSkip();
-		F.OutNext("SH/T/M/C:    %d/%d/%d/%d", RCache.stat.states, RCache.stat.textures, RCache.stat.matrices,
-				  RCache.stat.constants);
-		F.OutNext("RT/PS/VS:    %d/%d/%d", RCache.stat.target_rt, RCache.stat.ps, RCache.stat.vs);
-		F.OutNext("DCL/VB/IB:   %d/%d/%d", RCache.stat.decl, RCache.stat.vb, RCache.stat.ib);
+		F.OutNext("SH/T/M/C:    %d/%d/%d/%d", RenderBackend.stat.states, RenderBackend.stat.textures, RenderBackend.stat.matrices,
+				  RenderBackend.stat.constants);
+		F.OutNext("RT/PS/VS:    %d/%d/%d", RenderBackend.stat.target_rt, RenderBackend.stat.ps, RenderBackend.stat.vs);
+		F.OutNext("DCL/VB/IB:   %d/%d/%d", RenderBackend.stat.decl, RenderBackend.stat.vb, RenderBackend.stat.ib);
 #endif
-		F.OutNext("xforms:      %d", RCache.stat.xforms);
+		F.OutNext("xforms:      %d", RenderBackend.stat.xforms);
 		F.OutSkip();
 
 #define PPP(a) (100.f * float(a) / float(EngineTOTAL.result))
@@ -334,20 +334,20 @@ void CStats::Show()
 #endif // DEBUG_MEMORY_MANAGER
 	   //		F.OutSet	(640,0);
 		F.OutSkip();
-		F.OutNext("static:        %3.1f/%d", RCache.stat.r.s_static.verts / 1024.f, RCache.stat.r.s_static.dips);
-		F.OutNext("flora:         %3.1f/%d", RCache.stat.r.s_flora.verts / 1024.f, RCache.stat.r.s_flora.dips);
-		F.OutNext("  flora_lods:  %3.1f/%d", RCache.stat.r.s_flora_lods.verts / 1024.f,
-				  RCache.stat.r.s_flora_lods.dips);
-		F.OutNext("dynamic:       %3.1f/%d", RCache.stat.r.s_dynamic.verts / 1024.f, RCache.stat.r.s_dynamic.dips);
-		F.OutNext("  dynamic_sw:  %3.1f/%d", RCache.stat.r.s_dynamic_sw.verts / 1024.f,
-				  RCache.stat.r.s_dynamic_sw.dips);
-		F.OutNext("  dynamic_inst:%3.1f/%d", RCache.stat.r.s_dynamic_inst.verts / 1024.f,
-				  RCache.stat.r.s_dynamic_inst.dips);
-		F.OutNext("  dynamic_1B:  %3.1f/%d", RCache.stat.r.s_dynamic_1B.verts / 1024.f,
-				  RCache.stat.r.s_dynamic_1B.dips);
-		F.OutNext("  dynamic_2B:  %3.1f/%d", RCache.stat.r.s_dynamic_2B.verts / 1024.f,
-				  RCache.stat.r.s_dynamic_2B.dips);
-		F.OutNext("details:       %3.1f/%d", RCache.stat.r.s_details.verts / 1024.f, RCache.stat.r.s_details.dips);
+		F.OutNext("static:        %3.1f/%d", RenderBackend.stat.r.s_static.verts / 1024.f, RenderBackend.stat.r.s_static.dips);
+		F.OutNext("flora:         %3.1f/%d", RenderBackend.stat.r.s_flora.verts / 1024.f, RenderBackend.stat.r.s_flora.dips);
+		F.OutNext("  flora_lods:  %3.1f/%d", RenderBackend.stat.r.s_flora_lods.verts / 1024.f,
+				  RenderBackend.stat.r.s_flora_lods.dips);
+		F.OutNext("dynamic:       %3.1f/%d", RenderBackend.stat.r.s_dynamic.verts / 1024.f, RenderBackend.stat.r.s_dynamic.dips);
+		F.OutNext("  dynamic_sw:  %3.1f/%d", RenderBackend.stat.r.s_dynamic_sw.verts / 1024.f,
+				  RenderBackend.stat.r.s_dynamic_sw.dips);
+		F.OutNext("  dynamic_inst:%3.1f/%d", RenderBackend.stat.r.s_dynamic_inst.verts / 1024.f,
+				  RenderBackend.stat.r.s_dynamic_inst.dips);
+		F.OutNext("  dynamic_1B:  %3.1f/%d", RenderBackend.stat.r.s_dynamic_1B.verts / 1024.f,
+				  RenderBackend.stat.r.s_dynamic_1B.dips);
+		F.OutNext("  dynamic_2B:  %3.1f/%d", RenderBackend.stat.r.s_dynamic_2B.verts / 1024.f,
+				  RenderBackend.stat.r.s_dynamic_2B.dips);
+		F.OutNext("details:       %3.1f/%d", RenderBackend.stat.r.s_details.verts / 1024.f, RenderBackend.stat.r.s_details.dips);
 
 		//////////////////////////////////////////////////////////////////////////
 		// Renderer specific
@@ -384,14 +384,14 @@ void CStats::Show()
 		F.SetHeightI(f_base_size * 2);
 		if (fFPS < 30)
 			F.OutNext("FPS       < 30:   %3.1f", fFPS);
-		if (RCache.stat.verts > 500000)
-			F.OutNext("Verts     > 500k: %d", RCache.stat.verts);
-		// if (RCache.stat.polys>500000)	F.OutNext	("Polys     > 500k: %d",	RCache.stat.polys);
+		if (RenderBackend.stat.verts > 500000)
+			F.OutNext("Verts     > 500k: %d", RenderBackend.stat.verts);
+		// if (RenderBackend.stat.polys>500000)	F.OutNext	("Polys     > 500k: %d",	RenderBackend.stat.polys);
 		if (psDeviceFlags.test(rsStatistic))
 		{
-			if (RCache.stat.calls > 1000)
-				F.OutNext("DIP/DP    > 1k:   %d", RCache.stat.calls);
-			// if (RCache.stat.textures>1000)F.OutNext	("T_change  > 500:  %d",	RCache.stat.textures);
+			if (RenderBackend.stat.calls > 1000)
+				F.OutNext("DIP/DP    > 1k:   %d", RenderBackend.stat.calls);
+			// if (RenderBackend.stat.textures>1000)F.OutNext	("T_change  > 500:  %d",	RenderBackend.stat.textures);
 			if (RenderDUMP_DT_Count > 1000)
 				F.OutNext("DT_count  > 1000: %u", RenderDUMP_DT_Count);
 			F.OutSkip();
@@ -540,9 +540,9 @@ void CStats::OnRender()
 			const CSound_stats_ext::SItem& item = *_I;
 			if (item._3D)
 			{
-				RCache.set_xform_world(Fidentity);
-				RCache.set_Shader(Device.m_SelectionShader);
-				RCache.set_c("tfactor", 1, 1, 1, 1);
+				RenderBackend.set_xform_world(Fidentity);
+				RenderBackend.set_Shader(Device.m_SelectionShader);
+				RenderBackend.set_Constant("tfactor", 1, 1, 1, 1);
 				DU.DrawCross(item.params.position, 0.5f, 0xFF0000FF, true);
 				if (g_stats_flags.is(st_sound_min_dist))
 					DU.DrawSphere(Fidentity, item.params.position, item.params.min_distance, 0x400000FF, 0xFF0000FF,

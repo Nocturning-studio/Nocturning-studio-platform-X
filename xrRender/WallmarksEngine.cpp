@@ -61,7 +61,7 @@ CWallmarksEngine::CWallmarksEngine()
 
 	static_pool.reserve(256);
 	marks.reserve(256);
-	hGeom.create(FVF::F_LIT, RCache.Vertex.Buffer(), NULL);
+	hGeom.create(FVF::F_LIT, RenderBackend.Vertex.Buffer(), NULL);
 }
 
 CWallmarksEngine::~CWallmarksEngine()
@@ -377,7 +377,7 @@ extern float r_ssaDISCARD;
 ICF void BeginStream(ref_geom hGeom, u32& w_offset, FVF::LIT*& w_verts, FVF::LIT*& w_start)
 {
 	w_offset = 0;
-	w_verts = (FVF::LIT*)RCache.Vertex.Lock(MAX_TRIS * 3, hGeom->vb_stride, w_offset);
+	w_verts = (FVF::LIT*)RenderBackend.Vertex.Lock(MAX_TRIS * 3, hGeom->vb_stride, w_offset);
 	w_start = w_verts;
 }
 
@@ -385,16 +385,16 @@ ICF void FlushStream(ref_geom hGeom, ref_shader shader, u32& w_offset, FVF::LIT*
 					 BOOL bSuppressCull)
 {
 	u32 w_count = u32(w_verts - w_start);
-	RCache.Vertex.Unlock(w_count, hGeom->vb_stride);
+	RenderBackend.Vertex.Unlock(w_count, hGeom->vb_stride);
 	if (w_count)
 	{
-		RCache.set_Shader(shader);
-		RCache.set_Geometry(hGeom);
+		RenderBackend.set_Shader(shader);
+		RenderBackend.set_Geometry(hGeom);
 		if (bSuppressCull)
-			RCache.set_CullMode(CULL_NONE);
-		RCache.Render(D3DPT_TRIANGLELIST, w_offset, w_count / 3);
+			RenderBackend.set_CullMode(CULL_NONE);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, w_offset, w_count / 3);
 		if (bSuppressCull)
-			RCache.set_CullMode(CULL_CCW);
+			RenderBackend.set_CullMode(CULL_CCW);
 		Device.Statistic->RenderDUMP_WMT_Count += w_count / 3;
 	}
 }
@@ -407,14 +407,14 @@ void CWallmarksEngine::Render()
 	// Projection and xform
 	float _43 = Device.mProject._43;
 	Device.mProject._43 -= ps_r_WallmarkSHIFT;
-	RCache.set_xform_world(Fidentity);
-	RCache.set_xform_project(Device.mProject);
+	RenderBackend.set_xform_world(Fidentity);
+	RenderBackend.set_xform_project(Device.mProject);
 
 	Fmatrix mSavedView = Device.mView;
 	Fvector mViewPos;
 	mViewPos.mad(Device.vCameraPosition, Device.vCameraDirection, ps_r_WallmarkSHIFT_V);
 	Device.mView.build_camera_dir(mViewPos, Device.vCameraDirection, Device.vCameraTop);
-	RCache.set_xform_view(Device.mView);
+	RenderBackend.set_xform_view(Device.mView);
 
 	Device.Statistic->RenderDUMP_WM.Begin();
 	Device.Statistic->RenderDUMP_WMS_Count = 0;
@@ -531,6 +531,6 @@ void CWallmarksEngine::Render()
 	// Projection
 	Device.mView = mSavedView;
 	Device.mProject._43 = _43;
-	RCache.set_xform_view(Device.mView);
-	RCache.set_xform_project(Device.mProject);
+	RenderBackend.set_xform_view(Device.mView);
+	RenderBackend.set_xform_project(Device.mProject);
 }

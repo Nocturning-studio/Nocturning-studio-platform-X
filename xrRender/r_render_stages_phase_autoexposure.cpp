@@ -25,12 +25,13 @@ void CRenderTarget::phase_autoexposure()
 	float eps = EPS_S;
 
 	// Targets
-	RCache.set_Stencil(FALSE);
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_ColorWriteEnable();
+	RenderBackend.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_ColorWriteEnable();
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
 
-	u_setrt(rt_LUM_512, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_LUM_512);
+	set_Depth_Buffer(NULL);
 	{
 		float ts = 512;
 		float _w = float(Device.dwWidth);
@@ -47,7 +48,7 @@ void CRenderTarget::phase_autoexposure()
 		Fvector2 b_3 = {1 + a_3.x, 1 + a_3.y};
 
 		// Fill vertex buffer
-		v_build_autoexposure* pv = (v_build_autoexposure*)RCache.Vertex.Lock(4, g_bloom_build->vb_stride, Offset);
+		v_build_autoexposure* pv = (v_build_autoexposure*)RenderBackend.Vertex.Lock(4, g_bloom_build->vb_stride, Offset);
 		pv->p.set(eps, float(ts + eps), eps, 1.f);
 		pv->uv0.set(a_0.x, b_0.y);
 		pv->uv1.set(a_1.x, b_1.y);
@@ -72,13 +73,14 @@ void CRenderTarget::phase_autoexposure()
 		pv->uv2.set(b_2.x, a_2.y);
 		pv->uv3.set(b_3.x, a_3.y);
 		pv++;
-		RCache.Vertex.Unlock(4, g_bloom_build->vb_stride);
-		RCache.set_Element(s_autoexposure->E[0]);
-		RCache.set_Geometry(g_bloom_build);
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+		RenderBackend.Vertex.Unlock(4, g_bloom_build->vb_stride);
+		RenderBackend.set_Element(s_autoexposure->E[0]);
+		RenderBackend.set_Geometry(g_bloom_build);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
 
-	u_setrt(rt_LUM_256, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_LUM_256);
+	set_Depth_Buffer(NULL);
 	{
 		float ts = 256;
 		float _w = float(Device.dwWidth);
@@ -95,7 +97,7 @@ void CRenderTarget::phase_autoexposure()
 		Fvector2 b_3 = {1 + a_3.x, 1 + a_3.y};
 
 		// Fill vertex buffer
-		v_build_autoexposure* pv = (v_build_autoexposure*)RCache.Vertex.Lock(4, g_bloom_build->vb_stride, Offset);
+		v_build_autoexposure* pv = (v_build_autoexposure*)RenderBackend.Vertex.Lock(4, g_bloom_build->vb_stride, Offset);
 		pv->p.set(eps, float(ts + eps), eps, 1.f);
 		pv->uv0.set(a_0.x, b_0.y);
 		pv->uv1.set(a_1.x, b_1.y);
@@ -120,13 +122,14 @@ void CRenderTarget::phase_autoexposure()
 		pv->uv2.set(b_2.x, a_2.y);
 		pv->uv3.set(b_3.x, a_3.y);
 		pv++;
-		RCache.Vertex.Unlock(4, g_bloom_build->vb_stride);
-		RCache.set_Element(s_autoexposure->E[1]);
-		RCache.set_Geometry(g_bloom_build);
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+		RenderBackend.Vertex.Unlock(4, g_bloom_build->vb_stride);
+		RenderBackend.set_Element(s_autoexposure->E[1]);
+		RenderBackend.set_Geometry(g_bloom_build);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
 
-	u_setrt(rt_LUM_128, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_LUM_128);
+	set_Depth_Buffer(NULL);
 	{
 		float ts = 128;
 		float _w = float(Device.dwWidth);
@@ -143,7 +146,7 @@ void CRenderTarget::phase_autoexposure()
 		Fvector2 b_3 = {1 + a_3.x, 1 + a_3.y};
 
 		// Fill vertex buffer
-		v_build_autoexposure* pv = (v_build_autoexposure*)RCache.Vertex.Lock(4, g_bloom_build->vb_stride, Offset);
+		v_build_autoexposure* pv = (v_build_autoexposure*)RenderBackend.Vertex.Lock(4, g_bloom_build->vb_stride, Offset);
 		pv->p.set(eps, float(ts + eps), eps, 1.f);
 		pv->uv0.set(a_0.x, b_0.y);
 		pv->uv1.set(a_1.x, b_1.y);
@@ -168,14 +171,15 @@ void CRenderTarget::phase_autoexposure()
 		pv->uv2.set(b_2.x, a_2.y);
 		pv->uv3.set(b_3.x, a_3.y);
 		pv++;
-		RCache.Vertex.Unlock(4, g_bloom_build->vb_stride);
-		RCache.set_Element(s_autoexposure->E[2]);
-		RCache.set_Geometry(g_bloom_build);
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+		RenderBackend.Vertex.Unlock(4, g_bloom_build->vb_stride);
+		RenderBackend.set_Element(s_autoexposure->E[2]);
+		RenderBackend.set_Geometry(g_bloom_build);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
 
 	// 000: Perform LUM-SAT, pass 0, 256x256 => 64x64
-	u_setrt(rt_LUM_64, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_LUM_64);
+	set_Depth_Buffer(NULL);
 	{
 		float ts = 64;
 		float _w = float(Device.dwWidth);
@@ -192,7 +196,7 @@ void CRenderTarget::phase_autoexposure()
 		Fvector2 b_3 = {1 + a_3.x, 1 + a_3.y};
 
 		// Fill vertex buffer
-		v_build_autoexposure* pv = (v_build_autoexposure*)RCache.Vertex.Lock(4, g_bloom_build->vb_stride, Offset);
+		v_build_autoexposure* pv = (v_build_autoexposure*)RenderBackend.Vertex.Lock(4, g_bloom_build->vb_stride, Offset);
 		pv->p.set(eps, float(ts + eps), eps, 1.f);
 		pv->uv0.set(a_0.x, b_0.y);
 		pv->uv1.set(a_1.x, b_1.y);
@@ -217,14 +221,15 @@ void CRenderTarget::phase_autoexposure()
 		pv->uv2.set(b_2.x, a_2.y);
 		pv->uv3.set(b_3.x, a_3.y);
 		pv++;
-		RCache.Vertex.Unlock(4, g_bloom_build->vb_stride);
-		RCache.set_Element(s_autoexposure->E[3]);
-		RCache.set_Geometry(g_bloom_build);
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+		RenderBackend.Vertex.Unlock(4, g_bloom_build->vb_stride);
+		RenderBackend.set_Element(s_autoexposure->E[3]);
+		RenderBackend.set_Geometry(g_bloom_build);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
 
 	// 111: Perform LUM-SAT, pass 1, 64x64 => 8x8
-	u_setrt(rt_LUM_8, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_LUM_8);
+	set_Depth_Buffer(NULL);
 	{
 		// Build filter-kernel
 		float _ts = 8;
@@ -239,7 +244,7 @@ void CRenderTarget::phase_autoexposure()
 		}
 
 		// Fill vertex buffer
-		v_filter_autoexposure* pv = (v_filter_autoexposure*)RCache.Vertex.Lock(4, g_bloom_filter->vb_stride, Offset);
+		v_filter_autoexposure* pv = (v_filter_autoexposure*)RenderBackend.Vertex.Lock(4, g_bloom_filter->vb_stride, Offset);
 		pv->p.set(eps, float(_ts + eps), eps, 1.f);
 		for (int t = 0; t < 8; t++)
 			pv->uv[t].set(a[t].x, b[t].y, b[t + 8].y, a[t + 8].x); // xy/yx	- left+down
@@ -256,15 +261,16 @@ void CRenderTarget::phase_autoexposure()
 		for (int t = 0; t < 8; t++)
 			pv->uv[t].set(b[t].x, a[t].y, a[t + 8].y, b[t + 8].x); // xy/yx	- right+up
 		pv++;
-		RCache.Vertex.Unlock(4, g_bloom_filter->vb_stride);
-		RCache.set_Element(s_autoexposure->E[4]);
-		RCache.set_Geometry(g_bloom_filter);
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+		RenderBackend.Vertex.Unlock(4, g_bloom_filter->vb_stride);
+		RenderBackend.set_Element(s_autoexposure->E[4]);
+		RenderBackend.set_Geometry(g_bloom_filter);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
 
 	// 222: Perform LUM-SAT, pass 2, 8x8 => 1x1
 	u32 gpu_id = Device.dwFrame % 2;
-	u_setrt(rt_LUM_pool[gpu_id * 2 + 1], NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_LUM_pool[gpu_id * 2 + 1]);
+	set_Depth_Buffer(NULL);
 	{
 		// Build filter-kernel
 		float _ts = 1;
@@ -279,7 +285,7 @@ void CRenderTarget::phase_autoexposure()
 		}
 
 		// Fill vertex buffer
-		v_filter_autoexposure* pv = (v_filter_autoexposure*)RCache.Vertex.Lock(4, g_bloom_filter->vb_stride, Offset);
+		v_filter_autoexposure* pv = (v_filter_autoexposure*)RenderBackend.Vertex.Lock(4, g_bloom_filter->vb_stride, Offset);
 		pv->p.set(eps, float(_ts + eps), eps, 1.f);
 		for (int t = 0; t < 8; t++)
 			pv->uv[t].set(a[t].x, b[t].y, b[t + 8].y, a[t + 8].x); // xy/yx	- left+down
@@ -296,7 +302,7 @@ void CRenderTarget::phase_autoexposure()
 		for (int t = 0; t < 8; t++)
 			pv->uv[t].set(b[t].x, a[t].y, a[t + 8].y, b[t + 8].x); // xy/yx	- right+up
 		pv++;
-		RCache.Vertex.Unlock(4, g_bloom_filter->vb_stride);
+		RenderBackend.Vertex.Unlock(4, g_bloom_filter->vb_stride);
 
 		f_autoexposure_adapt = .9f * f_autoexposure_adapt + .1f * Device.fTimeDelta * ps_r_autoexposure_adaptation;
 		float amount = ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE) ? ps_r_autoexposure_amount : 0;
@@ -305,10 +311,10 @@ void CRenderTarget::phase_autoexposure()
 		_full.set(ps_r_autoexposure_middlegray, 1.f, ps_r_autoexposure_low_lum);
 		_result.lerp(_none, _full, amount);
 
-		RCache.set_Element(s_autoexposure->E[5]);
-		RCache.set_Geometry(g_bloom_filter);
-		RCache.set_c("MiddleGray", _result.x, _result.y, _result.z, f_autoexposure_adapt);
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+		RenderBackend.set_Element(s_autoexposure->E[5]);
+		RenderBackend.set_Geometry(g_bloom_filter);
+		RenderBackend.set_Constant("MiddleGray", _result.x, _result.y, _result.z, f_autoexposure_adapt);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
 
 	// Cleanup states
@@ -332,7 +338,7 @@ void CRenderTarget::phase_autoexposure_pipeline_clear()
 	u32 gpu_id = Device.dwFrame % 2;
 
 	//	Re-adapt autoexposure
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_Stencil(FALSE);
 
 	//*** exposure-pipeline-clear
 	{

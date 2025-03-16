@@ -144,12 +144,12 @@ BOOL CRenderTarget::enable_scissor(light* L) // true if intersects near plane
 				);
 		if (!bIntersect)	{
 			// volume doesn't touch scissor - enable mask
-			RCache.set_Scissor(&R);
+			RenderBackend.set_Scissor(&R);
 			//CHK_DX		(HW.pDevice->SetRenderState(D3DRS_SCISSORTESTENABLE,TRUE));
 			//CHK_DX		(HW.pDevice->SetScissorRect(&R));
 		} else {
 			// __asm int 3;
-			RCache.set_Scissor(NULL);
+			RenderBackend.set_Scissor(NULL);
 		}
 	}
 
@@ -158,7 +158,7 @@ BOOL CRenderTarget::enable_scissor(light* L) // true if intersects near plane
 }
 /*
 {
-	Fmatrix& M						= RCache.xforms.m_wvp;
+	Fmatrix& M						= RenderBackend.xforms.m_wvp;
 	BOOL	bIntersect				= FALSE;
 	for (u32 vit=0; vit<DU_CONE_NUMVERTEX; vit++)	{
 		Fvector&	v	= du_cone_vertices[vit];

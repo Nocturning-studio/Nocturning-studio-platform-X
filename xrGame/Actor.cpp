@@ -162,7 +162,7 @@ CActor::CActor() : CEntityAlive()
 
 	m_fSprintFactor = 4.f;
 
-	hFriendlyIndicator.create(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
+	hFriendlyIndicator.create(FVF::F_LIT, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 
 	m_pUsableObject = NULL;
 
@@ -1342,7 +1342,7 @@ void CActor::RenderIndicator(Fvector dpos, float r1, float r2, ref_shader IndSha
 		return;
 
 	u32 dwOffset = 0, dwCount = 0;
-	FVF::LIT* pv_start = (FVF::LIT*)RCache.Vertex.Lock(4, hFriendlyIndicator->vb_stride, dwOffset);
+	FVF::LIT* pv_start = (FVF::LIT*)RenderBackend.Vertex.Lock(4, hFriendlyIndicator->vb_stride, dwOffset);
 	FVF::LIT* pv = pv_start;
 	// base rect
 
@@ -1378,12 +1378,12 @@ void CActor::RenderIndicator(Fvector dpos, float r1, float r2, ref_shader IndSha
 	pv++;
 	// render
 	dwCount = u32(pv - pv_start);
-	RCache.Vertex.Unlock(dwCount, hFriendlyIndicator->vb_stride);
+	RenderBackend.Vertex.Unlock(dwCount, hFriendlyIndicator->vb_stride);
 
-	RCache.set_xform_world(Fidentity);
-	RCache.set_Shader(IndShader);
-	RCache.set_Geometry(hFriendlyIndicator);
-	RCache.Render(D3DPT_TRIANGLESTRIP, dwOffset, 0, dwCount, 0, 2);
+	RenderBackend.set_xform_world(Fidentity);
+	RenderBackend.set_Shader(IndShader);
+	RenderBackend.set_Geometry(hFriendlyIndicator);
+	RenderBackend.Render(D3DPT_TRIANGLESTRIP, dwOffset, 0, dwCount, 0, 2);
 };
 
 static float mid_size = 0.097f;

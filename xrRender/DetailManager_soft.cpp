@@ -10,7 +10,7 @@ void CDetailManager::soft_Load()
 	OPTICK_EVENT("CDetailManager::soft_Load");
 
 	// Vertex Stream
-	soft_Geom.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
+	soft_Geom.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
 }
 
 void CDetailManager::soft_Unload()
@@ -30,8 +30,8 @@ void CDetailManager::soft_Render()
 	// float	fPhaseZ		= _sin(Device.fTimeGlobal*0.11f)*fPhaseRange;
 
 	// Get index-stream
-	_IndexStream& _IS = RCache.Index;
-	_VertexStream& _VS = RCache.Vertex;
+	_IndexStream& _IS = RenderBackend.Index;
+	_VertexStream& _VS = RenderBackend.Vertex;
 	for (u32 O = 0; O < objects.size(); O++)
 	{
 		CDetail& Object = *objects[O];
@@ -57,7 +57,7 @@ void CDetailManager::soft_Render()
 				o_per_lock++;
 
 			// Fill VB (and flush it as nesessary)
-			RCache.set_Shader(Object.shader);
+			RenderBackend.set_Shader(Object.shader);
 
 			Fmatrix mXform;
 			for (u32 L_ID = 0; L_ID < lock_count; L_ID++)
@@ -147,8 +147,8 @@ void CDetailManager::soft_Render()
 
 				// Render
 				u32 dwNumPrimitives = iCount_Lock / 3;
-				RCache.set_Geometry(soft_Geom);
-				RCache.Render(D3DPT_TRIANGLELIST, vBase, 0, vCount_Lock, iBase, dwNumPrimitives);
+				RenderBackend.set_Geometry(soft_Geom);
+				RenderBackend.Render(D3DPT_TRIANGLELIST, vBase, 0, vCount_Lock, iBase, dwNumPrimitives);
 			}
 		}
 		// Clean up

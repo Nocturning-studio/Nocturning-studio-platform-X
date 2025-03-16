@@ -10,10 +10,11 @@ void CRenderTarget::phase_create_distortion_mask()
 {
 	OPTICK_EVENT("CRenderTarget::phase_create_distortion_mask");
 
-	u_setrt(rt_Distortion_Mask, NULL, NULL, NULL, HW.pBaseZB); // Now RT is a distortion mask
-	RCache.set_CullMode(CULL_CCW);
-	RCache.set_Stencil(FALSE);
-	RCache.set_ColorWriteEnable();
+	set_Render_Target_Surface(rt_Distortion_Mask);
+	set_Depth_Buffer(HW.pBaseZB);
+	RenderBackend.set_CullMode(CULL_CCW);
+	RenderBackend.set_Stencil(FALSE);
+	RenderBackend.set_ColorWriteEnable();
 	CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, color_rgba(127, 127, 0, 127), 1.0f, 0L));
 	RImplementation.r_dsgraph_render_distort();
 }
@@ -22,10 +23,11 @@ void CRenderTarget::phase_distortion()
 {
 	OPTICK_EVENT("CRenderTarget::phase_distortion");
 
-	u_setrt(rt_Generic_1, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Generic_1);
+	set_Depth_Buffer(NULL);
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	// Constants
 	u32 Offset = 0;
@@ -33,11 +35,11 @@ void CRenderTarget::phase_distortion()
 	float h = float(Device.dwHeight);
 
 	// Set geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(w, h, Offset);
 
 	// Set pass
-	RCache.set_Element(s_distortion->E[0]);
+	RenderBackend.set_Element(s_distortion->E[0]);
 
 	// Draw
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }

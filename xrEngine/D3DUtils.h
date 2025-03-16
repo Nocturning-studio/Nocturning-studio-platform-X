@@ -11,8 +11,8 @@
 #define DU_DRAW_DIP Device.DIP
 #define DU_DRAW_DP Device.DP
 #else
-#define DU_DRAW_DIP RCache.dbg_DIP
-#define DU_DRAW_DP RCache.dbg_DP
+#define DU_DRAW_DIP RenderBackend.dbg_DIP
+#define DU_DRAW_DP RenderBackend.dbg_DP
 #endif
 
 struct SPrimitiveBuffer

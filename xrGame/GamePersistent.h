@@ -49,9 +49,6 @@ class CGamePersistent : public IGame_Persistent, public IEventReceiver
 	void WeathersUpdate();
 	void UpdateDof();
 
-	void SetDofDiaphragm(float value);
-	void GetDofDiaphragm(float& value);
-
   public:
 	ui_core* m_pUI_core;
 	IReader* pDemoFile;
@@ -88,6 +85,8 @@ class CGamePersistent : public IGame_Persistent, public IEventReceiver
 	virtual bool CanBePaused();
 
 	Fvector3 m_DofUI;
+	float m_DiaphragmUI;
+	float m_DiaphragmBase;
 
 	// Depth of field
 	virtual void SetPickableEffectorDOF(bool bSet);
@@ -96,6 +95,9 @@ class CGamePersistent : public IGame_Persistent, public IEventReceiver
 
 	virtual void GetCurrentDof(Fvector3& dof);
 	virtual void SetBaseDof(const Fvector3& dof);
+
+	virtual void SetDofDiaphragm(float value);
+	virtual void GetDofDiaphragm(float& value);
 
 	// Night vision
 	virtual bool GetNightVisionState()

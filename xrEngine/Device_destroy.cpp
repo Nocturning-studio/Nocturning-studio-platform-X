@@ -18,7 +18,7 @@ void CRenderDevice::_Destroy(BOOL bKeepTextures)
 	Statistic->OnDeviceDestroy();
 	::Render->destroy();
 	Resources->OnDeviceDestroy(bKeepTextures);
-	RCache.OnDeviceDestroy();
+	RenderBackend.OnDeviceDestroy();
 
 	Memory.mem_compact();
 }

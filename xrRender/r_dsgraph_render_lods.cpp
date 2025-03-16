@@ -39,7 +39,7 @@ void R_dsgraph_structure::r_dsgraph_render_lods(bool _setup_zb, bool _clear)
 	// Msg						("dbg_lods: shader_E[%X]",u32((void*)cur_S._get()));
 	int cur_count = 0;
 	u32 vOffset;
-	FLOD::_hw* V = (FLOD::_hw*)RCache.Vertex.Lock(lstLODs.size() * 4, firstV->geom->vb_stride, vOffset);
+	FLOD::_hw* V = (FLOD::_hw*)RenderBackend.Vertex.Lock(lstLODs.size() * 4, firstV->geom->vb_stride, vOffset);
 	float ssaRange = r_ssaLOD_A - r_ssaLOD_B;
 	if (ssaRange < EPS_S)
 		ssaRange = EPS_S;
@@ -109,20 +109,20 @@ void R_dsgraph_structure::r_dsgraph_render_lods(bool _setup_zb, bool _clear)
 		}
 	}
 	lstLODgroups.push_back(cur_count);
-	RCache.Vertex.Unlock(lstLODs.size() * 4, firstV->geom->vb_stride);
+	RenderBackend.Vertex.Unlock(lstLODs.size() * 4, firstV->geom->vb_stride);
 
 	// *** Render
 	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_lods - render");
 
 	int current = 0;
-	RCache.set_xform_world(Fidentity);
+	RenderBackend.set_xform_world(Fidentity);
 	for (u32 g = 0; g < lstLODgroups.size(); g++)
 	{
 		int p_count = lstLODgroups[g];
-		RCache.set_Element(lstLODs[current].pVisual->shader->E[shid]);
-		RCache.set_Geometry(firstV->geom);
-		RCache.Render(D3DPT_TRIANGLELIST, vOffset, 0, 4 * p_count, 0, 2 * p_count);
-		RCache.stat.r.s_flora_lods.add(4 * p_count);
+		RenderBackend.set_Element(lstLODs[current].pVisual->shader->E[shid]);
+		RenderBackend.set_Geometry(firstV->geom);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, vOffset, 0, 4 * p_count, 0, 2 * p_count);
+		RenderBackend.stat.r.s_flora_lods.add(4 * p_count);
 		current += p_count;
 		vOffset += 4 * p_count;
 	}

@@ -221,43 +221,43 @@ void CSkeletonX::_Copy(CSkeletonX* B)
 //////////////////////////////////////////////////////////////////////
 void CSkeletonX::_Render(ref_geom& hGeom, u32 vCount, u32 iOffset, u32 pCount)
 {
-	RCache.stat.r.s_dynamic.add(vCount);
+	RenderBackend.stat.r.s_dynamic.add(vCount);
 	switch (RenderMode)
 	{
 	case RM_SKINNING_SOFT:
 		_Render_soft(hGeom, vCount, iOffset, pCount);
-		RCache.stat.r.s_dynamic_sw.add(vCount);
+		RenderBackend.stat.r.s_dynamic_sw.add(vCount);
 		break;
 	case RM_SINGLE: {
 		Fmatrix W;
-		W.mul_43(RCache.xforms.m_w, Parent->LL_GetTransform_R(u16(RMS_boneid)));
-		RCache.set_xform_world(W);
-		RCache.set_Geometry(hGeom);
-		RCache.Render(D3DPT_TRIANGLELIST, 0, 0, vCount, iOffset, pCount);
-		RCache.stat.r.s_dynamic_inst.add(vCount);
+		W.mul_43(RenderBackend.xforms.m_w, Parent->LL_GetTransform_R(u16(RMS_boneid)));
+		RenderBackend.set_xform_world(W);
+		RenderBackend.set_Geometry(hGeom);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, 0, 0, vCount, iOffset, pCount);
+		RenderBackend.stat.r.s_dynamic_inst.add(vCount);
 	}
 	break;
 	case RM_SKINNING_1B:
 	case RM_SKINNING_2B: {
 		// transfer matrices
-		ref_constant array = RCache.get_c(s_bones_array_const);
+		ref_constant array = RenderBackend.get_Constant(s_bones_array_const);
 		u32 count = RMS_bonecount;
 		for (u32 mid = 0; mid < count; mid++)
 		{
 			Fmatrix& M = Parent->LL_GetTransform_R(u16(mid));
 			u32 id = mid * 3;
-			RCache.set_ca(&*array, id + 0, M._11, M._21, M._31, M._41);
-			RCache.set_ca(&*array, id + 1, M._12, M._22, M._32, M._42);
-			RCache.set_ca(&*array, id + 2, M._13, M._23, M._33, M._43);
+			RenderBackend.set_Array_Constant(&*array, id + 0, M._11, M._21, M._31, M._41);
+			RenderBackend.set_Array_Constant(&*array, id + 1, M._12, M._22, M._32, M._42);
+			RenderBackend.set_Array_Constant(&*array, id + 2, M._13, M._23, M._33, M._43);
 		}
 
 		// render
-		RCache.set_Geometry(hGeom);
-		RCache.Render(D3DPT_TRIANGLELIST, 0, 0, vCount, iOffset, pCount);
+		RenderBackend.set_Geometry(hGeom);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, 0, 0, vCount, iOffset, pCount);
 		if (RM_SKINNING_1B == RenderMode)
-			RCache.stat.r.s_dynamic_1B.add(vCount);
+			RenderBackend.stat.r.s_dynamic_1B.add(vCount);
 		else
-			RCache.stat.r.s_dynamic_2B.add(vCount);
+			RenderBackend.stat.r.s_dynamic_2B.add(vCount);
 	}
 	break;
 	}
@@ -266,7 +266,7 @@ void CSkeletonX::_Render_soft(ref_geom& hGeom, u32 vCount, u32 iOffset, u32 pCou
 {
 	u32 vOffset = cache_vOffset;
 
-	_VertexStream& _VS = RCache.Vertex;
+	_VertexStream& _VS = RenderBackend.Vertex;
 	if (cache_DiscardID != _VS.DiscardID() || vCount >= cache_vCount)
 	{
 		vertRender* Dest = (vertRender*)_VS.Lock(vCount, hGeom->vb_stride, vOffset);
@@ -295,8 +295,8 @@ void CSkeletonX::_Render_soft(ref_geom& hGeom, u32 vCount, u32 iOffset, u32 pCou
 		_VS.Unlock(vCount, hGeom->vb_stride);
 	}
 
-	RCache.set_Geometry(hGeom);
-	RCache.Render(D3DPT_TRIANGLELIST, vOffset, 0, vCount, iOffset, pCount);
+	RenderBackend.set_Geometry(hGeom);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, vOffset, 0, vCount, iOffset, pCount);
 }
 
 //////////////////////////////////////////////////////////////////////

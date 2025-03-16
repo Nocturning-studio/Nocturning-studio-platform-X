@@ -6,10 +6,11 @@ void CRenderTarget::phase_combine_postprocess()
 {
 	OPTICK_EVENT("CRenderTarget::phase_combine_postprocess");
 
-	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Generic_0);
+	set_Depth_Buffer(NULL);
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	// Constants
 	u32 Offset = 0;
@@ -17,26 +18,27 @@ void CRenderTarget::phase_combine_postprocess()
 	float h = float(Device.dwHeight);
 
 	// Set Geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(w, h, Offset);
 
 	// Set pass
-	RCache.set_Element(s_combine->E[2]);
+	RenderBackend.set_Element(s_combine->E[2]);
 
 	// Set constants
-	RCache.set_c("cas_params", ps_cas_contrast, ps_cas_sharpening, 0, 0);
+	RenderBackend.set_Constant("cas_params", ps_cas_contrast, ps_cas_sharpening, 0, 0);
 
 	// Draw
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
 void CRenderTarget::phase_apply_volumetric()
 {
 	OPTICK_EVENT("CRenderTarget::phase_apply_volumetric");
 
-	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Generic_0);
+	set_Depth_Buffer(NULL);
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	// Constants
 	u32 Offset = 0;
@@ -44,13 +46,13 @@ void CRenderTarget::phase_apply_volumetric()
 	float h = float(Device.dwHeight);
 
 	// Set geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(w, h, Offset);
 
 	// Set pass
-	RCache.set_Element(s_combine->E[3]);
+	RenderBackend.set_Element(s_combine->E[3]);
 
 	// Draw
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
 void CRenderTarget::phase_combine()
@@ -61,22 +63,23 @@ void CRenderTarget::phase_combine()
 	Fvector2 p0, p1;
 
 	// low/hi RTs
-	u_setrt(rt_Generic_1, NULL, NULL, NULL, HW.pBaseZB);
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	set_Render_Target_Surface(rt_Generic_1);
+	set_Depth_Buffer(HW.pBaseZB);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	// Draw full-screen quad textured with our scene image
 	// draw skybox
-	RCache.set_ColorWriteEnable();
+	RenderBackend.set_ColorWriteEnable();
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
 	g_pGamePersistent->Environment().RenderSky();
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
 
-	RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
+	RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
 	if (RImplementation.o.nvstencil)
 	{
 		u_stencil_optimize(FALSE);
-		RCache.set_ColorWriteEnable();
+		RenderBackend.set_ColorWriteEnable();
 	}
 
 	// Compute params
@@ -98,7 +101,7 @@ void CRenderTarget::phase_combine()
 	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
 
 	// Fill vertex buffer
-	Fvector4* pv = (Fvector4*)RCache.Vertex.Lock(4, g_combine_VP->vb_stride, Offset);
+	Fvector4* pv = (Fvector4*)RenderBackend.Vertex.Lock(4, g_combine_VP->vb_stride, Offset);
 	pv->set(hclip(EPS, _w), hclip(_h + EPS, _h), p0.x, p1.y);
 	pv++;
 	pv->set(hclip(EPS, _w), hclip(EPS, _h), p0.x, p0.y);
@@ -107,7 +110,7 @@ void CRenderTarget::phase_combine()
 	pv++;
 	pv->set(hclip(_w + EPS, _w), hclip(EPS, _h), p1.x, p0.y);
 	pv++;
-	RCache.Vertex.Unlock(4, g_combine_VP->vb_stride);
+	RenderBackend.Vertex.Unlock(4, g_combine_VP->vb_stride);
 
 	// Setup textures
 	IDirect3DBaseTexture9* e0 = envdesc->sky_r_textures_env[0].second->surface_get();
@@ -119,20 +122,20 @@ void CRenderTarget::phase_combine()
 	_RELEASE(e1);
 
 	// Draw
-	RCache.set_Element(s_combine->E[1]);
+	RenderBackend.set_Element(s_combine->E[1]);
 
-	RCache.set_Geometry(g_combine_VP);
+	RenderBackend.set_Geometry(g_combine_VP);
 
 	Fvector4 debug_mode = {(float)ps_r_debug_render, 0, 0, 0};
-	RCache.set_c("debug_mode", debug_mode);
+	RenderBackend.set_Constant("debug_mode", debug_mode);
 
-	RCache.set_c("ambient_color", ambclr);
+	RenderBackend.set_Constant("ambient_color", ambclr);
 
-	RCache.set_c("env_color", envclr);
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.set_Constant("env_color", envclr);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
 #ifdef DEBUG
-	RCache.set_CullMode(CULL_CCW);
+	RenderBackend.set_CullMode(CULL_CCW);
 	static xr_vector<Fplane> saved_dbg_planes;
 	if (bDebug)
 		saved_dbg_planes = dbg_planes;
@@ -160,8 +163,8 @@ void CRenderTarget::phase_combine()
 			p1.mad(zero, L_right, sz).mad(L_dir, -sz);
 			p2.mad(zero, L_right, -sz).mad(L_dir, -sz);
 			p3.mad(zero, L_right, -sz).mad(L_dir, +sz);
-			RCache.dbg_DrawTRI(Fidentity, p0, p1, p2, 0xffffffff);
-			RCache.dbg_DrawTRI(Fidentity, p2, p3, p0, 0xffffffff);
+			RenderBackend.dbg_DrawTRI(Fidentity, p0, p1, p2, 0xffffffff);
+			RenderBackend.dbg_DrawTRI(Fidentity, p2, p3, p0, 0xffffffff);
 		}
 
 	static xr_vector<dbg_line_t> saved_dbg_lines;
@@ -172,7 +175,7 @@ void CRenderTarget::phase_combine()
 	if (1)
 		for (u32 it = 0; it < dbg_lines.size(); it++)
 		{
-			RCache.dbg_DrawLINE(Fidentity, dbg_lines[it].P0, dbg_lines[it].P1, dbg_lines[it].color);
+			RenderBackend.dbg_DrawLINE(Fidentity, dbg_lines[it].P0, dbg_lines[it].P1, dbg_lines[it].color);
 		}
 
 	dbg_spheres.clear();

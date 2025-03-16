@@ -130,17 +130,17 @@ void FTreeVisual::Render(float LOD)
 		tvs.calculate();
 	// setup constants
 	Fmatrix xform_v;
-	xform_v.mul_43(RCache.get_xform_view(), xform);
-	RCache.set_c(m_xform_v, xform_v); // matrix
+	xform_v.mul_43(RenderBackend.get_xform_view(), xform);
+	RenderBackend.set_Constant(m_xform_v, xform_v); // matrix
 	float s = ps_r_Tree_SBC;
-	RCache.set_c(m_xform, xform);						// matrix
-	RCache.set_c(c_consts, tvs.scale, tvs.scale, 0, 0); // consts/scale
-	RCache.set_c(c_wave, tvs.wave);						// wave
-	RCache.set_c(c_wind, tvs.wind);						// wind
+	RenderBackend.set_Constant(m_xform, xform);						// matrix
+	RenderBackend.set_Constant(c_consts, tvs.scale, tvs.scale, 0, 0); // consts/scale
+	RenderBackend.set_Constant(c_wave, tvs.wave);						// wave
+	RenderBackend.set_Constant(c_wind, tvs.wind);						// wind
 	s *= 1.3333f;
-	RCache.set_c(c_c_scale, s * c_scale.rgb.x, s * c_scale.rgb.y, s * c_scale.rgb.z, s * c_scale.hemi); // scale
-	RCache.set_c(c_c_bias, s * c_bias.rgb.x, s * c_bias.rgb.y, s * c_bias.rgb.z, s * c_bias.hemi);		// bias
-	RCache.set_c(c_c_sun, s * c_scale.sun, s * c_bias.sun, 0, 0); // sun
+	RenderBackend.set_Constant(c_c_scale, s * c_scale.rgb.x, s * c_scale.rgb.y, s * c_scale.rgb.z, s * c_scale.hemi); // scale
+	RenderBackend.set_Constant(c_c_bias, s * c_bias.rgb.x, s * c_bias.rgb.y, s * c_bias.rgb.z, s * c_bias.hemi);		// bias
+	RenderBackend.set_Constant(c_c_sun, s * c_scale.sun, s * c_bias.sun, 0, 0); // sun
 }
 
 #define PCOPY(a) a = pFrom->a
@@ -192,9 +192,9 @@ void FTreeVisual_ST::Load(const char* N, IReader* data, u32 dwFlags)
 void FTreeVisual_ST::Render(float LOD)
 {
 	inherited::Render(LOD);
-	RCache.set_Geometry(rm_geom);
-	RCache.Render(D3DPT_TRIANGLELIST, vBase, 0, vCount, iBase, dwPrimitives);
-	RCache.stat.r.s_flora.add(vCount);
+	RenderBackend.set_Geometry(rm_geom);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, vBase, 0, vCount, iBase, dwPrimitives);
+	RenderBackend.stat.r.s_flora.add(vCount);
 }
 void FTreeVisual_ST::Copy(IRender_Visual* pSrc)
 {
@@ -236,9 +236,9 @@ void FTreeVisual_PM::Render(float LOD)
 	}
 	VERIFY(lod_id >= 0 && lod_id < int(pSWI->count));
 	FSlideWindow& SW = pSWI->sw[lod_id];
-	RCache.set_Geometry(rm_geom);
-	RCache.Render(D3DPT_TRIANGLELIST, vBase, 0, SW.num_verts, iBase + SW.offset, SW.num_tris);
-	RCache.stat.r.s_flora.add(SW.num_verts);
+	RenderBackend.set_Geometry(rm_geom);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, vBase, 0, SW.num_verts, iBase + SW.offset, SW.num_tris);
+	RenderBackend.stat.r.s_flora.add(SW.num_verts);
 }
 void FTreeVisual_PM::Copy(IRender_Visual* pSrc)
 {

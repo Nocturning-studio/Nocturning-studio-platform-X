@@ -117,9 +117,9 @@ void CRender::render_lights(light_Package& LP)
 				stats.s_merged++;
 				L_spot_s.push_back(L);
 				Target->phase_smap_spot(L);
-				RCache.set_xform_world(Fidentity);
-				RCache.set_xform_view(L->X.S.view);
-				RCache.set_xform_project(L->X.S.project);
+				RenderBackend.set_xform_world(Fidentity);
+				RenderBackend.set_xform_view(L->X.S.view);
+				RenderBackend.set_xform_project(L->X.S.project);
 				if (ps_r_lighting_flags.test(RFLAG_SUN_DETAILS))
 				{
 					Details->UpdateVisibleM();

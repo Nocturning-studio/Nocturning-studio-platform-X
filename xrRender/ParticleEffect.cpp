@@ -213,7 +213,7 @@ void CParticleEffect::OnDeviceCreate()
 	{
 		if (m_Def->m_Flags.is(CPEDef::dfSprite))
 		{
-			geom.create(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
+			geom.create(FVF::F_LIT, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 			if (m_Def)
 				shader = m_Def->m_CachedShader;
 		}
@@ -302,7 +302,7 @@ void CParticleEffect::Render(float)
 	{
 		if (m_Def && m_Def->m_Flags.is(CPEDef::dfSprite))
 		{
-			FVF::LIT* pv_start = (FVF::LIT*)RCache.Vertex.Lock(p_cnt * 4 * 4, geom->vb_stride, dwOffset);
+			FVF::LIT* pv_start = (FVF::LIT*)RenderBackend.Vertex.Lock(p_cnt * 4 * 4, geom->vb_stride, dwOffset);
 			FVF::LIT* pv = pv_start;
 
 			for (u32 i = 0; i < p_cnt; i++)
@@ -401,18 +401,18 @@ void CParticleEffect::Render(float)
 				}
 			}
 			dwCount = u32(pv - pv_start);
-			RCache.Vertex.Unlock(dwCount, geom->vb_stride);
+			RenderBackend.Vertex.Unlock(dwCount, geom->vb_stride);
 			if (dwCount)
 			{
-				RCache.set_xform_world(Fidentity);
-				RCache.set_Geometry(geom);
+				RenderBackend.set_xform_world(Fidentity);
+				RenderBackend.set_Geometry(geom);
 
-				//              u32 cm					= RCache.get_CullMode();
-				RCache.set_CullMode(m_Def->m_Flags.is(CPEDef::dfCulling)
+				//              u32 cm					= RenderBackend.get_CullMode();
+				RenderBackend.set_CullMode(m_Def->m_Flags.is(CPEDef::dfCulling)
 										? (m_Def->m_Flags.is(CPEDef::dfCullCCW) ? CULL_CCW : CULL_CW)
 										: CULL_NONE);
-				RCache.Render(D3DPT_TRIANGLELIST, dwOffset, 0, dwCount, 0, dwCount / 2);
-				RCache.set_CullMode(CULL_CCW);
+				RenderBackend.Render(D3DPT_TRIANGLELIST, dwOffset, 0, dwCount, 0, dwCount / 2);
+				RenderBackend.set_CullMode(CULL_CCW);
 			}
 		}
 	}

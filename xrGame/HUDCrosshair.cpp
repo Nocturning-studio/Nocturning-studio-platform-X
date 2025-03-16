@@ -9,9 +9,9 @@
 
 CHUDCrosshair::CHUDCrosshair()
 {
-	//.	hGeomLine.create			(FVF::F_TL0uv,RCache.Vertex.Buffer(),0);
+	//.	hGeomLine.create			(FVF::F_TL0uv,RenderBackend.Vertex.Buffer(),0);
 	//.	hShader.create				("editor\\wire");
-	hGeomLine.create(FVF::F_TL0uv, RCache.Vertex.Buffer(), 0);
+	hGeomLine.create(FVF::F_TL0uv, RenderBackend.Vertex.Buffer(), 0);
 	hShader.create("hud\\crosshair");
 
 	// вычислить и запомнить центр экрана
@@ -71,7 +71,7 @@ void CHUDCrosshair::OnRender()
 	// draw back
 	u32 dwOffset, dwCount;
 	dwCount = 10;
-	FVF::TL0uv* pv_start = (FVF::TL0uv*)RCache.Vertex.Lock(dwCount, hGeomLine->vb_stride, dwOffset);
+	FVF::TL0uv* pv_start = (FVF::TL0uv*)RenderBackend.Vertex.Lock(dwCount, hGeomLine->vb_stride, dwOffset);
 	FVF::TL0uv* pv = pv_start;
 
 	float cross_length = cross_length_perc * scr_size.x;
@@ -113,11 +113,11 @@ void CHUDCrosshair::OnRender()
 	pv++;
 	//*/
 	// render
-	RCache.Vertex.Unlock(dwCount, hGeomLine->vb_stride);
+	RenderBackend.Vertex.Unlock(dwCount, hGeomLine->vb_stride);
 
-	RCache.set_Shader(hShader);
-	RCache.set_Geometry(hGeomLine);
-	RCache.Render(D3DPT_LINELIST, dwOffset, dwCount / 2);
+	RenderBackend.set_Shader(hShader);
+	RenderBackend.set_Geometry(hGeomLine);
+	RenderBackend.Render(D3DPT_LINELIST, dwOffset, dwCount / 2);
 
 	if (!fsimilar(target_radius, radius))
 	{

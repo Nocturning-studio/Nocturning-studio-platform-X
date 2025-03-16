@@ -11,13 +11,14 @@ void CRenderTarget::phase_wallmarks()
 	OPTICK_EVENT("CRenderTarget::phase_wallmarks");
 
 	// Targets
-	RCache.set_RT(NULL, 2);
-	RCache.set_RT(NULL, 1);
-	u_setrt(rt_GBuffer_1, NULL, NULL, NULL, HW.pBaseZB);
+	RenderBackend.setRenderTarget(NULL, 2);
+	RenderBackend.setRenderTarget(NULL, 1);
+	set_Render_Target_Surface(rt_GBuffer_1);
+	set_Depth_Buffer(HW.pBaseZB);
 
 	// Stencil	- draw only where stencil >= 0x1
-	RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00);
-	RCache.set_CullMode(CULL_CCW);
-	RCache.set_ColorWriteEnable(D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE);
+	RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00);
+	RenderBackend.set_CullMode(CULL_CCW);
+	RenderBackend.set_ColorWriteEnable(D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE);
 }
 ///////////////////////////////////////////////////////////////////////////////////

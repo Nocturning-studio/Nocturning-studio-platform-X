@@ -201,27 +201,30 @@ void CRender::RenderMenu()
 	OPTICK_EVENT("CRender::RenderMenu");
 
 	//	Globals
-	RCache.set_CullMode(CULL_CCW);
-	RCache.set_Stencil(FALSE);
-	RCache.set_ColorWriteEnable();
+	RenderBackend.set_CullMode(CULL_CCW);
+	RenderBackend.set_Stencil(FALSE);
+	RenderBackend.set_ColorWriteEnable();
 
 	// Main Render
 	{
-		Target->u_setrt(Target->rt_Generic_0, NULL, NULL, NULL, HW.pBaseZB); // LDR RT
+		Target->set_Render_Target_Surface(Target->rt_Generic_0);
+		Target->set_Depth_Buffer(HW.pBaseZB);
 		g_pGamePersistent->OnRenderPPUI_main();					 // PP-UI
 	}
 
 	// Distort
 	{
-		Target->u_setrt(Target->rt_Distortion_Mask, NULL, NULL, NULL, HW.pBaseZB); // Now RT is a distortion mask
+		Target->set_Render_Target_Surface(Target->rt_Distortion_Mask);
+		Target->set_Depth_Buffer(HW.pBaseZB);
 		CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, color_rgba(127, 127, 0, 127), 1.0f, 0L));
 		g_pGamePersistent->OnRenderPPUI_PP(); // PP-UI
 	}
 
 	// Actual Display
-	Target->u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, NULL, NULL, NULL, HW.pBaseZB);
-	RCache.set_Shader(Target->s_menu);
-	RCache.set_Geometry(Target->g_menu);
+	Target->set_Render_Target_Surface(Device.dwWidth, Device.dwHeight, HW.pBaseRT);
+	Target->set_Depth_Buffer(HW.pBaseZB);
+	RenderBackend.set_Shader(Target->s_menu);
+	RenderBackend.set_Geometry(Target->g_menu);
 
 	Fvector2 p0, p1;
 	u32 Offset;
@@ -233,7 +236,7 @@ void CRender::RenderMenu()
 	p0.set(.5f / _w, .5f / _h);
 	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
 
-	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, Target->g_menu->vb_stride, Offset);
+	FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, Target->g_menu->vb_stride, Offset);
 	pv->set(EPS, float(_h + EPS), d_Z, d_W, C, p0.x, p1.y);
 	pv++;
 	pv->set(EPS, EPS, d_Z, d_W, C, p0.x, p0.y);
@@ -242,8 +245,8 @@ void CRender::RenderMenu()
 	pv++;
 	pv->set(float(_w + EPS), EPS, d_Z, d_W, C, p1.x, p0.y);
 	pv++;
-	RCache.Vertex.Unlock(4, Target->g_menu->vb_stride);
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Vertex.Unlock(4, Target->g_menu->vb_stride);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
 void CRender::render_stage_forward()
@@ -254,11 +257,12 @@ void CRender::render_stage_forward()
 
 	//******* Main render - second order geometry (the one, that doesn't support deffering)
 	{
-		Target->u_setrt(Target->rt_Generic_1, Target->rt_GBuffer_4, NULL, NULL, HW.pBaseZB);
+		Target->set_Render_Target_Surface(Target->rt_Generic_1, Target->rt_GBuffer_4, NULL, NULL);
+		Target->set_Depth_Buffer(HW.pBaseZB);
 
-		RCache.set_CullMode(CULL_CCW);
-		RCache.set_Stencil(FALSE);
-		RCache.set_ColorWriteEnable();
+		RenderBackend.set_CullMode(CULL_CCW);
+		RenderBackend.set_Stencil(FALSE);
+		RenderBackend.set_ColorWriteEnable();
 
 		// if (g_pGamePersistent)
 		//	g_pGamePersistent->Environment().RenderClouds();
@@ -268,7 +272,7 @@ void CRender::render_stage_forward()
 		set_active_phase(PHASE_NORMAL);
 		render_main(Device.mFullTransform, false); //
 
-		RCache.enable_anisotropy_filtering();
+		RenderBackend.enable_anisotropy_filtering();
 
 		if (psDeviceFlags.test(rsWireframe))
 			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
@@ -279,7 +283,7 @@ void CRender::render_stage_forward()
 		if (psDeviceFlags.test(rsWireframe))
 			CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
 
-		RCache.disable_anisotropy_filtering();
+		RenderBackend.disable_anisotropy_filtering();
 
 		g_pGamePersistent->Environment().RenderThunderbolt();
 		g_pGamePersistent->Environment().RenderRain();
@@ -298,12 +302,12 @@ void CRender::render_stage_depth_prepass()
 
 	render_main(Device.mFullTransform, false);
 
-	RCache.set_ColorWriteEnable(FALSE);
-	RCache.set_ZWriteEnable(TRUE);
+	RenderBackend.set_ColorWriteEnable(FALSE);
+	RenderBackend.set_ZWriteEnable(TRUE);
 
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL));
 
-	RCache.enable_anisotropy_filtering();
+	RenderBackend.enable_anisotropy_filtering();
 
 	//r_dsgraph_render_graph(0);
 
@@ -314,10 +318,10 @@ void CRender::render_stage_depth_prepass()
 
 	r_dsgraph_render_lods(true, true);
 
-	RCache.disable_anisotropy_filtering();
+	RenderBackend.disable_anisotropy_filtering();
 
-	RCache.set_ColorWriteEnable(TRUE);
-	RCache.set_ZWriteEnable(FALSE);
+	RenderBackend.set_ColorWriteEnable(TRUE);
+	RenderBackend.set_ZWriteEnable(FALSE);
 }
 
 void CRender::render_stage_gbuffer_main()
@@ -337,7 +341,7 @@ void CRender::render_stage_gbuffer_main()
 	r_pmask(true, false); // disable priority "1"
 
 	Device.Statistic->RenderCALC_GBuffer.Begin();
-	RCache.enable_anisotropy_filtering();
+	RenderBackend.enable_anisotropy_filtering();
 
 	Target->create_gbuffer();
 
@@ -357,7 +361,7 @@ void CRender::render_stage_gbuffer_main()
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
 
-	RCache.disable_anisotropy_filtering();
+	RenderBackend.disable_anisotropy_filtering();
 	Device.Statistic->RenderCALC_GBuffer.End();
 }
 
@@ -367,7 +371,7 @@ void CRender::render_stage_gbuffer_secondary()
 
 	PortalTraverser.fade_render();
 
-	RCache.enable_anisotropy_filtering();
+	RenderBackend.enable_anisotropy_filtering();
 
 	Target->create_gbuffer();
 
@@ -376,7 +380,7 @@ void CRender::render_stage_gbuffer_secondary()
 
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL));
 
-	RCache.set_ZWriteEnable(FALSE);
+	RenderBackend.set_ZWriteEnable(FALSE);
 
 	r_dsgraph_render_lods(true, true);
 
@@ -386,7 +390,7 @@ void CRender::render_stage_gbuffer_secondary()
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
 
-	RCache.disable_anisotropy_filtering();
+	RenderBackend.disable_anisotropy_filtering();
 }
 
 void CRender::render_stage_occlusion_culling()
@@ -528,7 +532,7 @@ void CRender::render_stage_postprocess()
 
 	// Generic1 -> Generic0 -> Generic1
 	//if (ps_r_postprocess_flags.test(RFLAG_BARREL_BLUR))
-		Target->phase_barrel_blur();
+	//	Target->phase_barrel_blur();
 
 	if (ps_render_flags.test(RFLAG_LENS_FLARES))
 		g_pGamePersistent->Environment().RenderFlares();
@@ -579,6 +583,7 @@ void CRender::RenderScene()
 	{
 		m_bFirstFrameAfterReset = false;
 		m_saved_viewproj.set(Device.mFullTransform);
+		m_saved_invview.invert(Device.mView);
 	}
 
 	// Configure
@@ -656,6 +661,7 @@ void CRender::RenderScene()
 	Target->phase_autoexposure_pipeline_clear();
 
 	m_saved_viewproj.set(Device.mFullTransform);
+	m_saved_invview.invert(Device.mView);
 }
 
 void CRender::Render()

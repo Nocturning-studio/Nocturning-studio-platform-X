@@ -186,15 +186,15 @@ void Fvisual::Render(float)
 
 	if (m_fast && RImplementation.active_phase() == CRender::PHASE_SHADOW_DEPTH)
 	{
-		RCache.set_Geometry(m_fast->rm_geom);
-		RCache.Render(D3DPT_TRIANGLELIST, m_fast->vBase, 0, m_fast->vCount, m_fast->iBase, m_fast->dwPrimitives);
-		RCache.stat.r.s_static.add(m_fast->vCount);
+		RenderBackend.set_Geometry(m_fast->rm_geom);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, m_fast->vBase, 0, m_fast->vCount, m_fast->iBase, m_fast->dwPrimitives);
+		RenderBackend.stat.r.s_static.add(m_fast->vCount);
 	}
 	else
 	{
-		RCache.set_Geometry(rm_geom);
-		RCache.Render(D3DPT_TRIANGLELIST, vBase, 0, vCount, iBase, dwPrimitives);
-		RCache.stat.r.s_static.add(vCount);
+		RenderBackend.set_Geometry(rm_geom);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, vBase, 0, vCount, iBase, dwPrimitives);
+		RenderBackend.stat.r.s_static.add(vCount);
 	}
 }
 

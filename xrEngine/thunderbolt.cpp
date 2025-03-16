@@ -119,8 +119,8 @@ CEffect_Thunderbolt::CEffect_Thunderbolt()
 	bEnabled = FALSE;
 
 	// geom
-	hGeom_model.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
-	hGeom_gradient.create(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
+	hGeom_model.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
+	hGeom_gradient.create(FVF::F_LIT, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 }
 
 CEffect_Thunderbolt::~CEffect_Thunderbolt()
@@ -285,28 +285,28 @@ void CEffect_Thunderbolt::Render()
 		float dv = lightning_phase * 0.5f;
 		dv = (lightning_phase > 0.5f) ? Random.randI(2) * 0.5f : dv;
 
-		RCache.set_CullMode(CULL_NONE);
+		RenderBackend.set_CullMode(CULL_NONE);
 		u32 v_offset, i_offset;
 		u32 vCount_Lock = current->l_model->number_vertices;
 		u32 iCount_Lock = current->l_model->number_indices;
 		IRender_DetailModel::fvfVertexOut* v_ptr =
-			(IRender_DetailModel::fvfVertexOut*)RCache.Vertex.Lock(vCount_Lock, hGeom_model->vb_stride, v_offset);
-		u16* i_ptr = RCache.Index.Lock(iCount_Lock, i_offset);
+			(IRender_DetailModel::fvfVertexOut*)RenderBackend.Vertex.Lock(vCount_Lock, hGeom_model->vb_stride, v_offset);
+		u16* i_ptr = RenderBackend.Index.Lock(iCount_Lock, i_offset);
 		// XForm verts
 		current->l_model->transfer(current_xform, v_ptr, 0xffffffff, i_ptr, 0, 0.f, dv);
 		// Flush if needed
-		RCache.Vertex.Unlock(vCount_Lock, hGeom_model->vb_stride);
-		RCache.Index.Unlock(iCount_Lock);
-		RCache.set_xform_world(Fidentity);
-		RCache.set_Shader(current->l_model->shader);
-		RCache.set_Geometry(hGeom_model);
-		RCache.Render(D3DPT_TRIANGLELIST, v_offset, 0, vCount_Lock, i_offset, iCount_Lock / 3);
-		RCache.set_CullMode(CULL_CCW);
+		RenderBackend.Vertex.Unlock(vCount_Lock, hGeom_model->vb_stride);
+		RenderBackend.Index.Unlock(iCount_Lock);
+		RenderBackend.set_xform_world(Fidentity);
+		RenderBackend.set_Shader(current->l_model->shader);
+		RenderBackend.set_Geometry(hGeom_model);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, v_offset, 0, vCount_Lock, i_offset, iCount_Lock / 3);
+		RenderBackend.set_CullMode(CULL_CCW);
 
 		// gradient
 		Fvector vecSx, vecSy;
 		u32 VS_Offset;
-		FVF::LIT* pv = (FVF::LIT*)RCache.Vertex.Lock(8, hGeom_gradient.stride(), VS_Offset);
+		FVF::LIT* pv = (FVF::LIT*)RenderBackend.Vertex.Lock(8, hGeom_gradient.stride(), VS_Offset);
 		// top
 		{
 			u32 c_val = iFloor(current->m_GradientTop->fOpacity * lightning_phase * 255.f);
@@ -345,12 +345,12 @@ void CEffect_Thunderbolt::Render()
 					lightning_center.z - vecSx.z + vecSy.z, c, 1, 1);
 			pv++;
 		}
-		RCache.Vertex.Unlock(8, hGeom_gradient.stride());
-		RCache.set_xform_world(Fidentity);
-		RCache.set_Geometry(hGeom_gradient);
-		RCache.set_Shader(current->m_GradientTop->hShader);
-		RCache.Render(D3DPT_TRIANGLELIST, VS_Offset, 0, 4, 0, 2);
-		RCache.set_Shader(current->m_GradientCenter->hShader);
-		RCache.Render(D3DPT_TRIANGLELIST, VS_Offset + 4, 0, 4, 0, 2);
+		RenderBackend.Vertex.Unlock(8, hGeom_gradient.stride());
+		RenderBackend.set_xform_world(Fidentity);
+		RenderBackend.set_Geometry(hGeom_gradient);
+		RenderBackend.set_Shader(current->m_GradientTop->hShader);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, VS_Offset, 0, 4, 0, 2);
+		RenderBackend.set_Shader(current->m_GradientCenter->hShader);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, VS_Offset + 4, 0, 4, 0, 2);
 	}
 }

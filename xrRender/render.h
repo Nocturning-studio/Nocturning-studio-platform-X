@@ -131,6 +131,7 @@ class CRender : public R_dsgraph_structure
 
 	//Motion blur
 	Fmatrix m_saved_viewproj;
+	Fmatrix m_saved_invview;
 
   private:
 	// Loading / Unloading
@@ -211,15 +212,15 @@ class CRender : public R_dsgraph_structure
 	}
 	IC void apply_lmaterial()
 	{
-		R_constant* C = &*RCache.get_c(c_sbase); // get sampler
+		R_constant* C = &*RenderBackend.get_Constant(c_sbase); // get sampler
 		if (0 == C)
 			return;
 		VERIFY(RC_dest_sampler == C->destination);
 		VERIFY(RC_sampler == C->type);
-		CTexture* T = RCache.get_ActiveTexture(u32(C->samp.index));
+		CTexture* T = RenderBackend.get_ActiveTexture(u32(C->samp.index));
 		VERIFY(T);
 		float mtl = T->m_material;
-		RCache.set_c(c_lmaterial, o_hemi, o_sun, 0, (mtl + .5f) / 4.f);
+		RenderBackend.set_Constant(c_lmaterial, o_hemi, o_sun, 0, (mtl + .5f) / 4.f);
 	}
 
   public:

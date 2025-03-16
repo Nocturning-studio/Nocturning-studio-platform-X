@@ -103,7 +103,7 @@ static class cl_parallax : public R_constant_setup
 	virtual void setup(R_constant* C)
 	{
 		float h = ps_r_df_parallax_h;
-		RCache.set_c(C, h, -(h / 2.0f), 1.f / r_dtex_range, 1.f / r_dtex_range);
+		RenderBackend.set_Constant(C, h, -(h / 2.0f), 1.f / r_dtex_range, 1.f / r_dtex_range);
 	}
 } binder_parallax;
 //////////////////////////////////////////////////////////////////////////
@@ -112,7 +112,7 @@ static class cl_sun_far : public R_constant_setup
 	virtual void setup(R_constant* C)
 	{
 		float fValue = ps_r_sun_far;
-		RCache.set_c(C, fValue, fValue, fValue, 0);
+		RenderBackend.set_Constant(C, fValue, fValue, fValue, 0);
 	}
 } binder_sun_far;
 //////////////////////////////////////////////////////////////////////////
@@ -126,7 +126,7 @@ static class cl_sun_dir : public R_constant_setup
 		Device.mView.transform_dir(L_dir, sun->direction);
 		L_dir.normalize();
 
-		RCache.set_c(C, L_dir.x, L_dir.y, L_dir.z, 0);
+		RenderBackend.set_Constant(C, L_dir.x, L_dir.y, L_dir.z, 0);
 	}
 } binder_sun_dir;
 //////////////////////////////////////////////////////////////////////////
@@ -134,7 +134,7 @@ static class cl_sun_normal_bias : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RCache.set_c(C, ps_r_sun_depth_normal_bias, 0, 0, 0);
+		RenderBackend.set_Constant(C, ps_r_sun_depth_normal_bias, 0, 0, 0);
 	}
 } binder_sun_normal_bias;
 //////////////////////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ static class cl_sun_directional_bias : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RCache.set_c(C, ps_r_sun_depth_directional_bias, 0, 0, 0);
+		RenderBackend.set_Constant(C, ps_r_sun_depth_directional_bias, 0, 0, 0);
 	}
 } binder_sun_directional_bias;
 //////////////////////////////////////////////////////////////////////////
@@ -151,7 +151,7 @@ static class cl_sun_color : public R_constant_setup
 	virtual void setup(R_constant* C)
 	{
 		light* sun = (light*)RImplementation.Lights.sun_adapted._get();
-		RCache.set_c(C, sRgbToLinear(sun->color.r), sRgbToLinear(sun->color.g), sRgbToLinear(sun->color.b), 0);
+		RenderBackend.set_Constant(C, sRgbToLinear(sun->color.r), sRgbToLinear(sun->color.g), sRgbToLinear(sun->color.b), 0);
 	}
 } binder_sun_color;
 //////////////////////////////////////////////////////////////////////////
@@ -159,7 +159,7 @@ static class cl_hdr_params : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RCache.set_c("hdr_params", ps_r_hdr_white_intensity, ps_r_hdr_gamma, ps_r_hdr_brightness, 0);
+		RenderBackend.set_Constant("hdr_params", ps_r_hdr_white_intensity, ps_r_hdr_gamma, ps_r_hdr_brightness, 0);
 	}
 } binder_hdr_params;
 //////////////////////////////////////////////////////////////////////////
@@ -167,7 +167,7 @@ static class cl_ao_brightness : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RCache.set_c("ao_brightness", ps_r_ao_brightness, 0, 0, 0);
+		RenderBackend.set_Constant("ao_brightness", ps_r_ao_brightness, 0, 0, 0);
 	}
 } binder_ao_brightness;
 //////////////////////////////////////////////////////////////////////////
@@ -180,7 +180,7 @@ static class cl_is_hud_render_phase : public R_constant_setup
 		if (RImplementation.active_phase() == CRender::PHASE_HUD)
 			is_hud_render_phase = 1;
 
-		RCache.set_c("is_hud_render_phase", (float)is_hud_render_phase, 0, 0, 0);
+		RenderBackend.set_Constant("is_hud_render_phase", (float)is_hud_render_phase, 0, 0, 0);
 	}
 } binder_is_hud_render_phase;
 //////////////////////////////////////////////////////////////////////////

@@ -43,11 +43,11 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 	L_dir.normalize();
 
 	// Perform masking (only once - on the first/near phase)
-	RCache.set_CullMode(CULL_NONE);
+	RenderBackend.set_CullMode(CULL_NONE);
 	if (SE_SUN_NEAR == sub_phase) //.
 	{
 		// Fill vertex buffer
-		FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
+		FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, g_combine->vb_stride, Offset);
 		pv->set(EPS, float(_h + EPS), d_Z, d_W, C, p0.x, p1.y);
 		pv++;
 		pv->set(EPS, EPS, d_Z, d_W, C, p0.x, p0.y);
@@ -56,18 +56,18 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 		pv++;
 		pv->set(float(_w + EPS), EPS, d_Z, d_W, C, p1.x, p0.y);
 		pv++;
-		RCache.Vertex.Unlock(4, g_combine->vb_stride);
-		RCache.set_Geometry(g_combine);
+		RenderBackend.Vertex.Unlock(4, g_combine->vb_stride);
+		RenderBackend.set_Geometry(g_combine);
 
 		// setup
-		RCache.set_Element(s_accum_mask->E[SE_MASK_DIRECT]); // masker
-		RCache.set_c("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
+		RenderBackend.set_Element(s_accum_mask->E[SE_MASK_DIRECT]); // masker
+		RenderBackend.set_Constant("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
 
 		// if (stencil>=1 && aref_pass)	stencil = light_id
-		RCache.set_ColorWriteEnable(FALSE);
-		RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0x01, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_REPLACE,
+		RenderBackend.set_ColorWriteEnable(FALSE);
+		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0x01, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_REPLACE,
 						   D3DSTENCILOP_KEEP);
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
 
 	// recalculate d_Z, to perform depth-clipping
@@ -84,8 +84,8 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 	//******************************************************************
 	{
 		phase_accumulator();
-		RCache.set_CullMode(CULL_CCW); //******************************************************************
-		RCache.set_ColorWriteEnable();
+		RenderBackend.set_CullMode(CULL_CCW); //******************************************************************
+		RenderBackend.set_ColorWriteEnable();
 
 		// texture adjustment matrix
 		float fTexelOffs = (0.5f / float(RImplementation.o.smapsize));
@@ -151,21 +151,21 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 
 		Fmatrix m_Texgen;
 		m_Texgen.identity();
-		RCache.xforms.set_W(m_Texgen);
-		RCache.xforms.set_V(Device.mView);
-		RCache.xforms.set_P(Device.mProject);
+		RenderBackend.xforms.set_W(m_Texgen);
+		RenderBackend.xforms.set_V(Device.mView);
+		RenderBackend.xforms.set_P(Device.mProject);
 		u_compute_texgen_screen(m_Texgen);
 
 		// Fill vertex buffer
 		u32 i_offset;
 		{
-			u16* pib = RCache.Index.Lock(sizeof(facetable) / sizeof(u16), i_offset);
+			u16* pib = RenderBackend.Index.Lock(sizeof(facetable) / sizeof(u16), i_offset);
 			CopyMemory(pib, &facetable, sizeof(facetable));
-			RCache.Index.Unlock(sizeof(facetable) / sizeof(u16));
+			RenderBackend.Index.Unlock(sizeof(facetable) / sizeof(u16));
 
 			// corners
 			u32 ver_count = sizeof(corners) / sizeof(Fvector3);
-			FVF::L* pv = (FVF::L*)RCache.Vertex.Lock(ver_count, g_combine_cuboid.stride(), Offset);
+			FVF::L* pv = (FVF::L*)RenderBackend.Vertex.Lock(ver_count, g_combine_cuboid.stride(), Offset);
 
 			Fmatrix inv_XDcombine;
 			if ( sub_phase == SE_SUN_FAR)
@@ -180,18 +180,18 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 				pv->set(tmp_vec, C);
 				pv++;
 			}
-			RCache.Vertex.Unlock(ver_count, g_combine_cuboid.stride());
+			RenderBackend.Vertex.Unlock(ver_count, g_combine_cuboid.stride());
 		}
 
-		RCache.set_Geometry(g_combine_cuboid);
+		RenderBackend.set_Geometry(g_combine_cuboid);
 
 		// setup
-		RCache.set_Element(s_accum_direct_cascade->E[sub_phase]);
+		RenderBackend.set_Element(s_accum_direct_cascade->E[sub_phase]);
 
-		RCache.set_c("m_texgen", m_Texgen);
-		RCache.set_c("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
-		RCache.set_c("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
-		RCache.set_c("m_shadow", m_shadow);
+		RenderBackend.set_Constant("m_texgen", m_Texgen);
+		RenderBackend.set_Constant("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
+		RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
+		RenderBackend.set_Constant("m_shadow", m_shadow);
 
 		// nv-DBT
 		float zMin, zMax;
@@ -232,12 +232,12 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 
 		// setup stencil
 		if (SE_SUN_NEAR == sub_phase || sub_phase == SE_SUN_MIDDLE)
-			RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0xFE, D3DSTENCILOP_KEEP,
+			RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0xFE, D3DSTENCILOP_KEEP,
 							   D3DSTENCILOP_ZERO, D3DSTENCILOP_KEEP);
 		else
-			RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0x00);
+			RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0x00);
 
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 8, 0, 16);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 8, 0, 16);
 
 		// disable depth bounds
 		u_DBT_disable();

@@ -207,6 +207,27 @@ HRESULT CResourceManager::ReadShaderCache(string_path name, T*& result)
 	return cache_result;
 }
 
+template<typename T>
+HRESULT CResourceManager::ReflectShader(
+	DWORD const*	src,
+	UINT			size,
+	T*&				result)
+{
+	result->sh = ShaderTypeTraits<T>::D3DCreateShader(src, size);
+
+	const void* pReflection = 0;
+	HRESULT _hr = D3DXFindShaderComment(src, MAKEFOURCC('C', 'T', 'A', 'B'), &pReflection, NULL);
+	
+	if (SUCCEEDED(_hr) && pReflection)
+	{
+		result->constants.parse((void*)pReflection, ShaderTypeTraits<T>::GetShaderDest());
+		return _hr;
+	}
+
+	return E_FAIL;
+}
+
+static CTimer shader_compilation_timer;
 extern XRCORE_API u32 build_id;
 template<typename T>
 HRESULT CResourceManager::CompileShader(
@@ -229,6 +250,10 @@ HRESULT CResourceManager::CompileShader(
 	bDisassebleShader = strstr(Core.Params, "-save_disassembled_shaders");
 	bWarningsAsErrors = strstr(Core.Params, "-shader_warnings_as_errors");
 	bErrorsAsWarnings = strstr(Core.Params, "-shader_errors_as_warnings");
+
+	Msg("\n~ Compiling shader with name: %s.%s", name, ext);
+
+	shader_compilation_timer.Start();
 #endif
 
 	HRESULT _result = NULL;
@@ -242,14 +267,17 @@ HRESULT CResourceManager::CompileShader(
 		_result = ReadShaderCache(cache_dest, result);
 
 		if (FAILED(_result))
+		{
 			Msg("! Cache file broken for shader: %s", cache_dest);
+		}
 		else
-			return _result;
-	}
-
-#ifdef DEBUG_SHADER_COMPILATION
-	Msg("*   cache: %s.%s", cache_dest, ext);
+		{
+#ifndef MASTER_GOLD
+			Msg("~ Successfully finded and applyed compiled shader cache file");
 #endif
+			return _result;
+		}
+	}
 
 	CShaderIncluder		Includer;
 	ID3DXBuffer*		pShaderBuf = NULL;
@@ -258,7 +286,7 @@ HRESULT CResourceManager::CompileShader(
 	
 	u32 flags = D3DXSHADER_PACKMATRIX_ROWMAJOR | D3DXSHADER_PREFER_FLOW_CONTROL | D3DXSHADER_OPTIMIZATION_LEVEL3
 		#ifndef MASTER_GOLD
-				| D3DXSHADER_DEBUG
+				//| D3DXSHADER_DEBUG
 		#endif
 		;
 	
@@ -271,8 +299,7 @@ HRESULT CResourceManager::CompileShader(
 			IWriter* file = FS.w_open(cache_dest);
 
 			boost::crc_32_type processor;
-			processor.process_block(pShaderBuf->GetBufferPointer(),
-									((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize());
+			processor.process_block(pShaderBuf->GetBufferPointer(), ((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize());
 			u32 const crc = processor.checksum();
 
 			file->w_u32(crc);
@@ -333,28 +360,15 @@ HRESULT CResourceManager::CompileShader(
 
 		CHECK_OR_EXIT(bErrorsAsWarnings, error);
 	}
+#ifndef MASTER_GOLD
+	else
+	{
+		Msg("~ Shader successfully compiled");
+		Msg("~ Compile time: %d ms", shader_compilation_timer.GetElapsed_ms());
+	}
+#endif
 
 	return _result;
-}
-
-template<typename T>
-HRESULT CResourceManager::ReflectShader(
-	DWORD const*	src,
-	UINT			size,
-	T*&				result)
-{
-	result->sh = ShaderTypeTraits<T>::D3DCreateShader(src, size);
-
-	const void* pReflection = 0;
-	HRESULT _hr = D3DXFindShaderComment(src, MAKEFOURCC('C', 'T', 'A', 'B'), &pReflection, NULL);
-	
-	if (SUCCEEDED(_hr) && pReflection)
-	{
-		result->constants.parse((void*)pReflection, ShaderTypeTraits<T>::GetShaderDest());
-		return _hr;
-	}
-
-	return E_FAIL;
 }
 
 template<typename T>

@@ -40,7 +40,7 @@ void CRenderDevice::overdrawEnd()
 	CHK_DX(HW.pDevice->Clear(0, 0, D3DCLEAR_TARGET, D3DCOLOR_XRGB(255, 0, 0), 0, 0));
 
 	// Draw a rectangle wherever the count equal I
-	RCache.OnFrameEnd();
+	RenderBackend.OnFrameEnd();
 	CHK_DX(HW.pDevice->SetFVF(FVF::F_TL));
 
 	// Render gradients

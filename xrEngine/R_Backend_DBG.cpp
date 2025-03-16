@@ -5,16 +5,16 @@ void CBackend::dbg_DP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 vBase, u32 pc)
 {
 	OPTICK_EVENT("CBackend::dbg_DP");
 
-	RCache.set_Geometry(geom);
-	RCache.Render(pt, vBase, pc);
+	RenderBackend.set_Geometry(geom);
+	RenderBackend.Render(pt, vBase, pc);
 }
 
 void CBackend::dbg_DIP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC)
 {
 	OPTICK_EVENT("CBackend::dbg_DIP");
 
-	RCache.set_Geometry(geom);
-	RCache.Render(pt, baseV, startV, countV, startI, PC);
+	RenderBackend.set_Geometry(geom);
+	RenderBackend.Render(pt, baseV, startV, countV, startI, PC);
 }
 
 #ifdef DEBUG

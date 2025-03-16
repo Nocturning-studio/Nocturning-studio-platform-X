@@ -1072,7 +1072,7 @@ void CCustomMonster::OnRender()
 {
 	OPTICK_EVENT("CCustomMonster::OnFrame");
 
-	RCache.OnFrameEnd();
+	RenderBackend.OnFrameEnd();
 
 	for (int i = 0; i < 1; ++i)
 	{

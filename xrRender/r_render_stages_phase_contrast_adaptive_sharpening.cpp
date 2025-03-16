@@ -8,10 +8,11 @@
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::phase_contrast_adaptive_sharpening()
 {
-	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Generic_0);
+	set_Depth_Buffer(NULL);
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	// Constants
 	u32 Offset = 0;
@@ -19,12 +20,12 @@ void CRenderTarget::phase_contrast_adaptive_sharpening()
 	float h = float(Device.dwHeight);
 
 	// Set geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(w, h, Offset);
 
 	// Set constants
-	RCache.set_c("cas_params", ps_cas_contrast, ps_cas_sharpening, 0, 0);
+	RenderBackend.set_Constant("cas_params", ps_cas_contrast, ps_cas_sharpening, 0, 0);
 
 	// Draw
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 ///////////////////////////////////////////////////////////////////////////////////

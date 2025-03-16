@@ -72,7 +72,7 @@ void CPortalTraverser::initialize()
 	OPTICK_EVENT("CPortalTraverser::initialize");
 
 	f_shader.create("portal");
-	f_geom.create(FVF::F_L, RCache.Vertex.Buffer(), 0);
+	f_geom.create(FVF::F_L, RenderBackend.Vertex.Buffer(), 0);
 }
 
 void CPortalTraverser::destroy()
@@ -110,7 +110,7 @@ void CPortalTraverser::fade_render()
 
 	// fill buffers
 	u32 _offset = 0;
-	FVF::L* _v = (FVF::L*)RCache.Vertex.Lock(_pcount * 3, f_geom.stride(), _offset);
+	FVF::L* _v = (FVF::L*)RenderBackend.Vertex.Lock(_pcount * 3, f_geom.stride(), _offset);
 	float ssaRange = r_ssaLOD_A - r_ssaLOD_B;
 	Fvector _ambient_f = g_pGamePersistent->Environment().CurrentEnv->ambient;
 	u32 _ambient = color_rgba_f(_ambient_f.x, _ambient_f.y, _ambient_f.z, 0);
@@ -137,15 +137,15 @@ void CPortalTraverser::fade_render()
 			_v++;
 		}
 	}
-	RCache.Vertex.Unlock(_pcount * 3, f_geom.stride());
+	RenderBackend.Vertex.Unlock(_pcount * 3, f_geom.stride());
 
 	// render
-	RCache.set_xform_world(Fidentity);
-	RCache.set_Shader(f_shader);
-	RCache.set_Geometry(f_geom);
-	RCache.set_CullMode(CULL_NONE);
-	RCache.Render(D3DPT_TRIANGLELIST, _offset, _pcount);
-	RCache.set_CullMode(CULL_CCW);
+	RenderBackend.set_xform_world(Fidentity);
+	RenderBackend.set_Shader(f_shader);
+	RenderBackend.set_Geometry(f_geom);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, _offset, _pcount);
+	RenderBackend.set_CullMode(CULL_CCW);
 
 	// cleanup
 	f_portals.clear();
@@ -156,10 +156,10 @@ void CPortalTraverser::dbg_draw()
 {
 	OPTICK_EVENT("CPortalTraverser::dbg_draw");
 
-	RCache.OnFrameEnd();
-	RCache.set_xform_world(Fidentity);
-	RCache.set_xform_view(Fidentity);
-	RCache.set_xform_project(Fidentity);
+	RenderBackend.OnFrameEnd();
+	RenderBackend.set_xform_world(Fidentity);
+	RenderBackend.set_xform_view(Fidentity);
+	RenderBackend.set_xform_project(Fidentity);
 	for (u32 s = 0; s < dbg_sectors.size(); s++)
 	{
 		CSector* S = (CSector*)dbg_sectors[s];
@@ -175,7 +175,7 @@ void CPortalTraverser::dbg_draw()
 		verts[2].set(bb.max.x, bb.max.y, EPS, 0xffffffff);
 		verts[3].set(bb.min.x, bb.max.y, EPS, 0xffffffff);
 		verts[4].set(bb.min.x, bb.min.y, EPS, 0xffffffff);
-		RCache.dbg_Draw(D3DPT_LINESTRIP, verts, 4);
+		RenderBackend.dbg_Draw(D3DPT_LINESTRIP, verts, 4);
 	}
 }
 #endif

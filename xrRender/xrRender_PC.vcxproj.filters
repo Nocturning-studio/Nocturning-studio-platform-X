@@ -500,22 +500,22 @@
     <ClCompile Include="occRasterizer_core.cpp">
       <Filter>Core\Occlusion culling\HOM Occlusion</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_gbuffer.cpp">
+    <ClCompile Include="r_render_stages_phase_gbuffer.cpp">
       <Filter>Rendertargets\Render stages\GBuffer stage</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_combine.cpp">
+    <ClCompile Include="r_render_stages_phase_combine.cpp">
       <Filter>Rendertargets\Render stages\Scene combine stage</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_occq.cpp">
+    <ClCompile Include="r_render_stages_phase_occlusion_culling.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Occlusion culling stage</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_depth_of_field.cpp">
+    <ClCompile Include="r_render_stages_phase_depth_of_field.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_frame_overlay.cpp">
+    <ClCompile Include="r_render_stages_phase_frame_overlay.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_effectors.cpp">
+    <ClCompile Include="r_render_stages_phase_effectors.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="du_sphere_part.cpp">
@@ -572,49 +572,49 @@
     <ClCompile Include="Blender_Particle.cpp">
       <Filter>Blenders\Forward rendering</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_motion_blur.cpp">
+    <ClCompile Include="r_render_stages_phase_motion_blur.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_bloom.cpp">
+    <ClCompile Include="r_render_stages_phase_bloom.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_antialiasing.cpp">
+    <ClCompile Include="r_render_stages_phase_antialiasing.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="Blender_antialiasing.cpp">
       <Filter>Blenders\Postprocess stage\Antialiasing</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_accum_direct.cpp">
+    <ClCompile Include="r_render_stages_light_accumulator_direct.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Direct</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_smap_Direct.cpp">
+    <ClCompile Include="r_render_stages_phase_shadow_map_Direct.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Core</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_smap_Spot.cpp">
+    <ClCompile Include="r_render_stages_phase_shadow_map_Spot.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Core</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_accumulator.cpp">
+    <ClCompile Include="r_render_stages_phase_light_accumulator.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Core</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_enable_scissor.cpp">
+    <ClCompile Include="r_render_stages_enable_scissor.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Core</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_accum_omnipart_geom.cpp">
+    <ClCompile Include="r_render_stages_light_accumulator_omnipart_geometry.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Spot%255cOmni</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_accum_point.cpp">
+    <ClCompile Include="r_render_stages_light_accumulator_point.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Spot%255cOmni</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_accum_point_geom.cpp">
+    <ClCompile Include="r_render_stages_light_accumulator_point_geometry.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Spot%255cOmni</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_accum_spot.cpp">
+    <ClCompile Include="r_render_stages_light_accumulator_spot.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Spot%255cOmni</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_accum_spot_geom.cpp">
+    <ClCompile Include="r_render_stages_light_accumulator_spot_geometry.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Spot%255cOmni</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_draw_volume.cpp">
+    <ClCompile Include="r_render_stages_draw_volume.cpp">
       <Filter>Rendertargets\Render stages\Light accumulation stage\Spot%255cOmni</Filter>
     </ClCompile>
     <ClCompile Include="r_occlusion.cpp">
@@ -632,28 +632,28 @@
     <ClCompile Include="tga.cpp">
       <Filter>Core\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_wallmarks.cpp">
+    <ClCompile Include="r_render_stages_phase_wallmarks.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_distortion.cpp">
+    <ClCompile Include="r_render_stages_phase_distortion.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="Blender_distortion.cpp">
       <Filter>Blenders\Postprocess stage\Distortion</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_barrel_blur.cpp">
+    <ClCompile Include="r_render_stages_phase_barrel_blur.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="Blender_barrel_blur.cpp">
       <Filter>Blenders\Postprocess stage\Barrel blur</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_autoexposure.cpp">
+    <ClCompile Include="r_render_stages_phase_autoexposure.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="blender_autoexposure.cpp">
       <Filter>Blenders\Postprocess stage\Autoexposure</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_contrast_adaptive_sharpening.cpp">
+    <ClCompile Include="r_render_stages_phase_contrast_adaptive_sharpening.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="Blender_contrast_adaptive_sharpening.cpp">
@@ -662,16 +662,16 @@
     <ClCompile Include="Blender_ambient_occlusion.cpp">
       <Filter>Blenders\Ambient occlusion stage</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_ao.cpp">
+    <ClCompile Include="r_render_stages_phase_ao.cpp">
       <Filter>Rendertargets\Render stages\Ambient occlusion</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_ssr.cpp">
+    <ClCompile Include="r_render_stages_phase_ssr.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="Blender_reflections.cpp">
       <Filter>Blenders\Reflections stage</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_phase_fog_scattering.cpp">
+    <ClCompile Include="r_render_stages_phase_fog_scattering.cpp">
       <Filter>Rendertargets\Render stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="blender_fog_scattering.cpp">
@@ -698,7 +698,7 @@
     <ClCompile Include="blender_effectors.cpp">
       <Filter>Blenders\Postprocess stage\Effectors</Filter>
     </ClCompile>
-    <ClCompile Include="r_rendertarget_output_to_screen.cpp">
+    <ClCompile Include="r_render_stages_output_to_screen.cpp">
       <Filter>Rendertargets\Render stages\Output to screen stage</Filter>
     </ClCompile>
     <ClCompile Include="Blender_output_to_screen.cpp">

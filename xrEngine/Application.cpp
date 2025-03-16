@@ -237,9 +237,9 @@ void CApplication::LoadBegin()
 #ifndef DEDICATED_SERVER
 		_InitializeFont(pFontSystem, "ui_font_graffiti19_russian", 0);
 
-		ll_hGeom.create(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
+		ll_hGeom.create(FVF::F_TL, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 		sh_progress.create("hud\\default", "ui\\ui_load");
-		ll_hGeom2.create(FVF::F_TL, RCache.Vertex.Buffer(), NULL);
+		ll_hGeom2.create(FVF::F_TL, RenderBackend.Vertex.Buffer(), NULL);
 #endif
 		phase_timer.Start();
 		load_stage = 0;
@@ -459,8 +459,8 @@ void CApplication::load_draw_internal()
 	Fvector2 k;
 	k.set(float(_w) / bw, float(_h) / bh);
 
-	RCache.set_Shader(sh_progress);
-	CTexture* T = RCache.get_ActiveTexture(0);
+	RenderBackend.set_Shader(sh_progress);
+	CTexture* T = RenderBackend.get_ActiveTexture(0);
 	Fvector2 tsz;
 	tsz.set((float)T->get_Width(), (float)T->get_Height());
 	Frect back_text_coords;
@@ -483,7 +483,7 @@ void CApplication::load_draw_internal()
 	back_text_coords.lt.y /= tsz.y;
 	back_text_coords.rb.x /= tsz.x;
 	back_text_coords.rb.y /= tsz.y;
-	pv = (FVF::TL*)RCache.Vertex.Lock(4, ll_hGeom.stride(), Offset);
+	pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, ll_hGeom.stride(), Offset);
 	pv->set(back_coords.lt.x, back_coords.rb.y, C, back_text_coords.lt.x, back_text_coords.rb.y);
 	pv++;
 	pv->set(back_coords.lt.x, back_coords.lt.y, C, back_text_coords.lt.x, back_text_coords.lt.y);
@@ -492,10 +492,10 @@ void CApplication::load_draw_internal()
 	pv++;
 	pv->set(back_coords.rb.x, back_coords.lt.y, C, back_text_coords.rb.x, back_text_coords.lt.y);
 	pv++;
-	RCache.Vertex.Unlock(4, ll_hGeom.stride());
+	RenderBackend.Vertex.Unlock(4, ll_hGeom.stride());
 
-	RCache.set_Geometry(ll_hGeom);
-	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.set_Geometry(ll_hGeom);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
 	// progress bar
 	back_size.set(268, 37);
@@ -513,7 +513,7 @@ void CApplication::load_draw_internal()
 	back_text_coords.rb.y /= tsz.y;
 
 	u32 v_cnt = 40;
-	pv = (FVF::TL*)RCache.Vertex.Lock(2 * (v_cnt + 1), ll_hGeom2.stride(), Offset);
+	pv = (FVF::TL*)RenderBackend.Vertex.Lock(2 * (v_cnt + 1), ll_hGeom2.stride(), Offset);
 	FVF::TL* _pv = pv;
 	float pos_delta = back_coords.width() / v_cnt;
 	float tc_delta = back_text_coords.width() / v_cnt;
@@ -530,10 +530,10 @@ void CApplication::load_draw_internal()
 		pv++;
 	}
 	VERIFY(u32(pv - _pv) == 2 * (v_cnt + 1));
-	RCache.Vertex.Unlock(2 * (v_cnt + 1), ll_hGeom2.stride());
+	RenderBackend.Vertex.Unlock(2 * (v_cnt + 1), ll_hGeom2.stride());
 
-	RCache.set_Geometry(ll_hGeom2);
-	RCache.Render(D3DPT_TRIANGLESTRIP, Offset, 2 * v_cnt);
+	RenderBackend.set_Geometry(ll_hGeom2);
+	RenderBackend.Render(D3DPT_TRIANGLESTRIP, Offset, 2 * v_cnt);
 
 	// Draw title
 	VERIFY(pFontSystem);
@@ -553,7 +553,7 @@ void CApplication::load_draw_internal()
 		r.rb.add(r.lt, Fvector2().set(512, 256));
 		r.lt.mul(k);
 		r.rb.mul(k);
-		pv = (FVF::TL*)RCache.Vertex.Lock(4, ll_hGeom.stride(), Offset);
+		pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, ll_hGeom.stride(), Offset);
 		pv->set(r.lt.x, r.rb.y, C, 0, 1);
 		pv++;
 		pv->set(r.lt.x, r.lt.y, C, 0, 0);
@@ -562,10 +562,10 @@ void CApplication::load_draw_internal()
 		pv++;
 		pv->set(r.rb.x, r.lt.y, C, 1, 0);
 		pv++;
-		RCache.Vertex.Unlock(4, ll_hGeom.stride());
+		RenderBackend.Vertex.Unlock(4, ll_hGeom.stride());
 
-		RCache.set_Shader(hLevelLogo);
-		RCache.set_Geometry(ll_hGeom);
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+		RenderBackend.set_Shader(hLevelLogo);
+		RenderBackend.set_Geometry(ll_hGeom);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
 }

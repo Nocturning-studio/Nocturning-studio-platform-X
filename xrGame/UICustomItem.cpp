@@ -21,7 +21,7 @@ void CUICustomItem::Render(FVF::TL*& Pointer, const Fvector2& pos, u32 color, fl
 {
 	OPTICK_EVENT("CUICustomItem::Render");
 
-	CTexture* T = RCache.get_ActiveTexture(0);
+	CTexture* T = RenderBackend.get_ActiveTexture(0);
 	Fvector2 ts;
 	ts.set(float(T->get_Width()), float(T->get_Height()));
 
@@ -92,7 +92,7 @@ void CUICustomItem::Render(FVF::TL*& Pointer, const Fvector2& pos_ns, u32 color,
 	OPTICK_EVENT("CUICustomItem::Render");
 
 	//.	angle = -0.3f;
-	CTexture* T = RCache.get_ActiveTexture(0);
+	CTexture* T = RenderBackend.get_ActiveTexture(0);
 	Fvector2 ts;
 	Fvector2 hp;
 	ts.set(float(T->get_Width()), float(T->get_Height()));

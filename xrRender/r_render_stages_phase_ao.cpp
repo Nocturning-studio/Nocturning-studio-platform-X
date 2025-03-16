@@ -12,8 +12,8 @@ void CRenderTarget::draw_ao(int pass, u32 Offset)
 
 	for (u32 i = 0; i < s_ambient_occlusion->E[pass]->passes.size(); i++)
 	{
-		RCache.set_Element(s_ambient_occlusion->E[pass], i);
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+		RenderBackend.set_Element(s_ambient_occlusion->E[pass], i);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
 }
 
@@ -21,8 +21,8 @@ void CRenderTarget::phase_ao()
 {
 	OPTICK_EVENT("CRenderTarget::phase_ao");
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
 
 	u32 Offset = 0;
 	u32 C = color_rgba(0, 0, 0, 255);
@@ -31,9 +31,10 @@ void CRenderTarget::phase_ao()
 	float h = float(Device.dwHeight);
 
 	// Set geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(w, h, Offset);
 
-	u_setrt(rt_ao, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_ao);
+	set_Depth_Buffer(NULL);
 
 	switch (ps_r_ao_quality)
 	{

@@ -6,26 +6,24 @@
 #include "stdafx.h"
 #include "r_rendertarget.h"
 ///////////////////////////////////////////////////////////////////////////////////
-void CRenderTarget::phase_fog_scattering()
+void CRenderTarget::phase_antialiasing()
 {
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_Stencil(FALSE);
+	OPTICK_EVENT("CRenderTarget::phase_antialiasing");
 
-	// Constants
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
+
 	u32 Offset = 0;
+
 	float w = float(Device.dwWidth);
 	float h = float(Device.dwHeight);
 
-	// Set geometry
-	set_viewport_vertex_buffer(w, h, Offset);
+	set_viewport_geometry(w, h, Offset);
 
-	u_setrt(rt_Generic_0, NULL, NULL, NULL, NULL);
+	set_Render_Target_Surface(rt_Generic_1);
+	set_Depth_Buffer(NULL);
 
-	for (int BlurIterations = 0; BlurIterations < 4; BlurIterations++)
-	for (u32 i = 0; i < s_fog_scattering->E[0]->passes.size(); i++)
-	{
-		RCache.set_Element(s_fog_scattering->E[0], i);
-		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
-	}
+	RenderBackend.set_Element(s_antialiasing->E[0]);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 ///////////////////////////////////////////////////////////////////////////////////

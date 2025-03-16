@@ -120,13 +120,14 @@ CGamePersistent::CGamePersistent(void)
 	m_PickDofNear = READ_IF_EXISTS(pSettings, r_float, "zone_pick_dof", "near", -70);
 	m_DofChangeSpeed = READ_IF_EXISTS(pSettings, r_float, "dof_params", "change_speed", 0.2f);
 	m_DofUI = READ_IF_EXISTS(pSettings, r_fvector3, "ui_dof", "dof", Fvector().set(0.0f, 0.5f, 1));
+	m_DiaphragmUI = READ_IF_EXISTS(pSettings, r_float, "ui_dof", "diaphragm", 8);
 
 	Fvector3* DofValue = Console->GetFVectorPtr("r_dof");
 	SetBaseDof(*DofValue);
 
 	float cmd_min = 1.0f, cmd_max = 10.0f;
-	float DofDiaphragm = Console->GetFloat("r_dof_diaphragm", cmd_min, cmd_max);
-	SetDofDiaphragm(DofDiaphragm);
+	m_DiaphragmBase = Console->GetFloat("r_dof_diaphragm", cmd_min, cmd_max);
+	SetDofDiaphragm(m_DiaphragmBase);
 
 	SetNightVisionState(false);
 }

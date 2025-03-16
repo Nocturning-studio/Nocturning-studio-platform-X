@@ -862,9 +862,9 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 		else
 			Target->phase_smap_direct(sun, SE_SUN_FAR);
 
-		RCache.set_xform_world(Fidentity);
-		RCache.set_xform_view(Fidentity);
-		RCache.set_xform_project(sun->X.D.combine);
+		RenderBackend.set_xform_world(Fidentity);
+		RenderBackend.set_xform_view(Fidentity);
+		RenderBackend.set_xform_project(sun->X.D.combine);
 
 		if (ps_r_lighting_flags.test(RFLAG_SUN_DETAILS))
 		{
@@ -902,7 +902,7 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 									 m_sun_cascades[cascade_ind - 1].xform, m_sun_cascades[cascade_ind].bias);
 
 	// Restore XForms
-	RCache.set_xform_world(Fidentity);
-	RCache.set_xform_view(Device.mView);
-	RCache.set_xform_project(Device.mProject);
+	RenderBackend.set_xform_world(Fidentity);
+	RenderBackend.set_xform_view(Device.mView);
+	RenderBackend.set_xform_project(Device.mProject);
 }

@@ -47,8 +47,8 @@ CEffect_Rain::CEffect_Rain()
 
 	//
 	SH_Rain.create("effects\\rain", "fx\\fx_rain");
-	hGeom_Rain.create(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
-	hGeom_Drops.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
+	hGeom_Rain.create(FVF::F_LIT, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
+	hGeom_Drops.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
 	p_create();
 	FS.r_close(F);
 }
@@ -207,7 +207,7 @@ void CEffect_Rain::Render()
 
 	// perform update
 	u32 vOffset;
-	FVF::LIT* verts = (FVF::LIT*)RCache.Vertex.Lock(desired_items * 4, hGeom_Rain->vb_stride, vOffset);
+	FVF::LIT* verts = (FVF::LIT*)RenderBackend.Vertex.Lock(desired_items * 4, hGeom_Rain->vb_stride, vOffset);
 	FVF::LIT* start = verts;
 	const Fvector& vEye = Device.vCameraPosition;
 	for (u32 I = 0; I < items.size(); I++)
@@ -318,17 +318,17 @@ void CEffect_Rain::Render()
 		verts++;
 	}
 	u32 vCount = (u32)(verts - start);
-	RCache.Vertex.Unlock(vCount, hGeom_Rain->vb_stride);
+	RenderBackend.Vertex.Unlock(vCount, hGeom_Rain->vb_stride);
 
 	// Render if needed
 	if (vCount)
 	{
-		RCache.set_CullMode(CULL_NONE);
-		RCache.set_xform_world(Fidentity);
-		RCache.set_Shader(SH_Rain);
-		RCache.set_Geometry(hGeom_Rain);
-		RCache.Render(D3DPT_TRIANGLELIST, vOffset, 0, vCount, 0, vCount / 2);
-		RCache.set_CullMode(D3DCULL_CCW);
+		RenderBackend.set_CullMode(CULL_NONE);
+		RenderBackend.set_xform_world(Fidentity);
+		RenderBackend.set_Shader(SH_Rain);
+		RenderBackend.set_Geometry(hGeom_Rain);
+		RenderBackend.Render(D3DPT_TRIANGLELIST, vOffset, 0, vCount, 0, vCount / 2);
+		RenderBackend.set_CullMode(D3DCULL_CCW);
 	}
 
 	// Particles
@@ -338,8 +338,8 @@ void CEffect_Rain::Render()
 
 	{
 		float dt = Device.fTimeDelta;
-		_IndexStream& _IS = RCache.Index;
-		RCache.set_Shader(DM_Drop->shader);
+		_IndexStream& _IS = RenderBackend.Index;
+		RenderBackend.set_Shader(DM_Drop->shader);
 
 		Fmatrix mXform, mScale;
 		int pcount = 0;
@@ -347,7 +347,7 @@ void CEffect_Rain::Render()
 		u32 vCount_Lock = particles_cache * DM_Drop->number_vertices;
 		u32 iCount_Lock = particles_cache * DM_Drop->number_indices;
 		IRender_DetailModel::fvfVertexOut* v_ptr =
-			(IRender_DetailModel::fvfVertexOut*)RCache.Vertex.Lock(vCount_Lock, hGeom_Drops->vb_stride, v_offset);
+			(IRender_DetailModel::fvfVertexOut*)RenderBackend.Vertex.Lock(vCount_Lock, hGeom_Drops->vb_stride, v_offset);
 		u16* i_ptr = _IS.Lock(iCount_Lock, i_offset);
 		while (P)
 		{
@@ -381,12 +381,12 @@ void CEffect_Rain::Render()
 				{
 					// flush
 					u32 dwNumPrimitives = iCount_Lock / 3;
-					RCache.Vertex.Unlock(vCount_Lock, hGeom_Drops->vb_stride);
+					RenderBackend.Vertex.Unlock(vCount_Lock, hGeom_Drops->vb_stride);
 					_IS.Unlock(iCount_Lock);
-					RCache.set_Geometry(hGeom_Drops);
-					RCache.Render(D3DPT_TRIANGLELIST, v_offset, 0, vCount_Lock, i_offset, dwNumPrimitives);
+					RenderBackend.set_Geometry(hGeom_Drops);
+					RenderBackend.Render(D3DPT_TRIANGLELIST, v_offset, 0, vCount_Lock, i_offset, dwNumPrimitives);
 
-					v_ptr = (IRender_DetailModel::fvfVertexOut*)RCache.Vertex.Lock(vCount_Lock, hGeom_Drops->vb_stride,
+					v_ptr = (IRender_DetailModel::fvfVertexOut*)RenderBackend.Vertex.Lock(vCount_Lock, hGeom_Drops->vb_stride,
 																				   v_offset);
 					i_ptr = _IS.Lock(iCount_Lock, i_offset);
 
@@ -401,12 +401,12 @@ void CEffect_Rain::Render()
 		vCount_Lock = pcount * DM_Drop->number_vertices;
 		iCount_Lock = pcount * DM_Drop->number_indices;
 		u32 dwNumPrimitives = iCount_Lock / 3;
-		RCache.Vertex.Unlock(vCount_Lock, hGeom_Drops->vb_stride);
+		RenderBackend.Vertex.Unlock(vCount_Lock, hGeom_Drops->vb_stride);
 		_IS.Unlock(iCount_Lock);
 		if (pcount)
 		{
-			RCache.set_Geometry(hGeom_Drops);
-			RCache.Render(D3DPT_TRIANGLELIST, v_offset, 0, vCount_Lock, i_offset, dwNumPrimitives);
+			RenderBackend.set_Geometry(hGeom_Drops);
+			RenderBackend.Render(D3DPT_TRIANGLELIST, v_offset, 0, vCount_Lock, i_offset, dwNumPrimitives);
 		}
 	}
 }

@@ -229,8 +229,16 @@ class CRenderTarget : public IRender_Target
 	void u_compute_texgen_screen(Fmatrix& dest);
 	void u_compute_texgen_jitter(Fmatrix& dest);
 	float hclip(float v, float dim);
-	void u_setrt(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, const ref_rt& _4, IDirect3DSurface9* zb);
-	void u_setrt(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3, IDirect3DSurface9* _4, IDirect3DSurface9* zb);
+	void set_Render_Target_Surface(const ref_rt& _1);
+	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2);
+	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3);
+	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, const ref_rt& _4);
+	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3,
+								   IDirect3DSurface9* _4);
+	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3);
+	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2);
+	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1);
+	void set_Depth_Buffer(IDirect3DSurface9* zb);
 	void u_calc_tc_noise(Fvector2& p0, Fvector2& p1);
 	void u_calc_tc_duality_ss(Fvector2& r0, Fvector2& r1, Fvector2& l0, Fvector2& l1);
 	BOOL u_DBT_enable(float zMin, float zMax);
@@ -378,7 +386,8 @@ class CRenderTarget : public IRender_Target
 	void reset_light_marker(bool bResetStencil = false);
 	void increment_light_marker();
 
-	void set_viewport_vertex_buffer(float w, float h, u32& vOffset);
+	void set_viewport_geometry(float w, float h, u32& vOffset);
+	void set_viewport_geometry(u32& vOffset);
 
 #ifdef DEBUG
 	IC void dbg_addline(Fvector& P0, Fvector& P1, u32 c)

@@ -313,13 +313,13 @@ void CDetailManager::Render()
 	float factor = g_pGamePersistent->Environment().wind_strength_factor;
 	swing_current.lerp(swing_desc[0], swing_desc[1], factor);
 
-	RCache.set_CullMode(CULL_NONE);
-	RCache.set_xform_world(Fidentity);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_xform_world(Fidentity);
 	if (UseVS())
 		hw_Render();
 	else
 		soft_Render();
-	RCache.set_CullMode(CULL_CCW);
+	RenderBackend.set_CullMode(CULL_CCW);
 	Device.Statistic->RenderDUMP_DT_Render.End();
 	m_frame_rendered = Device.dwFrame;
 }

@@ -45,10 +45,10 @@ void CPortal::OnRender()
 		C.div((float)poly.size());
 		V[0].set(C, 0x800000FF);
 
-		RCache.set_xform_world(Fidentity);
+		RenderBackend.set_xform_world(Fidentity);
 		// draw solid
-		RCache.set_Shader(Device.m_SelectionShader);
-		RCache.dbg_Draw(D3DPT_TRIANGLEFAN, &*V.begin(), V.size() - 2);
+		RenderBackend.set_Shader(Device.m_SelectionShader);
+		RenderBackend.dbg_Draw(D3DPT_TRIANGLEFAN, &*V.begin(), V.size() - 2);
 
 		// draw wire
 		if (bDebug)
@@ -59,8 +59,8 @@ void CPortal::OnRender()
 		{
 			Device.SetNearer(TRUE);
 		}
-		RCache.set_Shader(Device.m_WireShader);
-		RCache.dbg_Draw(D3DPT_LINESTRIP, &*(V.begin() + 1), V.size() - 2);
+		RenderBackend.set_Shader(Device.m_WireShader);
+		RenderBackend.dbg_Draw(D3DPT_LINESTRIP, &*(V.begin() + 1), V.size() - 2);
 		if (bDebug)
 		{
 			RImplementation.rmNormal();

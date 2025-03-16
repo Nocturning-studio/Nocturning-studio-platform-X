@@ -338,6 +338,7 @@ void CUIInventoryWnd::Show()
 	PlaySnd(eInvSndOpen);
 
 	GamePersistent().SetEffectorDOF(GamePersistent().m_DofUI);
+	GamePersistent().SetDofDiaphragm(GamePersistent().m_DiaphragmUI);
 }
 
 void CUIInventoryWnd::Hide()
@@ -366,6 +367,7 @@ void CUIInventoryWnd::Hide()
 	}
 
 	GamePersistent().RestoreEffectorDOF();
+	GamePersistent().SetDofDiaphragm(GamePersistent().m_DiaphragmBase);
 }
 
 void CUIInventoryWnd::AttachAddon(PIItem item_to_upgrade)

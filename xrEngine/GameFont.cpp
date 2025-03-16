@@ -140,7 +140,7 @@ void CGameFont::Initialize(LPCSTR cShader, LPCSTR cTextureName)
 
 	// Shading
 	pShader.create(cShader, cTexture);
-	pGeom.create(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
+	pGeom.create(FVF::F_TL, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 }
 
 CGameFont::~CGameFont()
@@ -178,11 +178,11 @@ void CGameFont::OnRender()
 
 	VERIFY(g_bRendering);
 	if (pShader)
-		RCache.set_Shader(pShader);
+		RenderBackend.set_Shader(pShader);
 
 	if (!(uFlags & fsValid))
 	{
-		CTexture* T = RCache.get_ActiveTexture(0);
+		CTexture* T = RenderBackend.get_ActiveTexture(0);
 		vTS.set((int)T->get_Width(), (int)T->get_Height());
 		fTCHeight = fHeight / float(vTS.y);
 		uFlags |= fsValid;
@@ -210,7 +210,7 @@ void CGameFont::OnRender()
 
 		// lock AGP memory
 		u32 vOffset;
-		FVF::TL* v = (FVF::TL*)RCache.Vertex.Lock(length * 4, pGeom.stride(), vOffset);
+		FVF::TL* v = (FVF::TL*)RenderBackend.Vertex.Lock(length * 4, pGeom.stride(), vOffset);
 		FVF::TL* start = v;
 
 		// fill vertices
@@ -292,11 +292,11 @@ void CGameFont::OnRender()
 
 		// Unlock and draw
 		u32 vCount = (u32)(v - start);
-		RCache.Vertex.Unlock(vCount, pGeom.stride());
+		RenderBackend.Vertex.Unlock(vCount, pGeom.stride());
 		if (vCount)
 		{
-			RCache.set_Geometry(pGeom);
-			RCache.Render(D3DPT_TRIANGLELIST, vOffset, 0, vCount, 0, vCount / 2);
+			RenderBackend.set_Geometry(pGeom);
+			RenderBackend.Render(D3DPT_TRIANGLELIST, vOffset, 0, vCount, 0, vCount / 2);
 		}
 	}
 	strings.clear_not_free();

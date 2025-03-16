@@ -57,9 +57,9 @@ BOOL CRenderDevice::Begin()
 
 	CHK_DX(HW.pDevice->BeginScene());
 
-	RCache.OnFrameBegin();
-	RCache.set_CullMode(CULL_CW);
-	RCache.set_CullMode(CULL_CCW);
+	RenderBackend.OnFrameBegin();
+	RenderBackend.set_CullMode(CULL_CW);
+	RenderBackend.set_CullMode(CULL_CCW);
 	if (HW.Caps.SceneMode)
 		overdrawBegin();
 	FPU::m24r();
@@ -111,7 +111,7 @@ void CRenderDevice::End(void)
 
 	g_bRendering = FALSE;
 	// end scene
-	RCache.OnFrameEnd();
+	RenderBackend.OnFrameEnd();
 	Memory.dbg_check();
 	CHK_DX(HW.pDevice->EndScene());
 
@@ -285,8 +285,8 @@ void CRenderDevice::StartEventLoop()
 
 				// Matrices
 				mFullTransform.mul(mProject, mView);
-				RCache.set_xform_view(mView);
-				RCache.set_xform_project(mProject);
+				RenderBackend.set_xform_view(mView);
+				RenderBackend.set_xform_project(mProject);
 				D3DXMatrixInverse((D3DXMATRIX*)&mInvFullTransform, 0, (D3DXMATRIX*)&mFullTransform);
 
 				syncProcessFrame.Set(); // allow secondary thread to do its job
