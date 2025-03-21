@@ -11,7 +11,7 @@ void CRender::combine_additional_postprocess()
 
 	RenderBackend.set_Element(RenderTarget->s_combine->E[2]);
 	RenderBackend.set_Constant("cas_params", ps_cas_contrast, ps_cas_sharpening, 0, 0);
-	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
 void CRender::combine_sun_shafts()
@@ -23,7 +23,7 @@ void CRender::combine_sun_shafts()
 
 
 	RenderBackend.set_Element(RenderTarget->s_combine->E[3]);
-	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
 void CRender::combine_scene_lighting()
@@ -34,8 +34,8 @@ void CRender::combine_scene_lighting()
 	Fvector2 p0, p1;
 
 	// low/hi RTs
-	RenderTargetBackend->set_Render_Target_Surface(RenderTarget->rt_Generic_1);
-	RenderTargetBackend->set_Depth_Buffer(HW.pBaseZB);
+	RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Generic_1);
+	RenderBackend.set_Depth_Buffer(HW.pBaseZB);
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 

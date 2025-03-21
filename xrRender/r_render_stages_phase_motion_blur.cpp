@@ -26,17 +26,17 @@ void CRender::motion_blur_pass_prepare_dilation_map()
 	RenderBackend.set_Constant("m_blur_power", Power);
 	RenderBackend.set_Constant("m_current", m_current);
 	RenderBackend.set_Constant("m_previous", m_previous);
-	RenderTargetBackend->RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_0);
+	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_0);
 
 	// Blur (pass 1)
 	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[1]);
 	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
-	RenderTargetBackend->RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_1);
+	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_1);
 
 	// Blur (pass 2)
 	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[2]);
 	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
-	RenderTargetBackend->RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_0);
+	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_0);
 }
 
 void CRender::motion_blur_pass_blur()
@@ -48,10 +48,10 @@ void CRender::motion_blur_pass_blur()
 
 	// Blur
 	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[4]);
-	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 
 	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[5]);
-	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
 void CRender::motion_blur_pass_save_depth()
@@ -62,7 +62,7 @@ void CRender::motion_blur_pass_save_depth()
 	RenderBackend.set_Stencil(FALSE);
 
 	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[3]);
-	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Motion_Blur_Previous_Frame_Depth);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Motion_Blur_Previous_Frame_Depth);
 }
 
 void CRender::render_motion_blur()

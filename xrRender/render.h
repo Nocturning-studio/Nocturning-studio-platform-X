@@ -23,7 +23,6 @@
 #include "../xrEngine\irenderable.h"
 #include "../xrEngine\fmesh.h"
 #include "xrRender_console.h"
-#include <r_rendertarget_backend.h>
 
 
 

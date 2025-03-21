@@ -10,8 +10,8 @@ void CRender::render_wallmarks()
 	OPTICK_EVENT("CRender::render_wallmarks");
 
 	// Targets
-	RenderTargetBackend->set_Render_Target_Surface(RenderTarget->rt_GBuffer_1);
-	RenderTargetBackend->set_Depth_Buffer(HW.pBaseZB);
+	RenderBackend.set_Render_Target_Surface(RenderTarget->rt_GBuffer_1);
+	RenderBackend.set_Depth_Buffer(HW.pBaseZB);
 
 	// Stencil	- draw only where stencil >= 0x1
 	RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00);

@@ -56,7 +56,7 @@ void CRender::accumulate_point_lights(light* L)
 
 	// 2D texgens
 	Fmatrix m_Texgen;
-	RenderTargetBackend->u_compute_texgen_screen(m_Texgen);
+	RenderBackend.u_compute_texgen_screen(m_Texgen);
 
 	// Draw volume with projective texgen
 	{

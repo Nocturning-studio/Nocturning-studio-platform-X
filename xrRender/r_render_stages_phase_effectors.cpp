@@ -54,15 +54,15 @@ void CRender::render_effectors_pass_generate_radiation_noise()
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[1]);
 	RenderBackend.set_Constant("noise_intesity", RenderTarget->param_radiation_intensity, 1);
-	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Radiation_Noise0);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Radiation_Noise0);
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[1]);
 	RenderBackend.set_Constant("noise_intesity", RenderTarget->param_radiation_intensity, 0.66f);
-	RenderTargetBackend->RenderViewportSurface(w * 0.5f, h * 0.5f, RenderTarget->rt_Radiation_Noise1);
+	RenderBackend.RenderViewportSurface(w * 0.5f, h * 0.5f, RenderTarget->rt_Radiation_Noise1);
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[1]);
 	RenderBackend.set_Constant("noise_intesity", RenderTarget->param_radiation_intensity, 0.33f);
-	RenderTargetBackend->RenderViewportSurface(w * 0.25f, h * 0.25f, RenderTarget->rt_Radiation_Noise2);
+	RenderBackend.RenderViewportSurface(w * 0.25f, h * 0.25f, RenderTarget->rt_Radiation_Noise2);
 }
 
 void CRender::render_effectors_pass_night_vision()
@@ -74,7 +74,7 @@ void CRender::render_effectors_pass_night_vision()
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[2]);
 
-	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
 void CRender::render_effectors_pass_combine()
@@ -82,8 +82,8 @@ void CRender::render_effectors_pass_combine()
 	OPTICK_EVENT("CRenderTarget::render_effectors_pass_combine");
 
 	// combination/postprocess
-	RenderTargetBackend->set_Render_Target_Surface(RenderTarget->rt_Generic_1);
-	RenderTargetBackend->set_Depth_Buffer(NULL);
+	RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Generic_1);
+	RenderBackend.set_Depth_Buffer(NULL);
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[0]);
 
@@ -149,7 +149,7 @@ void CRender::render_effectors_pass_resolve_gamma()
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[3]);
 
-	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
 void CRender::render_effectors_pass_lut()
@@ -172,7 +172,7 @@ void CRender::render_effectors_pass_lut()
 
 	RenderBackend.set_Constant("c_lut_params", envdesc->weight, 0, 0, 0);
 
-	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 
 void CRender::render_effectors()

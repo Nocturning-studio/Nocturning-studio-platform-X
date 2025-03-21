@@ -12,7 +12,7 @@ void CRender::render_screen_space_reflections()
 	for (u32 i = 0; i < RenderTarget->s_reflections->E[0]->passes.size(); i++)
 	{
 		RenderBackend.set_Element(RenderTarget->s_reflections->E[0], i);
-		RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Reflections);
+		RenderBackend.RenderViewportSurface(RenderTarget->rt_Reflections);
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////

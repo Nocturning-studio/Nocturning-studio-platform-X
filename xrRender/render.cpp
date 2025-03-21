@@ -11,7 +11,6 @@
 #include "../xrEngine\r_constants.h"
 //////////////////////////////////////////////////////////////////////////
 CRender RenderImplementation;
-CRenderTargetBackend* RenderTargetBackend;
 //////////////////////////////////////////////////////////////////////////
 #pragma todo(NSDeathman to NSDeathman: Добавить поддержку Glow)
 class CGlow : public IRender_Glow
@@ -310,7 +309,6 @@ void CRender::create()
 
 	update_options();
 	RenderTarget = xr_new<CRenderTarget>();
-	RenderTargetBackend = xr_new<CRenderTargetBackend>();
 
 	Models = xr_new<CModelPool>();
 	PSLibrary.OnCreate();
@@ -335,7 +333,6 @@ void CRender::destroy()
 	HWOCC.occq_destroy();
 	xr_delete(Models);
 	xr_delete(RenderTarget);
-	xr_delete(RenderTargetBackend);
 	PSLibrary.OnDestroy();
 	Device.seqFrame.Remove(this);
 	r_dsgraph_destroy(); // FIX BY IXRAY (THANKS BY NSDeathman)

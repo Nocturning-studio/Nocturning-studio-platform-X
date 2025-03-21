@@ -57,6 +57,8 @@ class ENGINE_API CBackend
 	R_hemi hemi;
 	R_tree tree;
 
+	ref_geom g_viewport;
+
   private:
 	// Render-targets
 	IDirect3DSurface9* pRT[4];
@@ -373,6 +375,7 @@ class ENGINE_API CBackend
 	void OnFrameEnd();
 	void OnDeviceCreate();
 	void OnDeviceDestroy();
+	void DeleteResources();
 
 	// Debug render
 	void dbg_DP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 vBase, u32 pc);
@@ -410,6 +413,29 @@ class ENGINE_API CBackend
 	{
 		Invalidate();
 	};
+
+	void u_compute_texgen_screen(Fmatrix& dest);
+	void u_compute_texgen_jitter(Fmatrix& dest);
+
+	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL);
+	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2 = NULL, IDirect3DSurface9* _3 = NULL, IDirect3DSurface9* _4 = NULL);
+	void set_Depth_Buffer(IDirect3DSurface9* zb);
+
+	void set_viewport_geometry(float w, float h, u32& vOffset);
+	void set_viewport_geometry(u32& vOffset);
+
+	void RenderViewportSurface();
+	void RenderViewportSurface(const ref_rt& _1);
+	void RenderViewportSurface(float w, float h, const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL);
+
+	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1);
+	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1, IDirect3DSurface9* zb);
+
+	void ClearTexture(const ref_rt& _1, u32 color = color_rgba(0, 0, 0, 0));
+	void ClearTexture(const ref_rt& _1, const ref_rt& _2 = NULL, u32 color = color_rgba(0, 0, 0, 0));
+	void ClearTexture(const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, u32 color = color_rgba(0, 0, 0, 0));
+	void ClearTexture(const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL, u32 color = color_rgba(0, 0, 0, 0));
+
 };
 
 extern ENGINE_API CBackend RenderBackend;

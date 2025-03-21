@@ -272,6 +272,9 @@ SGeometry* CResourceManager::CreateGeom(u32 FVF, IDirect3DVertexBuffer9* vb, IDi
 
 void CResourceManager::DeleteGeom(const SGeometry* Geom)
 {
+	if (this == NULL)
+		return;
+
 	if (0 == (Geom->dwFlags & xr_resource_flagged::RF_REGISTERED))
 		return;
 

@@ -21,12 +21,12 @@ void CRender::render_depth_of_field()
 		RenderBackend.set_Element(RenderTarget->s_dof->E[0]);
 		RenderBackend.set_Constant("dof_params", Dof.x, Dof.y, Dof.z, ps_r_dof_sky);
 		RenderBackend.set_Constant("dof_diaphragm", DofDiaphragm);
-		RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_0);
+		RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 
 		RenderBackend.set_Element(RenderTarget->s_dof->E[1]);
 		RenderBackend.set_Constant("dof_params", Dof.x, Dof.y, Dof.z, ps_r_dof_sky);
 		RenderBackend.set_Constant("dof_diaphragm", DofDiaphragm);
-		RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_1);
+		RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////

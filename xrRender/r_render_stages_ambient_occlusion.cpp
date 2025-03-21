@@ -15,10 +15,8 @@ void CRender::render_ambient_occlusion()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderTargetBackend->ClearTexture(RenderTarget->rt_ao);
-
 	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[SE_AO_HBAO_PLUS]);
-	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_ao);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_ao);
 
 	Device.Statistic->RenderCALC_AO.End();
 }

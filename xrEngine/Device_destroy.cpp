@@ -17,6 +17,7 @@ void CRenderDevice::_Destroy(BOOL bKeepTextures)
 	b_is_Ready = FALSE;
 	Statistic->OnDeviceDestroy();
 	::Render->destroy();
+	RenderBackend.DeleteResources();
 	Resources->OnDeviceDestroy(bKeepTextures);
 	RenderBackend.OnDeviceDestroy();
 

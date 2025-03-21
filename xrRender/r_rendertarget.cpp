@@ -120,8 +120,8 @@ void CRenderTarget::create_textures()
 		string256 name;
 		sprintf(name, "%s_%d", r_RT_autoexposure_pool, it);
 		rt_LUM_pool[it].create(name, 1, 1, D3DFMT_L8);
-		RenderTargetBackend->set_Render_Target_Surface(rt_LUM_pool[it]);
-		RenderTargetBackend->set_Depth_Buffer(NULL);
+		RenderBackend.set_Render_Target_Surface(rt_LUM_pool[it]);
+		RenderBackend.set_Depth_Buffer(NULL);
 		CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0x7f7f7f7f, 1.0f, 0L));
 	}
 }

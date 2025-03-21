@@ -13,6 +13,6 @@ void CRender::render_antialiasing()
 	RenderBackend.set_Stencil(FALSE);
 
 	RenderBackend.set_Element(RenderTarget->s_antialiasing->E[0]);
-	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 ///////////////////////////////////////////////////////////////////////////////////

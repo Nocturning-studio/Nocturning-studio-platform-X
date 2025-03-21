@@ -48,6 +48,8 @@ void CBackend::OnDeviceCreate()
 
 	// invalidate caching
 	Invalidate();
+
+	g_viewport.create(FVF::F_TL, Vertex.Buffer(), QuadIB);
 }
 
 void CBackend::OnDeviceDestroy()
@@ -60,4 +62,9 @@ void CBackend::OnDeviceDestroy()
 
 	// Quad
 	_RELEASE(QuadIB);
+}
+
+void CBackend::DeleteResources()
+{
+	g_viewport.destroy();
 }

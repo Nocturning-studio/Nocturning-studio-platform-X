@@ -57,9 +57,7 @@ void CRender::accumulate_spot_lights(light* L)
 
 	// 2D texgens
 	Fmatrix m_Texgen;
-	RenderTargetBackend->u_compute_texgen_screen(m_Texgen);
-	Fmatrix m_Texgen_J;
-	RenderTargetBackend->u_compute_texgen_jitter(m_Texgen_J);
+	RenderBackend.u_compute_texgen_screen(m_Texgen);
 
 	// Shadow xform (+texture adjustment matrix)
 	Fmatrix m_Shadow, m_Lmap;
@@ -161,7 +159,6 @@ void CRender::accumulate_spot_lights(light* L)
 		RenderBackend.set_Constant("Ldynamic_pos", L_pos.x, L_pos.y, L_pos.z, att_factor);
 		RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
 		RenderBackend.set_Constant("m_texgen", m_Texgen);
-		RenderBackend.set_Constant("m_texgen_J", m_Texgen_J);
 		RenderBackend.set_Constant("m_shadow", m_Shadow);
 		RenderBackend.set_Array_Constant("m_lmap", 0, m_Lmap._11, m_Lmap._21, m_Lmap._31, m_Lmap._41);
 		RenderBackend.set_Array_Constant("m_lmap", 1, m_Lmap._12, m_Lmap._22, m_Lmap._32, m_Lmap._42);
