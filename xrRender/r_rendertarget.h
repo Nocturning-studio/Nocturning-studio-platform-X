@@ -14,11 +14,8 @@ class CRenderTarget : public IRender_Target
   private:
 	u32 dwWidth;
 	u32 dwHeight;
-	u32 dwAccumulatorClearMark;
 
   public:
-	u32 dwLightMarkerID;
-
 	IBlender* b_occq;
 	IBlender* b_accum_mask;
 	IBlender* b_accum_direct_cascade;
@@ -90,7 +87,7 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_Radiation_Noise2;
 
 	// ao
-	ref_rt rt_ao_base;
+	ref_rt rt_ao_raw;
 	ref_rt rt_ao;
 
 	// env
@@ -120,7 +117,7 @@ class CRenderTarget : public IRender_Target
 	IDirect3DTexture9* tex_screenshot_gamesave; // Container of "surf_screenshot_gamesave"
 	IDirect3DSurface9* surf_screenshot_gamesave; // DXT1, SM_FOR_GAMESAVE
 	
-  private:
+  public:
 	// OCCq
 	ref_shader s_occq;
 
@@ -144,10 +141,6 @@ class CRenderTarget : public IRender_Target
 	IDirect3DIndexBuffer9* g_accum_spot_ib;
 
 	// Bloom
-	ref_geom g_bloom_build;
-	ref_geom g_bloom_filter;
-	ref_shader s_bloom_dbg_1;
-	ref_shader s_bloom_dbg_2;
 	ref_shader s_bloom;
 
 	// AO
@@ -161,14 +154,8 @@ class CRenderTarget : public IRender_Target
 	float f_autoexposure_adapt;
 
 	// Combine
-	ref_geom g_combine;
 	ref_geom g_combine_VP; // xy=p,zw=tc
-	ref_geom g_combine_2UV;
 	ref_geom g_combine_cuboid;
-
-	ref_geom g_viewport;
-
-	ref_geom g_simple_quad;
 
 	ref_shader s_combine;
 	ref_shader s_contrast_adaptive_sharpening;
@@ -183,13 +170,13 @@ class CRenderTarget : public IRender_Target
 	ref_shader s_fog_scattering;
 	ref_shader s_output_to_screen;
 
-  public:
 	ref_shader s_effectors;
 	ref_geom g_effectors;
 	ref_shader s_menu;
-	ref_geom g_menu;
+	ref_geom g_viewport;
 
-  private:
+  public:
+#pragma todo("NSDeathman to NSDeathman: вынести из рендертаргета")
 	float im_noise_time;
 	u32 im_noise_shift_w;
 	u32 im_noise_shift_h;
@@ -218,6 +205,12 @@ class CRenderTarget : public IRender_Target
   public:
 	CRenderTarget();
 	~CRenderTarget();
+
+	void create_textures();
+	void create_blenders();
+	void delete_blenders();
+	void initialize_postprocess_params();
+
 	void accum_point_geom_create();
 	void accum_point_geom_destroy();
 	void accum_omnip_geom_create();
@@ -233,85 +226,13 @@ class CRenderTarget : public IRender_Target
 	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2);
 	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3);
 	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, const ref_rt& _4);
-	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3,
-								   IDirect3DSurface9* _4);
+	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3, IDirect3DSurface9* _4);
 	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3);
 	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2);
 	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1);
 	void set_Depth_Buffer(IDirect3DSurface9* zb);
 	void u_calc_tc_noise(Fvector2& p0, Fvector2& p1);
 	void u_calc_tc_duality_ss(Fvector2& r0, Fvector2& r1, Fvector2& l0, Fvector2& l1);
-	BOOL u_DBT_enable(float zMin, float zMax);
-	void u_DBT_disable();
-
-	void enable_anisotropy_filtering();
-	void disable_anisotropy_filtering();
-	void clear_gbuffer();
-	void create_gbuffer();
-	void phase_occq();
-	void phase_wallmarks();
-	void phase_smap_direct(light* L, u32 sub_phase);
-	void phase_smap_direct_tsh(light* L, u32 sub_phase);
-	void phase_smap_spot_clear();
-	void phase_smap_spot(light* L);
-	void phase_smap_spot_tsh(light* L);
-	void phase_accumulator();
-
-	BOOL enable_scissor(light* L); // true if intersects near plane
-	void enable_dbt_bounds(light* L);
-
-	void draw_volume(light* L);
-	void accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev, float fBias);
-	void accum_point(light* L);
-	void accum_spot(light* L);
-
-	void phase_bloom();
-
-	void draw_ao(int pass);
-	void phase_ao();
-
-	void phase_autoexposure();
-	void phase_autoexposure_pipeline_start();
-	void phase_autoexposure_pipeline_clear();
-
-	void phase_combine_postprocess();
-
-	void phase_apply_volumetric();
-
-	void phase_combine();
-
-	void calc_screen_space_reflections();
-
-	void phase_contrast_adaptive_sharpening();
-
-	void draw_overlays();
-
-	void phase_antialiasing();
-
-	void phase_create_distortion_mask();
-	void phase_distortion();
-
-	void phase_depth_of_field();
-
-	void phase_barrel_blur();
-
-	void motion_blur_phase_prepare_dilation_map();
-	void phase_motion_blur_pass_blur();
-	void phase_motion_blur_pass_save_depth();
-	void phase_motion_blur();
-
-	void phase_fog_scattering();
-
-	bool u_need_CM();
-
-	void phase_effectors_pass_generate_radiation_noise();
-	void phase_effectors_pass_night_vision();
-	void phase_effectors_pass_lut();
-	void phase_effectors_pass_combine();
-	void phase_effectors_pass_resolve_gamma();
-	void phase_effectors();
-
-	void phase_output_to_screen();
 
 	virtual void set_blur(float f)
 	{
@@ -379,21 +300,18 @@ class CRenderTarget : public IRender_Target
 	{
 		param_radiation_intensity = f;
 	}
-	//	Need to reset stencil only when marker overflows.
-	//	Don't clear when render for the first time
-	void reset_light_marker(bool bResetStencil = false);
-	void increment_light_marker();
 
 	void set_viewport_geometry(float w, float h, u32& vOffset);
 	void set_viewport_geometry(u32& vOffset);
 
 	void RenderViewportSurface();
-
 	void RenderViewportSurface(const ref_rt& _1);
+	void RenderViewportSurface(float w, float h, const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL);
 
-	void RenderViewportSurface(float w, float h, const ref_rt& _1);
+	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1);
+	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1, IDirect3DSurface9* zb);
 
-	void ClearTexture(const ref_rt& _1);
+	void ClearTexture(const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL, u32 color = color_rgba(0, 0, 0, 0));
 
 #ifdef DEBUG
 	IC void dbg_addline(Fvector& P0, Fvector& P1, u32 c)

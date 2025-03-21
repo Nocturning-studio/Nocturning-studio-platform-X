@@ -4,15 +4,14 @@
 // Nocturning studio for NS Platform X
 ///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "r_rendertarget.h"
 ///////////////////////////////////////////////////////////////////////////////////
-void CRenderTarget::phase_wallmarks()
+void CRender::render_wallmarks()
 {
-	OPTICK_EVENT("CRenderTarget::phase_wallmarks");
+	OPTICK_EVENT("CRender::render_wallmarks");
 
 	// Targets
-	set_Render_Target_Surface(rt_GBuffer_1);
-	set_Depth_Buffer(HW.pBaseZB);
+	RenderTarget->set_Render_Target_Surface(RenderTarget->rt_GBuffer_1);
+	RenderTarget->set_Depth_Buffer(HW.pBaseZB);
 
 	// Stencil	- draw only where stencil >= 0x1
 	RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00);

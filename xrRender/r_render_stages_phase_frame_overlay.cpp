@@ -3,11 +3,10 @@
 // Nocturning studio for NS Platform X
 ///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "r_rendertarget.h"
 ///////////////////////////////////////////////////////////////////////////////////
-void CRenderTarget::draw_overlays()
+void CRender::render_screen_overlays()
 {
-	OPTICK_EVENT("CRenderTarget::draw_overlays");
+	OPTICK_EVENT("CRenderTarget::render_screen_overlays");
 
 	int GridEnabled = 0;
 	int CinemaBordersEnabled = 0;
@@ -25,10 +24,10 @@ void CRenderTarget::draw_overlays()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderBackend.set_Element(s_frame_overlay->E[0]);
+	RenderBackend.set_Element(RenderTarget->s_frame_overlay->E[0]);
 
 	RenderBackend.set_Constant("enabled_overlays", (float)GridEnabled, (float)CinemaBordersEnabled, (float)WatermarkEnabled, 0);
 
-	RenderViewportSurface(rt_Generic_0);
+	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 ///////////////////////////////////////////////////////////////////////////////////

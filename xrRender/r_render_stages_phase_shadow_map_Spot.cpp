@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-void CRenderTarget::phase_smap_spot_clear()
+void CRender::clear_shadow_map_spot()
 {
 	/*
 	if (RenderImplementation.b_HW_smap)		set_Render_Target_Surface	(rt_smap_surf, NULL, NULL, NULL, rt_smap_d_depth->pRT);
@@ -9,11 +9,11 @@ void CRenderTarget::phase_smap_spot_clear()
 	*/
 }
 
-void CRenderTarget::phase_smap_spot(light* L)
+void CRender::render_shadow_map_spot(light* L)
 {
 	// Targets + viewport
-	set_Render_Target_Surface(rt_smap_surf);
-	set_Depth_Buffer(rt_smap_depth->pRT);
+	RenderTarget->set_Render_Target_Surface(RenderTarget->rt_smap_surf);
+	RenderTarget->set_Depth_Buffer(RenderTarget->rt_smap_depth->pRT);
 
 	D3DVIEWPORT9 VP = {L->X.S.posX, L->X.S.posY, L->X.S.size, L->X.S.size, 0, 1};
 	CHK_DX(HW.pDevice->SetViewport(&VP));
@@ -28,7 +28,7 @@ void CRenderTarget::phase_smap_spot(light* L)
 	CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_ZBUFFER, 0xffffffff, 1.0f, 0L));
 }
 
-void CRenderTarget::phase_smap_spot_tsh(light* L)
+void CRender::render_shadow_map_spot_transluent(light* L)
 {
 	VERIFY(RenderImplementation.o.Tshadows);
 	RenderBackend.set_ColorWriteEnable();
@@ -43,7 +43,7 @@ void CRenderTarget::phase_smap_spot_tsh(light* L)
 		// Select color-mask
 		ref_shader shader = L->s_spot;
 		if (!shader)
-			shader = s_accum_spot;
+			shader = RenderTarget->s_accum_spot;
 		RenderBackend.set_Element(shader->E[SE_L_FILL]);
 
 		// Fill vertex buffer
@@ -57,7 +57,7 @@ void CRenderTarget::phase_smap_spot_tsh(light* L)
 		p0.set(.5f / _w, .5f / _h);
 		p1.set((_w + .5f) / _w, (_h + .5f) / _h);
 
-		FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, g_combine->vb_stride, Offset);
+		FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, RenderTarget->g_viewport->vb_stride, Offset);
 		pv->set(EPS, float(_h + EPS), d_Z, d_W, C, p0.x, p1.y);
 		pv++;
 		pv->set(EPS, EPS, d_Z, d_W, C, p0.x, p0.y);
@@ -66,8 +66,8 @@ void CRenderTarget::phase_smap_spot_tsh(light* L)
 		pv++;
 		pv->set(float(_w + EPS), EPS, d_Z, d_W, C, p1.x, p0.y);
 		pv++;
-		RenderBackend.Vertex.Unlock(4, g_combine->vb_stride);
-		RenderBackend.set_Geometry(g_combine);
+		RenderBackend.Vertex.Unlock(4, RenderTarget->g_viewport->vb_stride);
+		RenderBackend.set_Geometry(RenderTarget->g_viewport);
 
 		// draw
 		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);

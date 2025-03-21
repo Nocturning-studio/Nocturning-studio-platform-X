@@ -702,7 +702,7 @@ void xrRender_initconsole()
 	CMD4(CCC_Float, "r_bloom_blades_brightness", &ps_r_bloom_blades_brightness, 0.0f, 10.0f);
 
 	CMD3(CCC_Mask, "r_mblur_enabled", &ps_r_postprocess_flags, RFLAG_MBLUR);
-	CMD4(CCC_Float, "r_mblur_power", &ps_r_mblur, 0.0f, 1.0f);
+	CMD4(CCC_Float, "r_mblur_power", &ps_r_mblur, 0.0f, 100.0f);
 
 	tw_min.set(-10000, -10000, 0);
 	tw_max.set(10000, 10000, 10000);

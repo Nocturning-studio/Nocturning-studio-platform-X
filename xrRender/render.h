@@ -7,6 +7,7 @@
 
 #include "r_types.h"
 #include "r_rendertarget.h"
+#include "r_render_stages.h"
 
 #include "hom.h"
 #include "detailmanager.h"
@@ -22,6 +23,8 @@
 #include "../xrEngine\irenderable.h"
 #include "../xrEngine\fmesh.h"
 #include "xrRender_console.h"
+
+
 
 // definition
 class CRender : public R_dsgraph_structure
@@ -106,7 +109,7 @@ class CRender : public R_dsgraph_structure
 	CModelPool* Models;
 	CWallmarksEngine* Wallmarks;
 
-	CRenderTarget* RenderTarget; // Render-target
+	CRenderTarget* RenderTarget;
 
 	CLight_DB Lights;
 	CLight_Compute_XFORM_and_VIS LR;
@@ -114,6 +117,9 @@ class CRender : public R_dsgraph_structure
 	SMAP_Allocator LP_smap_pool;
 	light_Package LP_normal;
 	light_Package LP_pending;
+
+	u32 dwAccumulatorClearMark;
+	u32 dwLightMarkerID;
 
 	xr_vector<Fbox3, render_alloc<Fbox3>> main_coarse_structure;
 
@@ -147,30 +153,8 @@ class CRender : public R_dsgraph_structure
 	void add_leafs_Static(IRender_Visual* pVisual);	 // if detected node's full visibility
 
   public:
-	bool need_render_sun();
-	void check_distort();
-
-	void render_main(Fmatrix& mCombined, bool _fportals);
-	void query_wait();
-	void render_lights(light_Package& LP);
-	void render_sun_cascade(u32 cascade_ind);
-	void init_cacades();
-	void render_sun_cascades();
-
-	void render_stage_hom();
-	void render_stage_ao();
-	void render_stage_depth_prepass();
-	void render_stage_gbuffer_main();
-	void render_stage_gbuffer_secondary();
-	void render_stage_occlusion_culling();
-	void render_stage_forward();
-	void update_shadow_map_visibility();
-	void render_stage_sun();
-	void render_stage_lights();
-	void render_sky_box();
-	void render_stage_postprocess();
-
 	void RenderScene();
+	void RenderDebug();
 	void RenderMenu();
 
   public:
@@ -295,6 +279,75 @@ class CRender : public R_dsgraph_structure
 	virtual BOOL occ_visible(sPoly& P);
 
 	// Main
+	void clear_gbuffer();
+	void set_gbuffer();
+	void phase_occq();
+	void render_wallmarks();
+	void render_shadow_map_sun(light* L, u32 sub_phase);
+	void render_shadow_map_sun_transluent(light* L, u32 sub_phase);
+	void clear_shadow_map_spot();
+	void render_shadow_map_spot(light* L);
+	void render_shadow_map_spot_transluent(light* L);
+	void set_light_accumulator();
+	BOOL enable_scissor(light* L); // true if intersects near plane
+	void enable_dbt_bounds(light* L);
+	BOOL u_DBT_enable(float zMin, float zMax);
+	void u_DBT_disable();
+	float hclip(float v, float dim);
+	void draw_volume(light* L);
+	void accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev, float fBias);
+	void accumulate_point_lights(light* L);
+	void accumulate_spot_lights(light* L);
+	void clear_bloom();
+	void calculate_bloom();
+	void render_bloom();
+	void render_autoexposure();
+	void start_autoexposure_pipeline();
+	void clear_autoexposure_pipeline();
+	void combine_additional_postprocess();
+	void combine_sun_shafts();
+	void combine_scene_lighting();
+	void render_screen_space_reflections();
+	void render_screen_overlays();
+	void render_antialiasing();
+	void create_distortion_mask();
+	void render_distortion();
+	void render_depth_of_field();
+	void motion_blur_pass_prepare_dilation_map();
+	void motion_blur_pass_blur();
+	void motion_blur_pass_save_depth();
+	void render_motion_blur();
+	void render_fog_scattering();
+	void render_effectors_pass_generate_radiation_noise();
+	void render_effectors_pass_night_vision();
+	void render_effectors_pass_lut();
+	void render_effectors_pass_combine();
+	void render_effectors_pass_resolve_gamma();
+	void render_effectors();
+	void output_frame_to_screen();
+	bool need_render_sun();
+	void check_distort();
+	void render_main(Fmatrix& mCombined, bool _fportals);
+	void query_wait();
+	void render_lights(light_Package& LP);
+	void render_sun_cascade(u32 cascade_ind);
+	void init_cacades();
+	void render_sun_cascades();
+	void render_hom();
+	void render_ambient_occlusion();
+	void combine_scene();
+	void render_depth_prepass();
+	void render_gbuffer_primary();
+	void render_gbuffer_secondary();
+	void render_stage_occlusion_culling();
+	void render_stage_forward();
+	void update_shadow_map_visibility();
+	void render_sun();
+	void render_lights();
+	void render_sky_box();
+	void render_postprocess();
+	void render_stage_main_geometry();
+
 	virtual void Calculate();
 	virtual void Render();
 	virtual void Screenshot(ScreenshotMode mode = SM_NORMAL, LPCSTR name = 0);

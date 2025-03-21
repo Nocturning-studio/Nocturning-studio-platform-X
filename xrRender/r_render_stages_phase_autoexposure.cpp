@@ -17,10 +17,10 @@ struct v_filter_autoexposure
 };
 #pragma pack(pop)
 
-void CRenderTarget::phase_autoexposure()
+void CRender::render_autoexposure()
 {
-	OPTICK_EVENT("CRenderTarget::phase_autoexposure");
-
+	OPTICK_EVENT("CRender::render_autoexposure");
+	/*
 	u32 Offset = 0;
 	float eps = EPS_S;
 
@@ -319,21 +319,22 @@ void CRenderTarget::phase_autoexposure()
 
 	// Cleanup states
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
+	*/
 }
 
-void CRenderTarget::phase_autoexposure_pipeline_start()
+void CRender::start_autoexposure_pipeline()
 {
-	OPTICK_EVENT("CRenderTarget::phase_autoexposure_pipeline_start");
+	OPTICK_EVENT("CRenderTarget::start_autoexposure_pipeline");
 
 	//*** exposure-pipeline
 	u32 gpu_id = Device.dwFrame % 2;
-	t_LUM_src->surface_set(rt_LUM_pool[gpu_id * 2 + 0]->pSurface);
-	t_LUM_dest->surface_set(rt_LUM_pool[gpu_id * 2 + 1]->pSurface);
+	RenderTarget->t_LUM_src->surface_set(RenderTarget->rt_LUM_pool[gpu_id * 2 + 0]->pSurface);
+	RenderTarget->t_LUM_dest->surface_set(RenderTarget->rt_LUM_pool[gpu_id * 2 + 1]->pSurface);
 }
 
-void CRenderTarget::phase_autoexposure_pipeline_clear()
+void CRender::clear_autoexposure_pipeline()
 {
-	OPTICK_EVENT("CRenderTarget::phase_autoexposure_pipeline_clear");
+	OPTICK_EVENT("CRenderTarget::clear_autoexposure_pipeline");
 
 	u32 gpu_id = Device.dwFrame % 2;
 
@@ -342,8 +343,8 @@ void CRenderTarget::phase_autoexposure_pipeline_clear()
 
 	//*** exposure-pipeline-clear
 	{
-		std::swap(rt_LUM_pool[gpu_id * 2 + 0], rt_LUM_pool[gpu_id * 2 + 1]);
-		t_LUM_src->surface_set(NULL);
-		t_LUM_dest->surface_set(NULL);
+		std::swap(RenderTarget->rt_LUM_pool[gpu_id * 2 + 0], RenderTarget->rt_LUM_pool[gpu_id * 2 + 1]);
+		RenderTarget->t_LUM_src->surface_set(NULL);
+		RenderTarget->t_LUM_dest->surface_set(NULL);
 	}
 }

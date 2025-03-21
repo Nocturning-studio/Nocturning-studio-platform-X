@@ -2,9 +2,9 @@
 
 extern Fvector du_cone_vertices[DU_CONE_NUMVERTEX];
 
-void CRenderTarget::accum_spot(light* L)
+void CRender::accumulate_spot_lights(light* L)
 {
-	phase_accumulator();
+	set_light_accumulator();
 	RenderImplementation.stats.l_visible++;
 
 	// *** assume accumulator setted up ***
@@ -14,13 +14,13 @@ void CRenderTarget::accum_spot(light* L)
 	{
 		shader = L->s_point;
 		if (!shader)
-			shader = s_accum_point;
+			shader = RenderTarget->s_accum_point;
 	}
 	else
 	{
 		shader = L->s_spot;
 		if (!shader)
-			shader = s_accum_spot;
+			shader = RenderTarget->s_accum_spot;
 	}
 
 	BOOL bIntersect = FALSE; // enable_scissor(L);
@@ -37,24 +37,22 @@ void CRenderTarget::accum_spot(light* L)
 		// *** thus can cope without stencil clear with 127 lights
 		// *** in practice, 'cause we "clear" it back to 0x1 it usually allows us to > 200 lights :)
 		RenderBackend.set_ColorWriteEnable(FALSE);
-		RenderBackend.set_Element(s_accum_mask->E[SE_MASK_SPOT]); // masker
+		RenderBackend.set_Element(RenderTarget->s_accum_mask->E[SE_MASK_SPOT]); // masker
 
 		// backfaces: if (stencil>=1 && zfail)			stencil = light_id
 		RenderBackend.set_CullMode(CULL_CW);
-		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0x01, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_KEEP,
-						   D3DSTENCILOP_REPLACE);
+		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0x01, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_KEEP, D3DSTENCILOP_REPLACE);
 		draw_volume(L);
 
 		// frontfaces: if (stencil>=light_id && zfail)	stencil = 0x1
 		RenderBackend.set_CullMode(CULL_CCW);
-		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_KEEP,
-						   D3DSTENCILOP_REPLACE);
+		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_KEEP, D3DSTENCILOP_REPLACE);
 		draw_volume(L);
 	}
 
 	// nv-stencil recompression
 	if (RenderImplementation.o.nvstencil)
-		u_stencil_optimize();
+		RenderTarget->u_stencil_optimize();
 
 	// *****************************	Minimize overdraw	*************************************
 	// Select shader (front or back-faces), *** back, if intersect near plane
@@ -63,9 +61,9 @@ void CRenderTarget::accum_spot(light* L)
 
 	// 2D texgens
 	Fmatrix m_Texgen;
-	u_compute_texgen_screen(m_Texgen);
+	RenderTarget->u_compute_texgen_screen(m_Texgen);
 	Fmatrix m_Texgen_J;
-	u_compute_texgen_jitter(m_Texgen_J);
+	RenderTarget->u_compute_texgen_jitter(m_Texgen_J);
 
 	// Shadow xform (+texture adjustment matrix)
 	Fmatrix m_Shadow, m_Lmap;

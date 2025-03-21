@@ -856,11 +856,11 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 	if (bNormal || bSpecial)
 	{
 		if (cascade_ind == 0)
-			RenderTarget->phase_smap_direct(sun, SE_SUN_NEAR);
+			render_shadow_map_sun(sun, SE_SUN_NEAR);
 		else if (cascade_ind < m_sun_cascades.size() - 1)
-			RenderTarget->phase_smap_direct(sun, SE_SUN_MIDDLE);
+			render_shadow_map_sun(sun, SE_SUN_MIDDLE);
 		else
-			RenderTarget->phase_smap_direct(sun, SE_SUN_FAR);
+			render_shadow_map_sun(sun, SE_SUN_FAR);
 
 		RenderBackend.set_xform_world(Fidentity);
 		RenderBackend.set_xform_view(Fidentity);
@@ -879,7 +879,7 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 		//if (bSpecial || (cascade_ind < m_sun_cascades.size() - 1))
 		//{
 		//	sun->X.D.transluent = TRUE;
-		//	RenderTarget->phase_smap_direct_tsh(sun, SE_SUN_FAR);
+		//	RenderTarget->render_shadow_map_sun_transluent(sun, SE_SUN_FAR);
 		//	r_dsgraph_render_graph(1); // normal level, secondary priority
 		//	r_dsgraph_render_sorted(); // strict-sorted geoms
 		//}
@@ -889,17 +889,14 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 	r_pmask(true, false);
 
 	// Accumulate
-	RenderTarget->phase_accumulator();
+	set_light_accumulator();
 
 	if (cascade_ind == 0)
-		RenderTarget->accum_direct_cascade(SE_SUN_NEAR, m_sun_cascades[cascade_ind].xform, m_sun_cascades[cascade_ind].xform,
-									 m_sun_cascades[cascade_ind].bias);
+		accumulate_sun(SE_SUN_NEAR, m_sun_cascades[cascade_ind].xform, m_sun_cascades[cascade_ind].xform, m_sun_cascades[cascade_ind].bias);
 	else if (cascade_ind < m_sun_cascades.size() - 1)
-		RenderTarget->accum_direct_cascade(SE_SUN_MIDDLE, m_sun_cascades[cascade_ind].xform,
-									 m_sun_cascades[cascade_ind - 1].xform, m_sun_cascades[cascade_ind].bias);
+		accumulate_sun(SE_SUN_MIDDLE, m_sun_cascades[cascade_ind].xform, m_sun_cascades[cascade_ind - 1].xform, m_sun_cascades[cascade_ind].bias);
 	else
-		RenderTarget->accum_direct_cascade(SE_SUN_FAR, m_sun_cascades[cascade_ind].xform,
-									 m_sun_cascades[cascade_ind - 1].xform, m_sun_cascades[cascade_ind].bias);
+		accumulate_sun(SE_SUN_FAR, m_sun_cascades[cascade_ind].xform, m_sun_cascades[cascade_ind - 1].xform, m_sun_cascades[cascade_ind].bias);
 
 	// Restore XForms
 	RenderBackend.set_xform_world(Fidentity);

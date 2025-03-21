@@ -2,69 +2,40 @@
 #include "..\xrEngine\igame_persistent.h"
 #include "..\xrEngine\environment.h"
 
-void CRenderTarget::phase_combine_postprocess()
+void CRender::combine_additional_postprocess()
 {
-	OPTICK_EVENT("CRenderTarget::phase_combine_postprocess");
-
-	set_Render_Target_Surface(rt_Generic_0);
-	set_Depth_Buffer(NULL);
+	OPTICK_EVENT("CRender::combine_additional_postprocess");
 
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	// Constants
-	u32 Offset = 0;
-	float w = float(Device.dwWidth);
-	float h = float(Device.dwHeight);
-
-	// Set Geometry
-	set_viewport_geometry(w, h, Offset);
-
-	// Set pass
-	RenderBackend.set_Element(s_combine->E[2]);
-
-	// Set constants
+	RenderBackend.set_Element(RenderTarget->s_combine->E[2]);
 	RenderBackend.set_Constant("cas_params", ps_cas_contrast, ps_cas_sharpening, 0, 0);
-
-	// Draw
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
-void CRenderTarget::phase_apply_volumetric()
+void CRender::combine_sun_shafts()
 {
-	OPTICK_EVENT("CRenderTarget::phase_apply_volumetric");
-
-	set_Render_Target_Surface(rt_Generic_0);
-	set_Depth_Buffer(NULL);
+	OPTICK_EVENT("CRender::combine_sun_shafts");
 
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	// Constants
-	u32 Offset = 0;
-	float w = float(Device.dwWidth);
-	float h = float(Device.dwHeight);
 
-	// Set geometry
-	set_viewport_geometry(w, h, Offset);
-
-	// Set pass
-	RenderBackend.set_Element(s_combine->E[3]);
-
-	// Draw
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.set_Element(RenderTarget->s_combine->E[3]);
+	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
-void CRenderTarget::phase_combine()
+void CRender::combine_scene_lighting()
 {
-	OPTICK_EVENT("CRenderTarget::phase_combine");
+	OPTICK_EVENT("CRender::combine_scene_lighting");
 
 	u32 Offset = 0;
 	Fvector2 p0, p1;
 
 	// low/hi RTs
-	set_Render_Target_Surface(rt_Generic_1);
-	set_Depth_Buffer(HW.pBaseZB);
+	RenderTarget->set_Render_Target_Surface(RenderTarget->rt_Generic_1);
+	RenderTarget->set_Depth_Buffer(HW.pBaseZB);
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
@@ -78,7 +49,7 @@ void CRenderTarget::phase_combine()
 	RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
 	if (RenderImplementation.o.nvstencil)
 	{
-		u_stencil_optimize(FALSE);
+		RenderTarget->u_stencil_optimize(FALSE);
 		RenderBackend.set_ColorWriteEnable();
 	}
 
@@ -101,7 +72,7 @@ void CRenderTarget::phase_combine()
 	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
 
 	// Fill vertex buffer
-	Fvector4* pv = (Fvector4*)RenderBackend.Vertex.Lock(4, g_combine_VP->vb_stride, Offset);
+	Fvector4* pv = (Fvector4*)RenderBackend.Vertex.Lock(4, RenderTarget->g_combine_VP->vb_stride, Offset);
 	pv->set(hclip(EPS, _w), hclip(_h + EPS, _h), p0.x, p1.y);
 	pv++;
 	pv->set(hclip(EPS, _w), hclip(EPS, _h), p0.x, p0.y);
@@ -110,21 +81,21 @@ void CRenderTarget::phase_combine()
 	pv++;
 	pv->set(hclip(_w + EPS, _w), hclip(EPS, _h), p1.x, p0.y);
 	pv++;
-	RenderBackend.Vertex.Unlock(4, g_combine_VP->vb_stride);
+	RenderBackend.Vertex.Unlock(4, RenderTarget->g_combine_VP->vb_stride);
 
 	// Setup textures
 	IDirect3DBaseTexture9* e0 = envdesc->sky_r_textures_env[0].second->surface_get();
-	t_envmap_0->surface_set(e0);
+	RenderTarget->t_envmap_0->surface_set(e0);
 	_RELEASE(e0);
 
 	IDirect3DBaseTexture9* e1 = envdesc->sky_r_textures_env[1].second->surface_get();
-	t_envmap_1->surface_set(e1);
+	RenderTarget->t_envmap_1->surface_set(e1);
 	_RELEASE(e1);
 
 	// Draw
-	RenderBackend.set_Element(s_combine->E[1]);
+	RenderBackend.set_Element(RenderTarget->s_combine->E[1]);
 
-	RenderBackend.set_Geometry(g_combine_VP);
+	RenderBackend.set_Geometry(RenderTarget->g_combine_VP);
 
 	Fvector4 debug_mode = {(float)ps_r_debug_render, 0, 0, 0};
 	RenderBackend.set_Constant("debug_mode", debug_mode);

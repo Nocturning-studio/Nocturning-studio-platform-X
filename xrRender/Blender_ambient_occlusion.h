@@ -10,7 +10,9 @@ enum
 	SE_AO_SSAO_PLUS,
 	SE_AO_HBAO_PLUS,
 	SE_AO_GTAO,
+	SE_AO_DENOISE,
 };
+
 class CBlender_ambient_occlusion : public IBlender
 {
   public:

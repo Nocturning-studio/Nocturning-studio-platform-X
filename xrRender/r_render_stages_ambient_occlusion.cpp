@@ -1,18 +1,25 @@
 ///////////////////////////////////////////////////////////////////////////////////
-// Created: 15.11.2023
 // Author: NSDeathman
 // Nocturning studio for NS Platform X
 ///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
+#include "Blender_ambient_occlusion.h"
 ///////////////////////////////////////////////////////////////////////////////////
-void CRender::render_antialiasing()
+void CRender::render_ambient_occlusion()
 {
-	OPTICK_EVENT("CRender::render_antialiasing");
+	OPTICK_EVENT("CRender::render_ambient_occlusion");
 
+	Device.Statistic->RenderCALC_AO.Begin();
+
+	RenderBackend.set_ColorWriteEnable();
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderBackend.set_Element(RenderTarget->s_antialiasing->E[0]);
-	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderTarget->ClearTexture(RenderTarget->rt_ao);
+
+	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[SE_AO_HBAO_PLUS]);
+	RenderTarget->RenderViewportSurface(RenderTarget->rt_ao);
+
+	Device.Statistic->RenderCALC_AO.End();
 }
 ///////////////////////////////////////////////////////////////////////////////////

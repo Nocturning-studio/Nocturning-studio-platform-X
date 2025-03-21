@@ -4,14 +4,13 @@
 // Nocturning studio for NS Platform X
 ///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "r_rendertarget.h"
 ///////////////////////////////////////////////////////////////////////////////////
-void CRenderTarget::phase_create_distortion_mask()
+void CRender::create_distortion_mask()
 {
-	OPTICK_EVENT("CRenderTarget::phase_create_distortion_mask");
+	OPTICK_EVENT("CRender::create_distortion_mask");
 
-	set_Render_Target_Surface(rt_Distortion_Mask);
-	set_Depth_Buffer(HW.pBaseZB);
+	RenderTarget->set_Render_Target_Surface(RenderTarget->rt_Distortion_Mask);
+	RenderTarget->set_Depth_Buffer(HW.pBaseZB);
 
 	RenderBackend.set_CullMode(CULL_CCW);
 	RenderBackend.set_Stencil(FALSE);
@@ -22,14 +21,14 @@ void CRenderTarget::phase_create_distortion_mask()
 	RenderImplementation.r_dsgraph_render_distort();
 }
 
-void CRenderTarget::phase_distortion()
+void CRender::render_distortion()
 {
-	OPTICK_EVENT("CRenderTarget::phase_distortion");
+	OPTICK_EVENT("CRender::render_distortion");
 
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderBackend.set_Element(s_distortion->E[0]);
+	RenderBackend.set_Element(RenderTarget->s_distortion->E[0]);
 
-	RenderViewportSurface(rt_Generic_1);
+	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_1);
 }

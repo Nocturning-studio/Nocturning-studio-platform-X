@@ -3,11 +3,7 @@
 // Author: NSDeathman
 // Nocturning studio for NS Platform X
 ////////////////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
-#include "..\xrEngine\igame_persistent.h"
-#include "..\xrEngine\fbasicvisual.h"
-#include "..\xrEngine\customhud.h"
-#include "..\xrEngine\xr_object.h"
+#include "r_render_pipeline.h"
 ////////////////////////////////////////////////////////////////////////////////
 void CRender::Render()
 {
@@ -27,6 +23,7 @@ void CRender::Render()
 			return;
 
 		RenderScene();
+		//RenderDebug();
 	}
 
 	Device.Statistic->RenderCALC.End();

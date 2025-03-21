@@ -7,11 +7,6 @@
 #include "r_rendertarget.h"
 #include "..\xrEngine\resourcemanager.h"
 ////////////////////////////////////////////////////////////////////////////////
-float CRenderTarget::hclip(float v, float dim)
-{
-	return 2.f * v / dim - 1.f;
-}
-
 void CRenderTarget::set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, const ref_rt& _4)
 {
 	R_ASSERT2(_1, "Rendertarget must have minimum one target surface (ref_rt& _1)");
@@ -106,7 +101,7 @@ void CRenderTarget::u_stencil_optimize(BOOL common_stencil)
 	float _h = float(Device.dwHeight);
 	u32 C = color_rgba(255, 255, 255, 255);
 	float eps = EPS_S;
-	FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, g_combine->vb_stride, Offset);
+	FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, g_viewport->vb_stride, Offset);
 	pv->set(eps, float(_h + eps), eps, 1.f, C, 0, 0);
 	pv++;
 	pv->set(eps, eps, eps, 1.f, C, 0, 0);
@@ -115,12 +110,12 @@ void CRenderTarget::u_stencil_optimize(BOOL common_stencil)
 	pv++;
 	pv->set(float(_w + eps), eps, eps, 1.f, C, 0, 0);
 	pv++;
-	RenderBackend.Vertex.Unlock(4, g_combine->vb_stride);
+	RenderBackend.Vertex.Unlock(4, g_viewport->vb_stride);
 	RenderBackend.set_CullMode(CULL_NONE);
 	if (common_stencil)
-		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0x00); // keep/keep/keep
+		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, RenderImplementation.dwLightMarkerID, 0xff, 0x00); // keep/keep/keep
 	RenderBackend.set_Element(s_occq->E[0]);
-	RenderBackend.set_Geometry(g_combine);
+	RenderBackend.set_Geometry(g_viewport);
 	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
@@ -151,48 +146,6 @@ void CRenderTarget::u_compute_texgen_jitter(Fmatrix& m_Texgen_J)
 	m_TexelAdjust.scale(scale_X, scale_Y, 1.f);
 	m_TexelAdjust.translate_over(offset, offset, 0);
 	m_Texgen_J.mulA_44(m_TexelAdjust);
-}
-
-void CRenderTarget::reset_light_marker(bool bResetStencil)
-{
-	dwLightMarkerID = 5;
-	if (bResetStencil)
-	{
-		RenderBackend.set_ColorWriteEnable(FALSE);
-		u32 Offset;
-		float _w = float(Device.dwWidth);
-		float _h = float(Device.dwHeight);
-		u32 C = color_rgba(255, 255, 255, 255);
-		float eps = EPS_S;
-		FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, g_combine->vb_stride, Offset);
-		pv->set(eps, float(_h + eps), eps, 1.f, C, 0, 0);
-		pv++;
-		pv->set(eps, eps, eps, 1.f, C, 0, 0);
-		pv++;
-		pv->set(float(_w + eps), float(_h + eps), eps, 1.f, C, 0, 0);
-		pv++;
-		pv->set(float(_w + eps), eps, eps, 1.f, C, 0, 0);
-		pv++;
-		RenderBackend.Vertex.Unlock(4, g_combine->vb_stride);
-		RenderBackend.set_CullMode(CULL_NONE);
-		//	Clear everything except last bit
-		RenderBackend.set_Stencil(TRUE, D3DCMP_ALWAYS, dwLightMarkerID, 0x00, 0xFE, D3DSTENCILOP_ZERO, D3DSTENCILOP_ZERO,
-						   D3DSTENCILOP_ZERO);
-		// RenderBackend.set_Stencil	(TRUE,D3DCMP_ALWAYS,dwLightMarkerID,0x00,0xFF, D3DSTENCILOP_ZERO, D3DSTENCILOP_ZERO,
-		// D3DSTENCILOP_ZERO);
-		RenderBackend.set_Element(s_occq->E[0]);
-		RenderBackend.set_Geometry(g_combine);
-		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
-	}
-}
-
-void CRenderTarget::increment_light_marker()
-{
-	dwLightMarkerID += 2;
-
-	// if (dwLightMarkerID>10)
-	if (dwLightMarkerID > 255)
-		reset_light_marker(true);
 }
 
 void CRenderTarget::set_viewport_geometry(float w, float h, u32& vOffset)
@@ -249,9 +202,9 @@ void CRenderTarget::RenderViewportSurface(const ref_rt& _1)
 	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
-void CRenderTarget::RenderViewportSurface(float w, float h, const ref_rt& _1)
+void CRenderTarget::RenderViewportSurface(float w, float h, const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, const ref_rt& _4)
 {
-	set_Render_Target_Surface(_1);
+	set_Render_Target_Surface(_1, _2, _3, _4);
 	set_Depth_Buffer(NULL);
 
 	u32 Offset = 0;
@@ -259,9 +212,29 @@ void CRenderTarget::RenderViewportSurface(float w, float h, const ref_rt& _1)
 	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 
-void CRenderTarget::ClearTexture(const ref_rt& _1)
+void CRenderTarget::RenderViewportSurface(float w, float h, IDirect3DSurface9* _1)
 {
-	set_Render_Target_Surface(rt_Distortion_Mask);
-	CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, color_rgba(127, 127, 0, 127), 1.0f, 0L));
+	set_Render_Target_Surface(w, h, _1);
+	set_Depth_Buffer(NULL);
+
+	u32 Offset = 0;
+	set_viewport_geometry(w, h, Offset);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+}
+
+void CRenderTarget::RenderViewportSurface(float w, float h, IDirect3DSurface9* _1, IDirect3DSurface9* zb)
+{
+	set_Render_Target_Surface(w, h, _1);
+	set_Depth_Buffer(zb);
+
+	u32 Offset = 0;
+	set_viewport_geometry(w, h, Offset);
+	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+}
+
+void CRenderTarget::ClearTexture(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, const ref_rt& _4, u32 color)
+{
+	set_Render_Target_Surface(_1, _2, _3, _4);
+	CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, color, 1.0f, 0L));
 }
 ////////////////////////////////////////////////////////////////////////////////

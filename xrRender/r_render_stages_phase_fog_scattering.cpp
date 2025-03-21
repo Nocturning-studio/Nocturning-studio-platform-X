@@ -3,17 +3,16 @@
 // Nocturning studio for NS Platform X
 ///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "r_rendertarget.h"
 ///////////////////////////////////////////////////////////////////////////////////
-void CRenderTarget::phase_fog_scattering()
+void CRender::render_fog_scattering()
 {
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderBackend.set_Element(s_fog_scattering->E[0]);
-	RenderViewportSurface(rt_Generic_1);
+	RenderBackend.set_Element(RenderTarget->s_fog_scattering->E[0]);
+	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_1);
 
-	RenderBackend.set_Element(s_fog_scattering->E[1]);
-	RenderViewportSurface(rt_Generic_0);
+	RenderBackend.set_Element(RenderTarget->s_fog_scattering->E[1]);
+	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 ///////////////////////////////////////////////////////////////////////////////////

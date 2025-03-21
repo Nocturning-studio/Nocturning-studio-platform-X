@@ -43,6 +43,7 @@
 
 // Ambient occlusion
 #define r_RT_ao "$user$ao"
+#define r_RT_ao_raw "$user$ao_raw"
 
 // Autoexposure
 #define r_RT_autoexposure_t512 "$user$lum_t512"

@@ -1,10 +1,10 @@
 #include "stdafx.h"
 
-void CRenderTarget::phase_smap_direct(light* L, u32 sub_phase)
+void CRender::render_shadow_map_sun(light* L, u32 sub_phase)
 {
 	// Targets
-	set_Render_Target_Surface(rt_smap_surf);
-	set_Depth_Buffer(rt_smap_depth->pRT);
+	RenderTarget->set_Render_Target_Surface(RenderTarget->rt_smap_surf);
+	RenderTarget->set_Depth_Buffer(RenderTarget->rt_smap_depth->pRT);
 
 	// optimized clear
 	D3DRECT R;
@@ -26,7 +26,7 @@ void CRenderTarget::phase_smap_direct(light* L, u32 sub_phase)
 	RenderBackend.set_ColorWriteEnable(FALSE);
 }
 
-void CRenderTarget::phase_smap_direct_tsh(light* L, u32 sub_phase)
+void CRender::render_shadow_map_sun_transluent(light* L, u32 sub_phase)
 {
 	VERIFY(RenderImplementation.o.Tshadows);
 	u32 _clr = 0xffffffff; // color_rgba(127,127,12,12);

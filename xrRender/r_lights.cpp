@@ -91,7 +91,7 @@ void CRender::render_lights(light_Package& LP)
 		stats.s_used++;
 
 		// generate spot shadowmap
-		RenderTarget->phase_smap_spot_clear();
+		clear_shadow_map_spot();
 		xr_vector<light*>& source = LP.v_shadowed;
 		light* L = source.back();
 		u16 sid = L->vis.smap_ID;
@@ -116,7 +116,7 @@ void CRender::render_lights(light_Package& LP)
 			{
 				stats.s_merged++;
 				L_spot_s.push_back(L);
-				RenderTarget->phase_smap_spot(L);
+				render_shadow_map_spot(L);
 				RenderBackend.set_xform_world(Fidentity);
 				RenderBackend.set_xform_view(L->X.S.view);
 				RenderBackend.set_xform_project(L->X.S.project);
@@ -130,7 +130,7 @@ void CRender::render_lights(light_Package& LP)
 				if (bSpecial)
 				{
 					L->X.S.transluent = TRUE;
-					RenderTarget->phase_smap_spot_tsh(L);
+					render_shadow_map_spot_transluent(L);
 					r_dsgraph_render_graph(1); // normal level, secondary priority
 					r_dsgraph_render_sorted(); // strict-sorted geoms
 				}
@@ -144,7 +144,7 @@ void CRender::render_lights(light_Package& LP)
 		}
 
 		//		switch-to-accumulator
-		RenderTarget->phase_accumulator();
+		set_light_accumulator();
 		HOM.Disable();
 
 		//		if (has_point_unshadowed)	-> 	accum point unshadowed
@@ -157,7 +157,7 @@ void CRender::render_lights(light_Package& LP)
 			LightPoint->vis_update();
 			if (LightPoint->vis.visible)
 			{
-				RenderTarget->accum_point(LightPoint);
+				accumulate_point_lights(LightPoint);
 			}
 		}
 
@@ -172,7 +172,7 @@ void CRender::render_lights(light_Package& LP)
 			if (LightSpot->vis.visible)
 			{
 				LR.compute_xf_spot(LightSpot);
-				RenderTarget->accum_spot(LightSpot);
+				accumulate_spot_lights(LightSpot);
 			}
 		}
 
@@ -183,7 +183,7 @@ void CRender::render_lights(light_Package& LP)
 
 			for (u32 it = 0; it < L_spot_s.size(); it++)
 			{
-				RenderTarget->accum_spot(L_spot_s[it]);
+				accumulate_spot_lights(L_spot_s[it]);
 			}
 
 			// if (ps_r_lighting_flags.is(RFLAG_VOLUMETRIC_LIGHTS)
@@ -205,7 +205,7 @@ void CRender::render_lights(light_Package& LP)
 			Lvec[pid]->vis_update();
 			if (Lvec[pid]->vis.visible)
 			{
-				RenderTarget->accum_point(Lvec[pid]);
+				accumulate_point_lights(Lvec[pid]);
 			}
 		}
 		Lvec.clear();
@@ -223,7 +223,7 @@ void CRender::render_lights(light_Package& LP)
 			if (Lvec[pid]->vis.visible)
 			{
 				LR.compute_xf_spot(Lvec[pid]);
-				RenderTarget->accum_spot(Lvec[pid]);
+				accumulate_spot_lights(Lvec[pid]);
 			}
 		}
 		Lvec.clear();

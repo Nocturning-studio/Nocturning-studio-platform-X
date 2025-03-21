@@ -50,7 +50,7 @@ void light::vis_prepare()
 	xform_calc();
 	RenderBackend.set_xform_world(m_xform);
 	vis.query_order = RenderImplementation.occq_begin(vis.query_id);
-	RenderImplementation.RenderTarget->draw_volume(this);
+	RenderImplementation.draw_volume(this);
 	RenderImplementation.occq_end(vis.query_id);
 }
 

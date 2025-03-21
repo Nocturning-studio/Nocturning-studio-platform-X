@@ -316,7 +316,7 @@ void CRender::create()
 	c_sbase = "s_base";
 
 	update_options();
-	RenderTarget = xr_new<CRenderTarget>(); // Main target
+	RenderTarget = xr_new<CRenderTarget>();
 
 	Models = xr_new<CModelPool>();
 	PSLibrary.OnCreate();
@@ -386,6 +386,7 @@ void CRender::reset_end()
 
 	update_options();
 	RenderTarget = xr_new<CRenderTarget>();
+	dwAccumulatorClearMark = 0;
 
 	xrRender_apply_tf();
 
@@ -809,5 +810,62 @@ void CRender::Statistics(CGameFont* _F)
 #ifdef DEBUG
 	HOM.stats();
 #endif
+}
+
+void CRender::enable_dbt_bounds(light* L)
+{
+	if (!RenderImplementation.o.nvdbt)
+		return;
+	if (!ps_r_ls_flags.test(RFLAG_USE_NVDBT))
+		return;
+
+	u32 mask = 0xffffffff;
+	EFC_Visible vis = RenderImplementation.ViewBase.testSphere(L->spatial.sphere.P, L->spatial.sphere.R * 1.01f, mask);
+	if (vis != fcvFully)
+		return;
+
+	// xform BB
+	Fbox BB;
+	Fvector rr;
+	rr.set(L->spatial.sphere.R, L->spatial.sphere.R, L->spatial.sphere.R);
+	BB.setb(L->spatial.sphere.P, rr);
+
+	Fbox bbp;
+	bbp.invalidate();
+	for (u32 i = 0; i < 8; i++)
+	{
+		Fvector pt;
+		BB.getpoint(i, pt);
+		Device.mFullTransform.transform(pt);
+		bbp.modify(pt);
+	}
+	u_DBT_enable(bbp.min.z, bbp.max.z);
+}
+
+// nv-DBT
+BOOL CRender::u_DBT_enable(float zMin, float zMax)
+{
+	if (!RenderImplementation.o.nvdbt)
+		return FALSE;
+	if (!ps_r_ls_flags.test(RFLAG_USE_NVDBT))
+		return FALSE;
+
+	// enable cheat
+	HW.pDevice->SetRenderState(D3DRS_ADAPTIVETESS_X, MAKEFOURCC('N', 'V', 'D', 'B'));
+	HW.pDevice->SetRenderState(D3DRS_ADAPTIVETESS_Z, *(DWORD*)&zMin);
+	HW.pDevice->SetRenderState(D3DRS_ADAPTIVETESS_W, *(DWORD*)&zMax);
+
+	return TRUE;
+}
+
+void CRender::u_DBT_disable()
+{
+	if (RenderImplementation.o.nvdbt && ps_r_ls_flags.test(RFLAG_USE_NVDBT))
+		HW.pDevice->SetRenderState(D3DRS_ADAPTIVETESS_X, 0);
+}
+
+float CRender::hclip(float v, float dim)
+{
+	return 2.f * v / dim - 1.f;
 }
 

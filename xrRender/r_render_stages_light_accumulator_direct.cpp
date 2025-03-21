@@ -1,25 +1,42 @@
 #include "stdafx.h"
 #include "..\xrEngine\igame_persistent.h"
 #include "..\xrEngine\environment.h"
-#include "r_rendertarget.h"
 
 //////////////////////////////////////////////////////////////////////////
 // tables to calculate view-frustum bounds in world space
 // note: D3D uses [0..1] range for Z
-static Fvector3 corners[8] = {{-1, -1, 0.7}, {-1, -1, +1},	{-1, +1, +1}, {-1, +1, 0.7},
-							  {+1, +1, +1},	 {+1, +1, 0.7}, {+1, -1, +1}, {+1, -1, 0.7}};
-static u16 facetable[16][3] = {
-	{3, 2, 1}, {3, 1, 0}, {7, 6, 5}, {5, 6, 4}, {3, 5, 2}, {4, 2, 5}, {1, 6, 7}, {7, 0, 1},
-
-	{5, 3, 0}, {7, 5, 0},
-
-	{1, 4, 6}, {2, 4, 1},
+static Fvector3 corners[8] = 
+{
+	{-1, -1, 0.7}, 
+	{-1, -1, +1},	
+	{-1, +1, +1}, 
+	{-1, +1, 0.7},
+	{+1, +1, +1},	 
+	{+1, +1, 0.7}, 
+	{+1, -1, +1}, 
+	{+1, -1, 0.7}
 };
 
-void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev, float fBias)
+static u16 facetable[16][3] = 
+{
+	{3, 2, 1}, 
+	{3, 1, 0}, 
+	{7, 6, 5}, 
+	{5, 6, 4}, 
+	{3, 5, 2}, 
+	{4, 2, 5}, 
+	{1, 6, 7}, 
+	{7, 0, 1},
+	{5, 3, 0}, 
+	{7, 5, 0},
+	{1, 4, 6}, 
+	{2, 4, 1},
+};
+
+void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev, float fBias)
 {
 	// Choose normal code-path or filtered
-	phase_accumulator();
+	set_light_accumulator();
 
 	// *** assume accumulator setted up ***
 	light* sun = (light*)RenderImplementation.Lights.sun_adapted._get();
@@ -47,7 +64,7 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 	if (SE_SUN_NEAR == sub_phase) //.
 	{
 		// Fill vertex buffer
-		FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, g_combine->vb_stride, Offset);
+		FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, RenderTarget->g_viewport->vb_stride, Offset);
 		pv->set(EPS, float(_h + EPS), d_Z, d_W, C, p0.x, p1.y);
 		pv++;
 		pv->set(EPS, EPS, d_Z, d_W, C, p0.x, p0.y);
@@ -56,11 +73,11 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 		pv++;
 		pv->set(float(_w + EPS), EPS, d_Z, d_W, C, p1.x, p0.y);
 		pv++;
-		RenderBackend.Vertex.Unlock(4, g_combine->vb_stride);
-		RenderBackend.set_Geometry(g_combine);
+		RenderBackend.Vertex.Unlock(4, RenderTarget->g_viewport->vb_stride);
+		RenderBackend.set_Geometry(RenderTarget->g_viewport);
 
 		// setup
-		RenderBackend.set_Element(s_accum_mask->E[SE_MASK_DIRECT]); // masker
+		RenderBackend.set_Element(RenderTarget->s_accum_mask->E[SE_MASK_DIRECT]); // masker
 		RenderBackend.set_Constant("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
 
 		// if (stencil>=1 && aref_pass)	stencil = light_id
@@ -78,12 +95,12 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 
 	// nv-stencil recompression
 	if (RenderImplementation.o.nvstencil && (SE_SUN_NEAR == sub_phase))
-		u_stencil_optimize();
+		RenderTarget->u_stencil_optimize();
 
 	// Perform lighting
 	//******************************************************************
 	{
-		phase_accumulator();
+		set_light_accumulator();
 		RenderBackend.set_CullMode(CULL_CCW); //******************************************************************
 		RenderBackend.set_ColorWriteEnable();
 
@@ -154,7 +171,7 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 		RenderBackend.xforms.set_W(m_Texgen);
 		RenderBackend.xforms.set_V(Device.mView);
 		RenderBackend.xforms.set_P(Device.mProject);
-		u_compute_texgen_screen(m_Texgen);
+		RenderTarget->u_compute_texgen_screen(m_Texgen);
 
 		// Fill vertex buffer
 		u32 i_offset;
@@ -165,7 +182,7 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 
 			// corners
 			u32 ver_count = sizeof(corners) / sizeof(Fvector3);
-			FVF::L* pv = (FVF::L*)RenderBackend.Vertex.Lock(ver_count, g_combine_cuboid.stride(), Offset);
+			FVF::L* pv = (FVF::L*)RenderBackend.Vertex.Lock(ver_count, RenderTarget->g_combine_cuboid.stride(), Offset);
 
 			Fmatrix inv_XDcombine;
 			if ( sub_phase == SE_SUN_FAR)
@@ -180,13 +197,13 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 				pv->set(tmp_vec, C);
 				pv++;
 			}
-			RenderBackend.Vertex.Unlock(ver_count, g_combine_cuboid.stride());
+			RenderBackend.Vertex.Unlock(ver_count, RenderTarget->g_combine_cuboid.stride());
 		}
 
-		RenderBackend.set_Geometry(g_combine_cuboid);
+		RenderBackend.set_Geometry(RenderTarget->g_combine_cuboid);
 
 		// setup
-		RenderBackend.set_Element(s_accum_direct_cascade->E[sub_phase]);
+		RenderBackend.set_Element(RenderTarget->s_accum_direct_cascade->E[sub_phase]);
 
 		RenderBackend.set_Constant("m_texgen", m_Texgen);
 		RenderBackend.set_Constant("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);

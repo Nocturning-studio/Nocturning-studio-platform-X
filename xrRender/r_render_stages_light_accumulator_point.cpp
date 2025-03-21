@@ -1,13 +1,13 @@
 #include "stdafx.h"
 
-void CRenderTarget::accum_point(light* L)
+void CRender::accumulate_point_lights(light* L)
 {
-	phase_accumulator();
+	set_light_accumulator();
 	RenderImplementation.stats.l_visible++;
 
 	ref_shader shader = L->s_point;
 	if (!shader)
-		shader = s_accum_point;
+		shader = RenderTarget->s_accum_point;
 
 	// Common
 	Fvector L_pos;
@@ -30,7 +30,7 @@ void CRenderTarget::accum_point(light* L)
 	// *** similar to "Carmack's reverse", but assumes convex, non intersecting objects,
 	// *** thus can cope without stencil clear with 127 lights
 	// *** in practice, 'cause we "clear" it back to 0x1 it usually allows us to > 200 lights :)
-	RenderBackend.set_Element(s_accum_mask->E[SE_MASK_POINT]); // masker
+	RenderBackend.set_Element(RenderTarget->s_accum_mask->E[SE_MASK_POINT]); // masker
 	RenderBackend.set_ColorWriteEnable(FALSE);
 
 	// backfaces: if (stencil>=1 && zfail)	stencil = light_id
@@ -47,7 +47,7 @@ void CRenderTarget::accum_point(light* L)
 
 	// nv-stencil recompression
 	if (RenderImplementation.o.nvstencil)
-		u_stencil_optimize();
+		RenderTarget->u_stencil_optimize();
 
 	// *****************************	Minimize overdraw	*************************************
 	// Select shader (front or back-faces), *** back, if intersect near plane
@@ -60,9 +60,9 @@ void CRenderTarget::accum_point(light* L)
 
 	// 2D texgens
 	Fmatrix m_Texgen;
-	u_compute_texgen_screen(m_Texgen);
+	RenderTarget->u_compute_texgen_screen(m_Texgen);
 	Fmatrix m_Texgen_J;
-	u_compute_texgen_jitter(m_Texgen_J);
+	RenderTarget->u_compute_texgen_jitter(m_Texgen_J);
 
 	// Draw volume with projective texgen
 	{

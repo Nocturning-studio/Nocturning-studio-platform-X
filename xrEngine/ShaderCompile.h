@@ -251,7 +251,7 @@ HRESULT CResourceManager::CompileShader(
 	bWarningsAsErrors = strstr(Core.Params, "-shader_warnings_as_errors");
 	bErrorsAsWarnings = strstr(Core.Params, "-shader_errors_as_warnings");
 
-	Msg("\n~ Compiling shader with name: %s.%s", name, ext);
+	Msg("\n* Compiling shader with name: %s.%s", name, ext);
 
 	shader_compilation_timer.Start();
 #endif
@@ -273,7 +273,7 @@ HRESULT CResourceManager::CompileShader(
 		else
 		{
 #ifndef MASTER_GOLD
-			Msg("~ Successfully finded and applyed compiled shader cache file");
+			Msg("- Successfully finded and applyed compiled shader cache file");
 #endif
 			return _result;
 		}
@@ -363,8 +363,8 @@ HRESULT CResourceManager::CompileShader(
 #ifndef MASTER_GOLD
 	else
 	{
-		Msg("~ Shader successfully compiled");
-		Msg("~ Compile time: %d ms", shader_compilation_timer.GetElapsed_ms());
+		Msg("- Shader successfully compiled");
+		Msg("- Compile time: %d ms", shader_compilation_timer.GetElapsed_ms());
 	}
 #endif
 
