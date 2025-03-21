@@ -9,8 +9,8 @@ void CRender::create_distortion_mask()
 {
 	OPTICK_EVENT("CRender::create_distortion_mask");
 
-	RenderTarget->set_Render_Target_Surface(RenderTarget->rt_Distortion_Mask);
-	RenderTarget->set_Depth_Buffer(HW.pBaseZB);
+	RenderTargetBackend->set_Render_Target_Surface(RenderTarget->rt_Distortion_Mask);
+	RenderTargetBackend->set_Depth_Buffer(HW.pBaseZB);
 
 	RenderBackend.set_CullMode(CULL_CCW);
 	RenderBackend.set_Stencil(FALSE);
@@ -30,5 +30,5 @@ void CRender::render_distortion()
 
 	RenderBackend.set_Element(RenderTarget->s_distortion->E[0]);
 
-	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_1);
 }

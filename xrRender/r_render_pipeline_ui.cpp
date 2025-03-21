@@ -16,24 +16,24 @@ void CRender::RenderMenu()
 
 	// Main Render
 	{
-		RenderTarget->set_Render_Target_Surface(RenderTarget->rt_Generic_0);
-		RenderTarget->set_Depth_Buffer(HW.pBaseZB);
+		RenderTargetBackend->set_Render_Target_Surface(RenderTarget->rt_Generic_0);
+		RenderTargetBackend->set_Depth_Buffer(HW.pBaseZB);
 		g_pGamePersistent->OnRenderPPUI_main(); // PP-UI
 	}
 
 	// Distort
 	{
-		RenderTarget->set_Render_Target_Surface(RenderTarget->rt_Distortion_Mask);
-		RenderTarget->set_Depth_Buffer(HW.pBaseZB);
+		RenderTargetBackend->set_Render_Target_Surface(RenderTarget->rt_Distortion_Mask);
+		RenderTargetBackend->set_Depth_Buffer(HW.pBaseZB);
 		CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, color_rgba(127, 127, 0, 127), 1.0f, 0L));
 		g_pGamePersistent->OnRenderPPUI_PP(); // PP-UI
 	}
 
 	// Actual Display
-	RenderTarget->set_Render_Target_Surface(Device.dwWidth, Device.dwHeight, HW.pBaseRT);
-	RenderTarget->set_Depth_Buffer(HW.pBaseZB);
+	RenderTargetBackend->set_Render_Target_Surface(Device.dwWidth, Device.dwHeight, HW.pBaseRT);
+	RenderTargetBackend->set_Depth_Buffer(HW.pBaseZB);
 	RenderBackend.set_Shader(RenderTarget->s_menu);
-	RenderBackend.set_Geometry(RenderTarget->g_viewport);
+	RenderBackend.set_Geometry(RenderTargetBackend->g_viewport);
 
 	Fvector2 p0, p1;
 	u32 Offset;
@@ -45,7 +45,7 @@ void CRender::RenderMenu()
 	p0.set(.5f / _w, .5f / _h);
 	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
 
-	FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, RenderTarget->g_viewport->vb_stride, Offset);
+	FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, RenderTargetBackend->g_viewport->vb_stride, Offset);
 	pv->set(EPS, float(_h + EPS), d_Z, d_W, C, p0.x, p1.y);
 	pv++;
 	pv->set(EPS, EPS, d_Z, d_W, C, p0.x, p0.y);
@@ -54,7 +54,7 @@ void CRender::RenderMenu()
 	pv++;
 	pv->set(float(_w + EPS), EPS, d_Z, d_W, C, p1.x, p0.y);
 	pv++;
-	RenderBackend.Vertex.Unlock(4, RenderTarget->g_viewport->vb_stride);
+	RenderBackend.Vertex.Unlock(4, RenderTargetBackend->g_viewport->vb_stride);
 	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 }
 ////////////////////////////////////////////////////////////////////////////////

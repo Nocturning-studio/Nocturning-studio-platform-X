@@ -45,10 +45,6 @@ void CRender::accumulate_point_lights(light* L)
 					   D3DSTENCILOP_REPLACE);
 	draw_volume(L);
 
-	// nv-stencil recompression
-	if (RenderImplementation.o.nvstencil)
-		RenderTarget->u_stencil_optimize();
-
 	// *****************************	Minimize overdraw	*************************************
 	// Select shader (front or back-faces), *** back, if intersect near plane
 	RenderBackend.set_ColorWriteEnable();
@@ -60,9 +56,7 @@ void CRender::accumulate_point_lights(light* L)
 
 	// 2D texgens
 	Fmatrix m_Texgen;
-	RenderTarget->u_compute_texgen_screen(m_Texgen);
-	Fmatrix m_Texgen_J;
-	RenderTarget->u_compute_texgen_jitter(m_Texgen_J);
+	RenderTargetBackend->u_compute_texgen_screen(m_Texgen);
 
 	// Draw volume with projective texgen
 	{

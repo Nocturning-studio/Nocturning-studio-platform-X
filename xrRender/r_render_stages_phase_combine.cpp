@@ -11,7 +11,7 @@ void CRender::combine_additional_postprocess()
 
 	RenderBackend.set_Element(RenderTarget->s_combine->E[2]);
 	RenderBackend.set_Constant("cas_params", ps_cas_contrast, ps_cas_sharpening, 0, 0);
-	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
 void CRender::combine_sun_shafts()
@@ -23,7 +23,7 @@ void CRender::combine_sun_shafts()
 
 
 	RenderBackend.set_Element(RenderTarget->s_combine->E[3]);
-	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
 void CRender::combine_scene_lighting()
@@ -34,8 +34,8 @@ void CRender::combine_scene_lighting()
 	Fvector2 p0, p1;
 
 	// low/hi RTs
-	RenderTarget->set_Render_Target_Surface(RenderTarget->rt_Generic_1);
-	RenderTarget->set_Depth_Buffer(HW.pBaseZB);
+	RenderTargetBackend->set_Render_Target_Surface(RenderTarget->rt_Generic_1);
+	RenderTargetBackend->set_Depth_Buffer(HW.pBaseZB);
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
@@ -47,11 +47,6 @@ void CRender::combine_scene_lighting()
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
 
 	RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
-	if (RenderImplementation.o.nvstencil)
-	{
-		RenderTarget->u_stencil_optimize(FALSE);
-		RenderBackend.set_ColorWriteEnable();
-	}
 
 	// Compute params
 	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;

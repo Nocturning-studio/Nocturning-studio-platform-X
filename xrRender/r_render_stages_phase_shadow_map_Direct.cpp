@@ -3,8 +3,8 @@
 void CRender::render_shadow_map_sun(light* L, u32 sub_phase)
 {
 	// Targets
-	RenderTarget->set_Render_Target_Surface(RenderTarget->rt_smap_surf);
-	RenderTarget->set_Depth_Buffer(RenderTarget->rt_smap_depth->pRT);
+	RenderTargetBackend->set_Render_Target_Surface(RenderTarget->rt_smap_surf);
+	RenderTargetBackend->set_Depth_Buffer(RenderTarget->rt_smap_depth->pRT);
 
 	// optimized clear
 	D3DRECT R;

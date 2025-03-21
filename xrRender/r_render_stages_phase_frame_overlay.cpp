@@ -28,6 +28,6 @@ void CRender::render_screen_overlays()
 
 	RenderBackend.set_Constant("enabled_overlays", (float)GridEnabled, (float)CinemaBordersEnabled, (float)WatermarkEnabled, 0);
 
-	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 ///////////////////////////////////////////////////////////////////////////////////

@@ -393,6 +393,9 @@
     <ClInclude Include="r_render_stages.h">
       <Filter>Render pipeline\Render stages\Core</Filter>
     </ClInclude>
+    <ClInclude Include="r_rendertarget_backend.h">
+      <Filter>Render pipeline\Rendertargets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

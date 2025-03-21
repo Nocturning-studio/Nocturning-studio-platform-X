@@ -10,9 +10,9 @@ void CRender::render_fog_scattering()
 	RenderBackend.set_Stencil(FALSE);
 
 	RenderBackend.set_Element(RenderTarget->s_fog_scattering->E[0]);
-	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_1);
 
 	RenderBackend.set_Element(RenderTarget->s_fog_scattering->E[1]);
-	RenderTarget->RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderTargetBackend->RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 ///////////////////////////////////////////////////////////////////////////////////

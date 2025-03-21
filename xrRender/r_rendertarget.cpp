@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "r_rendertarget.h"
+#include "render.h"
 #include "..\xrEngine\resourcemanager.h"
 #include "blender_ambient_occlusion.h"
 #include "blender_bloom_build.h"
@@ -119,8 +120,8 @@ void CRenderTarget::create_textures()
 		string256 name;
 		sprintf(name, "%s_%d", r_RT_autoexposure_pool, it);
 		rt_LUM_pool[it].create(name, 1, 1, D3DFMT_L8);
-		set_Render_Target_Surface(rt_LUM_pool[it]);
-		set_Depth_Buffer(NULL);
+		RenderTargetBackend->set_Render_Target_Surface(rt_LUM_pool[it]);
+		RenderTargetBackend->set_Depth_Buffer(NULL);
 		CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0x7f7f7f7f, 1.0f, 0L));
 	}
 }
@@ -285,8 +286,6 @@ CRenderTarget::CRenderTarget()
 
 		g_combine_VP.create(dwDecl, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 		g_combine_cuboid.create(FVF::F_L, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
-
-		g_viewport.create(FVF::F_TL, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 	}
 
 	// PP

@@ -11,6 +11,7 @@
 #include "../xrEngine\r_constants.h"
 //////////////////////////////////////////////////////////////////////////
 CRender RenderImplementation;
+CRenderTargetBackend* RenderTargetBackend;
 //////////////////////////////////////////////////////////////////////////
 #pragma todo(NSDeathman to NSDeathman: Добавить поддержку Glow)
 class CGlow : public IRender_Glow
@@ -217,14 +218,6 @@ void CRender::update_options()
 
 	o.smapsize = 1024;
 
-	o.intz = (HW.support((D3DFORMAT)MAKEFOURCC('I', 'N', 'T', 'Z'), D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL));
-	if (o.intz)
-		Msg("- 'INTZ' depth format supported");
-
-	o.nvstencil = (HW.Caps.id_vendor == 0x10DE) && (HW.Caps.id_device >= 0x40);
-	if (o.nvstencil)
-		Msg("- Nvidia Stencil supported");
-
 	o.nvdbt = HW.support((D3DFORMAT)MAKEFOURCC('N', 'V', 'D', 'B'), D3DRTYPE_SURFACE, 0);
 	if (o.nvdbt)
 		Msg("- Nvidia Depth Bounds supported");
@@ -317,6 +310,7 @@ void CRender::create()
 
 	update_options();
 	RenderTarget = xr_new<CRenderTarget>();
+	RenderTargetBackend = xr_new<CRenderTargetBackend>();
 
 	Models = xr_new<CModelPool>();
 	PSLibrary.OnCreate();
@@ -341,6 +335,7 @@ void CRender::destroy()
 	HWOCC.occq_destroy();
 	xr_delete(Models);
 	xr_delete(RenderTarget);
+	xr_delete(RenderTargetBackend);
 	PSLibrary.OnDestroy();
 	Device.seqFrame.Remove(this);
 	r_dsgraph_destroy(); // FIX BY IXRAY (THANKS BY NSDeathman)

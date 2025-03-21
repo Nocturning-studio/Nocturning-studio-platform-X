@@ -64,7 +64,7 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 	if (SE_SUN_NEAR == sub_phase) //.
 	{
 		// Fill vertex buffer
-		FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, RenderTarget->g_viewport->vb_stride, Offset);
+		FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, RenderTargetBackend->g_viewport->vb_stride, Offset);
 		pv->set(EPS, float(_h + EPS), d_Z, d_W, C, p0.x, p1.y);
 		pv++;
 		pv->set(EPS, EPS, d_Z, d_W, C, p0.x, p0.y);
@@ -73,8 +73,8 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 		pv++;
 		pv->set(float(_w + EPS), EPS, d_Z, d_W, C, p1.x, p0.y);
 		pv++;
-		RenderBackend.Vertex.Unlock(4, RenderTarget->g_viewport->vb_stride);
-		RenderBackend.set_Geometry(RenderTarget->g_viewport);
+		RenderBackend.Vertex.Unlock(4, RenderTargetBackend->g_viewport->vb_stride);
+		RenderBackend.set_Geometry(RenderTargetBackend->g_viewport);
 
 		// setup
 		RenderBackend.set_Element(RenderTarget->s_accum_mask->E[SE_MASK_DIRECT]); // masker
@@ -92,10 +92,6 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 	center_pt.mad(Device.vCameraPosition, Device.vCameraDirection, ps_r_sun_near);
 	Device.mFullTransform.transform(center_pt);
 	d_Z = center_pt.z;
-
-	// nv-stencil recompression
-	if (RenderImplementation.o.nvstencil && (SE_SUN_NEAR == sub_phase))
-		RenderTarget->u_stencil_optimize();
 
 	// Perform lighting
 	//******************************************************************
@@ -171,7 +167,7 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 		RenderBackend.xforms.set_W(m_Texgen);
 		RenderBackend.xforms.set_V(Device.mView);
 		RenderBackend.xforms.set_P(Device.mProject);
-		RenderTarget->u_compute_texgen_screen(m_Texgen);
+		RenderTargetBackend->u_compute_texgen_screen(m_Texgen);
 
 		// Fill vertex buffer
 		u32 i_offset;

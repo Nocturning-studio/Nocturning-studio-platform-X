@@ -5,10 +5,9 @@ bool TexturesIsClean = false;
 void CRender::clear_bloom()
 {
 	TexturesIsClean = true;
-	RenderTarget->ClearTexture(	RenderTarget->rt_Bloom_1, 
-								RenderTarget->rt_Bloom_2, RenderTarget->rt_Bloom_Blades_1,
-								RenderTarget->rt_Bloom_Blades_2,
-								color_rgba(0, 0, 0, 0)	);
+	RenderTargetBackend->ClearTexture(	RenderTarget->rt_Bloom_1, 
+										RenderTarget->rt_Bloom_2, RenderTarget->rt_Bloom_Blades_1,
+										RenderTarget->rt_Bloom_Blades_2  );
 }
 
 void CRender::calculate_bloom()
@@ -45,7 +44,7 @@ void CRender::calculate_bloom()
 														ps_r_bloom_blades_threshold, 
 														ps_r_bloom_blades_brightness);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
-		RenderTarget->RenderViewportSurface(w, h, RenderTarget->rt_Bloom_1, RenderTarget->rt_Bloom_Blades_1);
+		RenderTargetBackend->RenderViewportSurface(w, h, RenderTarget->rt_Bloom_1, RenderTarget->rt_Bloom_Blades_1);
 	}
 
 	//Main bloom effect
@@ -53,11 +52,11 @@ void CRender::calculate_bloom()
 	{
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[1]);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
-		RenderTarget->RenderViewportSurface(w, h, RenderTarget->rt_Bloom_2);
+		RenderTargetBackend->RenderViewportSurface(w, h, RenderTarget->rt_Bloom_2);
 
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[2]);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
-		RenderTarget->RenderViewportSurface(w, h, RenderTarget->rt_Bloom_1);
+		RenderTargetBackend->RenderViewportSurface(w, h, RenderTarget->rt_Bloom_1);
 	}
 
 	// Blades effect
@@ -65,11 +64,11 @@ void CRender::calculate_bloom()
 	{
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[3]);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
-		RenderTarget->RenderViewportSurface(w, h, RenderTarget->rt_Bloom_Blades_2);
+		RenderTargetBackend->RenderViewportSurface(w, h, RenderTarget->rt_Bloom_Blades_2);
 
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[4]);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
-		RenderTarget->RenderViewportSurface(w, h, RenderTarget->rt_Bloom_Blades_1);
+		RenderTargetBackend->RenderViewportSurface(w, h, RenderTarget->rt_Bloom_Blades_1);
 	}
 }
 

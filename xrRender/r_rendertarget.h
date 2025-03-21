@@ -4,11 +4,6 @@
 
 class light;
 
-#define DU_SPHERE_NUMVERTEX 92
-#define DU_SPHERE_NUMFACES 180
-#define DU_CONE_NUMVERTEX 18
-#define DU_CONE_NUMFACES 32
-
 class CRenderTarget : public IRender_Target
 {
   private:
@@ -173,7 +168,6 @@ class CRenderTarget : public IRender_Target
 	ref_shader s_effectors;
 	ref_geom g_effectors;
 	ref_shader s_menu;
-	ref_geom g_viewport;
 
   public:
 #pragma todo("NSDeathman to NSDeathman: вынести из рендертаргета")
@@ -218,20 +212,6 @@ class CRenderTarget : public IRender_Target
 	void accum_spot_geom_create();
 	void accum_spot_geom_destroy();
 
-	void u_stencil_optimize(BOOL common_stencil = TRUE);
-	void u_compute_texgen_screen(Fmatrix& dest);
-	void u_compute_texgen_jitter(Fmatrix& dest);
-	float hclip(float v, float dim);
-	void set_Render_Target_Surface(const ref_rt& _1);
-	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2);
-	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3);
-	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, const ref_rt& _4);
-	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3, IDirect3DSurface9* _4);
-	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3);
-	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2);
-	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1);
-	void set_Depth_Buffer(IDirect3DSurface9* zb);
-	void u_calc_tc_noise(Fvector2& p0, Fvector2& p1);
 	void u_calc_tc_duality_ss(Fvector2& r0, Fvector2& r1, Fvector2& l0, Fvector2& l1);
 
 	virtual void set_blur(float f)
@@ -300,37 +280,4 @@ class CRenderTarget : public IRender_Target
 	{
 		param_radiation_intensity = f;
 	}
-
-	void set_viewport_geometry(float w, float h, u32& vOffset);
-	void set_viewport_geometry(u32& vOffset);
-
-	void RenderViewportSurface();
-	void RenderViewportSurface(const ref_rt& _1);
-	void RenderViewportSurface(float w, float h, const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL);
-
-	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1);
-	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1, IDirect3DSurface9* zb);
-
-	void ClearTexture(const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL, u32 color = color_rgba(0, 0, 0, 0));
-
-#ifdef DEBUG
-	IC void dbg_addline(Fvector& P0, Fvector& P1, u32 c)
-	{
-		dbg_lines.push_back(dbg_line_t());
-		dbg_lines.back().P0 = P0;
-		dbg_lines.back().P1 = P1;
-		dbg_lines.back().color = c;
-	}
-	IC void dbg_addplane(Fplane& P0, u32 c)
-	{
-		dbg_planes.push_back(P0);
-	}
-#else
-	IC void dbg_addline(Fvector& P0, Fvector& P1, u32 c)
-	{
-	}
-	IC void dbg_addplane(Fplane& P0, u32 c)
-	{
-	}
-#endif
 };

@@ -805,6 +805,7 @@
     <ClInclude Include="ParticleEffectDef.h" />
     <ClInclude Include="ParticleGroup.h" />
     <ClInclude Include="PSLibrary.h" />
+    <ClInclude Include="r_rendertarget_backend.h" />
     <ClInclude Include="r_render_stages.h" />
     <ClInclude Include="r_color_converting.h" />
     <ClInclude Include="r_dsgraph_structure.h" />

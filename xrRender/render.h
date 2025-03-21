@@ -23,6 +23,7 @@
 #include "../xrEngine\irenderable.h"
 #include "../xrEngine\fmesh.h"
 #include "xrRender_console.h"
+#include <r_rendertarget_backend.h>
 
 
 
@@ -42,8 +43,6 @@ class CRender : public R_dsgraph_structure
 	struct _options
 	{
 		u32 smapsize : 16;
-		u32 intz : 1;
-		u32 nvstencil : 1;
 		u32 nvdbt : 1;
 		u32 distortion : 1;
 		u32 forceskinw : 1;
