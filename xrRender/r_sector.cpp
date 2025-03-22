@@ -53,7 +53,7 @@ void CPortal::OnRender()
 		// draw wire
 		if (bDebug)
 		{
-			RenderImplementation.rmNear();
+			RenderImplementation.set_render_mode(CRender::MODE_NEAR);
 		}
 		else
 		{
@@ -63,7 +63,7 @@ void CPortal::OnRender()
 		RenderBackend.dbg_Draw(D3DPT_LINESTRIP, &*(V.begin() + 1), V.size() - 2);
 		if (bDebug)
 		{
-			RenderImplementation.rmNormal();
+			RenderImplementation.set_render_mode(CRender::MODE_NORMAL);
 		}
 		else
 		{

@@ -38,6 +38,13 @@ class CRender : public R_dsgraph_structure
 		PHASE_HUD = 3
 	};
 
+	enum
+	{
+		MODE_NEAR = 0,
+		MODE_NORMAL = 1,
+		MODE_FAR = 2
+	};
+
   public:
 	struct _options
 	{
@@ -352,9 +359,7 @@ class CRender : public R_dsgraph_structure
 	virtual void OnFrame();
 
 	// Render mode
-	virtual void rmNear();
-	virtual void rmFar();
-	virtual void rmNormal();
+	virtual void set_render_mode(int mode);
 
 	// KD: need to know, what R2 phase is active now
 	virtual u32 active_phase()

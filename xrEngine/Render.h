@@ -158,6 +158,13 @@ class ENGINE_API IRender_interface
 		SM_forcedword = u32(-1)
 	};
 
+	enum
+	{
+		MODE_NEAR = 0,
+		MODE_NORMAL = 1,
+		MODE_FAR = 2
+	};
+
   public:
 	// options
 	s32 m_skinning;
@@ -252,9 +259,7 @@ class ENGINE_API IRender_interface
 	virtual void Screenshot(ScreenshotMode mode = SM_NORMAL, LPCSTR name = 0) = 0;
 
 	// Render mode
-	virtual void rmNear() = 0;
-	virtual void rmFar() = 0;
-	virtual void rmNormal() = 0;
+	virtual void set_render_mode(int mode) = 0;
 	virtual u32 memory_usage() = 0;
 
 	// KD: need to know, what R2 phase is active now

@@ -108,7 +108,7 @@ void CEnvironment::RenderSky()
 		clouds_geom.create(v_clouds_fvf, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
 		bNeed_re_create_env = FALSE;
 	}
-	::Render->rmFar();
+	::Render->set_render_mode(::Render->MODE_FAR);
 
 	// draw sky box
 	Fmatrix mSky;
@@ -138,7 +138,7 @@ void CEnvironment::RenderSky()
 	RenderBackend.Render(D3DPT_TRIANGLELIST, v_offset, 0, 12, i_offset, 20);
 
 	// Sun
-	::Render->rmNormal();
+	::Render->set_render_mode(::Render->MODE_NORMAL);
 
 	eff_LensFlare->Render(TRUE, FALSE, FALSE);
 }
@@ -155,7 +155,7 @@ void CEnvironment::RenderClouds()
 	if (fis_zero(CurrentEnv->clouds_color.w, EPS_L))
 		return;
 
-	::Render->rmFar();
+	::Render->set_render_mode(::Render->MODE_FAR);
 
 	Fmatrix mXFORM, mScale;
 	mScale.scale(10, 0.4f, 10);
@@ -191,7 +191,7 @@ void CEnvironment::RenderClouds()
 	RenderBackend.set_Textures(&CurrentEnv->clouds_r_textures);
 	RenderBackend.Render(D3DPT_TRIANGLELIST, v_offset, 0, CloudsVerts.size(), i_offset, CloudsIndices.size() / 3);
 
-	::Render->rmNormal();
+	::Render->set_render_mode(::Render->MODE_NORMAL);
 }
 
 void CEnvironment::RenderFlares()

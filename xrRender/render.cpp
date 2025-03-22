@@ -314,7 +314,6 @@ void CRender::create()
 	PSLibrary.OnCreate();
 	HWOCC.occq_create(occq_size);
 
-	// rmNormal					();
 	marker = 0;
 	R_CHK(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[0]));
 	R_CHK(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[1]));
@@ -716,30 +715,29 @@ void CRender::set_Object(IRenderable* O)
 	val_pObject = O;
 }
 
-void CRender::rmNear()
+void CRender::set_render_mode(int mode)
 {
-	OPTICK_EVENT("CRender::rmNear");
+	float ZMin = 0.0f;
+	float ZMax = 0.0f;
+
+	switch (mode)
+	{
+	case MODE_NEAR:
+		ZMin = 0.0f;
+		ZMax = 0.02f;
+		break;
+	case MODE_NORMAL:
+		ZMin = 0.0f;
+		ZMax = 1.0f;
+		break;
+	case MODE_FAR:
+		ZMin = 0.99999f;
+		ZMax = 1.0f;
+		break;
+	}
 
 	IRender_Target* T = getTarget();
-	D3DVIEWPORT9 VP = {0, 0, T->get_width(), T->get_height(), 0, 0.02f};
-	CHK_DX(HW.pDevice->SetViewport(&VP));
-}
-
-void CRender::rmFar()
-{
-	OPTICK_EVENT("CRender::rmFar");
-
-	IRender_Target* T = getTarget();
-	D3DVIEWPORT9 VP = {0, 0, T->get_width(), T->get_height(), 0.99999f, 1.f};
-	CHK_DX(HW.pDevice->SetViewport(&VP));
-}
-
-void CRender::rmNormal()
-{
-	OPTICK_EVENT("CRender::rmNormal");
-
-	IRender_Target* T = getTarget();
-	D3DVIEWPORT9 VP = {0, 0, T->get_width(), T->get_height(), 0, 1.f};
+	D3DVIEWPORT9 VP = {0, 0, T->get_width(), T->get_height(), ZMin, ZMax};
 	CHK_DX(HW.pDevice->SetViewport(&VP));
 }
 

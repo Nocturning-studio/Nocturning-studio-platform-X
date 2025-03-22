@@ -514,10 +514,10 @@ void R_dsgraph_structure::r_dsgraph_render_hud()
 	RenderBackend.set_xform_project(Device.mProject);
 
 	// Rendering
-	rmNear();
+	set_render_mode(CRender::MODE_NEAR);
 	mapHUD.traverseLR(sorted_L1);
 	mapHUD.clear();
-	rmNormal();
+	set_render_mode(CRender::MODE_NORMAL);
 
 	// Restore projection
 	Device.mProject = Pold;

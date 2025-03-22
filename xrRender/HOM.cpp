@@ -456,7 +456,7 @@ void CHOM::OnRender()
 			// draw wire
 			if (bDebug)
 			{
-				RenderImplementation.rmNear();
+				RenderImplementation.set_render_mode(MODE_NEAR);
 			}
 			else
 			{
@@ -466,7 +466,7 @@ void CHOM::OnRender()
 			RenderBackend.dbg_Draw(D3DPT_LINELIST, &*line.begin(), line.size() / 2);
 			if (bDebug)
 			{
-				RenderImplementation.rmNormal();
+				RenderImplementation.set_render_mode(MODE_NORMAL);
 			}
 			else
 			{
