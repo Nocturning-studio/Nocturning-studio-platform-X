@@ -162,7 +162,7 @@ T* CResourceManager::CreateShader(const char* _name, CShaderMacros& _macros)
 	const char* type = ShaderTypeTraits<T>::GetShaderType();
 	string32 c_target, c_entry;
 	sprintf_s(c_entry, sizeof c_entry, "main");
-	sprintf_s(c_target, sizeof c_target, "%s_%u_%u", ext, HW.Caps.raster_major, HW.Caps.raster_minor);
+	sprintf_s(c_target, sizeof c_target, "%s_%u_%u", type, HW.Caps.raster_major, HW.Caps.raster_minor);
 
 #ifdef DEBUG_SHADER_COMPILATION
 	Msg("* Compiling shader: target=%s, source=%s.%s", c_target, _name, ext);
