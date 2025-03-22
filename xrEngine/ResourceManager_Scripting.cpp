@@ -408,7 +408,7 @@ void CResourceManager::LS_Load()
 		string_path namesp, fn;
 		strcpy_s(namesp, (*folder)[it]);
 
-		if (0 == strext(namesp) || 0 != xr_strcmp(strext(namesp), ".s"))
+		if (0 == strext(namesp) || 0 != xr_strcmp(strext(namesp), ".xrblender"))
 			continue;
 
 		*strext(namesp) = 0;

@@ -159,6 +159,7 @@ T* CResourceManager::CreateShader(const char* _name, CShaderMacros& _macros)
 	R_ASSERT2(file, file_source);
 
 	// select target
+	const char* type = ShaderTypeTraits<T>::GetShaderType();
 	string32 c_target, c_entry;
 	sprintf_s(c_entry, sizeof c_entry, "main");
 	sprintf_s(c_target, sizeof c_target, "%s_%u_%u", ext, HW.Caps.raster_major, HW.Caps.raster_minor);

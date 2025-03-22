@@ -4,8 +4,6 @@
 
 template <typename T> struct ShaderTypeTraits;
 
-#pragma todo("NSDeathman to NSDeathman: Изменить расширения шейдеров")
-
 template <> struct ShaderTypeTraits<SVS>
 {
 	typedef CResourceManager::map_VS Map_S;
@@ -16,6 +14,10 @@ template <> struct ShaderTypeTraits<SVS>
 		return RC_dest_vertex;
 	}
 	static inline LPCSTR GetShaderExt()
+	{
+		return "xrvs";
+	}
+	static inline LPCSTR GetShaderType()
 	{
 		return "vs";
 	}
@@ -42,6 +44,10 @@ template <> struct ShaderTypeTraits<SPS>
 		return RC_dest_pixel;
 	}
 	static inline LPCSTR GetShaderExt()
+	{
+		return "xrps";
+	}
+	static inline LPCSTR GetShaderType()
 	{
 		return "ps";
 	}
