@@ -77,6 +77,19 @@ void CRenderDevice::Clear()
 
 extern void CheckPrivilegySlowdown();
 
+void Present()
+{
+	OPTICK_EVENT("PRESENT");
+
+	Device.Statistic->RenderPresentation.Begin();
+
+	HRESULT _hr = HW.pDevice->Present(NULL, NULL, NULL, NULL);
+	if (D3DERR_DEVICELOST == _hr)
+		return; // we will handle this later
+
+	Device.Statistic->RenderPresentation.End();
+}
+
 void CRenderDevice::End(void)
 {
 #ifndef DEDICATED_SERVER
@@ -117,9 +130,7 @@ void CRenderDevice::End(void)
 
 	DebugUI->OnFrameEnd();
 
-	HRESULT _hr = HW.pDevice->Present(NULL, NULL, NULL, NULL);
-	if (D3DERR_DEVICELOST == _hr)
-		return; // we will handle this later
+	Present();
 #endif
 }
 
@@ -290,8 +301,6 @@ void CRenderDevice::StartEventLoop()
 				D3DXMatrixInverse((D3DXMATRIX*)&mInvFullTransform, 0, (D3DXMATRIX*)&mFullTransform);
 
 				syncProcessFrame.Set(); // allow secondary thread to do its job
-				
-				Sleep(0);
 
 #ifndef DEDICATED_SERVER
 				Statistic->RenderTOTAL_Real.FrameStart();

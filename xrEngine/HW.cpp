@@ -290,8 +290,7 @@ void CHW::CreateDevice(HWND m_hWnd)
 	{
 		Msg("Failed to initialize graphics hardware.\nPlease try to restart the game.");
 		FlushLog();
-		MessageBox(NULL, "Failed to initialize graphics hardware.\nPlease try to restart the game.", "Error!",
-				   MB_OK | MB_ICONERROR);
+		MessageBox(NULL, "Failed to initialize graphics hardware.\nPlease try to restart the game.", "Error!", MB_OK | MB_ICONERROR);
 		TerminateProcess(GetCurrentProcess(), 0);
 	}
 
@@ -324,6 +323,7 @@ void CHW::CreateDevice(HWND m_hWnd)
 
 	// Refresh rate
 	P.PresentationInterval = selectPresentInterval();
+
 	if (!bWindowed)
 		P.FullScreen_RefreshRateInHz = selectRefresh(P.BackBufferWidth, P.BackBufferHeight, fTarget);
 	else
@@ -388,16 +388,17 @@ u32 CHW::selectPresentInterval()
 {
 	OPTICK_EVENT("CHW::selectPresentInterval");
 
-	D3DCAPS9 caps;
-	pD3D->GetDeviceCaps(DevAdapter, DevT, &caps);
-
 	if (!psDeviceFlags.test(rsVSync))
 	{
+		D3DCAPS9 caps;
+		pD3D->GetDeviceCaps(DevAdapter, DevT, &caps);
+
 		if (caps.PresentationIntervals & D3DPRESENT_INTERVAL_IMMEDIATE)
 			return D3DPRESENT_INTERVAL_IMMEDIATE;
 		if (caps.PresentationIntervals & D3DPRESENT_INTERVAL_ONE)
 			return D3DPRESENT_INTERVAL_ONE;
 	}
+
 	return D3DPRESENT_INTERVAL_DEFAULT;
 }
 

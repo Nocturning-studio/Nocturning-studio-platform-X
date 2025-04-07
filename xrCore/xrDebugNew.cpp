@@ -197,7 +197,10 @@ void gather_info(const char* expression, const char* description, const char* ar
 	if (!IsDebuggerPresent() && !strstr(GetCommandLine(), "-no_call_stack_assert"))
 	{
 		if (shared_str_initialized)
+		{
+			Msg("Hello, we detected critical error, please send log file to engine maintenance team, or NSDeathman (https://vk.com/ns_deathman)\n");
 			Msg("stack trace:\n");
+		}
 
 #ifdef USE_OWN_ERROR_MESSAGE_WINDOW
 		buffer += sprintf(buffer, "stack trace:%s%s", endline, endline);

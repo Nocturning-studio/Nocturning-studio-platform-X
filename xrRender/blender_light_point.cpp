@@ -35,7 +35,7 @@ void CBlender_accum_point::Compile(CBlender_Compile& C)
 		gbuffer(C);
 		//C.r_Sampler_clw("s_material", r_material);
 		C.r_Sampler("s_lmap", C.L_textures[0]);
-		C.r_Sampler_clf("s_smap", r_RT_smap_depth);
+		C.r_Sampler_gaussian("s_smap", r_RT_smap_depth);
 		jitter(C);
 		C.r_End();
 		break;
@@ -45,7 +45,7 @@ void CBlender_accum_point::Compile(CBlender_Compile& C)
 		gbuffer(C);
 		//C.r_Sampler_clw("s_material", r_material);
 		C.r_Sampler("s_lmap", C.L_textures[0]);
-		C.r_Sampler_clf("s_smap", r_RT_smap_depth);
+		C.r_Sampler_gaussian("s_smap", r_RT_smap_depth);
 		jitter(C);
 		C.r_End();
 		break;
@@ -56,7 +56,7 @@ void CBlender_accum_point::Compile(CBlender_Compile& C)
 		gbuffer(C);
 		//C.r_Sampler_clw("s_material", r_material);
 		C.r_Sampler_clf("s_lmap", r_RT_smap_surf); // diff here
-		C.r_Sampler_clf("s_smap", r_RT_smap_depth);
+		C.r_Sampler_gaussian("s_smap", r_RT_smap_depth);
 		jitter(C);
 		C.r_End();
 		break;

@@ -155,19 +155,19 @@ static class cl_sun_color : public R_constant_setup
 	}
 } binder_sun_color;
 //////////////////////////////////////////////////////////////////////////
-static class cl_hdr_params : public R_constant_setup
+static class cl_debug_reserved : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RenderBackend.set_Constant("hdr_params", ps_r_hdr_white_intensity, ps_r_hdr_gamma, ps_r_hdr_brightness, 0);
+		RenderBackend.set_Constant("debug_reserved", ps_r_debug_reserved_0, ps_r_debug_reserved_1, ps_r_debug_reserved_2, ps_r_debug_reserved_3);
 	}
-} binder_hdr_params;
+} binder_debug_reserved;
 //////////////////////////////////////////////////////////////////////////
 static class cl_ao_brightness : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RenderBackend.set_Constant("ao_brightness", ps_r_ao_brightness, 0, 0, 0);
+		RenderBackend.set_Constant("ao_brightness", ps_r_ao_brightness);
 	}
 } binder_ao_brightness;
 //////////////////////////////////////////////////////////////////////////
@@ -300,7 +300,7 @@ void CRender::create()
 	::Device.Resources->RegisterConstantSetup("sun_normal_bias", &binder_sun_normal_bias);
 	::Device.Resources->RegisterConstantSetup("sun_directional_bias", &binder_sun_directional_bias);
 	::Device.Resources->RegisterConstantSetup("sun_color", &binder_sun_color);
-	::Device.Resources->RegisterConstantSetup("hdr_params", &binder_hdr_params);
+	::Device.Resources->RegisterConstantSetup("debug_reserved", &binder_debug_reserved);
 	::Device.Resources->RegisterConstantSetup("ao_brightness", &binder_ao_brightness);
 	::Device.Resources->RegisterConstantSetup("is_hud_render_phase", &binder_is_hud_render_phase);
 

@@ -29,10 +29,6 @@ extern ECORE_API int ps_r_LightSleepFrames;
 extern ECORE_API float ps_r_ao_radius;
 extern ECORE_API float ps_r_ao_bias;
 
-extern ECORE_API float ps_r_hdr_white_intensity;
-extern ECORE_API float ps_r_hdr_gamma;
-extern ECORE_API float ps_r_hdr_brightness;
-
 extern ECORE_API float ps_r_Detail_l_ambient;
 extern ECORE_API float ps_r_Detail_l_aniso;
 extern ECORE_API float ps_r_Detail_density;
@@ -55,6 +51,11 @@ extern ECORE_API float ps_r_ssaDONTSORT;
 extern ECORE_API float ps_r_ssaHZBvsTEX;
 
 extern ECORE_API int ps_r_thread_wait_sleep;
+
+extern ECORE_API float ps_r_debug_reserved_0;
+extern ECORE_API float ps_r_debug_reserved_1;
+extern ECORE_API float ps_r_debug_reserved_2;
+extern ECORE_API float ps_r_debug_reserved_3;
 
 // Postprocess effects
 extern ECORE_API u32 ps_vignette_mode;

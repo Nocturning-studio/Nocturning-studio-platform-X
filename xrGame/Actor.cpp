@@ -82,6 +82,11 @@ static Fvector vFootExt;
 
 Flags32 psActorFlags = {0};
 
+// Accesibilities (game help)
+float gh_damage_power = 1.0f;
+CTimer LastChanceActiveTimer;
+CTimer LastChanceTimeoutTimer;
+
 CActor::CActor() : CEntityAlive()
 {
 	encyclopedia_registry = xr_new<CEncyclopediaRegistryWrapper>();
@@ -182,6 +187,12 @@ CActor::CActor() : CEntityAlive()
 	m_dwILastUpdateTime = 0;
 
 	m_location_manager = xr_new<CLocationManager>(this);
+
+	m_fDamagePowerSaved = gh_damage_power;
+	m_fTimeFactorSaved = Device.time_factor();
+	m_bLastChanceActivated = false;
+	m_bLastChanceAvailable = true;
+	m_bLastChanceTimeOutTimerStarted = false;
 }
 
 CActor::~CActor()
@@ -542,7 +553,7 @@ void CActor::Hit(SHit* pHDS)
 	switch (GameID())
 	{
 	case GAME_SINGLE: {
-		float hit_power = HitArtefactsOnBelt(HDS.damage(), HDS.hit_type);
+		float hit_power = HitArtefactsOnBelt(HDS.damage(), HDS.hit_type) * gh_damage_power;
 
 		if (GodMode()) // psActorFlags.test(AF_GODMODE))
 		{
@@ -1138,6 +1149,36 @@ void CActor::shedule_Update(u32 DT)
 	// звук тяжелого дыхания при уталости и хромании
 	if (this == Level().CurrentControlEntity() && !g_dedicated_server)
 	{
+		if (LastChanceMode() && !m_bLastChanceActivated && m_bLastChanceAvailable && (conditions().GetHealth() < 0.2f) && g_Alive())
+		{
+			Msg("Last chance used");
+			gh_damage_power *= 0.25f;
+			Device.time_factor(0.75f);
+			LastChanceActiveTimer.Start();
+			m_bLastChanceActivated = true;
+			m_bLastChanceAvailable = false;
+		}
+
+		if (!m_bLastChanceActivated && !m_bLastChanceAvailable)
+		{
+			if (!m_bLastChanceTimeOutTimerStarted)
+			{
+				Msg("Last chance timeout started");
+				LastChanceTimeoutTimer.Start();
+				m_bLastChanceTimeOutTimerStarted = true;
+			}
+
+			if (m_bLastChanceTimeOutTimerStarted)
+			{
+				if (LastChanceTimeoutTimer.GetElapsed_sec() > 60.0f)
+				{
+					Msg("Last chance timeout stopped - last chance is available");
+					m_bLastChanceTimeOutTimerStarted = false;
+					m_bLastChanceAvailable = true;
+				}
+			}
+		}
+
 		if (conditions().IsLimping() && g_Alive())
 		{
 			if (!m_HeavyBreathSnd._feedback())
@@ -1175,7 +1216,17 @@ void CActor::shedule_Update(u32 DT)
 		}
 
 		if (!g_Alive() && m_BloodSnd._feedback())
+		{
 			m_BloodSnd.stop();
+		}
+
+		if (m_bLastChanceActivated && (LastChanceActiveTimer.GetElapsed_sec() > 60.0f && LastChanceMode() || !g_Alive() || (conditions().GetHealth() > 0.2f)))
+		{
+			Msg("Last chance time is over");
+			gh_damage_power = m_fDamagePowerSaved;
+			Device.time_factor(m_fTimeFactorSaved);
+			m_bLastChanceActivated = false;
+		}
 	}
 
 	// если в режиме HUD, то сама модель актера не рисуется

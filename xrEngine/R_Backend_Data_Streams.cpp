@@ -103,7 +103,6 @@ void VertexStream::reset_end()
 	OPTICK_EVENT("VertexStream::reset_end");
 
 	Create();
-	// old_pVB				= NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////

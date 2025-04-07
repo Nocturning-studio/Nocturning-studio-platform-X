@@ -239,8 +239,6 @@ void CRender::render_depth_prepass()
 
 	RenderBackend.enable_anisotropy_filtering();
 
-	// r_dsgraph_render_graph(0);
-
 	if (Details)
 		Details->Render();
 
@@ -275,7 +273,8 @@ void CRender::render_gbuffer_primary()
 
 	set_gbuffer();
 
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL));
+	if (ps_r_ls_flags.test(RFLAG_Z_PREPASS))
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL));
 
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
@@ -361,6 +360,20 @@ void CRender::render_stage_forward()
 
 		g_pGamePersistent->Environment().RenderThunderbolt();
 		g_pGamePersistent->Environment().RenderRain();
+	}
+}
+
+void CRender::render_hom()
+{
+	OPTICK_EVENT("CRender::render_hom");
+
+	ViewBase.CreateFromMatrix(Device.mFullTransform, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
+	View = 0;
+
+	if (!ps_render_flags.test(RFLAG_EXP_MT_CALC))
+	{
+		HOM.Enable();
+		HOM.Render(ViewBase);
 	}
 }
 
@@ -460,6 +473,21 @@ void CRender::render_lights()
 	Device.Statistic->RenderCALC_LIGHTS.End();
 }
 
+void CRender::combine_scene()
+{
+	precombine_scene();
+
+	render_screen_space_reflections();
+
+	render_skybox();
+
+	combine_scene_lighting();
+
+	render_stage_forward();
+
+	combine_sun_shafts();
+}
+
 void CRender::render_postprocess()
 {
 	OPTICK_EVENT("CRender::render_postprocess");
@@ -470,9 +498,6 @@ void CRender::render_postprocess()
 	render_antialiasing();
 
 	create_distortion_mask();
-
-	if (g_pGamePersistent)
-		g_pGamePersistent->OnRenderPPUI_PP();
 
 	render_distortion();
 
@@ -485,51 +510,41 @@ void CRender::render_postprocess()
 	if (ps_r_postprocess_flags.test(RFLAG_DOF))
 		render_depth_of_field();
 
-	// Generic1 -> Generic0
-	render_fog_scattering();
-
 	if (ps_render_flags.test(RFLAG_LENS_FLARES))
 		g_pGamePersistent->Environment().RenderFlares();
 
 	// Generic1 -> Generic0
 	combine_additional_postprocess();
 
-	// Generic0 -> Generic1
-	render_effectors();
+	//Generic_0 -> Generic_1
+	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())
+		render_effectors_pass_night_vision();
 
-	// Generic1 -> Generic0
+	//Radiation
+	render_effectors_pass_generate_radiation_noise();
+
+	//"Postprocess" params and colormapping (Generic_1 -> Generic_0)
+	render_effectors_pass_combine();
+
+	// Ceneric0 -> Generic0
+	if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
+		render_motion_blur();
+
+	// Ceneric0 -> Generic0
+	render_effectors_pass_screen_dust();
+
+	//Generic_0 -> Generic_1
+	render_effectors_pass_resolve_gamma();
+
+	//Generic_1 -> Generic_0
+	render_effectors_pass_lut();
+
+	// Generic0 -> Generic1
 	render_screen_overlays();
 
-	// Ceneric0 -> Generic1
-	render_motion_blur();
+	if (g_pGamePersistent)
+		g_pGamePersistent->OnRenderPPUI_PP();
 
 	Device.Statistic->RenderCALC_POSTPROCESS.End();
 }
-
-void CRender::render_hom()
-{
-	OPTICK_EVENT("CRender::render_hom");
-
-	ViewBase.CreateFromMatrix(Device.mFullTransform, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
-	View = 0;
-
-	if (!ps_render_flags.test(RFLAG_EXP_MT_CALC))
-	{
-		HOM.Enable();
-		HOM.Render(ViewBase);
-	}
-}
-
-void CRender::combine_scene()
-{
-	// Scene combining stage
-	combine_scene_lighting();
-
-	// Forward rendering
-	render_stage_forward();
-
-	// Add volumetric lights from buffer to screen
-	combine_sun_shafts();
-}
-
 ////////////////////////////////////////////////////////////////////////////////

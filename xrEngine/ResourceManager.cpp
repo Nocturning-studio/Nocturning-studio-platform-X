@@ -274,7 +274,11 @@ void CResourceManager::DeferredUpload()
 	CTimer timer;
 	timer.Start();
 
-	concurrency::parallel_for_each(m_textures.begin(), m_textures.end(), [](auto& iterator){iterator.second->Load();});
+	//concurrency::parallel_for_each(m_textures.begin(), m_textures.end(), [](auto& iterator){iterator.second->Load();});
+	for (map_TextureIt t = m_textures.begin(); t != m_textures.end(); t++)
+ 	{
+ 		t->second->Load();
+ 	}
 
 	Msg("* Phase time: %d ms", timer.GetElapsed_ms());
 }

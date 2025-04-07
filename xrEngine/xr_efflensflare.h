@@ -120,6 +120,8 @@ class ENGINE_API CLensFlare
 	{
 		m_State = lfsNone;
 	}
+
+	float GetBlendFactor();
 };
 
 #endif // xr_efflensflareH

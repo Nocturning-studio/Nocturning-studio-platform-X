@@ -31,17 +31,18 @@ extern DWORD gSecondaryThreadId;
 // refs
 class ENGINE_API CRenderDevice
 {
-  private:
-	// Main objects used for creating and rendering the 3D scene
-	u32 m_dwWindowStyle;
-	RECT m_rcWindowBounds;
-	RECT m_rcWindowClient;
-
+  public:
 	u32 Timer_MM_Delta;
 	CTimer_paused Timer;
 	CTimer_paused TimerGlobal;
 	CTimer TimerMM;
 	CTimer frame_timer;
+
+  private:
+	// Main objects used for creating and rendering the 3D scene
+	u32 m_dwWindowStyle;
+	RECT m_rcWindowBounds;
+	RECT m_rcWindowClient;
 
 	void _Create(LPCSTR shName);
 	void _Destroy(BOOL bKeepTextures);
@@ -60,6 +61,28 @@ class ENGINE_API CRenderDevice
 	BOOL b_is_Ready;
 	BOOL b_is_Active;
 	void OnWM_Activate(WPARAM wParam, LPARAM lParam);
+
+	Fvector2 GetScreenResolution()
+	{
+		Fvector2 Resolution;
+
+		Resolution.x = (float)dwWidth;
+		Resolution.y = (float)dwHeight;
+
+		return Resolution;
+	}
+
+	void SetScreenResolution(Ivector2 Resolution)
+	{
+		dwWidth = Resolution.x;
+		dwHeight = Resolution.y;
+	}
+
+	void SetScreenResolution(u32 ResolutionX, u32 ResolutionY)
+	{
+		dwWidth = ResolutionX;
+		dwHeight = ResolutionY;
+	}
 
   public:
 	ref_shader m_WireShader;

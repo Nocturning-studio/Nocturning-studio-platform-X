@@ -24,19 +24,19 @@ void CBlender_reflections::Compile(CBlender_Compile& C)
 	switch (C.iElement)
 	{
 	case 0:
-		//C.r_Pass("null", "postprocess_stage_reflections_pass_vertical_filter", FALSE, FALSE, FALSE);
+		//C.r_Pass("screen_quad", "postprocess_stage_reflections_pass_vertical_filter", FALSE, FALSE, FALSE);
 		//C.r_Sampler_rtf("s_reflections", r_RT_reflections);
 		//C.r_Sampler_rtf("s_image", r_RT_generic0);
 		//gbuffer(C);
 		//C.r_End();
 
-		//C.r_Pass("null", "postprocess_stage_reflections_pass_horizontal_filter", FALSE, FALSE, FALSE);
+		//C.r_Pass("screen_quad", "postprocess_stage_reflections_pass_horizontal_filter", FALSE, FALSE, FALSE);
 		//C.r_Sampler_rtf("s_reflections", r_RT_reflections);
 		//C.r_Sampler_rtf("s_image", r_RT_generic0);
 		//gbuffer(C);
 		//C.r_End();
 
-		C.r_Pass("null", "postprocess_stage_reflections_pass_render", FALSE, FALSE, FALSE);
+		C.r_Pass("screen_quad", "postprocess_stage_reflections_pass_render", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_reflections", r_RT_reflections);
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
 		gbuffer(C);

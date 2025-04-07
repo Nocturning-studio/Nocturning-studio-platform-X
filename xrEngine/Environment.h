@@ -142,6 +142,8 @@ class ENGINE_API CEnvironment
 
 	void RenderRain();
 
+	float GetFlaresBlendFactor();
+
 	bool SetWeatherFX(shared_str name);
 	bool StartWeatherFXFromTime(shared_str name, float time);
 	bool IsWFXPlaying()

@@ -266,7 +266,7 @@ class ENGINE_API CBackend
 		if (Const)
 			constants.set(Const, A);
 	}
-	ICF void set_Constant(R_constant* Const, float x, float y, float z, float w)
+	ICF void set_Constant(R_constant* Const, float x, float y = NULL, float z = NULL, float w = NULL)
 	{
 		if (Const)
 			constants.set(Const, x, y, z, w);
@@ -415,17 +415,19 @@ class ENGINE_API CBackend
 	};
 
 	void u_compute_texgen_screen(Fmatrix& dest);
-	void u_compute_texgen_jitter(Fmatrix& dest);
+	void set_viewport_geometry(float w, float h, ref_geom geometry, u32& vOffset);
 
 	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL);
 	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2 = NULL, IDirect3DSurface9* _3 = NULL, IDirect3DSurface9* _4 = NULL);
 	void set_Depth_Buffer(IDirect3DSurface9* zb);
 
 	void set_viewport_geometry(float w, float h, u32& vOffset);
+	void set_viewport_geometry(ref_geom geometry, u32& vOffset);
 	void set_viewport_geometry(u32& vOffset);
 
 	void RenderViewportSurface();
 	void RenderViewportSurface(const ref_rt& _1);
+	void RenderViewportSurface(const ref_rt& _1, IDirect3DSurface9* zb);
 	void RenderViewportSurface(float w, float h, const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL);
 
 	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1);

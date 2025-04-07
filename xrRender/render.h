@@ -301,6 +301,7 @@ class CRender : public R_dsgraph_structure
 	float hclip(float v, float dim);
 	void draw_volume(light* L);
 	void accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev, float fBias);
+	void render_volumetric_sun(u32 sub_phase, const u32 Offset, const Fmatrix& mShadow);
 	void accumulate_point_lights(light* L);
 	void accumulate_spot_lights(light* L);
 	void clear_bloom();
@@ -311,6 +312,8 @@ class CRender : public R_dsgraph_structure
 	void clear_autoexposure_pipeline();
 	void combine_additional_postprocess();
 	void combine_sun_shafts();
+	void render_skybox();
+	void precombine_scene();
 	void combine_scene_lighting();
 	void render_screen_space_reflections();
 	void render_screen_overlays();
@@ -325,6 +328,7 @@ class CRender : public R_dsgraph_structure
 	void render_fog_scattering();
 	void render_effectors_pass_generate_radiation_noise();
 	void render_effectors_pass_night_vision();
+	void render_effectors_pass_screen_dust();
 	void render_effectors_pass_lut();
 	void render_effectors_pass_combine();
 	void render_effectors_pass_resolve_gamma();

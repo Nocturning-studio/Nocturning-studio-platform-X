@@ -503,8 +503,7 @@ static class cl_screen_res : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RenderBackend.set_Constant(C, (float)Device.dwWidth, (float)Device.dwHeight, 1.0f / (float)Device.dwWidth,
-					 1.0f / (float)Device.dwHeight);
+		RenderBackend.set_Constant(C, (float)Device.dwWidth, (float)Device.dwHeight, 1.0f / (float)Device.dwWidth, 1.0f / (float)Device.dwHeight);
 	}
 } binder_screen_res;
 
@@ -517,6 +516,21 @@ static class cl_invP final : public R_constant_setup
 		RenderBackend.set_Constant(C, m_invProject);
 	}
 } binder_invP;
+
+float WindGustSpeed = 0.1f;
+float Radians = -90 + 1.57079f;
+float WindDirectionX = cos(Radians), WindDirectionY = sin(Radians);
+float WindSpeed = 8.0f;
+float WindGusting = sinf(float(Device.fTimeGlobal) * WindGustSpeed);
+
+class cl_wind_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RenderBackend.set_Constant(C, WindDirectionX, WindDirectionY, WindGusting, WindSpeed);
+	}
+};
+static cl_wind_params binder_wind_params;
 
 // Standart constant-binding
 void CBlender_Compile::SetMapping()
@@ -540,6 +554,7 @@ void CBlender_Compile::SetMapping()
 	r_Constant("c_scale", &tree_binder_c_scale);
 	r_Constant("c_bias", &tree_binder_c_bias);
 	r_Constant("c_sun", &tree_binder_c_sun);
+	r_Constant("wind_params", &binder_wind_params);
 
 	// hemi cube
 	// r_Constant("L_material", &binder_material);

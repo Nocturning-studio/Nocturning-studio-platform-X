@@ -293,6 +293,7 @@ class CWeapon : public CHudItemObject, public CShootingObject
 	float m_fScopeZoomFactor;
 	// когда режим приближения включен
 	bool m_bZoomMode;
+	float m_fSavedTimeFactor;
 	// от 0 до 1, показывает насколько процентов
 	// мы перемещаем HUD
 	float m_fZoomRotationFactor;

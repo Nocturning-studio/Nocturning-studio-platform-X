@@ -114,6 +114,7 @@ void CStats::Show()
 		AI_Vis_Query.FrameEnd();
 		AI_Vis_RayTests.FrameEnd();
 
+		RenderPresentation.FrameEnd();
 		RenderTOTAL.FrameEnd();
 		RenderCALC.FrameEnd();
 		RenderCALC_HOM.FrameEnd();
@@ -286,14 +287,14 @@ void CStats::Show()
 		F.OutNext("  Postprocess: %2.2fms, %d", RenderCALC_POSTPROCESS.result, RenderCALC_POSTPROCESS.count);
 		F.OutNext("  Skeletons: %2.2fms, %d", Animation.result, Animation.count);
 		F.OutNext("R_DUMP:      %2.2fms, %2.1f%%", RenderDUMP.result, PPP(RenderDUMP.result));
+		F.OutNext("R Presentation:      %2.2fms, %2.1f%%", RenderPresentation.result, PPP(RenderPresentation.result));
 		F.OutNext("  Occq Wait-L:    %2.2fms", RenderDUMP_Wait.result);
 		F.OutNext("  Occq Wait-S:    %2.2fms", RenderDUMP_Wait_S.result);
 		F.OutNext("  Skinning:  %2.2fms", RenderDUMP_SKIN.result);
 		F.OutNext("  DT_Vis/Cnt:%2.2fms", RenderDUMP_DT_VIS.result, RenderDUMP_DT_Count);
 		F.OutNext("  DT_Render: %2.2fms", RenderDUMP_DT_Render.result);
 		F.OutNext("  DT_Cache:  %2.2fms", RenderDUMP_DT_Cache.result);
-		F.OutNext("  Wallmarks: %2.2fms, %d/%d - %d", RenderDUMP_WM.result, RenderDUMP_WMS_Count, RenderDUMP_WMD_Count,
-				  RenderDUMP_WMT_Count);
+		F.OutNext("  Wallmarks: %2.2fms, %d/%d - %d", RenderDUMP_WM.result, RenderDUMP_WMS_Count, RenderDUMP_WMD_Count, RenderDUMP_WMT_Count);
 		F.OutNext("  Glows:     %2.2fms", RenderDUMP_Glows.result);
 		F.OutNext("  Lights:    %2.2fms, %d", RenderDUMP_Lights.result, RenderDUMP_Lights.count);
 		F.OutNext("  RT:        %2.2fms, %d", RenderDUMP_RT.result, RenderDUMP_RT.count);
@@ -442,6 +443,7 @@ void CStats::Show()
 
 		RenderTOTAL.FrameStart();
 		RenderCALC.FrameStart();
+		RenderPresentation.FrameStart();
 		RenderCALC_HOM.FrameStart();
 		RenderCALC_SUN.FrameStart();
 		RenderCALC_LIGHTS.FrameStart();

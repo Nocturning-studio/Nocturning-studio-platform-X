@@ -1901,6 +1901,11 @@ void CCC_RegisterCommands()
 	CMD1(CCC_StopWeatherFX, "stop_weather_effects");
 #endif // MASTER_GOLD
 
+	extern float gh_damage_power;
+	CMD4(CCC_Float, "gh_damage_power", &gh_damage_power, 0.0f, 1.f);
+	CMD3(CCC_Mask, "gh_zoom_time_slow_mo", &psActorFlags, AF_ZOOM_TIME_SLOW_MO);
+	CMD3(CCC_Mask, "gh_last_chance", &psActorFlags, AF_LAST_CHANCE);
+
 #ifdef DEBUG
 	CMD1(CCC_LuaHelp, "lua_help");
 	CMD1(CCC_ShowSmartCastStats, "show_smart_cast_stats");

@@ -1542,6 +1542,7 @@
     <ClInclude Include="motion.h" />
     <ClInclude Include="ObjectAnimator.h" />
     <ClInclude Include="Optick_Capture.h" />
+    <ClInclude Include="optick_include.h" />
     <ClInclude Include="ParticleCustom.h" />
     <ClInclude Include="perlin.h" />
     <ClInclude Include="Properties.h" />
@@ -2128,6 +2129,9 @@
       <Project>{ccca7859-eb86-493e-9b53-c4235f45b3c5}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

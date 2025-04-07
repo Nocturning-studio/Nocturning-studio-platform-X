@@ -27,6 +27,13 @@ BOOL GodMode()
 	return FALSE;
 }
 
+BOOL LastChanceMode()
+{
+	if (GameID() == GAME_SINGLE)
+		return psActorFlags.test(AF_LAST_CHANCE);
+	return FALSE;
+}
+
 CActorCondition::CActorCondition(CActor* object) : inherited(object)
 {
 	m_fJumpPower = 0.f;

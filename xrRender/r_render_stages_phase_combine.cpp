@@ -1,7 +1,9 @@
+///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "..\xrEngine\igame_persistent.h"
 #include "..\xrEngine\environment.h"
-
+#include <blender_combine.h>
+///////////////////////////////////////////////////////////////////////////////////
 void CRender::combine_additional_postprocess()
 {
 	OPTICK_EVENT("CRender::combine_additional_postprocess");
@@ -9,11 +11,11 @@ void CRender::combine_additional_postprocess()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderBackend.set_Element(RenderTarget->s_combine->E[2]);
+	RenderBackend.set_Element(RenderTarget->s_combine->E[SE_COMBINE_POSTPROCESS]);
 	RenderBackend.set_Constant("cas_params", ps_cas_contrast, ps_cas_sharpening, 0, 0);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
-
+///////////////////////////////////////////////////////////////////////////////////
 void CRender::combine_sun_shafts()
 {
 	OPTICK_EVENT("CRender::combine_sun_shafts");
@@ -21,84 +23,74 @@ void CRender::combine_sun_shafts()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-
-	RenderBackend.set_Element(RenderTarget->s_combine->E[3]);
+	RenderBackend.set_Element(RenderTarget->s_combine->E[SE_COMBINE_VOLUMETRIC]);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
-
-void CRender::combine_scene_lighting()
+///////////////////////////////////////////////////////////////////////////////////
+void CRender::render_skybox()
 {
-	OPTICK_EVENT("CRender::combine_scene_lighting");
+	OPTICK_EVENT("CRender::render_skybox");
 
-	u32 Offset = 0;
-	Fvector2 p0, p1;
-
-	// low/hi RTs
 	RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Generic_1);
 	RenderBackend.set_Depth_Buffer(HW.pBaseZB);
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
-
-	// Draw full-screen quad textured with our scene image
-	// draw skybox
 	RenderBackend.set_ColorWriteEnable();
+
+	// Draw full-screen quad textured with our scene image draw skybox
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
 	g_pGamePersistent->Environment().RenderSky();
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
+}
+///////////////////////////////////////////////////////////////////////////////////
+void CRender::precombine_scene()
+{
+	OPTICK_EVENT("CRender::combine_additional_postprocess");
 
-	RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
+	RenderBackend.set_ColorWriteEnable();
 
-	// Compute params
+	RenderBackend.set_Element(RenderTarget->s_combine->E[SE_PRECOMBINE_SCENE]);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
+}
+///////////////////////////////////////////////////////////////////////////////////
+void CRender::combine_scene_lighting()
+{
+	float additional_ambient = 0.0f;
+
+	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())
+		additional_ambient = 0.5f;
+
 	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
+
 	const float minamb = 0.001f;
-	Fvector4 ambclr = {_max(sRgbToLinear(envdesc->ambient.x), minamb), _max(sRgbToLinear(envdesc->ambient.y), minamb),
-					   _max(sRgbToLinear(envdesc->ambient.z), minamb), ps_r_ao_brightness};
-	Fvector4 envclr = {sRgbToLinear(envdesc->hemi_color.x), sRgbToLinear(envdesc->hemi_color.y),
-					   sRgbToLinear(envdesc->hemi_color.z), envdesc->weight};
+	Fvector4 ambclr = {	_max(sRgbToLinear(envdesc->ambient.x), minamb),
+						_max(sRgbToLinear(envdesc->ambient.y), minamb),
+						_max(sRgbToLinear(envdesc->ambient.z), minamb), 
+						ps_r_ao_brightness};
 
-	//----------------------
-	// Start combine stage
-	//----------------------
+	Fvector4 envclr = {	sRgbToLinear(envdesc->hemi_color.x), 
+						sRgbToLinear(envdesc->hemi_color.y),
+						sRgbToLinear(envdesc->hemi_color.z), 
+						envdesc->weight};
 
-	// Fill VB
-	float _w = float(Device.dwWidth);
-	float _h = float(Device.dwHeight);
-	p0.set(.5f / _w, .5f / _h);
-	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
-
-	// Fill vertex buffer
-	Fvector4* pv = (Fvector4*)RenderBackend.Vertex.Lock(4, RenderTarget->g_combine_VP->vb_stride, Offset);
-	pv->set(hclip(EPS, _w), hclip(_h + EPS, _h), p0.x, p1.y);
-	pv++;
-	pv->set(hclip(EPS, _w), hclip(EPS, _h), p0.x, p0.y);
-	pv++;
-	pv->set(hclip(_w + EPS, _w), hclip(_h + EPS, _h), p1.x, p1.y);
-	pv++;
-	pv->set(hclip(_w + EPS, _w), hclip(EPS, _h), p1.x, p0.y);
-	pv++;
-	RenderBackend.Vertex.Unlock(4, RenderTarget->g_combine_VP->vb_stride);
-
-	// Setup textures
 	IDirect3DBaseTexture9* e0 = envdesc->sky_r_textures_env[0].second->surface_get();
 	RenderTarget->t_envmap_0->surface_set(e0);
 	_RELEASE(e0);
-
 	IDirect3DBaseTexture9* e1 = envdesc->sky_r_textures_env[1].second->surface_get();
 	RenderTarget->t_envmap_1->surface_set(e1);
 	_RELEASE(e1);
 
-	// Draw
-	RenderBackend.set_Element(RenderTarget->s_combine->E[1]);
-
-	RenderBackend.set_Geometry(RenderTarget->g_combine_VP);
-
-	Fvector4 debug_mode = {(float)ps_r_debug_render, 0, 0, 0};
-	RenderBackend.set_Constant("debug_mode", debug_mode);
-
+	RenderBackend.set_Element(RenderTarget->s_combine->E[SE_COMBINE_SCENE]);
+	RenderBackend.set_Constant("additional_ambient", additional_ambient);
+	RenderBackend.set_Constant("debug_mode", ps_r_debug_render);
 	RenderBackend.set_Constant("ambient_color", ambclr);
-
 	RenderBackend.set_Constant("env_color", envclr);
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	RenderBackend.set_CullMode(CULL_NONE);
+	// stencil should be >= 1, we don't touch sky pixels
+	RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1, HW.pBaseZB);
 
 #ifdef DEBUG
 	RenderBackend.set_CullMode(CULL_CCW);
@@ -149,3 +141,4 @@ void CRender::combine_scene_lighting()
 	dbg_planes.clear();
 #endif
 }
+///////////////////////////////////////////////////////////////////////////////////

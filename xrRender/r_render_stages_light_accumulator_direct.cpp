@@ -82,8 +82,7 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 
 		// if (stencil>=1 && aref_pass)	stencil = light_id
 		RenderBackend.set_ColorWriteEnable(FALSE);
-		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0x01, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_REPLACE,
-						   D3DSTENCILOP_KEEP);
+		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0x01, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_REPLACE, D3DSTENCILOP_KEEP);
 		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
 
@@ -178,7 +177,7 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 
 			// corners
 			u32 ver_count = sizeof(corners) / sizeof(Fvector3);
-			FVF::L* pv = (FVF::L*)RenderBackend.Vertex.Lock(ver_count, RenderTarget->g_combine_cuboid.stride(), Offset);
+			FVF::L* pv = (FVF::L*)RenderBackend.Vertex.Lock(ver_count, RenderTarget->g_cuboid.stride(), Offset);
 
 			Fmatrix inv_XDcombine;
 			if ( sub_phase == SE_SUN_FAR)
@@ -193,10 +192,10 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 				pv->set(tmp_vec, C);
 				pv++;
 			}
-			RenderBackend.Vertex.Unlock(ver_count, RenderTarget->g_combine_cuboid.stride());
+			RenderBackend.Vertex.Unlock(ver_count, RenderTarget->g_cuboid.stride());
 		}
 
-		RenderBackend.set_Geometry(RenderTarget->g_combine_cuboid);
+		RenderBackend.set_Geometry(RenderTarget->g_cuboid);
 
 		// setup
 		RenderBackend.set_Element(RenderTarget->s_accum_direct_cascade->E[sub_phase]);
@@ -245,8 +244,7 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 
 		// setup stencil
 		if (SE_SUN_NEAR == sub_phase || sub_phase == SE_SUN_MIDDLE)
-			RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0xFE, D3DSTENCILOP_KEEP,
-							   D3DSTENCILOP_ZERO, D3DSTENCILOP_KEEP);
+			RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0xFE, D3DSTENCILOP_KEEP, D3DSTENCILOP_ZERO, D3DSTENCILOP_KEEP);
 		else
 			RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0x00);
 

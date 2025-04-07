@@ -4,6 +4,7 @@
 // Nocturning studio for NS Platform X
 ///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
+#include <Blender_antialiasing.h>
 ///////////////////////////////////////////////////////////////////////////////////
 void CRender::render_antialiasing()
 {
@@ -12,7 +13,7 @@ void CRender::render_antialiasing()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderBackend.set_Element(RenderTarget->s_antialiasing->E[0]);
+	RenderBackend.set_Element(RenderTarget->s_antialiasing->E[SE_PASS_FXAA]);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 ///////////////////////////////////////////////////////////////////////////////////

@@ -4,19 +4,24 @@
 ///////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////////////////////////
-class CBlender_barrel_blur : public IBlender
+enum
+{
+	SE_PASS_PREPARE,
+	SE_PASS_PROCESS_BLOOM,
+	SE_PASS_PROCESS_BLADES,
+};
+///////////////////////////////////////////////////////////////////////////////////
+class CBlender_bloom : public IBlender
 {
   public:
 	virtual LPCSTR getComment()
 	{
-		return "INTERNAL: Barrel blur";
+		return "INTERNAL: combine to bloom target";
 	}
-
 	virtual BOOL canBeDetailed()
 	{
 		return FALSE;
 	}
-
 	virtual BOOL canBeLMAPped()
 	{
 		return FALSE;
@@ -24,7 +29,7 @@ class CBlender_barrel_blur : public IBlender
 
 	virtual void Compile(CBlender_Compile& C);
 
-	CBlender_barrel_blur();
-	virtual ~CBlender_barrel_blur();
+	CBlender_bloom() = default;
+	virtual ~CBlender_bloom() = default;
 };
 ///////////////////////////////////////////////////////////////////////////////////

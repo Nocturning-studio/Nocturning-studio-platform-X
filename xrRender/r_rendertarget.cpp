@@ -1,14 +1,13 @@
+///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-
+///////////////////////////////////////////////////////////////////////////////////
 #include "r_rendertarget.h"
 #include "render.h"
 #include "..\xrEngine\resourcemanager.h"
 #include "blender_ambient_occlusion.h"
-#include "blender_bloom_build.h"
+#include "blender_bloom.h"
 #include "blender_antialiasing.h"
-#include "blender_fog_scattering.h"
 #include "blender_combine.h"
-#include "blender_contrast_adaptive_sharpening.h"
 #include "blender_distortion.h"
 #include "blender_depth_of_field.h"
 #include "blender_reflections.h"
@@ -20,10 +19,9 @@
 #include "blender_light_point.h"
 #include "blender_light_spot.h"
 #include "blender_autoexposure.h"
-#include "blender_barrel_blur.h"
 #include "blender_effectors.h"
 #include "blender_output_to_screen.h"
-
+///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::create_textures()
 {
 	Msg("Creating render target textures");
@@ -46,7 +44,7 @@ void CRenderTarget::create_textures()
 		else
 		{
 			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 			rt_GBuffer_4.create(r_RT_GBuffer_4, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 		}
@@ -59,12 +57,14 @@ void CRenderTarget::create_textures()
 
 	rt_Generic_0.create(r_RT_generic0, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	rt_Generic_1.create(r_RT_generic1, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	
+	//rt_Generic_Prev.create(r_RT_generic_prev, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
 	rt_Motion_Blur_Previous_Frame_Depth.create(r_RT_mblur_previous_frame_depth, dwWidth, dwHeight, D3DFMT_R16F);
-	rt_Motion_Blur_Dilation_Map_0.create(r_RT_mblur_dilation_map_0, u32(dwWidth * 0.25f), u32(dwHeight * 0.25f), D3DFMT_G16R16F);
-	rt_Motion_Blur_Dilation_Map_1.create(r_RT_mblur_dilation_map_1, u32(dwWidth * 0.25f), u32(dwHeight * 0.25f), D3DFMT_G16R16F);
+	rt_Motion_Blur_Dilation_Map_0.create(r_RT_mblur_dilation_map_0, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
+	rt_Motion_Blur_Dilation_Map_1.create(r_RT_mblur_dilation_map_1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
 
-	//rt_Reflections.create(r_RT_reflections, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+	rt_Reflections.create(r_RT_reflections, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F);
 
 	rt_Radiation_Noise0.create(r_RT_radiation_noise0, dwWidth, dwHeight, D3DFMT_L8);
 	rt_Radiation_Noise1.create(r_RT_radiation_noise1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_L8);
@@ -79,24 +79,7 @@ void CRenderTarget::create_textures()
 	t_LUT_1.create(r_T_LUTs1);
 
 	// BLOOM
-	float BloomResolutionMultiplier = 0.0f;
-
-	switch (ps_r_bloom_quality)
-	{
-	case 1:
-		BloomResolutionMultiplier = 0.2f;
-		break;
-	case 2:
-		BloomResolutionMultiplier = 0.3f;
-		break;
-	case 3:
-		BloomResolutionMultiplier = 0.5f;
-		break;
-	case 4:
-		BloomResolutionMultiplier = 1.0f;
-		break;
-	}
-
+	float BloomResolutionMultiplier = 0.2f;
 	u32 w = u32(dwWidth * BloomResolutionMultiplier), h = u32(dwHeight * BloomResolutionMultiplier);
 	rt_Bloom_1.create(r_RT_bloom1, w, h, D3DFMT_A16B16G16R16F);
 	rt_Bloom_2.create(r_RT_bloom2, w, h, D3DFMT_A16B16G16R16F);
@@ -145,9 +128,6 @@ void CRenderTarget::create_blenders()
 	b_accum_spot = xr_new<CBlender_accum_spot>();
 	s_accum_spot.create(b_accum_spot, "r\\accum_spot_s", "lights\\lights_spot01");
 
-	b_fog_scattering = xr_new<CBlender_fog_scattering>();
-	s_fog_scattering.create(b_fog_scattering, "r\\fog_scattering");
-
 	b_effectors = xr_new<CBlender_effectors>();
 	s_effectors.create(b_effectors, "postprocess_stage_pass_effectors");
 
@@ -159,7 +139,7 @@ void CRenderTarget::create_blenders()
 	b_ambient_occlusion = xr_new<CBlender_ambient_occlusion>();
 	s_ambient_occlusion.create(b_ambient_occlusion, "r\\ambient_occlusion");
 
-	b_bloom = xr_new<CBlender_bloom_build>();
+	b_bloom = xr_new<CBlender_bloom>();
 	s_bloom.create(b_bloom, "r\\bloom");
 
 	b_autoexposure = xr_new<CBlender_autoexposure>();
@@ -173,9 +153,6 @@ void CRenderTarget::create_blenders()
 
 	b_distortion = xr_new<CBlender_distortion>();
 	s_distortion.create(b_distortion, "r\\distortion");
-
-	b_barrel_blur = xr_new<CBlender_barrel_blur>();
-	s_barrel_blur.create(b_barrel_blur, "r\\barrel_blur");
 
 	b_reflections = xr_new<CBlender_reflections>();
 	s_reflections.create(b_reflections, "r\\reflections");
@@ -198,7 +175,6 @@ void CRenderTarget::delete_blenders()
 	xr_delete(b_motion_blur);
 	xr_delete(b_dof);
 	xr_delete(b_reflections);
-	xr_delete(b_barrel_blur);
 	xr_delete(b_distortion);
 	xr_delete(b_antialiasing);
 	xr_delete(b_combine);
@@ -207,7 +183,6 @@ void CRenderTarget::delete_blenders()
 	xr_delete(b_ambient_occlusion);
 	xr_delete(b_output_to_screen);
 	xr_delete(b_effectors);
-	xr_delete(b_fog_scattering);
 	xr_delete(b_accum_spot);
 	xr_delete(b_accum_point);
 	xr_delete(b_accum_direct_cascade);
@@ -277,19 +252,10 @@ CRenderTarget::CRenderTarget()
 	accum_spot_geom_create();
 	g_accum_spot.create(D3DFVF_XYZ, g_accum_spot_vb, g_accum_spot_ib);
 
-	// COMBINE
-	{
-		static D3DVERTEXELEMENT9 dwDecl[] = 
-		{
-			{0, 0, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0}, D3DDECL_END()
-		};
-
-		g_combine_VP.create(dwDecl, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
-		g_combine_cuboid.create(FVF::F_L, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
-	}
-
 	// PP
 	g_effectors.create(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX3, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
+
+	g_cuboid.create(FVF::F_L, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
 }
 
 CRenderTarget::~CRenderTarget()
@@ -328,5 +294,4 @@ CRenderTarget::~CRenderTarget()
 
 	delete_blenders();
 }
-
-
+///////////////////////////////////////////////////////////////////////////////////

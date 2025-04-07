@@ -270,7 +270,7 @@ void CBackend::u_compute_texgen_screen(Fmatrix& m_Texgen)
 	m_Texgen.mul(m_TexelAdjust, RenderBackend.xforms.m_wvp);
 }
 
-void CBackend::set_viewport_geometry(float w, float h, u32& vOffset)
+void CBackend::set_viewport_geometry(float w, float h, ref_geom geometry, u32& vOffset)
 {
 	OPTICK_EVENT("CRenderTarget::set_viewport_geometry")
 
@@ -285,7 +285,7 @@ void CBackend::set_viewport_geometry(float w, float h, u32& vOffset)
 	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
 
 	// Fill vertex buffer
-	FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, g_viewport->vb_stride, vOffset);
+	FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, geometry->vb_stride, vOffset);
 	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
 	pv++;
 	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
@@ -294,17 +294,29 @@ void CBackend::set_viewport_geometry(float w, float h, u32& vOffset)
 	pv++;
 	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
 	pv++;
-	RenderBackend.Vertex.Unlock(4, g_viewport->vb_stride);
+	RenderBackend.Vertex.Unlock(4, geometry->vb_stride);
 
 	// Set geometry
-	RenderBackend.set_Geometry(g_viewport);
+	RenderBackend.set_Geometry(geometry);
+}
+
+void CBackend::set_viewport_geometry(float w, float h, u32& vOffset)
+{
+	set_viewport_geometry(w, h, g_viewport, vOffset);
+}
+
+void CBackend::set_viewport_geometry(ref_geom geometry, u32& vOffset)
+{
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
+	set_viewport_geometry(w, h, geometry, vOffset);
 }
 
 void CBackend::set_viewport_geometry(u32& vOffset)
 {
 	float w = float(Device.dwWidth);
 	float h = float(Device.dwHeight);
-	set_viewport_geometry(w, h, vOffset);
+	set_viewport_geometry(w, h, g_viewport, vOffset);
 }
 
 void CBackend::RenderViewportSurface()
@@ -316,8 +328,13 @@ void CBackend::RenderViewportSurface()
 
 void CBackend::RenderViewportSurface(const ref_rt& _1)
 {
+	RenderViewportSurface(_1, NULL);
+}
+
+void CBackend::RenderViewportSurface(const ref_rt& _1, IDirect3DSurface9* zb)
+{
 	set_Render_Target_Surface(_1);
-	set_Depth_Buffer(NULL);
+	set_Depth_Buffer(zb);
 
 	u32 Offset = 0;
 	set_viewport_geometry(Offset);

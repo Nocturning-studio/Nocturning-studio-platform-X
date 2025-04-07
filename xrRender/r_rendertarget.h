@@ -26,11 +26,8 @@ class CRenderTarget : public IRender_Target
 	IBlender* b_ambient_occlusion;
 	IBlender* b_autoexposure;
 	IBlender* b_combine;
-	IBlender* b_contrast_adaptive_sharpening;
 	IBlender* b_antialiasing;
-	IBlender* b_fog_scattering;
 	IBlender* b_dof;
-	IBlender* b_barrel_blur;
 	IBlender* b_motion_blur;
 	IBlender* b_frame_overlay;
 	IBlender* b_reflections;
@@ -61,7 +58,7 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_Light_Accumulator;
 	ref_rt rt_Shadow_Accumulator;
 
-	ref_rt rt_Generic_0; // 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
+	ref_rt rt_Generic_0;
 	ref_rt rt_Generic_1;
 
 	ref_rt rt_Distortion_Mask;
@@ -85,6 +82,8 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_Radiation_Noise0;
 	ref_rt rt_Radiation_Noise1;
 	ref_rt rt_Radiation_Noise2;
+
+	ref_rt rt_Generic_Prev;
 
 	// ao
 	ref_rt rt_ao_raw;
@@ -153,9 +152,7 @@ class CRenderTarget : public IRender_Target
 	ref_shader s_autoexposure;
 	float f_autoexposure_adapt;
 
-	// Combine
-	ref_geom g_combine_VP; // xy=p,zw=tc
-	ref_geom g_combine_cuboid;
+	ref_geom g_cuboid;
 
 	ref_shader s_combine;
 	ref_shader s_contrast_adaptive_sharpening;

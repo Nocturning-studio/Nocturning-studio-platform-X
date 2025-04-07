@@ -33,7 +33,6 @@ void CRender::RenderScene()
 		render_depth_prepass();
 
 	//******* Main render :: PART-0	-- first
-	// level, SPLIT
 	render_gbuffer_primary();
 
 	//******* Main render :: PART-1 (second)
@@ -67,7 +66,10 @@ void CRender::RenderScene()
 
 	combine_scene();
 
-	render_postprocess();
+	if(ps_render_flags.test(RFLAG_DISABLE_POSTPROCESS))
+		render_effectors_pass_resolve_gamma(); //Generic_0 -> Generic_1
+	else
+		render_postprocess();
 
 	if (g_pGamePersistent)
 		g_pGamePersistent->OnRenderPPUI_main();

@@ -206,6 +206,11 @@ void CEnvironment::RenderFlares()
 	eff_LensFlare->Render(FALSE, TRUE, TRUE);
 }
 
+float CEnvironment::GetFlaresBlendFactor()
+{
+	return eff_LensFlare->GetBlendFactor();
+}
+
 void CEnvironment::RenderThunderbolt()
 {
 	OPTICK_EVENT("CEnvironment::RenderThunderbolt");

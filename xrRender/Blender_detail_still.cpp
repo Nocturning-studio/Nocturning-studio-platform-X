@@ -40,11 +40,12 @@ void CBlender_Detail_Still::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case SE_DETAIL_NORMAL_ANIMATED: // deffer wave
-		configure_shader(C, false, "detail_object_animated", "detail_object", false);
+	case SE_DETAIL_NORMAL_ANIMATED:
+		configure_shader_detail_object(C, false, "detail_object_animated", "detail_object", false);
+		C.r_End();
 		break;
-	case SE_DETAIL_NORMAL_STATIC: // deffer still
-		configure_shader(C, false, "detail_object", "detail_object", false);
+	case SE_DETAIL_NORMAL_STATIC:
+		configure_shader_detail_object(C, false, "detail_object", "detail_object", false);
 		break;
 	case SE_DETAIL_SHADOW_DEPTH_ANIMATED:
 		C.r_Pass("shadow_depth_stage_detail_object_animated", "shadow_depth_stage_detail_object", FALSE);

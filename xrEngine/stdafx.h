@@ -65,11 +65,6 @@ extern ENGINE_API CInifile* pGameIni;
 
 #pragma comment(lib, "Imgui.lib")
 
-#include <optick/optick.h>
-#ifdef ENABLE_PROFILING
-#pragma comment(lib, "OptickCore.lib")
-#endif
-
 #ifndef DEBUG
 #define LUABIND_NO_ERROR_CHECKING
 #endif

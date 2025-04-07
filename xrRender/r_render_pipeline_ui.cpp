@@ -9,6 +9,8 @@ void CRender::RenderMenu()
 {
 	OPTICK_EVENT("CRender::RenderMenu");
 
+	u32 FrameStartTime = Device.TimerGlobal.GetElapsed_ms();
+
 	//	Globals
 	RenderBackend.set_CullMode(CULL_CCW);
 	RenderBackend.set_Stencil(FALSE);
@@ -56,5 +58,13 @@ void CRender::RenderMenu()
 	pv++;
 	RenderBackend.Vertex.Unlock(4, RenderBackend.g_viewport->vb_stride);
 	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+
+	u32 FrameEndTime = Device.TimerGlobal.GetElapsed_ms();
+	u32 FrameTime = (FrameEndTime - FrameStartTime);
+	u32 DSUpdateDelta = 18.6f;
+	if (FrameTime < DSUpdateDelta)
+	{
+		Sleep(DSUpdateDelta - FrameTime);
+	}
 }
 ////////////////////////////////////////////////////////////////////////////////

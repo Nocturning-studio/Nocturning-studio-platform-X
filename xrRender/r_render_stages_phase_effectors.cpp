@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "..\xrEngine\igame_persistent.h"
 #include "..\xrEngine\environment.h"
+#include <blender_effectors.h>
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::u_calc_tc_duality_ss(Fvector2& r0, Fvector2& r1, Fvector2& l0, Fvector2& l1)
 {
@@ -56,15 +57,15 @@ void CRender::render_effectors_pass_generate_radiation_noise()
 	float w = float(Device.dwWidth);
 	float h = float(Device.dwHeight);
 
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[1]);
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_RADIATION]);
 	RenderBackend.set_Constant("noise_intesity", RenderTarget->param_radiation_intensity, 1);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Radiation_Noise0);
 
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[1]);
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_RADIATION]);
 	RenderBackend.set_Constant("noise_intesity", RenderTarget->param_radiation_intensity, 0.66f);
 	RenderBackend.RenderViewportSurface(w * 0.5f, h * 0.5f, RenderTarget->rt_Radiation_Noise1);
 
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[1]);
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_RADIATION]);
 	RenderBackend.set_Constant("noise_intesity", RenderTarget->param_radiation_intensity, 0.33f);
 	RenderBackend.RenderViewportSurface(w * 0.25f, h * 0.25f, RenderTarget->rt_Radiation_Noise2);
 }
@@ -76,8 +77,61 @@ void CRender::render_effectors_pass_night_vision()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[2]);
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_NIGHT_VISION]);
 
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+}
+
+void CRender::render_effectors_pass_screen_dust()
+{
+	OPTICK_EVENT("CRenderTarget::render_effectors_pass_screen_dust");
+
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Stencil(FALSE);
+
+	float BlendFactor = 0.0f;
+
+	if (g_pGamePersistent)
+		BlendFactor = g_pGamePersistent->Environment().GetFlaresBlendFactor();
+
+	Fvector vSunDir;
+	vSunDir.set(g_pGamePersistent->Environment().CurrentEnv->sun_dir);
+	vSunDir.mul(vSunDir, -1);
+	R_ASSERT(_valid(vSunDir));
+
+	float fDot;
+
+	Fvector vecPos;
+
+	Fmatrix matEffCamPos;
+	matEffCamPos.identity();
+	// Calculate our position and direction
+
+	matEffCamPos.i.set(Device.vCameraRight);
+	matEffCamPos.j.set(Device.vCameraTop);
+	matEffCamPos.k.set(Device.vCameraDirection);
+	vecPos.set(Device.vCameraPosition);
+
+	Fvector vecDir;
+	vecDir.set(0.0f, 0.0f, 1.0f);
+	matEffCamPos.transform_dir(vecDir);
+	vecDir.normalize();
+
+	// Figure out of light (or flare) might be visible
+	Fvector vecLight;
+	vecLight.set(vSunDir);
+	vecLight.normalize();
+
+	fDot = vecLight.dotproduct(vecDir);
+
+	if (fDot < 0.0001f)
+		fDot = 0.0f;
+
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_SCREEN_DUST], 0);
+	RenderBackend.set_Constant("blend_factor", BlendFactor, fDot);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_SCREEN_DUST], 1);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
@@ -86,10 +140,10 @@ void CRender::render_effectors_pass_combine()
 	OPTICK_EVENT("CRenderTarget::render_effectors_pass_combine");
 
 	// combination/postprocess
-	RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Generic_1);
+	RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Generic_0);
 	RenderBackend.set_Depth_Buffer(NULL);
 
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[0]);
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_COMBINE]);
 
 	int gblend = clampr(iFloor((1 - RenderTarget->param_gray) * 255.f), 0, 255);
 	int nblend = clampr(iFloor((1 - RenderTarget->param_noise) * 255.f), 0, 255);
@@ -121,9 +175,8 @@ void CRender::render_effectors_pass_combine()
 	// Actual rendering
 	RenderBackend.set_Constant(	"c_colormap", 
 								RenderTarget->param_color_map_influence,
-								RenderTarget->param_color_map_interpolate, 
-								0,
-								0	);
+								RenderTarget->param_color_map_interpolate );
+
 	RenderBackend.set_Constant(	"c_brightness", 
 								color_get_R(p_brightness) / 255.f, 
 								color_get_G(p_brightness) / 255.f, 
@@ -142,18 +195,9 @@ void CRender::render_effectors_pass_resolve_gamma()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
-	IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
-	RenderTarget->t_LUT_0->surface_set(e0);
-	_RELEASE(e0);
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_RESOLVE_GAMMA]);
 
-	IDirect3DBaseTexture9* e1 = envdesc->lut_r_textures[1].second->surface_get();
-	RenderTarget->t_LUT_1->surface_set(e1);
-	_RELEASE(e1);
-
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[3]);
-
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 
 void CRender::render_effectors_pass_lut()
@@ -172,31 +216,10 @@ void CRender::render_effectors_pass_lut()
 	RenderTarget->t_LUT_1->surface_set(e1);
 	_RELEASE(e1);
 
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[4]);
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_LUT]);
 
 	RenderBackend.set_Constant("c_lut_params", envdesc->weight, 0, 0, 0);
 
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
-}
-
-void CRender::render_effectors()
-{
-	OPTICK_EVENT("CRenderTarget::render_effectors");
-
-	//Generic_0 -> Generic_1
-	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())
-		render_effectors_pass_night_vision();
-
-	//Radiation
-	render_effectors_pass_generate_radiation_noise();
-
-	//"Postprocess" params and colormapping (Generic_0 -> Generic_1)
-	render_effectors_pass_combine();
-
-	//Generic_1 -> Generic_0
-	render_effectors_pass_resolve_gamma();
-
-	//Generic_0 -> Generic_1
-	render_effectors_pass_lut();
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 ///////////////////////////////////////////////////////////////////////////////////

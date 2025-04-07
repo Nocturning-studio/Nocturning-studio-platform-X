@@ -15,8 +15,17 @@ void CRender::render_ambient_occlusion()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[SE_AO_HBAO_PLUS]);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_ao);
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
+
+	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[SE_AO_SSAO]);
+	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
+	RenderBackend.set_Constant("ao_params", ps_r_ao_bias, ps_r_ao_radius);
+	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_ao);
+
+	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[SE_AO_DENOISE]);
+	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
+	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_ao);
 
 	Device.Statistic->RenderCALC_AO.End();
 }

@@ -386,6 +386,11 @@ void CLensFlare::OnFrame(shared_str id)
 	}
 }
 
+float CLensFlare::GetBlendFactor()
+{
+	return fBlend;
+}
+
 void CLensFlare::Render(BOOL bSun, BOOL bFlares, BOOL bGradient)
 {
 	OPTICK_EVENT("CLensFlare::Render");

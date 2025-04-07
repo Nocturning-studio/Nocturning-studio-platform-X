@@ -3,6 +3,7 @@
 // Nocturning studio for NS Platform X
 ///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
+#include <Blender_motion_blur.h>
 ///////////////////////////////////////////////////////////////////////////////////
 void CRender::motion_blur_pass_prepare_dilation_map()
 {
@@ -17,24 +18,20 @@ void CRender::motion_blur_pass_prepare_dilation_map()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	float w = float(Device.dwWidth * 0.25f);
-	float h = float(Device.dwHeight * 0.25f);
-	float Power = ps_r_mblur * 0.25f;
+	float w = float(Device.dwWidth * 0.5f);
+	float h = float(Device.dwHeight * 0.5f);
 
-	// Create dilation map
-	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[0]);
-	RenderBackend.set_Constant("m_blur_power", Power);
+	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_PREPARE_DILATION_MAP]);
+	RenderBackend.set_Constant("m_blur_power", ps_r_mblur);
 	RenderBackend.set_Constant("m_current", m_current);
 	RenderBackend.set_Constant("m_previous", m_previous);
 	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_0);
 
-	// Blur (pass 1)
-	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[1]);
+	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_BLUR_DILATION_MAP], 0);
 	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
 	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_1);
 
-	// Blur (pass 2)
-	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[2]);
+	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_BLUR_DILATION_MAP], 1);
 	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
 	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_0);
 }
@@ -46,11 +43,10 @@ void CRender::motion_blur_pass_blur()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	// Blur
-	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[4]);
+	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_BLUR_FRAME], 0);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 
-	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[5]);
+	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_BLUR_FRAME], 1);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
@@ -61,7 +57,7 @@ void CRender::motion_blur_pass_save_depth()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[3]);
+	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_SAVE_DEPTH_BUFFER]);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Motion_Blur_Previous_Frame_Depth);
 }
 

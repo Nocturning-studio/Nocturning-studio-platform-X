@@ -9,8 +9,11 @@ enum
 	AF_RUN_BACKWARD = (1 << 4),
 	AF_AUTOPICKUP = (1 << 5),
 	AF_PSP = (1 << 6),
+	AF_ZOOM_TIME_SLOW_MO = (1 << 7),
+	AF_LAST_CHANCE = (1 << 8),
 };
 
 extern Flags32 psActorFlags;
 
 extern BOOL GodMode();
+extern BOOL LastChanceMode();

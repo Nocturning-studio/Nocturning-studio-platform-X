@@ -633,6 +633,9 @@
     <ClInclude Include="xrCPU_Pipe\xrCPU_Pipe.h">
       <Filter>CPU Pipe\Kernel</Filter>
     </ClInclude>
+    <ClInclude Include="optick_include.h">
+      <Filter>Engine\Profiling</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IInputReceiver.cpp">
@@ -1136,5 +1139,8 @@
     <Text Include="Effects description.txt" />
     <Text Include="features.txt" />
     <Text Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

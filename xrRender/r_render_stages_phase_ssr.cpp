@@ -9,10 +9,10 @@ void CRender::render_screen_space_reflections()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	for (u32 i = 0; i < RenderTarget->s_reflections->E[0]->passes.size(); i++)
-	{
-		RenderBackend.set_Element(RenderTarget->s_reflections->E[0], i);
-		RenderBackend.RenderViewportSurface(RenderTarget->rt_Reflections);
-	}
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
+
+	RenderBackend.set_Element(RenderTarget->s_reflections->E[0]);
+	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Reflections);
 }
 ///////////////////////////////////////////////////////////////////////////////////

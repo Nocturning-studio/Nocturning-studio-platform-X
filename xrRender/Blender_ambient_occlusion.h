@@ -12,7 +12,7 @@ enum
 	SE_AO_GTAO,
 	SE_AO_DENOISE,
 };
-
+///////////////////////////////////////////////////////////////////////////////////
 class CBlender_ambient_occlusion : public IBlender
 {
   public:
@@ -33,7 +33,7 @@ class CBlender_ambient_occlusion : public IBlender
 
 	virtual void Compile(CBlender_Compile& C);
 
-	CBlender_ambient_occlusion();
-	virtual ~CBlender_ambient_occlusion();
+	CBlender_ambient_occlusion() = default;
+	virtual ~CBlender_ambient_occlusion() = default;
 };
 ///////////////////////////////////////////////////////////////////////////////////

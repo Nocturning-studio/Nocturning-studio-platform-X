@@ -262,6 +262,12 @@ class CActor : public CEntityAlive,
 
 	xr_vector<const CArtefact*> m_ArtefactsOnBelt;
 
+	bool m_bLastChanceTimeOutTimerStarted;
+	bool m_bLastChanceAvailable;
+	bool m_bLastChanceActivated;
+	float m_fDamagePowerSaved;
+	float m_fTimeFactorSaved;
+
   protected:
 	// Sleep params
 	// время когда актера надо разбудить
@@ -427,9 +433,9 @@ class CActor : public CEntityAlive,
 	{
 		return cam_active;
 	}
+	void cam_Set(EActorCameras style);
 
   protected:
-	void cam_Set(EActorCameras style);
 	void cam_Update(float dt, float fFOV);
 	void camUpdateLadder(float dt);
 	void cam_SetLadder();

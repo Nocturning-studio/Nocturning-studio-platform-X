@@ -1,25 +1,17 @@
+///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #pragma hdrstop
-
+///////////////////////////////////////////////////////////////////////////////////
 #include "Blender_combine.h"
-
-CBlender_combine::CBlender_combine()
-{
-	description.CLS = 0;
-}
-CBlender_combine::~CBlender_combine()
-{
-}
-
+///////////////////////////////////////////////////////////////////////////////////
 void CBlender_combine::Compile(CBlender_Compile& C)
 {
 	IBlender::Compile(C);
 
 	switch (C.iElement)
 	{
-	case 0: //pre combine
-		C.r_Pass("scene_combine_stage", "scene_combine_stage_pass_precombine", FALSE, FALSE, FALSE, TRUE, D3DBLEND_INVSRCALPHA,
-				 D3DBLEND_SRCALPHA); //. MRT-blend?
+	case SE_PRECOMBINE_SCENE:
+		C.r_Pass("screen_quad", "scene_combine_stage_pass_precombine", FALSE, FALSE, FALSE, TRUE, D3DBLEND_INVSRCALPHA, D3DBLEND_SRCALPHA);
 		gbuffer(C);
 		C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
 		C.r_Sampler_rtf("s_ao", r_RT_ao);
@@ -33,8 +25,8 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		jitter(C);
 		C.r_End();
 		break;
-	case 1: // combine
-		C.r_Pass("scene_combine_stage", "scene_combine_stage", FALSE, FALSE, FALSE, TRUE, D3DBLEND_INVSRCALPHA, D3DBLEND_SRCALPHA); //. MRT-blend?
+	case SE_COMBINE_SCENE:
+		C.r_Pass("screen_quad", "scene_combine_stage", FALSE, FALSE, FALSE, TRUE, D3DBLEND_INVSRCALPHA, D3DBLEND_SRCALPHA);
 		gbuffer(C);
 		C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
 		C.r_Sampler_gaussian("s_ao", r_RT_ao);
@@ -54,8 +46,8 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		jitter(C);
 		C.r_End();
 		break;
-	case 2:
-		C.r_Pass("null", "scene_combine_stage_pass_postprocess", FALSE, FALSE, FALSE);
+	case SE_COMBINE_POSTPROCESS:
+		C.r_Pass("screen_quad", "scene_combine_stage_pass_postprocess", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r_RT_generic1);
 		C.r_Sampler_clf("s_autoexposure", r_RT_autoexposure_cur);
 		C.r_Sampler_clf("s_bloom", r_RT_bloom1);
@@ -64,8 +56,8 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		jitter(C);
 		C.r_End();
 		break;
-	case 3:
-		C.r_Pass("null", "scene_combine_stage_apply_volumetric", FALSE, FALSE, FALSE);
+	case SE_COMBINE_VOLUMETRIC:
+		C.r_Pass("screen_quad", "scene_combine_stage_apply_volumetric", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r_RT_generic1);
 		C.r_Sampler_clf("s_light_accumulator", r_RT_Light_Accumulator);
 		jitter(C);
@@ -73,3 +65,4 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		break;
 	}
 }
+///////////////////////////////////////////////////////////////////////////////////

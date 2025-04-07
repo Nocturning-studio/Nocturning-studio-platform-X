@@ -173,9 +173,10 @@ int ps_r_LightSleepFrames = 10;
 float ps_r_ao_radius = 2.0f;
 float ps_r_ao_bias = 0.01f;
 
-float ps_r_hdr_white_intensity = 1.2f;
-float ps_r_hdr_gamma = 1.0f;
-float ps_r_hdr_brightness = 1.2f;
+float ps_r_debug_reserved_0 = 1.0f;
+float ps_r_debug_reserved_1 = 1.0f;
+float ps_r_debug_reserved_2 = 1.0f;
+float ps_r_debug_reserved_3 = 1.0f;
 
 float ps_r_Detail_l_ambient = 0.9f;
 float ps_r_Detail_l_aniso = 0.25f;
@@ -644,7 +645,7 @@ void xrRender_initconsole()
 
 	CMD4(CCC_Float, "r_geometry_lod", &ps_r_LOD, 0.1f, 1.2f);
 
-	CMD4(CCC_Float, "r_detail_density", &ps_r_Detail_density, .2f, 0.6f);
+	CMD4(CCC_Float, "r_detail_density", &ps_r_Detail_density, .01f, 0.6f);
 
 	CMD4(CCC_Float, "r_detail_l_ambient", &ps_r_Detail_l_ambient, .5f, .95f);
 	CMD4(CCC_Float, "r_detail_l_aniso", &ps_r_Detail_l_aniso, .1f, .5f);
@@ -662,9 +663,6 @@ void xrRender_initconsole()
 	CMD3(CCC_Mask, "r_sepia", &ps_render_flags, RFLAG_SEPIA);
 	CMD3(CCC_Token, "r_vignette_mode", &ps_vignette_mode, vignette_mode_token);
 	CMD3(CCC_Mask, "r_chromatic_abberation", &ps_render_flags, RFLAG_CHROMATIC_ABBERATION);
-	CMD4(CCC_Float, "r_hdr_white_intensity", &ps_r_hdr_white_intensity, 0, 2);
-	CMD4(CCC_Float, "r_hdr_gamma", &ps_r_hdr_gamma, 0, 2);
-	CMD4(CCC_Float, "r_hdr_brightness", &ps_r_hdr_brightness, 0, 2);
 
 	CMD3(CCC_Mask, "r_mt", &ps_render_flags, RFLAG_EXP_MT_CALC);
 
@@ -785,6 +783,11 @@ void xrRender_initconsole()
 	CMD4(CCC_Float, "r_tsm_bias", &ps_r_sun_tsm_bias, -0.5, +0.5);
 
 	CMD3(CCC_Mask, "r_disable_postprocess", &ps_render_flags, RFLAG_DISABLE_POSTPROCESS);
+
+	CMD4(CCC_Float, "r_debug_reserved_0", &ps_r_debug_reserved_0, -1000, 1000);
+	CMD4(CCC_Float, "r_debug_reserved_1", &ps_r_debug_reserved_1, -1000, 1000);
+	CMD4(CCC_Float, "r_debug_reserved_2", &ps_r_debug_reserved_2, -1000, 1000);
+	CMD4(CCC_Float, "r_debug_reserved_3", &ps_r_debug_reserved_3, -1000, 1000);
 
 	// !!! —“–Œ√Œ ¬Õ»«” œŒ—À≈ ¬—≈’ Œœ÷»… !!!
 //#pragma todo("¡Ûı")
