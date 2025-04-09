@@ -52,6 +52,22 @@ void CEnvDescriptorMixer::clear()
 
 int get_ref_count(IUnknown* ii);
 
+float CalcTurbulence(float Time, float Offset, float Turbulence)
+{
+	const float TurbulenceFactor = 0.1f;
+
+	float OscillationsX = sinf(Time * TurbulenceFactor + Offset);
+	float OscillationsY = sinf(Time * Turbulence * TurbulenceFactor + Offset);
+
+	return 1.0f - ((OscillationsX * OscillationsX) * (OscillationsY * OscillationsY) * Turbulence);
+}
+
+void CEnvDescriptorMixer::onFrame()
+{
+	wind_turbulence = CalcTurbulence(Device.fTimeGlobal * wind_strength, wind_strength, wind_gusting);
+	wind_turbulence = std::max(wind_turbulence, wind_strength * 0.5f);
+}
+
 void CEnvDescriptorMixer::lerp(CEnvironment*, CEnvDescriptor& A, CEnvDescriptor& B, float f, CEnvModifier& Mdf,
 							   float modifier_power)
 {
@@ -96,13 +112,10 @@ void CEnvDescriptorMixer::lerp(CEnvironment*, CEnvDescriptor& A, CEnvDescriptor&
 		fog_density += Mdf.fog_density;
 		fog_density *= modif_power;
 	}
-
 	fog_sky_influence = (fi * A.fog_sky_influence + f * B.fog_sky_influence);
 
 	vertical_fog_intensity = (fi * A.vertical_fog_intensity + f * B.vertical_fog_intensity);
-
 	vertical_fog_density = (fi * A.vertical_fog_density + f * B.vertical_fog_density);
-
 	vertical_fog_height = (fi * A.vertical_fog_height + f * B.vertical_fog_height);
 
 	rain_density = fi * A.rain_density + f * B.rain_density;
@@ -111,8 +124,9 @@ void CEnvDescriptorMixer::lerp(CEnvironment*, CEnvDescriptor& A, CEnvDescriptor&
 	bolt_duration = fi * A.bolt_duration + f * B.bolt_duration;
 
 	// wind
-	wind_velocity = fi * A.wind_velocity + f * B.wind_velocity;
+	wind_strength = fi * A.wind_strength + f * B.wind_strength;
 	wind_direction = fi * A.wind_direction + f * B.wind_direction;
+	wind_gusting = fi * A.wind_gusting + f * B.wind_gusting;
 
 	// trees
 	m_fTreeAmplitude = fi * A.m_fTreeAmplitude + f * B.m_fTreeAmplitude;
@@ -137,6 +151,8 @@ void CEnvDescriptorMixer::lerp(CEnvironment*, CEnvDescriptor& A, CEnvDescriptor&
 		ambient.add(Mdf.ambient).mul(modif_power);
 
 	hemi_color.lerp(A.hemi_color, B.hemi_color, f);
+
+	ambient_brightness = fi * A.ambient_brightness + f * B.ambient_brightness;
 
 	if (Mdf.use_flags.test(eHemiColor))
 	{

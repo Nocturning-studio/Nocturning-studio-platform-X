@@ -127,8 +127,17 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	// Create lightmapped shader if need
 	C.sh_macro(bUseLightMap, "USE_LIGHTMAP", "1");
 
+	// Get BakedAO texture
+	bool bUseOpacity = false;
+	string_path OpacityTexture;
+	strcpy_s(OpacityTexture, sizeof(OpacityTexture), AlbedoTexture);
+	strconcat(sizeof(OpacityTexture), OpacityTexture, OpacityTexture, "_opacity");
+	if (FS.exist(Dummy, "$game_textures$", OpacityTexture, ".dds"))
+		bUseOpacity = true;
+	C.sh_macro(bUseOpacity, "USE_CUSTOM_OPACITY", "1");
+
 	// Create shader with alpha testing if need
-	C.sh_macro(bUseAlpha, "USE_ALPHA_TEST", "1");
+	C.sh_macro(bUseAlpha || bUseOpacity, "USE_ALPHA_TEST", "1");
 
 	// Get BakedAO texture
 	bool bUseBakedAO = false;
@@ -243,6 +252,11 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 	C.r_Sampler("s_base", AlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 	
+	if (bUseOpacity)
+	{
+		C.r_Sampler("s_custom_opacity", OpacityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+	}
+
 	if (bUseBakedAO)
 	{
 		C.r_Sampler("s_baked_ao", BakedAOTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);

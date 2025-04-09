@@ -35,10 +35,13 @@ class ENGINE_API CEnvDescriptor
 	float bolt_period;
 	float bolt_duration;
 
-	float wind_velocity;
+	float wind_turbulence;
+	float wind_strength;
 	float wind_direction;
+	float wind_gusting;
 
 	Fvector3 ambient;
+	float ambient_brightness;
 	Fvector4 hemi_color; // w = R2 correction
 	Fvector3 sun_color;
 	Fvector3 sun_dir;
@@ -62,6 +65,11 @@ class ENGINE_API CEnvDescriptor
 	CEnvAmbient* env_ambient;
 
 	CEnvDescriptor(shared_str const& identifier);
+
+	float GetFloatIfExist(LPCSTR line_name, float default_value, CInifile& config);
+	Fvector3 GetRGBColorIfExist(LPCSTR line_name, Fvector3 default_value, CInifile& config);
+	Fvector4 GetRGBAColorIfExist(LPCSTR line_name, Fvector4 default_value, CInifile& config);
+	LPCSTR GetStringIfExist(LPCSTR line_name, LPCSTR default_value, CInifile& config);
 
 	void load(CEnvironment& environment, CInifile& config);
 	void copy(const CEnvDescriptor& src)

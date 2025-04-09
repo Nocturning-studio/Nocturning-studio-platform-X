@@ -472,6 +472,8 @@ void CEnvironment::OnFrame()
 		return;
 #endif
 
+	CurrentEnv->onFrame();
+
 	// if (pInput->iGetAsyncKeyState(DIK_O))		SetWeatherFX("surge_day");
 	float current_weight;
 	lerp(current_weight);

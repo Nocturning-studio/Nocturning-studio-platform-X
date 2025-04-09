@@ -47,24 +47,33 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 	//*************** codepath is the same, only shaders differ
 	LPCSTR tvs = "multiple_usage_object_animated";
 	LPCSTR tvs_s = "shadow_depth_stage_multiple_usage_object_animated";
+
+	string_path AlbedoTexture;
+	strcpy_s(AlbedoTexture, sizeof(AlbedoTexture), *C.L_textures[0]);
+	string_path Dummy = {0};
+
 	bool bUseCustomWeight = false;
 	string_path CustomWeightTexture;
+
 	if (oNotAnTree.value)
 	{
 		tvs = "multiple_usage_object";
 		tvs_s = "shadow_depth_stage_multiple_usage_object";
 	}
-	else
-	{
-		// Get weight texture
-		string_path AlbedoTexture;
-		strcpy_s(AlbedoTexture, sizeof(AlbedoTexture), *C.L_textures[0]);
-		string_path Dummy = {0};
-		strcpy_s(CustomWeightTexture, sizeof(CustomWeightTexture), AlbedoTexture);
-		strconcat(sizeof(CustomWeightTexture), CustomWeightTexture, CustomWeightTexture, "_weight");
-		if (FS.exist(Dummy, "$game_textures$", CustomWeightTexture, ".dds"))
-			bUseCustomWeight = true;
-	}
+
+	// Get weight texture
+	strcpy_s(CustomWeightTexture, sizeof(CustomWeightTexture), AlbedoTexture);
+	strconcat(sizeof(CustomWeightTexture), CustomWeightTexture, CustomWeightTexture, "_weight");
+	if (FS.exist(Dummy, "$game_textures$", CustomWeightTexture, ".dds"))
+		bUseCustomWeight = true;
+
+	// Get opacity texture
+	bool bUseCustomOpacity = false;
+	string_path CustomOpacityTexture;
+	strcpy_s(CustomOpacityTexture, sizeof(CustomOpacityTexture), AlbedoTexture);
+	strconcat(sizeof(CustomOpacityTexture), CustomOpacityTexture, CustomOpacityTexture, "_opacity");
+	if (FS.exist(Dummy, "$game_textures$", CustomOpacityTexture, ".dds"))
+		bUseCustomOpacity = true;
 
 	switch (C.iElement)
 	{
@@ -76,11 +85,17 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 		break;
 	case SE_SHADOW_DEPTH: // smap-spot
 		C.sh_macro(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
-		if (oBlend.value)
+		C.sh_macro(bUseCustomOpacity, "USE_CUSTOM_OPACITY", "1");
+		if (oBlend.value || bUseCustomOpacity)
+		{
 			C.r_Pass(tvs_s, "shadow_depth_stage_static_mesh_alphatest", FALSE);
-		else
-			C.r_Pass(tvs_s, "shadow_depth_stage_static_mesh", FALSE);
 
+			C.r_Sampler("s_custom_opacity", CustomOpacityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		}
+		else
+		{
+			C.r_Pass(tvs_s, "shadow_depth_stage_static_mesh", FALSE);
+		}
 		C.r_Sampler("s_base", C.L_textures[0]);
 
 		if (bUseCustomWeight)

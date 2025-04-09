@@ -11,6 +11,7 @@ class ENGINE_API CEnvDescriptorMixer : public CEnvDescriptor
 
   public:
 	CEnvDescriptorMixer(shared_str const& identifier);
+	void onFrame();
 	void lerp(CEnvironment* parent, CEnvDescriptor& A, CEnvDescriptor& B, float f, CEnvModifier& M, float m_power);
 	void clear();
 	void destroy();

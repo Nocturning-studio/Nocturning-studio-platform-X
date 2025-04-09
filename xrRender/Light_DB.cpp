@@ -123,7 +123,7 @@ void CLight_DB::Update()
 			Log("sect_name", E->sect_name.c_str());
 			Log("E.sun_dir", E->sun_dir);
 			Log("E.wind_direction", E->wind_direction);
-			Log("E.wind_velocity", E->wind_velocity);
+			Log("E.wind_strength", E->wind_strength);
 			Log("E.sun_color", E->sun_color);
 			Log("E.rain_color", E->rain_color);
 			Log("E.rain_density", E->rain_density);

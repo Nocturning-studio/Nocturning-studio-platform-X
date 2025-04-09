@@ -483,6 +483,22 @@ class cl_amb_color : public R_constant_setup
 };
 static cl_amb_color binder_amb_color;
 
+class cl_ambient_brightness : public R_constant_setup
+{
+	u32 marker;
+	Fvector4 result;
+	virtual void setup(R_constant* C)
+	{
+		if (marker != Device.dwFrame)
+		{
+			CEnvDescriptorMixer* desc = g_pGamePersistent->Environment().CurrentEnv;
+			result.set(desc->ambient_brightness, 0, 0, 0);
+		}
+		RenderBackend.set_Constant(C, result);
+	}
+};
+static cl_ambient_brightness binder_ambient_brightness;
+
 class cl_hemi_color : public R_constant_setup
 {
 	u32 marker;
@@ -517,20 +533,31 @@ static class cl_invP final : public R_constant_setup
 	}
 } binder_invP;
 
-float WindGustSpeed = 0.1f;
-float Radians = -90 + 1.57079f;
-float WindDirectionX = cos(Radians), WindDirectionY = sin(Radians);
-float WindSpeed = 8.0f;
-float WindGusting = sinf(float(Device.fTimeGlobal) * WindGustSpeed);
-
 class cl_wind_params : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RenderBackend.set_Constant(C, WindDirectionX, WindDirectionY, WindGusting, WindSpeed);
+		CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
+		float WindGusting = desc->wind_gusting;
+		float WindDirectionX = cos(desc->wind_direction), WindDirectionY = sin(desc->wind_direction);
+		float WindStrength = desc->wind_strength;
+		RenderBackend.set_Constant(C, WindDirectionX, WindDirectionY, WindGusting, WindStrength);
 	}
 };
 static cl_wind_params binder_wind_params;
+
+class cl_wind_turbulence : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
+		float Turbulence = desc->wind_turbulence;
+		float TurbulencePacked = std::max(std::min(Turbulence, 0.0f), 1.0f);
+		float WindSpeed = Device.fTimeGlobal * 2.5f * (1.0f + TurbulencePacked);
+		RenderBackend.set_Constant(C, Turbulence, TurbulencePacked, WindSpeed, 0);
+	}
+};
+static cl_wind_turbulence binder_wind_turbulence;
 
 // Standart constant-binding
 void CBlender_Compile::SetMapping()
@@ -555,6 +582,7 @@ void CBlender_Compile::SetMapping()
 	r_Constant("c_bias", &tree_binder_c_bias);
 	r_Constant("c_sun", &tree_binder_c_sun);
 	r_Constant("wind_params", &binder_wind_params);
+	r_Constant("wind_turbulence", &binder_wind_turbulence);
 
 	// hemi cube
 	// r_Constant("L_material", &binder_material);
@@ -591,7 +619,6 @@ void CBlender_Compile::SetMapping()
 
 	r_Constant("fov", &binder_fov);
 	
-
 	// env-params
 	r_Constant("env_color", &binder_env_color);
 
@@ -608,9 +635,9 @@ void CBlender_Compile::SetMapping()
 	r_Constant("L_sun_color", &binder_sun0_color);
 	r_Constant("L_sun_dir_w", &binder_sun0_dir_w);
 	r_Constant("L_sun_dir_e", &binder_sun0_dir_e);
-	//	r_Constant				("L_lmap_color",	&binder_lm_color);
 	r_Constant("L_hemi_color", &binder_hemi_color);
 	r_Constant("L_ambient", &binder_amb_color);
+	r_Constant("ambient_brightness", &binder_ambient_brightness);
 #endif
 
 	r_Constant("screen_res", &binder_screen_res);
