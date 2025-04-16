@@ -18,7 +18,21 @@ void CRender::render_ambient_occlusion()
 	float w = float(Device.dwWidth);
 	float h = float(Device.dwHeight);
 
-	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[SE_AO_SSAO]);
+	int AOType = SE_AO_SSAO;
+	switch (ps_r_ao_quality)
+	{
+	case 1:
+		AOType = SE_AO_SSAO_LOW_QUALITY;
+		break;
+	case 2:
+		AOType = SE_AO_SSAO;
+		break;
+	case 3:
+		AOType = SE_AO_HBAO_PLUS;
+		break;
+	}
+
+	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[AOType]);
 	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
 	RenderBackend.set_Constant("ao_params", ps_r_ao_bias, ps_r_ao_radius);
 	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_ao);

@@ -198,6 +198,7 @@ void CSoundRender_CoreA::set_master_volume(float f)
 
 void CSoundRender_CoreA::_clear()
 {
+	Msg("Destroying sound render");
 	inherited::_clear();
 	// remove targets
 	CSoundRender_Target* T = 0;

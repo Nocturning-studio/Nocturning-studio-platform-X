@@ -57,7 +57,7 @@ void CPhotoMode::update_whith_timescale(Fvector& v, const Fvector& v_delta)
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////s
-CPhotoMode::CPhotoMode(float life_time) : CEffectorCam(cefDemo, life_time)
+CPhotoMode::CPhotoMode(float life_time)// : CEffectorCam(cefDemo, life_time)
 {
 	g_position.set_position = false;
 	IR_Capture(); // capture input
@@ -551,8 +551,8 @@ void CPhotoMode::ChangeDiaphragm(int direction)
 
 	if (m_fDiaphragm_actual < 1.0f)
 		m_fDiaphragm_actual = 1.0f;
-	else if (m_fDiaphragm_actual > 10.0f)
-		m_fDiaphragm_actual = 10.0f;
+	else if (m_fDiaphragm_actual > 20.0f)
+		m_fDiaphragm_actual = 20.0f;
 
 	m_fDiaphragm = m_fDiaphragm_actual;
 

@@ -82,8 +82,18 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 	break;
 	case IRender_interface::SM_NORMAL: 
 	{
-		sprintf_s(file_name, sizeof(file_name), "Xray (build id - %d) (user - %s) (time - %s) (%s)", build_id,
-				  Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
+		if (!name)
+		{
+#ifdef BENCHMARK_BUILD
+			sprintf_s(file_name, sizeof(file_name), "X-Ray Benchmark (time - %s) (%s)", timestamp(t_stemp), g_pGameLevel->name().c_str());
+#else
+			sprintf_s(file_name, sizeof(file_name), "X-Ray Engine (build id - %d) (user - %s) (time - %s) (%s)", build_id, Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
+#endif
+		}
+		else
+		{
+			strcpy(file_name, name);
+		}
 
 		ID3DXBuffer* saved = 0;
 

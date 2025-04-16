@@ -85,7 +85,7 @@ xr_token ao_quality_token[] =
 {
 	{"st_opt_low", 1}, 
 	{"st_opt_medium", 2}, 
-	/*{"st_opt_high", 3},*/ 
+	{"st_opt_high", 3}, 
 	{0, 0}
 };
 
@@ -708,7 +708,7 @@ void xrRender_initconsole()
 	CMD4(CCC_DofNear, "r_dof_near", &ps_r_dof.x, tw_min.x, tw_max.x);
 	CMD4(CCC_DofFocus, "r_dof_focus", &ps_r_dof.y, tw_min.y, tw_max.y);
 	CMD4(CCC_DofFar, "r_dof_far", &ps_r_dof.z, tw_min.z, tw_max.z);
-	CMD4(CCC_DofDiaphragm, "r_dof_diaphragm", &ps_r_dof_diaphragm_size, 1.0f, 10.f);
+	CMD4(CCC_DofDiaphragm, "r_dof_diaphragm", &ps_r_dof_diaphragm_size, 1.0f, 20.f);
 	CMD4(CCC_Float, "r_dof_sky", &ps_r_dof_sky, -10000.f, 10000.f);
 	CMD3(CCC_Mask, "r_dof_enabled", &ps_r_postprocess_flags, RFLAG_DOF);
 	CMD3(CCC_Token, "r_dof_quality", &ps_r_dof_quality, dof_quality_token);

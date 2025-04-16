@@ -322,9 +322,9 @@ void CLensFlare::OnFrame(shared_str id)
 	vecX.set(1.0f, 0.0f, 0.0f);
 	matEffCamPos.transform_dir(vecX);
 	vecX.normalize();
-	R_ASSERT(_valid(vecX));
+	//R_ASSERT(_valid(vecX));
 	vecY.crossproduct(vecX, vecDir);
-	R_ASSERT(_valid(vecY));
+	//R_ASSERT(_valid(vecY));
 
 #ifdef _EDITOR
 	float dist = UI->ZFar();

@@ -132,6 +132,7 @@ class XRCORE_API CInifile
 		return r_s32(*S, L);
 	}
 	float r_float(LPCSTR S, LPCSTR L);
+	float r_float_if_exist(LPCSTR S, LPCSTR L);
 	float r_float(const shared_str& S, LPCSTR L)
 	{
 		return r_float(*S, L);

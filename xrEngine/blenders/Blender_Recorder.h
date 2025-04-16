@@ -129,7 +129,7 @@ class ENGINE_API CBlender_Compile
 	void i_Filter_Mip(u32 s, u32 f);
 	void i_Filter_Mag(u32 s, u32 f);
 	void i_Filter(u32 s, u32 _min, u32 _mip, u32 _mag);
-	void i_sRGB(u32 s, bool state);
+	void i_sRGB(u32 s, bool state = true);
 
 	// R1/R2-compiler	[programmable]		- templates
 	void sh_macro(BOOL Enabled, string32 Name, string32 Definition);
@@ -138,18 +138,18 @@ class ENGINE_API CBlender_Compile
 				D3DBLEND abSRC = D3DBLEND_ONE, D3DBLEND abDST = D3DBLEND_ZERO, BOOL aTest = FALSE, u32 aRef = 0);
 	void r_Constant(LPCSTR name, R_constant_setup* s);
 	u32 r_Sampler(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, u32 address = D3DTADDRESS_WRAP,
-				  u32 fmin = D3DTEXF_LINEAR, u32 fmip = D3DTEXF_LINEAR, u32 fmag = D3DTEXF_LINEAR, bool b_srgb = false);
+				  u32 fmin = D3DTEXF_LINEAR, u32 fmip = D3DTEXF_LINEAR, u32 fmag = D3DTEXF_LINEAR, bool b_srgb = true);
 	u32 r_Sampler(LPCSTR name, shared_str texture, bool b_ps1x_ProjectiveDivide = false, u32 address = D3DTADDRESS_WRAP,
-				  u32 fmin = D3DTEXF_LINEAR, u32 fmip = D3DTEXF_LINEAR, u32 fmag = D3DTEXF_LINEAR, bool b_srgb = false)
+				  u32 fmin = D3DTEXF_LINEAR, u32 fmip = D3DTEXF_LINEAR, u32 fmag = D3DTEXF_LINEAR, bool b_srgb = true)
 	{
 		return r_Sampler(name, texture.c_str(), b_ps1x_ProjectiveDivide, address, fmin, fmip, fmag, b_srgb);
 	}
-	void r_Sampler_rtf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = false);
-	void r_Sampler_clf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = false);
-	void r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = false);
-	void r_Sampler_tex(LPCSTR name, LPCSTR texture);
-	void r_Sampler_tex(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide);
-	void r_Sampler_gaussian(LPCSTR name, LPCSTR texture, bool b_SRGB = false);
+	void r_Sampler_rtf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
+	void r_Sampler_clf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
+	void r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
+	void r_Sampler_tex(LPCSTR name, LPCSTR texture, bool b_SRGB = true);
+	void r_Sampler_tex(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB = true);
+	void r_Sampler_gaussian(LPCSTR name, LPCSTR texture, bool b_SRGB = true);
 	void r_End();
 
 	CBlender_Compile();

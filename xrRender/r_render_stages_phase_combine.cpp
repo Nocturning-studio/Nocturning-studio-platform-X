@@ -32,7 +32,7 @@ void CRender::render_skybox()
 	OPTICK_EVENT("CRender::render_skybox");
 
 	RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Generic_1);
-	RenderBackend.set_Depth_Buffer(HW.pBaseZB);
+	RenderBackend.set_Depth_Buffer(NULL);
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 	RenderBackend.set_ColorWriteEnable();

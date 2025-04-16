@@ -21,9 +21,9 @@ static const float max_distance = source_offset * 1.25f;
 static const float sink_offset = -(max_distance - source_offset);
 static const float drop_length = 5.f;
 static const float drop_width = 0.30f;
-static const float drop_angle = 3.0f;
-static const float drop_max_angle = deg2rad(10.f);
-static const float drop_max_wind_vel = 20.0f;
+static const float drop_angle = 45.0f;
+static const float drop_max_angle = deg2rad(75.f);
+static const float drop_max_wind_vel = 1000.0f;
 static const float drop_speed_min = 40.f;
 static const float drop_speed_max = 80.f;
 
@@ -65,22 +65,34 @@ CEffect_Rain::~CEffect_Rain()
 // Born
 void CEffect_Rain::Born(Item& dest, float radius)
 {
+	float actual_drop_angle = 45.0f;
 	Fvector axis;
 	axis.set(0, -1, 0);
-	float gust = g_pGamePersistent->Environment().wind_strength_factor / 10.f;
-	float k = g_pGamePersistent->Environment().CurrentEnv->wind_strength * gust / drop_max_wind_vel;
+	float gust = g_pGamePersistent->Environment().wind_strength_factor / actual_drop_angle;
+	float k = g_pGamePersistent->Environment().CurrentEnv->wind_strength * gust / 100;
 	clamp(k, 0.f, 1.f);
 	float pitch = drop_max_angle * k - PI_DIV_2;
-	axis.setHP(g_pGamePersistent->Environment().CurrentEnv->wind_direction, pitch);
-
+	float Direction = g_pGamePersistent->Environment().CurrentEnv->wind_direction;
+	axis.setHP(Direction, pitch);
 	Fvector& view = Device.vCameraPosition;
-	float angle = ::Random.randF(0, PI_MUL_2);
+	float angle = actual_drop_angle; //::Random.randF(0, PI_MUL_2);
 	float dist = ::Random.randF();
 	dist = _sqrt(dist) * radius;
-	float x = dist * _cos(angle);
-	float z = dist * _sin(angle);
-	dest.D.random_dir(axis, deg2rad(drop_angle));
-	dest.P.set(x + view.x - dest.D.x * source_offset, source_offset + view.y, z + view.z - dest.D.z * source_offset);
+	float x = _cos(gust * Direction); // dist * _cos(angle);
+	float z = _sin(gust * Direction); // dist * _sin(angle);
+
+	Fmatrix mRotate;
+	mRotate.setXYZi(x, -1.0f, z);
+	//info.d.set(mRotate.k);
+	//info.n.set(mRotate.j);
+
+	dest.D.set(mRotate.k); //.random_dir(axis, deg2rad(drop_angle));
+
+	angle = ::Random.randF(0, PI_MUL_2);
+	x = dist * _cos(angle);
+	z = dist * _sin(angle);
+
+	dest.P.set(x + view.x, source_offset + view.y, z + view.z);
 	//	dest.P.set			(x+view.x,height+view.y,z+view.z);
 	dest.fSpeed = ::Random.randF(drop_speed_min, drop_speed_max);
 

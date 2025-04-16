@@ -152,7 +152,7 @@ void CEnvDescriptor::load(CEnvironment& environment, CInifile& config)
 	rain_density = GetFloatIfExist("rain_density", 0.0f, config);
 	rain_color = GetRGBColorIfExist("rain_color", FULL_COLOR, config);
 
-	wind_strength = GetFloatIfExist("wind_strength", 0.0f, config);
+	wind_strength = GetFloatIfExist("wind_strength", 0.35f, config);
 	wind_direction = deg2rad(GetFloatIfExist("wind_direction", 0.0f, config));
 	wind_gusting = GetFloatIfExist("wind_gusting", 1.0f, config);
 

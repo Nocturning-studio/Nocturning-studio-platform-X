@@ -54,18 +54,17 @@ int get_ref_count(IUnknown* ii);
 
 float CalcTurbulence(float Time, float Offset, float Turbulence)
 {
-	const float TurbulenceFactor = 0.1f;
-
-	float OscillationsX = sinf(Time * TurbulenceFactor + Offset);
-	float OscillationsY = sinf(Time * Turbulence * TurbulenceFactor + Offset);
+	const float TurbulenceFrequrencyFactor = 0.1f;
+	float OscillationsX = sinf(Time * TurbulenceFrequrencyFactor + Offset);
+	float OscillationsY = cosf(Time * Turbulence * TurbulenceFrequrencyFactor + Offset);
 
 	return 1.0f - ((OscillationsX * OscillationsX) * (OscillationsY * OscillationsY) * Turbulence);
 }
 
 void CEnvDescriptorMixer::onFrame()
 {
-	wind_turbulence = CalcTurbulence(Device.fTimeGlobal * wind_strength, wind_strength, wind_gusting);
-	wind_turbulence = std::max(wind_turbulence, wind_strength * 0.5f);
+	wind_turbulence = CalcTurbulence(Device.fTimeGlobal * wind_strength, 1, wind_gusting + 1);
+	clamp(wind_turbulence, -1.0f, 1.0f);
 }
 
 void CEnvDescriptorMixer::lerp(CEnvironment*, CEnvDescriptor& A, CEnvDescriptor& B, float f, CEnvModifier& Mdf,

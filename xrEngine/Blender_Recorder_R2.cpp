@@ -124,11 +124,6 @@ void CBlender_Compile::i_Filter(u32 s, u32 _min, u32 _mip, u32 _mag)
 	i_Filter_Mag(s, _mag);
 }
 
-void CBlender_Compile::i_sRGB(u32 s, bool state)
-{
-	RS.SetSAMP(s, D3DSAMP_SRGBTEXTURE, state);
-}
-
 u32 CBlender_Compile::r_Sampler(LPCSTR _name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, u32 address, u32 fmin,
 								u32 fmip, u32 fmag, bool b_srgb)
 {
@@ -152,7 +147,6 @@ u32 CBlender_Compile::r_Sampler(LPCSTR _name, LPCSTR texture, bool b_ps1x_Projec
 		// Sampler states
 		i_Address(dwStage, address);
 		i_Filter(dwStage, fmin, fmip, fmag);
-		i_sRGB(dwStage, b_srgb);
 
 		if (dwStage < 4)
 			i_Projective(dwStage, b_ps1x_ProjectiveDivide);
@@ -178,7 +172,7 @@ void CBlender_Compile::r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_Pr
 		RS.SetSAMP(s, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
 }
 
-void CBlender_Compile::r_Sampler_tex(LPCSTR name, LPCSTR texture)
+void CBlender_Compile::r_Sampler_tex(LPCSTR name, LPCSTR texture, bool b_SRGB)
 {
 	r_Sampler(name, texture, false, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
 }

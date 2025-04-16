@@ -26,23 +26,16 @@ class ENGINE_API CDemoRecord : public CEffectorCam, public IInputReceiver
 	static Flags32 s_dev_flags;
 
 	int iCount;
-	IWriter* file;
 	Fvector m_HPB;
 	Fvector m_Position;
 	Fmatrix m_Camera;
 	u32 m_Stage;
 
+	bool m_bNeedDisableInterpolation;
 	Fvector m_vT;
 	Fvector m_vR;
 	Fvector m_vVelocity;
 	Fvector m_vAngularVelocity;
-	float m_fFov;
-	Fvector3 m_fDOF;
-	Fvector m_vGlobalDepthOfFieldParameters;
-	bool m_bAutofocusEnabled;
-	bool m_bGridEnabled;
-	bool m_bBordersEnabled;
-	bool m_bWatermarkEnabled;
 	bool m_bShowInputInfo;
 	bool m_bGlobalHudDraw;
 	bool m_bGlobalCrosshairDraw;
@@ -61,27 +54,37 @@ class ENGINE_API CDemoRecord : public CEffectorCam, public IInputReceiver
 	float m_fAngSpeed2;
 	float m_fAngSpeed3;
 
+	void ChangeDepthOfFieldFocalDepth(int direction);
+	void ChangeDepthOfFieldFocalLength(int direction);
+	void ChangeDepthOfFieldFStop(int direction);
+	void ChangeFieldOfView(int direction);
+	void ChangeDiaphragm(int direction);
+	void SwitchAutofocusState();
+	void SwitchGridState();
+	void SwitchCinemaBordersState();
+	void SwitchWatermarkVisibility();
+	void SwitchShowInputInfo();
+
 	void MakeCubeMapFace(Fvector& D, Fvector& N);
 	void MakeLevelMapProcess();
 	void MakeScreenshotFace();
-	void RecordKey();
-	void MakeCubemap();
+	void DeleteKey();
+	void RecordKey(u32 IterpolationType);
+	void SetNeedMakeCubemap();
 	void MakeScreenshot();
 	void MakeLevelMapScreenshot();
+	void ShowInfo();
 	void ShowInputInfo();
+	void Screenshot(SCamEffectorInfo& info);
+	void MakeCubemap(SCamEffectorInfo& info);
+	void Update(SCamEffectorInfo& info);
 
   public:
 	void update_whith_timescale(Fvector& v, const Fvector& v_delta);
 	CDemoRecord(const char* name, float life_time = 60 * 60 * 1000);
 	virtual ~CDemoRecord();
 
-	void ChangeDepthOfFieldFar(int direction);
-	void ChangeFieldOfView(int direction);
-	void SwitchAutofocusState();
-	void SwitchGridState();
-	void SwitchCinemaBordersState();
-	void SwitchWatermarkVisibility();
-	void SwitchShowInputInfo();
+	void Close();
 
 	virtual void IR_OnKeyboardPress(int dik);
 	virtual void IR_OnKeyboardHold(int dik);

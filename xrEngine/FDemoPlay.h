@@ -1,42 +1,56 @@
 // CDemoPlay.h: interface for the CDemoPlay class.
 //
 //////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_FDEMOPLAY_H__9B07E6E0_FC3C_11D3_B4E3_4854E82A090D__INCLUDED_)
-#define AFX_FDEMOPLAY_H__9B07E6E0_FC3C_11D3_B4E3_4854E82A090D__INCLUDED_
+#pragma once
+//////////////////////////////////////////////////////////////////////
 #include "effector.h"
-
-// refs
-class COMotion;
-struct SAnimParams;
-
-// class
-class ENGINE_API CDemoPlay : public CEffectorCam
+#include "iinputreceiver.h"
+//////////////////////////////////////////////////////////////////////
+class ENGINE_API CDemoPlay : public CEffectorCam, public IInputReceiver
 {
-	COMotion* m_pMotion;
-	SAnimParams* m_MParam;
+	float fFPS, fFPS_min, fFPS_max, fFPS_avg, fAllFrames;
 
-	xr_vector<Fmatrix> seq;
-	int m_count;
+	int m_frames_count;
 	float fStartTime;
 	float fSpeed;
 	u32 dwCyclesLeft;
 
+	bool m_bGlobalHudDraw;
+	bool m_bGlobalCrosshairDraw;
+
 	// statistics
 	BOOL stat_started;
+	bool bNeedDrawResults;
+	bool bNeedToTakeStatsResoultScreenShot;
+	u32 uTimeToQuit;
+	u32 uTimeToScreenShot;
+
 	CTimer stat_Timer_frame;
 	CTimer stat_Timer_total;
 	u32 stat_StartFrame;
 	xr_vector<float> stat_table;
 
-	void stat_Start();
-	void stat_Stop();
+	Fmatrix m_Camera;
+
+	void Update(SCamEffectorInfo& info);
+	void PrintSummaryBanchmarkStatistic();
+	void ResetPerFrameStatistic();
+	void ShowPerFrameStatistic();
+	void ChooseTextColor(float FPSValue);
+	void MoveCameraSpline(float InterpolationFactor, int frame0, int frame1, int frame2, int frame3);
+	void MoveCameraLinear(float InterpolationFactor, int frame0, int frame1);
+	void MoveCamera(u32 frame, float interpolation_factor, int interpolation_type);
+	void Screenshot();
+
+	void EnableBenchmarkResultPrint();
+
+	void Close();
+
+	void IR_OnKeyboardPress(int dik);
 
   public:
 	virtual BOOL ProcessCam(SCamEffectorInfo& info);
-
 	CDemoPlay(const char* name, float ms, u32 cycles, float life_time = 60 * 60 * 1000);
 	virtual ~CDemoPlay();
 };
-
-#endif // !defined(AFX_FDEMOPLAY_H__9B07E6E0_FC3C_11D3_B4E3_4854E82A090D__INCLUDED_)
+//////////////////////////////////////////////////////////////////////

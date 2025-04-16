@@ -636,6 +636,9 @@
     <ClInclude Include="optick_include.h">
       <Filter>Engine\Profiling</Filter>
     </ClInclude>
+    <ClInclude Include="demo_common.h">
+      <Filter>Game API\Demo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IInputReceiver.cpp">
@@ -1114,6 +1117,9 @@
     </ClCompile>
     <ClCompile Include="xrCPU_Pipe\xrSkin2W_SSE.cpp">
       <Filter>CPU Pipe\SSE</Filter>
+    </ClCompile>
+    <ClCompile Include="demo_common.cpp">
+      <Filter>Game API\Demo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

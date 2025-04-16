@@ -301,7 +301,6 @@ class CRender : public R_dsgraph_structure
 	float hclip(float v, float dim);
 	void draw_volume(light* L);
 	void accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev, float fBias);
-	void render_volumetric_sun(u32 sub_phase, const u32 Offset, const Fmatrix& mShadow);
 	void accumulate_point_lights(light* L);
 	void accumulate_spot_lights(light* L);
 	void clear_bloom();

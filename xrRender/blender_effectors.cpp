@@ -47,6 +47,7 @@ void CBlender_effectors::Compile(CBlender_Compile& C)
 	case SE_PASS_SCREEN_DUST:
 		C.r_Pass("screen_quad", "postprocess_stage_pass_screen_dust", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
+		jitter(C);
 		C.r_End();
 
 		C.r_Pass("null", "simple_image", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);

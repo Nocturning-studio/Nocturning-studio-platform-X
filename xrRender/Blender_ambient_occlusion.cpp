@@ -14,9 +14,22 @@ void CBlender_ambient_occlusion::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
+	case SE_AO_SSAO_LOW_QUALITY:
+		C.r_Pass("screen_quad", "ambient_occlusion_stage_pass_ssao_lq", FALSE, FALSE, FALSE);
+		gbuffer(C);
+		jitter(C);
+		C.r_End();
+		break;
 	case SE_AO_SSAO:
 		C.r_Pass("screen_quad", "ambient_occlusion_stage_pass_ssao", FALSE, FALSE, FALSE);
 		gbuffer(C);
+		jitter(C);
+		C.r_End();
+		break;
+	case SE_AO_HBAO_PLUS:
+		C.r_Pass("screen_quad", "ambient_occlusion_stage_pass_hbao_plus", FALSE, FALSE, FALSE);
+		gbuffer(C);
+		jitter(C);
 		C.r_End();
 		break;
 	case SE_AO_DENOISE:

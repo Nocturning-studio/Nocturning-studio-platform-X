@@ -177,6 +177,11 @@ void CEnvironment::ChangeGameTime(float game_time)
 	fGameTime = NormalizeTime(fGameTime + game_time);
 };
 
+float CEnvironment::GetGameTime()
+{
+	return fGameTime;
+}
+
 void CEnvironment::SetGameTime(float game_time, float time_factor)
 {
 	if (bWFX)
@@ -579,6 +584,16 @@ void CEnvironment::calculate_dynamic_sun_dir()
 	float fSunBlend = (SEA - minAngle.x) / (minAngle.y - minAngle.x);
 	clamp(fSunBlend, 0.0f, 1.0f);
 
+#ifdef PROCEDURAL_WEATHER
+	const Fvector2 minAngle1 = Fvector2().set(deg2rad(1.0f), deg2rad(20.0f));
+
+	if (SEA < minAngle1.x)
+		SEA = minAngle1.x;
+
+	float fSunBlend1 = (SEA - minAngle1.x) / (minAngle1.y - minAngle1.x);
+	clamp(fSunBlend1, 0.7f, 1.0f);
+#endif
+
 	SEA = -SEA;
 
 	if (SHA < 0)
@@ -590,7 +605,17 @@ void CEnvironment::calculate_dynamic_sun_dir()
 	CurrentEnv->sun_dir.setHP(AZ, SEA);
 	R_ASSERT(_valid(CurrentEnv->sun_dir));
 
+#ifdef PROCEDURAL_WEATHER
+	CurrentEnv->sun_color.set(1, 1, 1);
+	CurrentEnv->sun_color.y *= fSunBlend1;
+	CurrentEnv->sun_color.z *= fSunBlend1 * 0.9f;
+#endif
+
 	CurrentEnv->sun_color.mul(fSunBlend);
+
+	float AmbientBrightness = CurrentEnv->ambient_brightness;
+	float MinAmb = 0.25f;
+	CurrentEnv->ambient_brightness = MinAmb + fSunBlend * (AmbientBrightness - MinAmb);
 }
 
 void CEnvironment::create_mixer()

@@ -160,6 +160,7 @@ class ENGINE_API CEnvironment
 	// Kondr48: функция перемотки времени
 	void ChangeGameTime(float game_time);
 
+	float GetGameTime();
 	void SetGameTime(float game_time, float time_factor);
 	void OnDeviceCreate();
 	void OnDeviceDestroy();

@@ -14,6 +14,9 @@
 #include "render.h"
 #include "CustomHUD.h"
 #include "IGame_Persistent.h"
+#include "CameraManager.h"
+
+#include "demo_common.h"
 //////////////////////////////////////////////////////////////////////
 #ifdef DEBUG
 #define DEBUG_DEMO_RECORD
@@ -31,103 +34,80 @@ void CDemoRecord::update_whith_timescale(Fvector& v, const Fvector& v_delta)
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-
-CDemoRecord::CDemoRecord(const char* name, float life_time) : CEffectorCam(cefDemo, life_time /*,FALSE*/)
+CDemoRecord::CDemoRecord(const char* name, float life_time) : CEffectorCam(cefDemo, life_time)
 {
-	_unlink(name);
-	file = FS.w_open(name);
-	if (file)
-	{
-		g_position.set_position = false;
-		IR_Capture(); // capture input
-		m_Camera.invert(Device.mView);
+	strconcat(sizeof(demo_file_name), demo_file_name, name, "");
 
-		// parse yaw
-		Fvector& dir = m_Camera.k;
-		Fvector DYaw;
-		DYaw.set(dir.x, 0.f, dir.z);
-		DYaw.normalize_safe();
-		if (DYaw.x < 0)
-			m_HPB.x = acosf(DYaw.z);
-		else
-			m_HPB.x = 2 * PI - acosf(DYaw.z);
+	g_position.set_position = false;
+	IR_Capture(); // capture input
+	m_Camera.invert(Device.mView);
 
-		// parse pitch
-		dir.normalize_safe();
-		m_HPB.y = asinf(dir.y);
-		m_HPB.z = 0;
-
-		m_Position.set(m_Camera.c);
-
-		m_vVelocity.set(0, 0, 0);
-		m_vAngularVelocity.set(0, 0, 0);
-		iCount = 0;
-
-		m_fFov = Device.fFOV;
-
-		m_vGlobalDepthOfFieldParameters.set(0, 0, 0);
-
-		if (g_pGamePersistent)
-			g_pGamePersistent->GetCurrentDof(m_vGlobalDepthOfFieldParameters);
-
-		m_bAutofocusEnabled = false;
-		m_bGridEnabled = false;
-		m_bBordersEnabled = false;
-		m_bShowInputInfo = true;
-		m_bWatermarkEnabled = false;
-
-		m_bGlobalHudDraw = psHUD_Flags.test(HUD_DRAW);
-		psHUD_Flags.set(HUD_DRAW, false);
-
-		m_bGlobalCrosshairDraw = psHUD_Flags.test(HUD_CROSSHAIR);
-		psHUD_Flags.set(HUD_CROSSHAIR, false);
-
-		m_vT.set(0, 0, 0);
-		m_vR.set(0, 0, 0);
-		m_bMakeCubeMap = FALSE;
-		m_bMakeScreenshot = FALSE;
-		m_bMakeLevelMap = FALSE;
-
-		m_fSpeed0 = pSettings->r_float("demo_record", "speed0");
-		m_fSpeed1 = pSettings->r_float("demo_record", "speed1");
-		m_fSpeed2 = pSettings->r_float("demo_record", "speed2");
-		m_fSpeed3 = pSettings->r_float("demo_record", "speed3");
-		m_fAngSpeed0 = pSettings->r_float("demo_record", "ang_speed0");
-		m_fAngSpeed1 = pSettings->r_float("demo_record", "ang_speed1");
-		m_fAngSpeed2 = pSettings->r_float("demo_record", "ang_speed2");
-		m_fAngSpeed3 = pSettings->r_float("demo_record", "ang_speed3");
-	}
+	// parse yaw
+	Fvector& dir = m_Camera.k;
+	Fvector DYaw;
+	DYaw.set(dir.x, 0.f, dir.z);
+	DYaw.normalize_safe();
+	if (DYaw.x < 0)
+		m_HPB.x = acosf(DYaw.z);
 	else
-	{
-		fLifeTime = -1;
-	}
+		m_HPB.x = 2 * PI - acosf(DYaw.z);
+
+	// parse pitch
+	dir.normalize_safe();
+	m_HPB.y = asinf(dir.y);
+	m_HPB.z = 0;
+
+	m_Position.set(m_Camera.c);
+
+	m_vVelocity.set(0, 0, 0);
+	m_vAngularVelocity.set(0, 0, 0);
+	iCount = 0;
+
+	m_bGlobalHudDraw = psHUD_Flags.test(HUD_DRAW);
+	psHUD_Flags.set(HUD_DRAW, false);
+
+	m_bGlobalCrosshairDraw = psHUD_Flags.test(HUD_CROSSHAIR);
+	psHUD_Flags.set(HUD_CROSSHAIR, false);
+
+	m_vT.set(0, 0, 0);
+	m_vR.set(0, 0, 0);
+	m_bMakeCubeMap = FALSE;
+	m_bMakeScreenshot = FALSE;
+	m_bMakeLevelMap = FALSE;
+
+	m_fSpeed0 = pSettings->r_float("demo_record", "speed0");
+	m_fSpeed1 = pSettings->r_float("demo_record", "speed1");
+	m_fSpeed2 = pSettings->r_float("demo_record", "speed2");
+	m_fSpeed3 = pSettings->r_float("demo_record", "speed3");
+	m_fAngSpeed0 = pSettings->r_float("demo_record", "ang_speed0");
+	m_fAngSpeed1 = pSettings->r_float("demo_record", "ang_speed1");
+	m_fAngSpeed2 = pSettings->r_float("demo_record", "ang_speed2");
+	m_fAngSpeed3 = pSettings->r_float("demo_record", "ang_speed3");
+
+	m_bNeedDisableInterpolation = false;
+
+	m_bShowInputInfo = true;
+
+	SetDefaultParameters();
 }
 
 CDemoRecord::~CDemoRecord()
 {
-	if (file)
-	{
-		IR_Release(); // release input
+	SaveAllFramesDataToIni(iCount);
 
-		FS.w_close(file);
+	IR_Release(); // release input
 
-		if (g_pGamePersistent)
-		{
-			g_pGamePersistent->SetBaseDof(m_vGlobalDepthOfFieldParameters);
-			g_pGamePersistent->SetPickableEffectorDOF(false);
-		}
+	ResetParameters();
 
-		Console->Execute("r_photo_grid off");
-		Console->Execute("r_cinema_borders off");
-		Console->Execute("r_watermark off");
+	psHUD_Flags.set(HUD_DRAW, m_bGlobalHudDraw);
+	psHUD_Flags.set(HUD_CROSSHAIR, m_bGlobalCrosshairDraw);
+	Close();
+}
 
-#ifndef MASTER_GOLD
-		Console->Execute("r_debug_render disabled");
-#endif
-
-		psHUD_Flags.set(HUD_DRAW, m_bGlobalHudDraw);
-		psHUD_Flags.set(HUD_CROSSHAIR, m_bGlobalCrosshairDraw);
-	}
+void CDemoRecord::Close()
+{
+	//g_pGameLevel->Cameras().RemoveCamEffector(cefDemo);
+	fLifeTime = -1;
 }
 
 //								+X,				-X,				+Y,				-Y,			+Z,				-Z
@@ -312,26 +292,36 @@ void CDemoRecord::SwitchShowInputInfo()
 	}
 }
 
+void CDemoRecord::ShowInfo()
+{
+	pApp->pFontSystem->SetColor(color_rgba(215, 195, 170, 255));
+	pApp->pFontSystem->SetAligment(CGameFont::alLeft);
+	pApp->pFontSystem->OutSetI(-1.0, -1.0f);
+
+	pApp->pFontSystem->OutNext("Key frames count: %d", iCount);
+	pApp->pFontSystem->OutNext("DOF fStop: %f", g_fDOF.z);
+	pApp->pFontSystem->OutNext("DOF Focal depth: %f", g_fDOF.x);
+	pApp->pFontSystem->OutNext("DOF Focal length: %f", g_fDOF.y);
+	pApp->pFontSystem->OutNext("FOV: %f", g_fFov);
+}
+
 void CDemoRecord::ShowInputInfo()
 {
-	pApp->pFontSystem->SetColor(color_rgba(215, 195, 170, 175));
-	pApp->pFontSystem->SetAligment(CGameFont::alCenter);
-	pApp->pFontSystem->OutSetI(0, -.22f);
-
-	pApp->pFontSystem->OutNext("%s", "RECORDING");
-	pApp->pFontSystem->OutNext("Key frames count: %d", iCount);
-	pApp->pFontSystem->OutNext("Depth of field focus distance: %f", m_fDOF.z);
-	pApp->pFontSystem->OutNext("Field of view: %f", m_fFov);
+	pApp->pFontSystem->SetColor(color_rgba(215, 195, 170, 255));
 
 	pApp->pFontSystem->SetAligment(CGameFont::alLeft);
-	pApp->pFontSystem->OutSetI(-0.2f, +.05f);
-	pApp->pFontSystem->OutNext("J");
+	pApp->pFontSystem->OutSetI(-0.2f, -.25f);
+	pApp->pFontSystem->OutNext("TAB");
 	pApp->pFontSystem->OutNext("SPACE");
-	pApp->pFontSystem->OutNext("BACK");
+	pApp->pFontSystem->OutNext("LEFT ALT");
+	pApp->pFontSystem->OutNext("BACKSPACE");
+	pApp->pFontSystem->OutNext("NUMPAD MINUS");
 	pApp->pFontSystem->OutNext("ESC");
 	pApp->pFontSystem->OutNext("F11");
 	pApp->pFontSystem->OutNext("F12");
 	pApp->pFontSystem->OutNext("G + Mouse Wheel");
+	pApp->pFontSystem->OutNext("T + Mouse Wheel");
+	pApp->pFontSystem->OutNext("R + Mouse Wheel");
 	pApp->pFontSystem->OutNext("F + Mouse Wheel");
 	pApp->pFontSystem->OutNext("H");
 	pApp->pFontSystem->OutNext("V");
@@ -343,14 +333,18 @@ void CDemoRecord::ShowInputInfo()
 #endif
 
 	pApp->pFontSystem->SetAligment(CGameFont::alLeft);
-	pApp->pFontSystem->OutSetI(0, +.05f);
+	pApp->pFontSystem->OutSetI(0, -.25f);
 	pApp->pFontSystem->OutNext("= Draw this help");
-	pApp->pFontSystem->OutNext("= Append Key");
+	pApp->pFontSystem->OutNext("= Append Key With Interpolation");
+	pApp->pFontSystem->OutNext("= Append Key Without Interpolation");
+	pApp->pFontSystem->OutNext("= Delete key");
 	pApp->pFontSystem->OutNext("= Cube Map");
 	pApp->pFontSystem->OutNext("= Quit");
 	pApp->pFontSystem->OutNext("= Level Map ScreenShot");
 	pApp->pFontSystem->OutNext("= ScreenShot");
-	pApp->pFontSystem->OutNext("= Depth of field");
+	pApp->pFontSystem->OutNext("= Depth of field Focal length");
+	pApp->pFontSystem->OutNext("= Depth of field Focal depth");
+	pApp->pFontSystem->OutNext("= Depth of field FStop");
 	pApp->pFontSystem->OutNext("= Field of view");
 	pApp->pFontSystem->OutNext("= Autofocus");
 	pApp->pFontSystem->OutNext("= Grid");
@@ -362,157 +356,155 @@ void CDemoRecord::ShowInputInfo()
 #endif
 }
 
-BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
+void CDemoRecord::Screenshot(SCamEffectorInfo& info)
 {
-	if (0 == file)
-		return TRUE;
+	MakeScreenshotFace();
+	// update camera
+	info.n.set(m_Camera.j);
+	info.d.set(m_Camera.k);
+	info.p.set(m_Camera.c);
+	info.fFov = g_fFov;
+}
 
-	if (m_bMakeScreenshot)
+void CDemoRecord::MakeCubemap(SCamEffectorInfo& info)
+{
+	info.fFov = 90.0f;
+	MakeCubeMapFace(info.d, info.n);
+	info.p.set(m_Camera.c);
+	info.fAspect = 1.f;
+}
+
+void CDemoRecord::Update(SCamEffectorInfo& info)
+{
+	ShowInfo();
+
+	if (m_bShowInputInfo == true)
+		ShowInputInfo();
+
+	m_vVelocity.lerp(m_vVelocity, m_vT, 0.3f);
+	m_vAngularVelocity.lerp(m_vAngularVelocity, m_vR, 0.3f);
+
+	float speed = m_fSpeed1;
+	float ang_speed = m_fAngSpeed1;
+
+	if (IR_GetKeyState(DIK_LSHIFT))
 	{
-		MakeScreenshotFace();
-		// update camera
-		info.n.set(m_Camera.j);
-		info.d.set(m_Camera.k);
-		info.p.set(m_Camera.c);
-		info.fFov = m_fFov;
+		speed = m_fSpeed0;
+		ang_speed = m_fAngSpeed0;
 	}
-	else if (m_bMakeLevelMap)
+	else if (IR_GetKeyState(DIK_Z))
 	{
-		MakeLevelMapProcess();
+		speed = m_fSpeed0 * 0.5f;
+		ang_speed = m_fAngSpeed0 * 0.5f;
 	}
-	else if (m_bMakeCubeMap)
+	else if (IR_GetKeyState(DIK_LCONTROL))
 	{
-		info.fFov = 90.0f;
-		MakeCubeMapFace(info.d, info.n);
-		info.p.set(m_Camera.c);
-		info.fAspect = 1.f;
+		speed = m_fSpeed3;
+		ang_speed = m_fAngSpeed3;
+	}
+
+	m_vT.mul(m_vVelocity, Device.fTimeDelta * speed);
+	m_vR.mul(m_vAngularVelocity, Device.fTimeDelta * ang_speed);
+
+	m_HPB.x -= m_vR.y;
+	m_HPB.y -= m_vR.x;
+	m_HPB.z += m_vR.z;
+
+	if (g_position.set_position)
+	{
+		m_Position.set(g_position.p);
+		g_position.set_position = false;
 	}
 	else
 	{
-		if (m_bShowInputInfo == true)
-			ShowInputInfo();
-
-		m_vVelocity.lerp(m_vVelocity, m_vT, 0.3f);
-		m_vAngularVelocity.lerp(m_vAngularVelocity, m_vR, 0.3f);
-
-		float speed = m_fSpeed1, ang_speed = m_fAngSpeed1;
-		if (IR_GetKeyState(DIK_LSHIFT))
-		{
-			speed = m_fSpeed0;
-			ang_speed = m_fAngSpeed0;
-		}
-		else if (IR_GetKeyState(DIK_LALT))
-		{
-			speed = m_fSpeed2;
-			ang_speed = m_fAngSpeed2;
-		}
-		else if (IR_GetKeyState(DIK_LCONTROL))
-		{
-			speed = m_fSpeed3;
-			ang_speed = m_fAngSpeed3;
-		}
-		m_vT.mul(m_vVelocity, Device.fTimeDelta * speed);
-		m_vR.mul(m_vAngularVelocity, Device.fTimeDelta * ang_speed);
-
-		m_HPB.x -= m_vR.y;
-		m_HPB.y -= m_vR.x;
-		m_HPB.z += m_vR.z;
-
-		if (g_position.set_position)
-		{
-			m_Position.set(g_position.p);
-			g_position.set_position = false;
-		}
-		else
-		{
-			g_position.p.set(m_Position);
-		}
-
-		// move
-		Fvector vmove;
-
-		vmove.set(m_Camera.k);
-		vmove.normalize_safe();
-		vmove.mul(m_vT.z);
-		m_Position.add(vmove);
-
-		vmove.set(m_Camera.i);
-		vmove.normalize_safe();
-		vmove.mul(m_vT.x);
-		m_Position.add(vmove);
-
-		vmove.set(m_Camera.j);
-		vmove.normalize_safe();
-		vmove.mul(m_vT.y);
-		m_Position.add(vmove);
-
-		m_Camera.setHPB(m_HPB.x, m_HPB.y, m_HPB.z);
-		m_Camera.translate_over(m_Position);
-
-		// update camera
-		info.n.set(m_Camera.j);
-		info.d.set(m_Camera.k);
-		info.p.set(m_Camera.c);
-
-		fLifeTime -= Device.fTimeDelta;
-
-		m_vT.set(0, 0, 0);
-		m_vR.set(0, 0, 0);
-
-		info.fFov = m_fFov;
+		g_position.p.set(m_Position);
 	}
+
+	Fvector vmove;
+	vmove.set(m_Camera.k);
+	vmove.normalize_safe();
+	vmove.mul(m_vT.z);
+	m_Position.add(vmove);
+
+	vmove.set(m_Camera.i);
+	vmove.normalize_safe();
+	vmove.mul(m_vT.x);
+	m_Position.add(vmove);
+
+	vmove.set(m_Camera.j);
+	vmove.normalize_safe();
+	vmove.mul(m_vT.y);
+	m_Position.add(vmove);
+
+	m_Camera.setHPB(m_HPB.x, m_HPB.y, m_HPB.z);
+	m_Camera.translate_over(m_Position);
+
+	info.n.set(m_Camera.j);
+	info.d.set(m_Camera.k);
+	info.p.set(m_Camera.c);
+
+	fLifeTime -= Device.fTimeDelta;
+
+	m_vT.set(0, 0, 0);
+	m_vR.set(0, 0, 0);
+
+	info.fFov = g_fFov;
+
+	double x = 43.266615300557;
+	g_fDOF.y = (x / (2 * tan(M_PI * g_fFov / 360.f)));
+	g_pGamePersistent->SetBaseDof(g_fDOF);
+}
+
+constexpr double x = 43.266615300557; // Diagonal measurement for a 'normal' 35mm lens
+
+double fov_to_length(double fov)
+{
+	if (fov < 1 || fov > 179)
+		return NULL;
+	return (x / (2 * tan(M_PI * fov / 360.f)));
+}
+
+BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
+{
+	if (m_bMakeScreenshot)
+		Screenshot(info);
+	else if (m_bMakeLevelMap)
+		MakeLevelMapProcess();
+	else if (m_bMakeCubeMap)
+		MakeCubemap(info);
+	else
+		Update(info);
+
 	return TRUE;
 }
 
 void CDemoRecord::SwitchAutofocusState()
 {
-	if (m_bAutofocusEnabled == false)
+	if (g_bAutofocusEnabled == false)
 	{
-		m_bAutofocusEnabled = true;
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::SwitchAutofocusState - method change m_bAutofocusEnabled to state enabled");
-#endif
+		g_bAutofocusEnabled = true;
 	}
 	else
 	{
-		m_bAutofocusEnabled = false;
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::SwitchAutofocusState - method change m_bAutofocusEnabled to state disabled");
-#endif
+		g_bAutofocusEnabled = false;
 	}
 
-	if (g_pGamePersistent)
-	{
-		g_pGamePersistent->SetPickableEffectorDOF(m_bAutofocusEnabled);
-	}
-	else
-	{
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::SwitchAutofocusState - method called before g_pGamePersistent was created. Abort.");
-#endif
-	}
+	g_pGamePersistent->SetPickableEffectorDOF(g_bAutofocusEnabled);
 }
 
 // –ешение действовать через консоль чудовищное, в будущем нужно заменить смену флага через консоль на смену через флаг
 // общих команд дл€ всех рендеров
 void CDemoRecord::SwitchGridState()
 {
-	if (m_bGridEnabled == false)
+	if (g_bGridEnabled == false)
 	{
-		m_bGridEnabled = true;
+		g_bGridEnabled = true;
 		Console->Execute("r_photo_grid on");
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::SwitchGridState - method change m_bGridEnabled to state enabled and activate r_photo_grid");
-#endif
 	}
 	else
 	{
-		m_bGridEnabled = false;
+		g_bGridEnabled = false;
 		Console->Execute("r_photo_grid off");
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::SwitchGridState - method change m_bGridEnabled to state disabled and deactivate "
-			"r_photo_grid");
-#endif
 	}
 }
 
@@ -520,67 +512,57 @@ void CDemoRecord::SwitchGridState()
 // общих команд дл€ всех рендеров
 void CDemoRecord::SwitchCinemaBordersState()
 {
-	if (m_bBordersEnabled == false)
+	if (g_bBordersEnabled == false)
 	{
-		m_bBordersEnabled = true;
+		g_bBordersEnabled = true;
 		Console->Execute("r_cinema_borders on");
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::SwitchCinemaBordersState - method change m_bBordersEnabled to state enabled and activate "
-			"r_cinema_borders");
-#endif
 	}
 	else
 	{
-		m_bBordersEnabled = false;
+		g_bBordersEnabled = false;
 		Console->Execute("r_cinema_borders off");
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::SwitchCinemaBordersState - method change m_bBordersEnabled to state disabled and deactivate "
-			"r_cinema_borders");
-#endif
 	}
 }
 
 void CDemoRecord::SwitchWatermarkVisibility()
 {
-	if (m_bWatermarkEnabled == false)
+	if (g_bWatermarkEnabled == false)
 	{
-		m_bWatermarkEnabled = true;
+		g_bWatermarkEnabled = true;
 		Console->Execute("r_watermark on");
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::SwitchWatermarkVisibility - method change m_bWatermarkEnabled to state enabled and activate "
-			"r_watermark");
-#endif
 	}
 	else
 	{
-		m_bWatermarkEnabled = false;
+		g_bWatermarkEnabled = false;
 		Console->Execute("r_watermark off");
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::SwitchWatermarkVisibility - method change m_bWatermarkEnabled to state disabled and "
-			"deactivate r_watermark");
-#endif
 	}
 }
 
 void CDemoRecord::IR_OnKeyboardPress(int dik)
 {
+	if (dik == DIK_ESCAPE)
+		Close();
+
 	if (dik == DIK_GRAVE)
 		Console->Show();
 
 	if (dik == DIK_SPACE)
-		RecordKey();
+		RecordKey(LINEAR_INTERPOLATION_TYPE);
+
+	if ((dik == DIK_LALT))
+		RecordKey(DISABLE_INTERPOLATION);
+
+	if (dik == DIK_MINUS)
+		SetNeedMakeCubemap();
 
 	if (dik == DIK_BACK)
-		MakeCubemap();
+		DeleteKey();
 
 	if (dik == DIK_F11)
 		MakeLevelMapScreenshot();
 
-	if (dik == DIK_F12)
-		MakeScreenshot();
-
-	if (dik == DIK_ESCAPE)
-		fLifeTime = -1;
+	if (dik == DIK_DELETE)
+		ResetParameters();
 
 	if (dik == DIK_H)
 		SwitchAutofocusState();
@@ -591,25 +573,11 @@ void CDemoRecord::IR_OnKeyboardPress(int dik)
 	if (dik == DIK_B)
 		SwitchCinemaBordersState();
 
-	if (dik == DIK_J)
+	if (dik == DIK_TAB)
 		SwitchShowInputInfo();
 
 	if (dik == DIK_N)
 		SwitchWatermarkVisibility();
-
-	if (dik == DIK_RETURN)
-	{
-		if (g_pGameLevel->CurrentEntity())
-		{
-#ifndef MASTER_GOLD
-			g_pGameLevel->CurrentEntity()->ForceTransform(m_Camera);
-#endif
-			fLifeTime = -1;
-		}
-	}
-
-	if (dik == DIK_PAUSE)
-		Device.Pause(!Device.Paused(), TRUE, TRUE, "demo_record");
 
 #ifndef MASTER_GOLD
 #pragma todo("NSDeathman to all: ѕеределать быструю отладку рендера под удобный вид")
@@ -678,6 +646,8 @@ void CDemoRecord::IR_OnKeyboardHold(int dik)
 	case DIK_NUMPAD7:
 		vR_delta.z += 2.0f;
 		break; // Turn Right
+	case DIK_LWIN:
+		m_bNeedDisableInterpolation = true;
 	}
 	update_whith_timescale(m_vT, vT_delta);
 	update_whith_timescale(m_vR, vR_delta);
@@ -710,124 +680,175 @@ void CDemoRecord::IR_OnMouseHold(int btn)
 	update_whith_timescale(m_vT, vT_delta);
 }
 
-void CDemoRecord::ChangeDepthOfFieldFar(int direction)
+void CDemoRecord::ChangeDepthOfFieldFocalDepth(int direction)
 {
 	Fvector3 dof_params_old;
 	Fvector3 dof_params_actual;
 
-	if (g_pGamePersistent)
-	{
-		g_pGamePersistent->GetCurrentDof(dof_params_old);
+	g_pGamePersistent->GetCurrentDof(dof_params_old);
 
-		dof_params_actual = dof_params_old;
+	dof_params_actual = dof_params_old;
 
-		if (direction > 0)
-			dof_params_actual.z = dof_params_old.z + 10.0f;
-		else
-			dof_params_actual.z = dof_params_old.z - 10.0f;
-
-		if (dof_params_actual.z <= 4.999f)
-		{
-#ifdef DEBUG_DEMO_RECORD
-			Msg("CDemoRecord::ChangeDepthOfFieldFar - far parameter < 5");
-#endif
-			dof_params_actual.z = 5.0f;
-		}
-
-		m_fDOF = dof_params_actual;
-		g_pGamePersistent->SetBaseDof(m_fDOF);
-
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::ChangeDepthOfFieldFar - method successfully change depth of field parameters");
-		Msg("CDemoRecord::ChangeDepthOfFieldFar - depth of field parameters old: near = %d, focus = %d, far = %d",
-			dof_params_old.x, dof_params_old.y, dof_params_old.z);
-		Msg("CDemoRecord::ChangeDepthOfFieldFar - depth of field parameters actual: near = %d, focus = %d, far = %d",
-			dof_params_actual.x, dof_params_actual.y, dof_params_actual.z);
-#endif
-	}
-#ifdef DEBUG_DEMO_RECORD
+	if (direction > 0)
+		dof_params_actual.x = dof_params_old.x + 0.1f;
 	else
-	{
-		Msg("CDemoRecord::ChangeDepthOfFieldFar - method was called before create IGame_Persistent. Going next");
-	}
-#endif
+		dof_params_actual.x = dof_params_old.x - 0.1f;
+
+	//if (dof_params_actual.x < dof_params_actual.x)
+	//	dof_params_actual.x = dof_params_actual.x + 1.0f;
+
+	//if (dof_params_actual.x <= 4.999f)
+	//	dof_params_actual.x = 5.0f;
+
+	g_fDOF = dof_params_actual;
+	g_pGamePersistent->SetBaseDof(g_fDOF);
+}
+
+void CDemoRecord::ChangeDepthOfFieldFocalLength(int direction)
+{
+	Fvector3 dof_params_old;
+	Fvector3 dof_params_actual;
+
+	g_pGamePersistent->GetCurrentDof(dof_params_old);
+
+	dof_params_actual = dof_params_old;
+
+	if (direction > 0)
+		dof_params_actual.y = dof_params_old.y + 0.1f;
+	else
+		dof_params_actual.y = dof_params_old.y - 0.1f;
+
+	//dof_params_actual.y = dof_params_actual.x + 10.0f;
+
+	// if (dof_params_actual.x <= 0.1f)
+	//	dof_params_actual.x = 0.1f;
+
+	g_fDOF = dof_params_actual;
+	g_pGamePersistent->SetBaseDof(g_fDOF);
+}
+
+void CDemoRecord::ChangeDepthOfFieldFStop(int direction)
+{
+	Fvector3 dof_params_old;
+	Fvector3 dof_params_actual;
+
+	g_pGamePersistent->GetCurrentDof(dof_params_old);
+
+	dof_params_actual = dof_params_old;
+
+	if (direction > 0)
+		dof_params_actual.z = dof_params_old.z + 0.1f;
+	else
+		dof_params_actual.z = dof_params_old.z - 0.1f;
+
+	// if (dof_params_actual.y <= 0.1f)
+	//	dof_params_actual.y = 0.1f;
+
+	g_fDOF = dof_params_actual;
+	g_pGamePersistent->SetBaseDof(g_fDOF);
 }
 
 void CDemoRecord::ChangeFieldOfView(int direction)
 {
-	float m_fFov_old = Device.fFOV;
-	float m_fFov_actual;
+	float g_fFov_actual = Device.fFOV;
 
 	if (direction > 0)
-		m_fFov_actual = m_fFov_old + 0.5f;
+		g_fFov = g_fFov_actual + 0.5f;
 	else
-		m_fFov_actual = m_fFov_old - 0.5f;
+		g_fFov = g_fFov_actual - 0.5f;
 
-	if (m_fFov_actual <= 2.28f)
-	{
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::ChangeFieldOfView - field of view parameter < 2.29 degrees. Set 2.29 degrees");
-#endif
-		m_fFov_actual = 2.28f;
-	}
-	else if (m_fFov_actual >= 113.001f)
-	{
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::ChangeFieldOfView - field of view parameter > 113 degrees. Set 113 degrees");
-#endif
-		m_fFov_actual = 113.0f;
-	}
+	if (g_fFov <= 2.28f)
+		g_fFov = 2.28f;
+	else if (g_fFov >= 113.001f)
+		g_fFov = 113.0f;
+}
 
-	if (m_fFov < m_fFov_actual)
-	{
-		while (m_fFov < m_fFov_actual)
-		{
-			m_fFov += 0.00001f;
-		}
-	}
+void CDemoRecord::ChangeDiaphragm(int direction)
+{
+	float g_fDiaphragm_old = 1.0f;
+	g_pGamePersistent->GetDofDiaphragm(g_fDiaphragm_old);
+	float g_fDiaphragm_actual = g_fDiaphragm_old;
 
-	if (m_fFov > m_fFov_actual)
-	{
-		while (m_fFov > m_fFov_actual)
-		{
-			m_fFov -= 0.00001f;
-		}
-	}
-#ifdef DEBUG_DEMO_RECORD
-	Msg("CDemoRecord::ChangeFieldOfView - method successfully change field of view parameter");
-	Msg("CDemoRecord::ChangeFieldOfView - field of view value old: %d", m_fFov_old);
-	Msg("CDemoRecord::ChangeFieldOfView - field of view value actual: %d", m_fFov_actual);
-#endif
+	if (direction > 0)
+		g_fDiaphragm_actual = g_fDiaphragm_old + 0.5f;
+	else
+		g_fDiaphragm_actual = g_fDiaphragm_old - 0.5f;
+
+	if (g_fDiaphragm_actual < 1.0f)
+		g_fDiaphragm_actual = 1.0f;
+	else if (g_fDiaphragm_actual > 20.0f)
+		g_fDiaphragm_actual = 20.0f;
+
+	g_fDiaphragm = g_fDiaphragm_actual;
+
+	g_pGamePersistent->SetDofDiaphragm(g_fDiaphragm);
 }
 
 void CDemoRecord::IR_OnMouseWheel(int direction)
 {
 	if (IR_GetKeyState(DIK_G))
 	{
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::IR_OnMouseWheel - Whell mode is DepthOfFieldChanger");
-#endif
-		ChangeDepthOfFieldFar(direction);
+		ChangeDepthOfFieldFocalLength(direction);
+	}
+	else if (IR_GetKeyState(DIK_T))
+	{
+		ChangeDepthOfFieldFocalDepth(direction);
+	}
+	else if (IR_GetKeyState(DIK_R))
+	{
+		ChangeDepthOfFieldFStop(direction);
 	}
 	else if (IR_GetKeyState(DIK_F))
 	{
-#ifdef DEBUG_DEMO_RECORD
-		Msg("CDemoRecord::IR_OnMouseWheel - Whell mode is FieldOfViewChanger");
-#endif
 		ChangeFieldOfView(direction);
 	}
+	//else if (IR_GetKeyState(DIK_T))
+	//{
+	//	ChangeDiaphragm(direction);
+	//}
 }
 
-void CDemoRecord::RecordKey()
+void CDemoRecord::DeleteKey()
 {
-	Fmatrix g_matView;
+	if (iCount == 0)
+		return;
 
-	g_matView.invert(m_Camera);
-	file->w(&g_matView, sizeof(Fmatrix));
+	iCount = iCount - 1;
+
+	Msg("iCount = %d", iCount);
+
+	g_fDOF = FramesArray[iCount].DOF;
+	g_pGamePersistent->SetBaseDof(g_fDOF);
+	g_fDiaphragm = FramesArray[iCount].DOFAperture;
+	g_pGamePersistent->SetDofDiaphragm(g_fDiaphragm);
+
+	g_fFov = FramesArray[iCount].Fov;
+
+	g_bBordersEnabled = FramesArray[iCount].UseCinemaBorders;
+	g_bWatermarkEnabled = FramesArray[iCount].UseWatermark;
+
+	m_HPB.set(FramesArray[iCount].HPB);
+	m_Position.set(FramesArray[iCount].Position);
+}
+
+void CDemoRecord::RecordKey(u32 IterpolationType)
+{
+	FramesArray[iCount].HPB.set(m_HPB);
+	FramesArray[iCount].Position.set(m_Position);
+	FramesArray[iCount].InterpolationType = IterpolationType;
+
+	FramesArray[iCount].DOF = g_fDOF;
+	FramesArray[iCount].DOFAperture = g_fDiaphragm;
+
+	FramesArray[iCount].Fov = g_fFov;
+
+	FramesArray[iCount].UseCinemaBorders = g_bBordersEnabled;
+	FramesArray[iCount].UseWatermark = g_bWatermarkEnabled;
+
 	iCount++;
 }
 
-void CDemoRecord::MakeCubemap()
+void CDemoRecord::SetNeedMakeCubemap()
 {
 	m_bMakeCubeMap = TRUE;
 	m_Stage = 0;

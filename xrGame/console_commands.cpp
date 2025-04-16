@@ -374,9 +374,9 @@ class CCC_DemoRecord : public IConsole_Command
 #endif
 		Console->Hide();
 		string_path fn_;
-		strconcat(sizeof(fn_), fn_, args, ".xrdemo");
+		strconcat(sizeof(fn_), fn_, args, ".ltx");
 		string_path fn;
-		FS.update_path(fn, "$game_saves$", fn_);
+		FS.update_path(fn, "$demos$", fn_);
 
 		g_pGameLevel->Cameras().AddCamEffector(xr_new<CDemoRecord>(fn));
 	}
@@ -390,7 +390,7 @@ class CCC_DemoPlay : public IConsole_Command
 	};
 	virtual void Execute(LPCSTR args)
 	{
-#ifndef DEBUG
+#ifdef MASTER_GOLD
 		if (GameID() != GAME_SINGLE)
 		{
 			Msg("For this game type Demo Play is disabled.");
@@ -410,10 +410,10 @@ class CCC_DemoPlay : public IConsole_Command
 			if (comma)
 			{
 				loops = atoi(comma + 1);
-				*comma = 0; //. :)
+				*comma = 0;
 			}
-			strconcat(sizeof(fn), fn, args, ".xrdemo");
-			FS.update_path(fn, "$game_saves$", fn);
+			strconcat(sizeof(fn), fn, args, ".ltx");
+			FS.update_path(fn, "$demos$", fn);
 			g_pGameLevel->Cameras().AddCamEffector(xr_new<CDemoPlay>(fn, 1.0f, loops));
 		}
 	}

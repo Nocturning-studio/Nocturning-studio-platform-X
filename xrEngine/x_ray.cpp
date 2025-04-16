@@ -211,6 +211,10 @@ void CXRay::Startup()
 		Console->Execute("load_last_quick_save");
 	}
 
+#ifdef BENCHMARK_BUILD
+	R_ASSERT2(strstr(Core.Params, "-demo_play "), "For benchmark build demo file required");
+#endif
+
 	ShowWindow(Device.m_hWnd, SW_SHOWNORMAL);
 
 	DebugUI = new CDebugUI();

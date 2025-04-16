@@ -374,7 +374,7 @@ void CStats::Show()
 		_draw_cam_pos(pFont);
 		pFont->OnRender();
 	};
-#ifdef DEBUG
+//#ifdef DEBUG
 	//////////////////////////////////////////////////////////////////////////
 	// PERF ALERT
 	if (!g_bDisableRedText)
@@ -423,7 +423,7 @@ void CStats::Show()
 #endif
 		F.OnRender();
 	}
-#endif
+//#endif
 
 	{
 		EngineTOTAL.FrameStart();

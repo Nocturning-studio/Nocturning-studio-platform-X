@@ -48,6 +48,12 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 	LPCSTR tvs = "multiple_usage_object_animated";
 	LPCSTR tvs_s = "shadow_depth_stage_multiple_usage_object_animated";
 
+	if (oNotAnTree.value)
+	{
+		tvs = "multiple_usage_object";
+		tvs_s = "shadow_depth_stage_multiple_usage_object";
+	}
+
 	string_path AlbedoTexture;
 	strcpy_s(AlbedoTexture, sizeof(AlbedoTexture), *C.L_textures[0]);
 	string_path Dummy = {0};
@@ -55,10 +61,69 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 	bool bUseCustomWeight = false;
 	string_path CustomWeightTexture;
 
-	if (oNotAnTree.value)
+	#pragma todo(NSDeathman to NSDeathman: Rewrite)
+	bool bUseConfigurator = false;
+	CInifile* MaterialConfiguration;
+	string_path MaterialConfiguratorSearchPath;
+	string_path MaterialConfiguratorRealPath;
+	strcpy_s(MaterialConfiguratorSearchPath, sizeof(MaterialConfiguratorSearchPath), AlbedoTexture);
+	strconcat(sizeof(MaterialConfiguratorSearchPath), MaterialConfiguratorSearchPath, MaterialConfiguratorSearchPath, "_material_configuration.ltx");
+	FS.update_path(MaterialConfiguratorRealPath, "$game_textures$", MaterialConfiguratorSearchPath);
+
+	if (FS.exist(MaterialConfiguratorRealPath))
 	{
-		tvs = "multiple_usage_object";
-		tvs_s = "shadow_depth_stage_multiple_usage_object";
+		MaterialConfiguration = CInifile::Create(MaterialConfiguratorRealPath);
+		Msg("Material configuration file finded: %s", MaterialConfiguratorRealPath);
+		bUseConfigurator = true;
+	}
+
+	bool bNeedHashedAlphaTest = true;
+	bool bUseAlphaTest = true;
+
+	// Wind params
+	bool bUseWind = false;
+	bool bUseXAxisAsWeight = false;
+	bool bUseYAxisAsWeight = false;
+	bool bUseBothAxisAsWeight = false;
+	bool bInvertWeightAxis = false;
+	int WindTypeNum = 0;
+
+	if (bUseConfigurator)
+	{
+		LPCSTR AlphaTestType = GetStringValueIfExist("material_configuration", "shadows_alpha_test_type",
+													 "alpha_hashed", MaterialConfiguration);
+
+		if (StringsIsSimilar(AlphaTestType, "alpha_clip"))
+			bNeedHashedAlphaTest = false;
+
+		if (StringsIsSimilar(AlphaTestType, "alpha_hashed"))
+			bNeedHashedAlphaTest = true;
+
+		if (StringsIsSimilar(AlphaTestType, "none"))
+		{
+			bNeedHashedAlphaTest = false;
+			bUseAlphaTest = false;
+		}
+
+		bUseAlphaTest = GetBoolValueIfExist("material_configuration", "use_alpha_test", bUseAlphaTest, MaterialConfiguration);
+
+		// Wind configuration
+		bUseWind = GetBoolValueIfExist("wind_configuration", "use_wind", bUseWind, MaterialConfiguration);
+		LPCSTR WindType = GetStringValueIfExist("wind_configuration", "wind_type", "none", MaterialConfiguration);
+
+		if (StringsIsSimilar(WindType, "legacy"))
+			WindTypeNum = 0;
+		else if (StringsIsSimilar(WindType, "trunk"))
+			WindTypeNum = 1;
+		else if (StringsIsSimilar(WindType, "branchcard"))
+			WindTypeNum = 2;
+		else if (StringsIsSimilar(WindType, "leafcard"))
+			WindTypeNum = 3;
+
+		bUseXAxisAsWeight = GetBoolValueIfExist("wind_configuration", "use_x_axis_as_weight", bUseXAxisAsWeight, MaterialConfiguration);
+		bUseYAxisAsWeight = GetBoolValueIfExist("wind_configuration", "use_y_axis_as_weight", bUseYAxisAsWeight, MaterialConfiguration);
+		bUseBothAxisAsWeight = GetBoolValueIfExist("wind_configuration", "use_both_axis_as_weight", bUseBothAxisAsWeight, MaterialConfiguration);
+		bInvertWeightAxis = GetBoolValueIfExist("wind_configuration", "invert_weight_axis", bInvertWeightAxis, MaterialConfiguration);
 	}
 
 	// Get weight texture
@@ -86,7 +151,20 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 	case SE_SHADOW_DEPTH: // smap-spot
 		C.sh_macro(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
 		C.sh_macro(bUseCustomOpacity, "USE_CUSTOM_OPACITY", "1");
-		if (oBlend.value || bUseCustomOpacity)
+
+		C.sh_macro(bNeedHashedAlphaTest, "USE_HASHED_ALPHA_TEST", "1");
+
+		C.sh_macro(bUseWind, "USE_WIND", "1");
+		C.sh_macro(WindTypeNum == 0, "USE_LEGACY_WIND", "1");
+		C.sh_macro(WindTypeNum == 1, "USE_TRUNK_WIND", "1");
+		C.sh_macro(WindTypeNum == 2, "USE_BRANCHCARD_WIND", "1");
+		C.sh_macro(WindTypeNum == 3, "USE_LEAFCARD_WIND", "1");
+		C.sh_macro(bUseXAxisAsWeight, "USE_X_AXIS_AS_WEIGHT", "1");
+		C.sh_macro(bUseYAxisAsWeight, "USE_Y_AXIS_AS_WEIGHT", "1");
+		C.sh_macro(bUseBothAxisAsWeight, "USE_BOTH_AXIS_AS_WEIGHT", "1");
+		C.sh_macro(bInvertWeightAxis, "INVERT_WEIGHT_AXIS", "1");
+
+		if (oBlend.value || bUseCustomOpacity || bUseAlphaTest)
 		{
 			C.r_Pass(tvs_s, "shadow_depth_stage_static_mesh_alphatest", FALSE);
 

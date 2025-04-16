@@ -237,6 +237,7 @@ void CHW::CreateDevice(HWND m_hWnd)
 	u16 drv_Build = LOWORD(adapterID.DriverVersion.LowPart);
 	Msg("* GPU driver: %d.%d.%d.%d", u32(drv_Product), u32(drv_Version), u32(drv_SubVersion), u32(drv_Build));
 
+	strcat(Caps.id_description, adapterID.Description);
 	Caps.id_vendor = adapterID.VendorId;
 	Caps.id_device = adapterID.DeviceId;
 

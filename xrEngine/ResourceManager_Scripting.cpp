@@ -180,8 +180,8 @@ class adopt_sampler
 
 	adopt_sampler& _srgb()
 	{
-		if (C)
-			C->i_sRGB(stage, true);
+		//if (C)
+		//	C->i_sRGB(stage, true);
 		return *this;
 	}
 };

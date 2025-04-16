@@ -1,162 +1,95 @@
 // CDemoPlay.cpp: implementation of the CDemoPlay class.
-//
 //////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
-#include "igame_level.h"
 #include "fdemoplay.h"
 #include "xr_ioconsole.h"
 #include "motion.h"
 #include "Render.h"
 #include "CameraManager.h"
 #include "Benchmark.h"
-
+#include <demo_common.h>
+#include "gamefont.h"
+#include "x_ray.h"
+#include "xr_input.h"
+#include "igame_level.h"
+#include "iinputreceiver.h"
+#include "../xrGame/Level.h"
+#include "CustomHUD.h"
 //////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CDemoPlay::CDemoPlay(const char* name, float ms, u32 cycles, float life_time)
-	: CEffectorCam(cefDemo, life_time /*,FALSE*/)
+CDemoPlay::CDemoPlay(const char* name, float ms, u32 cycles, float life_time): CEffectorCam(cefDemo, life_time)
 {
-	Msg("*** Playing demo: %s", name);
-	Console->Execute("hud_weapon 0");
-	if (g_bBenchmark)
-		Console->Execute("hud_draw 0");
+	// Есть ли файл
+	if (!FS.exist(name))
+	{
+		Msg("Can't find file: %s", name);
+		g_pGameLevel->Cameras().RemoveCamEffector(cefDemo);
+		return;
+	}
 
+	strcpy(demo_file_name, name);
+	ReadAllFramesDataFromIni(demo_file_name);
+	Msg("*** Playing demo: %s", demo_file_name);
+
+	m_frames_count = TotalFramesCount;
+	Log("~ Total key-frames: ", m_frames_count);
+
+	// Защита на случай если файл пришел пустым
+	if (m_frames_count == NULL)
+	{
+		Msg("File corrupted: frames count is zero");
+		g_pGameLevel->Cameras().RemoveCamEffector(cefDemo);
+		return;
+	}
+
+	// Захват инпута с клавиатуры и мыши
+	IR_Capture();
+
+	// Отключение лишнего
+	m_bGlobalHudDraw = psHUD_Flags.test(HUD_DRAW);
+	psHUD_Flags.set(HUD_DRAW, false);
+
+	m_bGlobalCrosshairDraw = psHUD_Flags.test(HUD_CROSSHAIR);
+	psHUD_Flags.set(HUD_CROSSHAIR, false);
+
+	// Скорость и количество повторов демо
 	fSpeed = ms;
 	dwCyclesLeft = cycles ? cycles : 1;
 
-	m_pMotion = 0;
-	m_MParam = 0;
-	string_path nm, fn;
-	strcpy_s(nm, sizeof(nm), name);
-
-	if (strext(nm))
-		strcpy(strext(nm), ".anm");
-
-	if (FS.exist(fn, "$level$", nm) || FS.exist(fn, "$game_anims$", nm))
-	{
-		m_pMotion = xr_new<COMotion>();
-		m_pMotion->LoadMotion(fn);
-		m_MParam = xr_new<SAnimParams>();
-		m_MParam->Set(m_pMotion);
-		m_MParam->Play();
-	}
-	else
-	{
-		if (!FS.exist(name))
-		{
-			g_pGameLevel->Cameras().RemoveCamEffector(cefDemo);
-			return;
-		}
-		IReader* fs = FS.r_open(name);
-		u32 sz = fs->length();
-		if (sz % sizeof(Fmatrix) != 0)
-		{
-			FS.r_close(fs);
-			g_pGameLevel->Cameras().RemoveCamEffector(cefDemo);
-			return;
-		}
-
-		seq.resize(sz / sizeof(Fmatrix));
-		m_count = seq.size();
-		CopyMemory(&*seq.begin(), fs->pointer(), sz);
-		FS.r_close(fs);
-		Log("~ Total key-frames: ", m_count);
-	}
+	// Запущен ли сбор общей статистики (для бенчмарка)
 	stat_started = FALSE;
+
+	// Прекеш
 	Device.PreCache(50);
+
+	// Сет дефолтных значений параметров, которые будут читаться из секции кадра
+	SetDefaultParameters();
+
+	// Переменные для окна конца бенчмарка
+	bNeedDrawResults = false;
+	bNeedToTakeStatsResoultScreenShot = false;
+	uTimeToQuit = uTimeToScreenShot = NULL;
+
+	// Переменные для сбора общей и покадровой статистики
+	ResetPerFrameStatistic();
 }
 
 CDemoPlay::~CDemoPlay()
 {
-	stat_Stop();
-	xr_delete(m_pMotion);
-	xr_delete(m_MParam);
-	Console->Execute("hud_weapon 1");
-	if (g_bBenchmark)
-		Console->Execute("hud_draw 1");
+	// Отпускаем инпут
+	IR_Release();
+
+	// Возвращаем индикаторы обратно
+	psHUD_Flags.set(HUD_DRAW, m_bGlobalHudDraw);
+	psHUD_Flags.set(HUD_CROSSHAIR, m_bGlobalCrosshairDraw);
+
+	// Сет дефолтных значений параметров, которые установлены из секции кадра
+	ResetParameters();
 }
 
-void CDemoPlay::stat_Start()
-{
-	if (stat_started)
-		return;
-	stat_started = TRUE;
-	Sleep(1);
-	stat_StartFrame = Device.dwFrame;
-	stat_Timer_frame.Start();
-	stat_Timer_total.Start();
-	stat_table.clear();
-	stat_table.reserve(1024);
-	fStartTime = 0;
-}
-
-extern string512 g_sBenchmarkName;
-
-void CDemoPlay::stat_Stop()
-{
-	if (!stat_started)
-		return;
-	stat_started = FALSE;
-	float stat_total = stat_Timer_total.GetElapsed_sec();
-
-	float rfps_min, rfps_max, rfps_middlepoint, rfps_average;
-
-	// total
-	u32 dwFramesTotal = Device.dwFrame - stat_StartFrame;
-	rfps_average = float(dwFramesTotal) / stat_total;
-
-	// min/max/average
-	rfps_min = flt_max;
-	rfps_max = flt_min;
-	rfps_middlepoint = 0;
-	for (u32 it = 1; it < stat_table.size(); it++)
-	{
-		float fps = 1.f / stat_table[it];
-		if (fps < rfps_min)
-			rfps_min = fps;
-		if (fps > rfps_max)
-			rfps_max = fps;
-		rfps_middlepoint += fps;
-	}
-	rfps_middlepoint /= float(stat_table.size() - 1);
-
-	Msg("* [DEMO] FPS: average[%f], min[%f], max[%f], middle[%f]", rfps_average, rfps_min, rfps_max, rfps_middlepoint);
-
-	if (g_bBenchmark)
-	{
-		string_path fname;
-
-		if (xr_strlen(g_sBenchmarkName))
-			sprintf_s(fname, sizeof(fname), "%s.result", g_sBenchmarkName);
-		else
-			strcpy_s(fname, sizeof(fname), "benchmark.result");
-
-		FS.update_path(fname, "$app_data_root$", fname);
-		CInifile res(fname, FALSE, FALSE, TRUE);
-		res.w_float("general", "renderer", 9.0f, "dx-level required");
-		res.w_float("general", "min", rfps_min, "absolute minimum");
-		res.w_float("general", "max", rfps_max, "absolute maximum");
-		res.w_float("general", "average", rfps_average, "average for this run");
-		res.w_float("general", "middle", rfps_middlepoint, "per-frame middle-point");
-		for (u32 it = 1; it < stat_table.size(); it++)
-		{
-			string32 id;
-			sprintf_s(id, sizeof(id), "%7d", it);
-			for (u32 c = 0; id[c]; c++)
-				if (' ' == id[c])
-					id[c] = '0';
-			res.w_float("per_frame_stats", id, 1.f / stat_table[it]);
-		}
-
-		Console->Execute("quit");
-	}
-}
-
-#define FIX(a)                                                                                                         \
-	while (a >= m_count)                                                                                               \
-	a -= m_count
+// Оригинальная формула для интерполяции между кадрами
+// t: A parameter between 0 and 1 representing the interpolation factor.
+// p: An array of three Fvector points that serve as control points for the spline.
+// ret: A pointer to an Fvector where the result will be stored.
 void spline1(float t, Fvector* p, Fvector* ret)
 {
 	float t2 = t * t;
@@ -166,11 +99,14 @@ void spline1(float t, Fvector* p, Fvector* ret)
 	ret->x = 0.0f;
 	ret->y = 0.0f;
 	ret->z = 0.0f;
+
+	// Calculate spline coefficients
 	m[0] = (0.5f * ((-1.0f * t3) + (2.0f * t2) + (-1.0f * t)));
 	m[1] = (0.5f * ((3.0f * t3) + (-5.0f * t2) + (0.0f * t) + 2.0f));
 	m[2] = (0.5f * ((-3.0f * t3) + (4.0f * t2) + (1.0f * t)));
 	m[3] = (0.5f * ((1.0f * t3) + (-1.0f * t2) + (0.0f * t)));
 
+	// Interpolate position based on control points
 	for (int i = 0; i < 4; i++)
 	{
 		ret->x += p[i].x * m[i];
@@ -179,105 +115,317 @@ void spline1(float t, Fvector* p, Fvector* ret)
 	}
 }
 
+void CDemoPlay::MoveCameraSpline(float InterpolationFactor, int frame0, int frame1, int frame2, int frame3)
+{
+	Fmatrix *m1, *m2, *m3, *m4;
+	m1 = (Fmatrix*)&MakeCameraMatrixFromFrameNumber(frame0);
+	m2 = (Fmatrix*)&MakeCameraMatrixFromFrameNumber(frame1);
+	m3 = (Fmatrix*)&MakeCameraMatrixFromFrameNumber(frame2);
+	m4 = (Fmatrix*)&MakeCameraMatrixFromFrameNumber(frame3);
+
+	for (int i = 0; i < 4; i++)
+	{
+		Fvector v[4];
+		v[0].x = m1->m[i][0];
+		v[0].y = m1->m[i][1];
+		v[0].z = m1->m[i][2];
+
+		v[1].x = m2->m[i][0];
+		v[1].y = m2->m[i][1];
+		v[1].z = m2->m[i][2];
+
+		v[2].x = m3->m[i][0];
+		v[2].y = m3->m[i][1];
+		v[2].z = m3->m[i][2];
+
+		v[3].x = m4->m[i][0];
+		v[3].y = m4->m[i][1];
+		v[3].z = m4->m[i][2];
+
+		spline1(InterpolationFactor, &(v[0]), (Fvector*)&(m_Camera.m[i][0]));
+	}
+}
+
+// t: A parameter between 0 and 1 representing the interpolation factor.
+// p0: An array of three Fvector points that serve first point
+// p1: An array of three Fvector points that serve second point
+// ret: A pointer to an Fvector where the result will be stored.
+void linearInterpolate(float t, Fvector* p0, Fvector* p1, Fvector* ret)
+{
+	ret->x = (1 - t) * p0->x + t * p1->x;
+	ret->y = (1 - t) * p0->y + t * p1->y;
+	ret->z = (1 - t) * p0->z + t * p1->z;
+}
+
+void CDemoPlay::MoveCameraLinear(float InterpolationFactor, int frame0, int frame1)
+{
+	Fmatrix* m1 = (Fmatrix*)&MakeCameraMatrixFromFrameNumber(frame0);
+	Fmatrix* m2 = (Fmatrix*)&MakeCameraMatrixFromFrameNumber(frame1);
+
+	for (int i = 0; i < 4; i++)
+	{
+		Fvector pos0, pos1;
+		pos0.x = m1->m[i][0];
+		pos0.y = m1->m[i][1];
+		pos0.z = m1->m[i][2];
+
+		pos1.x = m2->m[i][0];
+		pos1.y = m2->m[i][1];
+		pos1.z = m2->m[i][2];
+
+		// Perform linear interpolation
+		linearInterpolate(InterpolationFactor, &pos0, &pos1, (Fvector*)&(m_Camera.m[i][0]));
+	}
+}
+
+// Движение камеры между кадрами
+void CDemoPlay::MoveCamera(u32 frame, float interpolation_factor, int interpolation_type)
+{
+	int f1 = frame;
+
+	int f2 = f1 + 1;
+	f2 = NeedInterpolation(f2) ? f2 : f1;
+
+	int f3 = f2 + 1;
+	f3 = NeedInterpolation(f3) ? f3 : f2;
+
+	int f4 = f3 + 1;
+	f4 = NeedInterpolation(f4) ? f4 : f3;
+
+	switch (interpolation_type)
+	{
+	case LINEAR_INTERPOLATION_TYPE:
+		MoveCameraLinear(interpolation_factor, f1, f2);
+		break;
+	case SPLINE_INTERPOLATION_TYPE:
+		MoveCameraSpline(interpolation_factor, f1, f2, f3, f4);
+		break;
+	case DISABLE_INTERPOLATION:
+		m_Camera.set(MakeCameraMatrixFromFrameNumber(frame));
+		break;
+	}
+}
+
+// Апдейт камеры
+void CDemoPlay::Update(SCamEffectorInfo& info)
+{
+#ifdef BENCHMARK_BUILD
+	if (bNeedDrawResults)
+		PrintSummaryBanchmarkStatistic();
+	else
+		ShowPerFrameStatistic();
+#endif
+
+	fStartTime += Device.fTimeDelta;
+
+	float ip;
+	float p = fStartTime / fSpeed;
+	float InterpolationFactor = modff(p, &ip);
+	int Frame = iFloor(ip);
+	VERIFY(t >= 0);
+
+	// Отслеживаем подошли ли мы к последним кадрам демо
+	// чтобы засетить в это время вывод статистики
+#ifdef BENCHMARK_BUILD
+	if (frame == (m_frames_count - 10))
+		EnableBenchmarkResultPrint();
+#endif
+
+	// Что делать если мы подошли к концу демо
+	if (Frame >= m_frames_count)
+	{
+#ifdef BENCHMARK_BUILD
+		// Закольцовываем демо в себе
+		//ResetPerFrameStatistic();
+		//frame = 0;
+		//fStartTime = 1;
+		//fLifeTime = 10000;
+		Console->Execute("quit");
+#else
+		dwCyclesLeft--;
+
+		if (0 == dwCyclesLeft)
+			Close();
+#endif
+	}
+
+	// Берем номер ключевого кадра и читаем соотвтетствующую ему секцию
+	// после чего сетим постпроцесс из ее параметров c интерполяцией
+	ApplyFrameParameters(Frame, InterpolationFactor);
+
+	// Move обновляет view матрицу при помощи нужного типа интерполяции
+	if (NeedInterpolation(Frame) && Frame != m_frames_count)
+	{
+		MoveCamera(Frame, InterpolationFactor, GetInterpolationType(Frame));
+	}
+	else
+	{
+		// Телепортируем камеру на нужную точку и сразу же начинаем оттуда же уже с интерполяцией
+		MoveCamera(Frame, InterpolationFactor, DISABLE_INTERPOLATION);
+		MoveCamera(Frame, InterpolationFactor, GetInterpolationType(Frame + 1));
+	}
+
+	// Применяем view матрицу для трансформации нормали, направления и позиции
+	info.n.set(m_Camera.j);
+	info.d.set(m_Camera.k);
+	info.p.set(m_Camera.c);
+	info.fFov = g_fFov;
+
+	fLifeTime -= Device.fTimeDelta;
+
+	// Короткая демонстрация результатов бенчмарка со скриншотом и завершением работы
+#ifdef BENCHMARK_BUILD
+	if (!bNeedDrawResults)
+		return;
+
+	if ((Device.dwTimeGlobal >= uTimeToScreenShot) && bNeedToTakeStatsResoultScreenShot)
+	{
+		bNeedToTakeStatsResoultScreenShot = false;
+		Screenshot();
+	}
+
+	if (Device.dwTimeGlobal >= uTimeToQuit)
+		Console->Execute("quit");
+#endif
+}
+
 BOOL CDemoPlay::ProcessCam(SCamEffectorInfo& info)
 {
 	// skeep a few frames before counting
 	if (Device.dwPrecacheFrame)
 		return TRUE;
 
-	if (!!stat_started == false)
-		stat_Start();
+	// Защита на случай если файл придет пустой
+	if (m_frames_count == NULL)
+		Close();
 
-	// Per-frame statistics
-	{
-		stat_table.push_back(stat_Timer_frame.GetElapsed_sec());
-		stat_Timer_frame.Start();
-	}
+	Update(info);
 
-	// Process motion
-	if (m_pMotion)
-	{
-		Fvector R;
-		Fmatrix mRotate;
-		m_pMotion->_Evaluate(m_MParam->Frame(), info.p, R);
-		m_MParam->Update(Device.fTimeDelta, 1.f, true);
-		fLifeTime -= Device.fTimeDelta;
-		if (m_MParam->bWrapped)
-		{
-			stat_Stop();
-			stat_Start();
-		}
-		mRotate.setXYZi(R.x, R.y, R.z);
-		info.d.set(mRotate.k);
-		info.n.set(mRotate.j);
-	}
-	else
-	{
-		if (seq.empty())
-		{
-			g_pGameLevel->Cameras().RemoveCamEffector(cefDemo);
-			return TRUE;
-		}
-
-		fStartTime += Device.fTimeDelta;
-
-		float ip;
-		float p = fStartTime / fSpeed;
-		float t = modff(p, &ip);
-		int frame = iFloor(ip);
-		VERIFY(t >= 0);
-
-		if (frame >= m_count)
-		{
-			dwCyclesLeft--;
-			if (0 == dwCyclesLeft)
-				return FALSE;
-			fStartTime = 0;
-			// just continue
-			// stat_Stop			();
-			// stat_Start			();
-		}
-
-		int f1 = frame;
-		FIX(f1);
-		int f2 = f1 + 1;
-		FIX(f2);
-		int f3 = f2 + 1;
-		FIX(f3);
-		int f4 = f3 + 1;
-		FIX(f4);
-
-		Fmatrix *m1, *m2, *m3, *m4;
-		Fvector v[4];
-		m1 = (Fmatrix*)&seq[f1];
-		m2 = (Fmatrix*)&seq[f2];
-		m3 = (Fmatrix*)&seq[f3];
-		m4 = (Fmatrix*)&seq[f4];
-
-		for (int i = 0; i < 4; i++)
-		{
-			v[0].x = m1->m[i][0];
-			v[0].y = m1->m[i][1];
-			v[0].z = m1->m[i][2];
-			v[1].x = m2->m[i][0];
-			v[1].y = m2->m[i][1];
-			v[1].z = m2->m[i][2];
-			v[2].x = m3->m[i][0];
-			v[2].y = m3->m[i][1];
-			v[2].z = m3->m[i][2];
-			v[3].x = m4->m[i][0];
-			v[3].y = m4->m[i][1];
-			v[3].z = m4->m[i][2];
-			spline1(t, &(v[0]), (Fvector*)&(Device.mView.m[i][0]));
-		}
-
-		Fmatrix mInvCamera;
-		mInvCamera.invert(Device.mView);
-		info.n.set(mInvCamera._21, mInvCamera._22, mInvCamera._23);
-		info.d.set(mInvCamera._31, mInvCamera._32, mInvCamera._33);
-		info.p.set(mInvCamera._41, mInvCamera._42, mInvCamera._43);
-
-		fLifeTime -= Device.fTimeDelta;
-	}
 	return TRUE;
 }
+
+void CDemoPlay::Screenshot()
+{
+	Render->Screenshot();
+}
+
+void CDemoPlay::EnableBenchmarkResultPrint()
+{
+	uTimeToQuit = Device.dwTimeGlobal + 5000;
+	uTimeToScreenShot = Device.dwTimeGlobal + 1000;
+	bNeedDrawResults = true;
+	bNeedToTakeStatsResoultScreenShot = true;
+	fLifeTime = 1000;
+}
+
+void CDemoPlay::Close()
+{
+	g_pGameLevel->Cameras().RemoveCamEffector(cefDemo);
+	fLifeTime = -1;
+}
+
+// Обработчик нажатий клавиш клавиатуры
+void CDemoPlay::IR_OnKeyboardPress(int dik)
+{
+#ifdef BENCHMARK_BUILD
+	if (dik == DIK_ESCAPE)
+		EnableBenchmarkResultPrint();
+#else
+	if (dik == DIK_ESCAPE)
+		Close();
+
+	if (dik == DIK_GRAVE)
+		Console->Show();
+#endif
+
+	if (dik == DIK_F12)
+		Screenshot();
+}
+
+
+void CDemoPlay::PrintSummaryBanchmarkStatistic()
+{
+	// Выравниваем надпись по левому краю строки
+	pApp->pFontSystem->SetAligment(CGameFont::alCenter);
+
+	// Сетим надписи в центре экрана
+	pApp->pFontSystem->OutSetI(0.0, -0.2f);
+
+	pApp->pFontSystem->OutNext("Benchmark results");
+
+	ChooseTextColor(fFPS_max);
+	pApp->pFontSystem->OutNext("FPS Maximal: %f", fFPS_max);
+
+	ChooseTextColor(fFPS_min);
+	pApp->pFontSystem->OutNext("FPS Minimal: %f", fFPS_min);
+
+	pApp->pFontSystem->OutNext("GPU: %s", HW.Caps.id_description);
+
+	if (Device.dwTimeGlobal > uTimeToScreenShot)
+		pApp->pFontSystem->OutNext("Results saved to screenshots");
+}
+
+void CDemoPlay::ResetPerFrameStatistic()
+{
+	fFPS = 0.0f;
+	fFPS_min = flt_max;
+	fFPS_max = flt_min;
+}
+
+// Разные цвета для разных значений кадров в секунду
+// Зеленый если больше 50
+// Желтый если меньше 50
+// Красный если меньше 24
+void CDemoPlay::ChooseTextColor(float FPSValue)
+{
+	if (fFPS > 50.0f)
+		pApp->pFontSystem->SetColor(color_rgba(101, 255, 0, 200));
+	else if (fFPS < 50.0f)
+		pApp->pFontSystem->SetColor(color_rgba(230, 255, 130, 200));
+	else if (fFPS < 24.0f)
+		pApp->pFontSystem->SetColor(color_rgba(255, 59, 0, 200));
+}
+
+// Статистика в левом верхнем углу экрана
+void CDemoPlay::ShowPerFrameStatistic()
+{
+	// Считаем время кадра
+	float fps = 1.f / Device.fTimeDelta;
+	float fOne = 0.3f;
+	float fInv = 1.f - fOne;
+	fFPS = fInv * fFPS + fOne * fps;
+
+	// При alt + tab бывает скачок количества кадров
+	// попытка убавить значение до среднего чтобы в
+	// следующем вызове он выравнялся до нормального
+	if (fFPS_max > 256.0f)
+		fFPS_max = 60.0f;
+
+	// Если актуальное значение меньше чем у прошлого кадра
+	// то приравниваем его
+	if (fFPS < fFPS_min)
+		fFPS_min = fFPS;
+
+	// Если актуальное значение больше чем у прошлого кадра
+	// то приравниваем его
+	if (fFPS > fFPS_max)
+		fFPS_max = fFPS;
+
+	// Выравниваем надпись по левому краю строки
+	pApp->pFontSystem->SetAligment(CGameFont::alLeft);
+
+	// Сетим надписи в левом верхнем углу
+	pApp->pFontSystem->OutSetI(-1.0, -0.8f);
+
+	ChooseTextColor(fFPS);
+	pApp->pFontSystem->OutNext("FPS: %f", fFPS);
+
+	ChooseTextColor(fFPS_max);
+	pApp->pFontSystem->OutNext("FPS Maximal: %f", fFPS_max);
+
+	ChooseTextColor(fFPS_min);
+	pApp->pFontSystem->OutNext("FPS Minimal: %f", fFPS_min);
+
+	pApp->pFontSystem->OutNext("GPU: %s", HW.Caps.id_description);
+}
+//////////////////////////////////////////////////////////////////////

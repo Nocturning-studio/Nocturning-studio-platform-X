@@ -448,9 +448,29 @@ struct debug_memory_guard
 };
 #endif // DEBUG_MEMORY_MANAGER
 
+bool DemoStarted = false;
+
 void CLevel::OnFrame()
 {
 	OPTICK_EVENT("CLevel::OnFrame");
+
+#pragma todo(NSDeathman to NSDeathman: Переписать)
+#ifdef BENCHMARK_BUILD
+	if (!DemoStarted)
+	{
+		if (strstr(Core.Params, "-demo_play "))
+		{
+			DemoStarted = true;
+			LPCSTR pStartup = strstr(Core.Params, "-demo_play ");
+			Console->Execute(pStartup + 1);
+			Msg("%s", pStartup);
+		}
+		else
+		{
+			Console->Execute("quit");
+		}
+	}
+#endif
 
 #ifdef DEBUG_MEMORY_MANAGER
 	debug_memory_guard __guard__;
@@ -758,7 +778,7 @@ void CLevel::OnEvent(EVENT E, u64 P1, u64 /**P2/**/)
 		char* name = (char*)P1;
 		string_path RealName;
 		strcpy_s(RealName, name);
-		strcat(RealName, ".xrdemo");
+		strcat(RealName, ".ltx");
 		Cameras().AddCamEffector(xr_new<CDemoPlay>(RealName, 1.3f, 0));
 	}
 	else if (E == eChangeTrack && P1)

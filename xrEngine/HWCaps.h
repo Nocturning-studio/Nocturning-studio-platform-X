@@ -59,6 +59,7 @@ class CHWCaps
 
 	DWORD max_coverage;
 
+	string1024 id_description;
 	u32 id_vendor;
 	u32 id_device;
 

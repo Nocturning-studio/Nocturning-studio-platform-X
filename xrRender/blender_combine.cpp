@@ -39,7 +39,7 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
 
-		C.r_Sampler_clf("s_reflections", r_RT_reflections);
+		C.r_Sampler_rtf("s_reflections", r_RT_reflections);
 
 		C.r_Sampler_clf("s_autoexposure", r_RT_autoexposure_cur);
 
@@ -52,15 +52,16 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_Sampler_clf("s_autoexposure", r_RT_autoexposure_cur);
 		C.r_Sampler_clf("s_bloom", r_RT_bloom1);
 		C.r_Sampler_clf("s_bloom_blades", r_RT_bloom_blades1);
-		C.r_Sampler_clf("s_light_accumulator", r_RT_Light_Accumulator);
+		C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
 		jitter(C);
 		C.r_End();
 		break;
 	case SE_COMBINE_VOLUMETRIC:
 		C.r_Pass("screen_quad", "scene_combine_stage_apply_volumetric", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r_RT_generic1);
-		C.r_Sampler_clf("s_light_accumulator", r_RT_Light_Accumulator);
+		C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
 		jitter(C);
+		gbuffer(C);
 		C.r_End();
 		break;
 	}

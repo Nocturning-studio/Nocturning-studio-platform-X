@@ -595,7 +595,7 @@ void CRender::init_cacades()
 	m_sun_cascades.resize(cascade_count);
 
 	m_sun_cascades[0].reset_chain = true;
-	m_sun_cascades[0].size = 15;
+	m_sun_cascades[0].size = ps_r_sun_near;
 	m_sun_cascades[0].bias = m_sun_cascades[0].size * fBias;
 
 	m_sun_cascades[1].size = 60;
