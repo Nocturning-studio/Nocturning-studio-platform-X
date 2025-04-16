@@ -254,6 +254,7 @@ float ps_r_ls_depth_scale = 1.00001f;
 float ps_r_ls_depth_bias = -0.0001f;
 float ps_r_ls_squality = 1.0f;
 float ps_r_tsm_bias = -0.05f;
+float ps_r_ls_far = 200.0f;
 
 float ps_r_sun_tsm_bias = -0.05f;
 float ps_r_sun_near = 12.f;
@@ -791,6 +792,7 @@ void xrRender_initconsole()
 	CMD4(CCC_Float, "r_ls_depth_bias", &ps_r_ls_depth_bias, -0.5, +0.5);
 	CMD4(CCC_Float, "r_ls_squality", &ps_r_ls_squality, .5f, 1.f);
 	CMD4(CCC_Float, "r_tsm_bias", &ps_r_sun_tsm_bias, -0.5, +0.5);
+	CMD4(CCC_Float, "r_ls_far", &ps_r_ls_far, 50.0f, 300.f);
 
 	CMD3(CCC_Mask, "r_disable_postprocess", &ps_render_flags, RFLAG_DISABLE_POSTPROCESS);
 

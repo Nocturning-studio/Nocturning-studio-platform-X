@@ -121,6 +121,7 @@ extern ECORE_API float ps_r_ls_depth_scale; // 1.0f
 extern ECORE_API float ps_r_ls_depth_bias;	 // -0.0001f
 extern ECORE_API float ps_r_ls_squality;	 // 1.0f
 extern ECORE_API float ps_r_tsm_bias;
+extern ECORE_API float ps_r_ls_far;
 
 extern ECORE_API float ps_r_sun_near; // 10.0f
 extern ECORE_API float ps_r_sun_far;
