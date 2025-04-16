@@ -105,6 +105,8 @@ void CLight_DB::add_light(light* L)
 		L->flags.bShadow = FALSE;
 	if (L->flags.bStatic && !ps_r_lighting_flags.test(RFLAG_R1LIGHTS))
 		return;
+	if (Device.vCameraPosition.distance_to_sqr(L->spatial.sphere.P) > ps_r_sun_far)
+		return;
 	L->_export(package);
 }
 

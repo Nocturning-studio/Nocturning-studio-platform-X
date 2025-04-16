@@ -25,6 +25,7 @@ light::light(void) : ISpatial(g_SpatialSpace)
 	vis.query_order = 0;
 	vis.visible = true;
 	vis.pending = false;
+	m_sectors = {};
 }
 
 void light::TryToDeactivateLight()
@@ -50,6 +51,8 @@ light::~light()
 	for (u32 it = 0; it < RenderImplementation.Lights_LastFrame.size(); it++)
 		if (this == RenderImplementation.Lights_LastFrame[it])
 			RenderImplementation.Lights_LastFrame[it] = 0;
+
+	m_sectors.clear();
 }
 
 void light::set_texture(LPCSTR name)
@@ -66,6 +69,55 @@ void light::set_texture(LPCSTR name)
 	string256 temp;
 	s_spot.create(RenderImplementation.RenderTarget->b_accum_spot, strconcat(sizeof(temp), temp, "r\\accum_spot_", name), name);
 	s_spot.create(RenderImplementation.RenderTarget->b_accum_spot, strconcat(sizeof(temp), temp, "r\\accum_spot_", name), name);
+}
+
+void light::set_shadow(bool b)
+{
+	flags.bShadow = b;
+
+	if (flags.type == IRender_Light::POINT)
+	{
+		if (flags.bShadow)
+		{
+			// tough: create 6 shadowed lights
+			if (0 == omnipart[0])
+			{
+				for (int f = 0; f < 6; f++)
+					omnipart[f] = xr_new<light>();
+			}
+		}
+		else
+		{
+			// tough: delete 6 shadowed lights
+			if (0 != omnipart[0])
+			{
+				for (int f = 0; f < 6; f++)
+					xr_delete(omnipart[f]);
+			}
+		}
+	}
+}
+
+void light::get_sectors()
+{
+	if (0 == spatial.sector)
+		spatial_updatesector();
+
+	CSector* sector = (CSector*)spatial.sector;
+	if (0 == sector)
+		return;
+
+	if (flags.type == IRender_Light::SPOT || flags.type == IRender_Light::OMNIPART)
+	{
+		CFrustum temp = CFrustum();
+		temp.CreateFromMatrix(X.S.combine, FRUSTUM_P_ALL);
+
+		//m_sectors = RenderImplementation.detectSectors_frustum(sector, &temp);
+	}
+	if (flags.type == IRender_Light::POINT)
+	{
+		//m_sectors = RenderImplementation.detectSectors_sphere(sector, position, Fvector().set(range, range, range));
+	}
 }
 
 void light::set_active(bool a)
@@ -135,6 +187,9 @@ void light::set_rotation(const Fvector& D, const Fvector& R)
 
 void light::spatial_move()
 {
+	if (RenderImplementation.Sectors.size() > 1)
+		get_sectors();
+
 	switch (flags.type)
 	{
 	case IRender_Light::REFLECTED:

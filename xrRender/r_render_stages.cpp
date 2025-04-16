@@ -330,7 +330,7 @@ void CRender::render_stage_forward()
 
 	//******* Main render - second order geometry (the one, that doesn't support deffering)
 	{
-		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Generic_1, RenderTarget->rt_GBuffer_4);
+		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Generic_1);
 		RenderBackend.set_Depth_Buffer(HW.pBaseZB);
 
 		RenderBackend.set_CullMode(CULL_CCW);

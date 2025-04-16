@@ -75,6 +75,16 @@ xr_token vignette_mode_token[] =
 	{0, 0}
 };
 
+u32 ps_geometry_opt_mode = 2;
+xr_token geometry_opt_mode_token[] = 
+{
+	{"st_opt_disabled", 0}, 
+	{"st_opt_weak", 1}, 
+	{"st_opt_medium", 2}, 
+	{"st_opt_agressive", 3}, 
+	{0, 0}
+};
+
 Flags32 ps_r_ls_flags = { NULL };
 
 /*-------------------------------------------------------------------------------*/
@@ -788,6 +798,8 @@ void xrRender_initconsole()
 	CMD4(CCC_Float, "r_debug_reserved_1", &ps_r_debug_reserved_1, -1000, 1000);
 	CMD4(CCC_Float, "r_debug_reserved_2", &ps_r_debug_reserved_2, -1000, 1000);
 	CMD4(CCC_Float, "r_debug_reserved_3", &ps_r_debug_reserved_3, -1000, 1000);
+
+	CMD3(CCC_Token, "r_geometry_opt_mode", &ps_geometry_opt_mode, geometry_opt_mode_token);
 
 	// !!! ярпнцн бмхгс оняке бяеу ножхи !!!
 //#pragma todo("аПСУ")

@@ -16,7 +16,7 @@
 #include "render.h"
 #include <ppl.h>
 #include "resourcemanager.h"
-#include <optick/optick.h>
+#include "optick_include.h"
 #include "IGame_Persistent.h"
 
 #include "debug_ui.h"

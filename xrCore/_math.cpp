@@ -11,7 +11,7 @@
 #define MMNOJOY
 #include <mmsystem.h>
 #include <thread>
-#include <optick/optick.h>
+#include "../xrEngine/optick_include.h"
 
 // Initialized on startup
 XRCORE_API Fmatrix Fidentity;

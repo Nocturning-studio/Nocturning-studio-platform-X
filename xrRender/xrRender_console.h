@@ -60,6 +60,8 @@ extern ECORE_API float ps_r_debug_reserved_3;
 // Postprocess effects
 extern ECORE_API u32 ps_vignette_mode;
 
+extern ECORE_API u32 ps_geometry_opt_mode;
+
 extern ECORE_API float ps_pps_u;
 extern ECORE_API float ps_pps_v;
 

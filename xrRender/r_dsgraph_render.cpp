@@ -5,6 +5,7 @@
 #include "..\xrEngine\igame_persistent.h"
 #include "..\xrEngine\environment.h"
 #include "..\xrEngine\customhud.h"
+#include "..\xrEngine\SkeletonCustom.h"
 
 using namespace R_dsgraph;
 
@@ -15,22 +16,19 @@ extern float r_ssaGLOD_start, r_ssaGLOD_end;
 
 ICF float calcLOD(float ssa /*fDistSq*/, float R)
 {
-	OPTICK_EVENT("calcLOD");
 	return _sqrt(clampr((ssa - r_ssaGLOD_end) / (r_ssaGLOD_start - r_ssaGLOD_end), 0.f, 1.f));
 }
 
 // NORMAL
 IC bool cmp_normal_items(const _NormalItem& N1, const _NormalItem& N2)
 {
-	OPTICK_EVENT("cmp_normal_items");
 	return (N1.ssa > N2.ssa);
 }
 
 void __fastcall mapNormal_Render(mapNormalItems& N)
 {
-	OPTICK_EVENT("mapNormal_Render");
 	// *** DIRECT ***
-	concurrency::parallel_sort(N.begin(), N.end(), cmp_normal_items);
+	std::sort(N.begin(), N.end(), cmp_normal_items);
 	_NormalItem *I = &*N.begin(), *E = &*N.end();
 	for (; I != E; I++)
 	{
@@ -42,17 +40,13 @@ void __fastcall mapNormal_Render(mapNormalItems& N)
 // Matrix
 IC bool cmp_matrix_items(const _MatrixItem& N1, const _MatrixItem& N2)
 {
-	OPTICK_EVENT("cmp_matrix_items");
-
 	return (N1.ssa > N2.ssa);
 }
 
 void __fastcall mapMatrix_Render(mapMatrixItems& N)
 {
-	OPTICK_EVENT("mapMatrix_Render");
-
 	// *** DIRECT ***
-	concurrency::parallel_sort(N.begin(), N.end(), cmp_matrix_items);
+	std::sort(N.begin(), N.end(), cmp_matrix_items);
 	_MatrixItem *I = &*N.begin(), *E = &*N.end();
 	for (; I != E; I++)
 	{
@@ -68,8 +62,6 @@ void __fastcall mapMatrix_Render(mapMatrixItems& N)
 // ALPHA
 void __fastcall sorted_L1(mapSorted_Node* N)
 {
-	OPTICK_EVENT("sorted_L1");
-
 	VERIFY(N);
 	IRender_Visual* V = N->val.pVisual;
 	VERIFY(V && V->shader._get());
@@ -82,60 +74,42 @@ void __fastcall sorted_L1(mapSorted_Node* N)
 
 IC bool cmp_vs_nrm(mapNormalVS::TNode* N1, mapNormalVS::TNode* N2)
 {
-	OPTICK_EVENT("cmp_vs_nrm");
-
 	return (N1->val.ssa > N2->val.ssa);
 }
 IC bool cmp_vs_mat(mapMatrixVS::TNode* N1, mapMatrixVS::TNode* N2)
 {
-	OPTICK_EVENT("cmp_vs_mat");
-
 	return (N1->val.ssa > N2->val.ssa);
 }
 
 IC bool cmp_ps_nrm(mapNormalPS::TNode* N1, mapNormalPS::TNode* N2)
 {
-	OPTICK_EVENT("cmp_ps_nrm");
-
 	return (N1->val.ssa > N2->val.ssa);
 }
 IC bool cmp_ps_mat(mapMatrixPS::TNode* N1, mapMatrixPS::TNode* N2)
 {
-	OPTICK_EVENT("cmp_ps_mat");
-
 	return (N1->val.ssa > N2->val.ssa);
 }
 
 IC bool cmp_cs_nrm(mapNormalCS::TNode* N1, mapNormalCS::TNode* N2)
 {
-	OPTICK_EVENT("cmp_cs_nrm");
-
 	return (N1->val.ssa > N2->val.ssa);
 }
 IC bool cmp_cs_mat(mapMatrixCS::TNode* N1, mapMatrixCS::TNode* N2)
 {
-	OPTICK_EVENT("cmp_cs_mat");
-
 	return (N1->val.ssa > N2->val.ssa);
 }
 
 IC bool cmp_states_nrm(mapNormalStates::TNode* N1, mapNormalStates::TNode* N2)
 {
-	OPTICK_EVENT("cmp_states_nrm");
-
 	return (N1->val.ssa > N2->val.ssa);
 }
 IC bool cmp_states_mat(mapMatrixStates::TNode* N1, mapMatrixStates::TNode* N2)
 {
-	OPTICK_EVENT("cmp_states_mat");
-
 	return (N1->val.ssa > N2->val.ssa);
 }
 
 IC bool cmp_textures_lex2_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::TNode* N2)
 {
-	OPTICK_EVENT("cmp_textures_lex2_nrm");
-
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	if ((*t1)[0] < (*t2)[0])
@@ -149,8 +123,6 @@ IC bool cmp_textures_lex2_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::T
 }
 IC bool cmp_textures_lex2_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::TNode* N2)
 {
-	OPTICK_EVENT("cmp_textures_lex2_mat");
-
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	if ((*t1)[0] < (*t2)[0])
@@ -164,8 +136,6 @@ IC bool cmp_textures_lex2_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::T
 }
 IC bool cmp_textures_lex3_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::TNode* N2)
 {
-	OPTICK_EVENT("cmp_textures_lex3_nrm");
-
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	if ((*t1)[0] < (*t2)[0])
@@ -183,8 +153,6 @@ IC bool cmp_textures_lex3_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::T
 }
 IC bool cmp_textures_lex3_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::TNode* N2)
 {
-	OPTICK_EVENT("cmp_textures_lex3_mat");
-
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	if ((*t1)[0] < (*t2)[0])
@@ -202,30 +170,22 @@ IC bool cmp_textures_lex3_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::T
 }
 IC bool cmp_textures_lexN_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::TNode* N2)
 {
-	OPTICK_EVENT("cmp_textures_lexN_nrm");
-
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	return std::lexicographical_compare(t1->begin(), t1->end(), t2->begin(), t2->end());
 }
 IC bool cmp_textures_lexN_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::TNode* N2)
 {
-	OPTICK_EVENT("cmp_textures_lexN_mat");
-
 	STextureList* t1 = N1->key;
 	STextureList* t2 = N2->key;
 	return std::lexicographical_compare(t1->begin(), t1->end(), t2->begin(), t2->end());
 }
 IC bool cmp_textures_ssa_nrm(mapNormalTextures::TNode* N1, mapNormalTextures::TNode* N2)
 {
-	OPTICK_EVENT("cmp_textures_ssa_nrm");
-
 	return (N1->val.ssa > N2->val.ssa);
 }
 IC bool cmp_textures_ssa_mat(mapMatrixTextures::TNode* N1, mapMatrixTextures::TNode* N2)
 {
-	OPTICK_EVENT("cmp_textures_ssa_mat");
-
 	return (N1->val.ssa > N2->val.ssa);
 }
 
@@ -233,8 +193,6 @@ void sort_tlist_nrm(xr_vector<mapNormalTextures::TNode*, render_alloc<mapNormalT
 					xr_vector<mapNormalTextures::TNode*, render_alloc<mapNormalTextures::TNode*>>& temp,
 					mapNormalTextures& textures, BOOL bSSA)
 {
-	OPTICK_EVENT("sort_tlist_nrm");
-
 	int amount = textures.begin()->key->size();
 	if (bSSA)
 	{
@@ -242,7 +200,7 @@ void sort_tlist_nrm(xr_vector<mapNormalTextures::TNode*, render_alloc<mapNormalT
 		{
 			// Just sort by SSA
 			textures.getANY_P(lst);
-			concurrency::parallel_sort(lst.begin(), lst.end(), cmp_textures_ssa_nrm);
+			std::sort(lst.begin(), lst.end(), cmp_textures_ssa_nrm);
 		}
 		else
 		{
@@ -258,13 +216,13 @@ void sort_tlist_nrm(xr_vector<mapNormalTextures::TNode*, render_alloc<mapNormalT
 			}
 
 			// 1st - part - SSA, 2nd - lexicographically
-			concurrency::parallel_sort(lst.begin(), lst.end(), cmp_textures_ssa_nrm);
+			std::sort(lst.begin(), lst.end(), cmp_textures_ssa_nrm);
 			if (2 == amount)
-				concurrency::parallel_sort(temp.begin(), temp.end(), cmp_textures_lex2_nrm);
+				std::sort(temp.begin(), temp.end(), cmp_textures_lex2_nrm);
 			else if (3 == amount)
-				concurrency::parallel_sort(temp.begin(), temp.end(), cmp_textures_lex3_nrm);
+				std::sort(temp.begin(), temp.end(), cmp_textures_lex3_nrm);
 			else
-				concurrency::parallel_sort(temp.begin(), temp.end(), cmp_textures_lexN_nrm);
+				std::sort(temp.begin(), temp.end(), cmp_textures_lexN_nrm);
 
 			// merge lists
 			lst.insert(lst.end(), temp.begin(), temp.end());
@@ -274,11 +232,11 @@ void sort_tlist_nrm(xr_vector<mapNormalTextures::TNode*, render_alloc<mapNormalT
 	{
 		textures.getANY_P(lst);
 		if (2 == amount)
-			concurrency::parallel_sort(lst.begin(), lst.end(), cmp_textures_lex2_nrm);
+			std::sort(lst.begin(), lst.end(), cmp_textures_lex2_nrm);
 		else if (3 == amount)
-			concurrency::parallel_sort(lst.begin(), lst.end(), cmp_textures_lex3_nrm);
+			std::sort(lst.begin(), lst.end(), cmp_textures_lex3_nrm);
 		else
-			concurrency::parallel_sort(lst.begin(), lst.end(), cmp_textures_lexN_nrm);
+			std::sort(lst.begin(), lst.end(), cmp_textures_lexN_nrm);
 	}
 }
 
@@ -286,8 +244,6 @@ void sort_tlist_mat(xr_vector<mapMatrixTextures::TNode*, render_alloc<mapMatrixT
 					xr_vector<mapMatrixTextures::TNode*, render_alloc<mapMatrixTextures::TNode*>>& temp,
 					mapMatrixTextures& textures, BOOL bSSA)
 {
-	OPTICK_EVENT("sort_tlist_mat");
-
 	int amount = textures.begin()->key->size();
 	if (bSSA)
 	{
@@ -295,7 +251,7 @@ void sort_tlist_mat(xr_vector<mapMatrixTextures::TNode*, render_alloc<mapMatrixT
 		{
 			// Just sort by SSA
 			textures.getANY_P(lst);
-			concurrency::parallel_sort(lst.begin(), lst.end(), cmp_textures_ssa_mat);
+			std::sort(lst.begin(), lst.end(), cmp_textures_ssa_mat);
 		}
 		else
 		{
@@ -311,13 +267,13 @@ void sort_tlist_mat(xr_vector<mapMatrixTextures::TNode*, render_alloc<mapMatrixT
 			}
 
 			// 1st - part - SSA, 2nd - lexicographically
-			concurrency::parallel_sort(lst.begin(), lst.end(), cmp_textures_ssa_mat);
+			std::sort(lst.begin(), lst.end(), cmp_textures_ssa_mat);
 			if (2 == amount)
-				concurrency::parallel_sort(temp.begin(), temp.end(), cmp_textures_lex2_mat);
+				std::sort(temp.begin(), temp.end(), cmp_textures_lex2_mat);
 			else if (3 == amount)
-				concurrency::parallel_sort(temp.begin(), temp.end(), cmp_textures_lex3_mat);
+				std::sort(temp.begin(), temp.end(), cmp_textures_lex3_mat);
 			else
-				concurrency::parallel_sort(temp.begin(), temp.end(), cmp_textures_lexN_mat);
+				std::sort(temp.begin(), temp.end(), cmp_textures_lexN_mat);
 
 			// merge lists
 			lst.insert(lst.end(), temp.begin(), temp.end());
@@ -327,29 +283,26 @@ void sort_tlist_mat(xr_vector<mapMatrixTextures::TNode*, render_alloc<mapMatrixT
 	{
 		textures.getANY_P(lst);
 		if (2 == amount)
-			concurrency::parallel_sort(lst.begin(), lst.end(), cmp_textures_lex2_mat);
+			std::sort(lst.begin(), lst.end(), cmp_textures_lex2_mat);
 		else if (3 == amount)
-			concurrency::parallel_sort(lst.begin(), lst.end(), cmp_textures_lex3_mat);
+			std::sort(lst.begin(), lst.end(), cmp_textures_lex3_mat);
 		else
-			concurrency::parallel_sort(lst.begin(), lst.end(), cmp_textures_lexN_mat);
+			std::sort(lst.begin(), lst.end(), cmp_textures_lexN_mat);
 	}
 }
 
 void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 {
-	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_graph");
-
 	Device.Statistic->RenderDUMP.Begin();
 
 	// **************************************************** NORMAL
 	// Perform sorting based on ScreenSpaceArea
 	// Sorting by SSA and changes minimizations
-	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_graph - Normal");
 	{
 		RenderBackend.set_xform_world(Fidentity);
 		mapNormalVS& vs = mapNormal[_priority];
 		vs.getANY_P(nrmVS);
-		//concurrency::parallel_sort(nrmVS.begin(), nrmVS.end(), cmp_vs_nrm);
+		//std::sort(nrmVS.begin(), nrmVS.end(), cmp_vs_nrm);
 		for (u32 vs_id = 0; vs_id < nrmVS.size(); vs_id++)
 		{
 			mapNormalVS::TNode* Nvs = nrmVS[vs_id];
@@ -358,7 +311,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 			mapNormalPS& ps = Nvs->val;
 			ps.ssa = 0;
 			ps.getANY_P(nrmPS);
-			//concurrency::parallel_sort(nrmPS.begin(), nrmPS.end(), cmp_ps_nrm);
+			//std::sort(nrmPS.begin(), nrmPS.end(), cmp_ps_nrm);
 			for (u32 ps_id = 0; ps_id < nrmPS.size(); ps_id++)
 			{
 				mapNormalPS::TNode* Nps = nrmPS[ps_id];
@@ -367,7 +320,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 				mapNormalCS& cs = Nps->val;
 				cs.ssa = 0;
 				cs.getANY_P(nrmCS);
-				//concurrency::parallel_sort(nrmCS.begin(), nrmCS.end(), cmp_cs_nrm);
+				//std::sort(nrmCS.begin(), nrmCS.end(), cmp_cs_nrm);
 				for (u32 cs_id = 0; cs_id < nrmCS.size(); cs_id++)
 				{
 					mapNormalCS::TNode* Ncs = nrmCS[cs_id];
@@ -376,7 +329,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 					mapNormalStates& states = Ncs->val;
 					states.ssa = 0;
 					states.getANY_P(nrmStates);
-					//concurrency::parallel_sort(nrmStates.begin(), nrmStates.end(), cmp_states_nrm);
+					//std::sort(nrmStates.begin(), nrmStates.end(), cmp_states_nrm);
 					for (u32 state_id = 0; state_id < nrmStates.size(); state_id++)
 					{
 						mapNormalStates::TNode* Nstate = nrmStates[state_id];
@@ -422,11 +375,10 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 	// **************************************************** MATRIX
 	// Perform sorting based on ScreenSpaceArea
 	// Sorting by SSA and changes minimizations
-	OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_graph - Matrix");
 	{
 		mapMatrixVS& vs = mapMatrix[_priority];
 		vs.getANY_P(matVS);
-		//concurrency::parallel_sort(matVS.begin(), matVS.end(), cmp_vs_mat);
+		//std::sort(matVS.begin(), matVS.end(), cmp_vs_mat);
 		for (u32 vs_id = 0; vs_id < matVS.size(); vs_id++)
 		{
 			mapMatrixVS::TNode* Nvs = matVS[vs_id];
@@ -435,7 +387,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 			mapMatrixPS& ps = Nvs->val;
 			ps.ssa = 0;
 			ps.getANY_P(matPS);
-			//concurrency::parallel_sort(matPS.begin(), matPS.end(), cmp_ps_mat);
+			//std::sort(matPS.begin(), matPS.end(), cmp_ps_mat);
 			for (u32 ps_id = 0; ps_id < matPS.size(); ps_id++)
 			{
 				mapMatrixPS::TNode* Nps = matPS[ps_id];
@@ -444,7 +396,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 				mapMatrixCS& cs = Nps->val;
 				cs.ssa = 0;
 				cs.getANY_P(matCS);
-				//concurrency::parallel_sort(matCS.begin(), matCS.end(), cmp_cs_mat);
+				//std::sort(matCS.begin(), matCS.end(), cmp_cs_mat);
 				for (u32 cs_id = 0; cs_id < matCS.size(); cs_id++)
 				{
 					mapMatrixCS::TNode* Ncs = matCS[cs_id];
@@ -453,7 +405,7 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 					mapMatrixStates& states = Ncs->val;
 					states.ssa = 0;
 					states.getANY_P(matStates);
-					//concurrency::parallel_sort(matStates.begin(), matStates.end(), cmp_states_mat);
+					//std::sort(matStates.begin(), matStates.end(), cmp_states_mat);
 					for (u32 state_id = 0; state_id < matStates.size(); state_id++)
 					{
 						mapMatrixStates::TNode* Nstate = matStates[state_id];
@@ -496,7 +448,6 @@ void R_dsgraph_structure::r_dsgraph_render_graph(u32 _priority, bool _clear)
 
 	Device.Statistic->RenderDUMP.End();
 }
-
 //////////////////////////////////////////////////////////////////////////
 // HUD render
 void R_dsgraph_structure::r_dsgraph_render_hud()
@@ -524,7 +475,6 @@ void R_dsgraph_structure::r_dsgraph_render_hud()
 	Device.mFullTransform = FTold;
 	RenderBackend.set_xform_project(Device.mProject);
 }
-
 //////////////////////////////////////////////////////////////////////////
 // strict-sorted render
 void R_dsgraph_structure::r_dsgraph_render_sorted()
@@ -597,8 +547,6 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 
 	if (_precise_portals && RenderImplementation.rmPortals)
 	{
-		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_subspace - portals");
-
 		// Check if camera is too near to some portal - if so force DualRender
 		Fvector box_radius;
 		box_radius.set(EPS_L * 20, EPS_L * 20, EPS_L * 20);
@@ -606,9 +554,7 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 		RenderImplementation.Sectors_xrc.box_query(RenderImplementation.rmPortals, _cop, box_radius);
 		for (int K = 0; K < RenderImplementation.Sectors_xrc.r_count(); K++)
 		{
-			CPortal* pPortal =
-				(CPortal*)RenderImplementation
-					.Portals[RenderImplementation.rmPortals->get_tris()[RenderImplementation.Sectors_xrc.r_begin()[K].id].dummy];
+			CPortal* pPortal = (CPortal*)RenderImplementation.Portals[RenderImplementation.rmPortals->get_tris()[RenderImplementation.Sectors_xrc.r_begin()[K].id].dummy];
 			pPortal->bDualRender = TRUE;
 		}
 	}
@@ -619,8 +565,6 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 	// Determine visibility for static geometry hierrarhy
 	for (u32 s_it = 0; s_it < PortalTraverser.r_sectors.size(); s_it++)
 	{
-		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_subspace - sectors");
-
 		CSector* sector = (CSector*)PortalTraverser.r_sectors[s_it];
 		IRender_Visual* root = sector->root();
 		for (u32 v_it = 0; v_it < sector->r_frustums.size(); v_it++)
@@ -632,8 +576,6 @@ void R_dsgraph_structure::r_dsgraph_render_subspace(IRender_Sector* _sector, CFr
 
 	if (_dynamic)
 	{
-		OPTICK_EVENT("R_dsgraph_structure::r_dsgraph_render_subspace - dynamic");
-
 		set_Object(0);
 
 		// Traverse object database

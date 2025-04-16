@@ -10,7 +10,7 @@
 #pragma warning(disable : 4995)
 #include <malloc.h>
 #include "dxerr.h"
-#include <optick/optick.h>
+#include "../xrEngine/optick_include.h"
 #include <ThreadUtil.h>
 // #pragma warning(pop)
 

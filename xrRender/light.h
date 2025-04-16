@@ -24,6 +24,8 @@ class light : public IRender_Light, public ISpatial
 	vis_data hom;
 	u32 frame_render;
 
+	xr_vector<IRender_Sector*> m_sectors;
+
 	light* omnipart[6];
 
 	smapvis svis; // used for 6-cubemap faces
@@ -76,15 +78,14 @@ class light : public IRender_Light, public ISpatial
 	{
 		flags.type = type;
 	}
+	virtual void get_sectors();
 	virtual void set_active(bool b);
 	virtual bool get_active()
 	{
 		return flags.bActive;
 	}
-	virtual void set_shadow(bool b)
-	{
-		flags.bShadow = b;
-	}
+	virtual vis_data& get_homdata();
+	virtual void set_shadow(bool b);
 	virtual void set_position(const Fvector& P);
 	virtual void set_rotation(const Fvector& D, const Fvector& R);
 	virtual void set_cone(float angle);
@@ -107,8 +108,6 @@ class light : public IRender_Light, public ISpatial
 	{
 		return this;
 	}
-
-	vis_data& get_homdata();
 
 	void xform_calc();
 	void vis_prepare();
