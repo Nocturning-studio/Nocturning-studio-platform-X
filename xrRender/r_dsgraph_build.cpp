@@ -52,7 +52,7 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic(IRender_Visual* pVisual, Fvec
 	// b) Should be rendered to special distort buffer in another pass
 	VERIFY(pVisual->shader._get());
 	ShaderElement* sh_d = &*pVisual->shader->E[4];
-	if (RenderImplementation.o.distortion && sh_d && sh_d->flags.bDistort && pmask[sh_d->flags.iPriority / 2])
+	if (sh_d && sh_d && sh_d->flags.bDistort && pmask[sh_d->flags.iPriority / 2])
 	{
 		mapSorted_Node* N = mapDistort.insertInAnyWay(distSQ);
 		N->val.ssa = SSA;
