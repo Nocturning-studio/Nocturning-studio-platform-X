@@ -523,7 +523,7 @@ IC const float& CRenderDevice::time_factor() const
 
 void CRenderDevice::stop_time()
 {
-	Timer.time_factor(0.00001f);
-	TimerGlobal.time_factor(0.00001f);
-	psTimeFactor = 0.00001f;
+	Timer.time_factor(0.0001f);
+	TimerGlobal.time_factor(0.0001f);
+	psTimeFactor = 0.0001f;
 }
