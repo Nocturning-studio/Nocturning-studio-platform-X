@@ -381,6 +381,28 @@ class CCC_DemoRecord : public IConsole_Command
 		g_pGameLevel->Cameras().AddCamEffector(xr_new<CDemoRecord>(fn));
 	}
 };
+
+class CCC_Photo_Mode : public IConsole_Command
+{
+  public:
+	CCC_Photo_Mode(LPCSTR N) : IConsole_Command(N)
+	{
+		bEmptyArgsHandled = TRUE;
+	};
+	virtual void Execute(LPCSTR args)
+	{
+#ifdef MASTER_GOLD
+		if (GameID() != GAME_SINGLE)
+		{
+			Msg("For this game type photo mode is disabled.");
+			return;
+		};
+#endif
+		Console->Hide();
+		g_pGameLevel->Cameras().AddCamEffector(xr_new<CPhotoMode>());
+	}
+};
+
 class CCC_DemoPlay : public IConsole_Command
 {
   public:
@@ -416,27 +438,6 @@ class CCC_DemoPlay : public IConsole_Command
 			FS.update_path(fn, "$demos$", fn);
 			g_pGameLevel->Cameras().AddCamEffector(xr_new<CDemoPlay>(fn, 1.0f, loops));
 		}
-	}
-};
-
-class CCC_Photo_Mode : public IConsole_Command
-{
-  public:
-	CCC_Photo_Mode(LPCSTR N) : IConsole_Command(N)
-	{
-		bEmptyArgsHandled = TRUE;
-	};
-	virtual void Execute(LPCSTR args)
-	{
-#ifdef MASTER_GOLD
-		if (GameID() != GAME_SINGLE)
-		{
-			Msg("For this game type photo mode is disabled.");
-			return;
-		};
-#endif
-		Console->Hide();
-		g_pGameLevel->Cameras().AddCamEffector(xr_new<CPhotoMode>());
 	}
 };
 

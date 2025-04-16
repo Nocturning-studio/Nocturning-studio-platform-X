@@ -15,7 +15,7 @@
 #include "CustomHUD.h"
 #include "IGame_Persistent.h"
 //////////////////////////////////////////////////////////////////////
-CPhotoMode* xrPhotoMode = NULL;
+CPhotoMode* xrPhotoMode = 0;
 
 CPhotoMode::force_position 
 CPhotoMode::g_position = 
@@ -57,7 +57,7 @@ void CPhotoMode::update_whith_timescale(Fvector& v, const Fvector& v_delta)
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////s
-CPhotoMode::CPhotoMode(float life_time)// : CEffectorCam(cefDemo, life_time)
+CPhotoMode::CPhotoMode(float life_time) : CEffectorCam(cefDemo, life_time)
 {
 	g_position.set_position = false;
 	IR_Capture(); // capture input
@@ -287,14 +287,8 @@ BOOL CPhotoMode::ProcessCam(SCamEffectorInfo& info)
 		info.n.set(m_Camera.j);
 		info.d.set(m_Camera.k);
 		info.p.set(m_Camera.c);
+
 		info.fFov = m_fFov;
-	}
-	else if (m_bMakeCubeMap)
-	{
-		info.fFov = 90.0f;
-		info.p.set(m_Camera.c);
-		info.fAspect = 1.f;
-		MakeCubeMapFace(info.d, info.n);
 	}
 	else
 	{
@@ -329,8 +323,6 @@ BOOL CPhotoMode::ProcessCam(SCamEffectorInfo& info)
 		m_HPB.y -= m_vR.x;
 		m_HPB.z += m_vR.z;
 
-		m_Camera.setHPB(m_HPB.x, m_HPB.y, m_HPB.z);
-
 		if (g_position.set_position)
 		{
 			m_Position.set(g_position.p);
@@ -341,9 +333,7 @@ BOOL CPhotoMode::ProcessCam(SCamEffectorInfo& info)
 			g_position.p.set(m_Position);
 		}
 
-		// move
 		Fvector vmove;
-
 		vmove.set(m_Camera.k);
 		vmove.normalize_safe();
 		vmove.mul(m_vT.z);
@@ -360,21 +350,15 @@ BOOL CPhotoMode::ProcessCam(SCamEffectorInfo& info)
 		m_Position.add(vmove);
 
 		#pragma todo(NSDeathman to NSDeathman: Добавить ограничение дальности полета для избегания читинга)
-		//Fvector CameraToActorDistance;
-		//CameraToActorDistance.set(m_Position).sub(m_ActorPosition);
-
-		//Fvector AllowFlyDistance = {20.0f, 20.0f, 20.0f};
-		//if (CameraToActorDistance.max(AllowFlyDistance).similar(AllowFlyDistance))
-		//{
-		//	m_Camera.translate_over(m_Position);
-		//}
-
+		m_Camera.setHPB(m_HPB.x, m_HPB.y, m_HPB.z);
 		m_Camera.translate_over(m_Position);
 
 		// update camera
 		info.n.set(m_Camera.j);
 		info.d.set(m_Camera.k);
 		info.p.set(m_Camera.c);
+
+		fLifeTime -= Device.fTimeDelta;
 
 		m_vT.set(0, 0, 0);
 		m_vR.set(0, 0, 0);
