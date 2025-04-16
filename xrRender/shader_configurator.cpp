@@ -101,6 +101,8 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	// Add extension to texture  and chek for null
 	Device.Resources->fix_texture_name(AlbedoTexture);
 
+	bool AlbedoOnlyMode = ps_r_shading_flags.test(RFLAG_FLAT_SHADING);
+
 	// Check bump existing
 	ref_texture refAlbedoTexture;
 	refAlbedoTexture.create(AlbedoTexture);
@@ -215,24 +217,26 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	C.sh_macro(bUseBothAxisAsWeight, "USE_BOTH_AXIS_AS_WEIGHT", "1");
 	C.sh_macro(bInvertWeightAxis, "INVERT_WEIGHT_AXIS", "1");
 
+	if (!AlbedoOnlyMode)
+	{
+		// Get bump map texture
+		if (bUseBump)
+		{
+			strcpy_s(BumpTexture, sizeof(BumpTexture), refAlbedoTexture.bump_get().c_str());
+		}
+		else
+		{
+			// If bump not connected - try find unconnected texture with similar name
+			if (FS.exist(Dummy, "$game_textures$", BumpTexture, ".dds"))
+				bUseBump = ConcatAndFindTexture(BumpTexture, AlbedoTexture, "_bump");
+		}
 
-	// Get bump map texture
-	if (bUseBump)
-	{
-		strcpy_s(BumpTexture, sizeof(BumpTexture), refAlbedoTexture.bump_get().c_str());
-	}
-	else
-	{
-		// If bump not connected - try find unconnected texture with similar name
-		if (FS.exist(Dummy, "$game_textures$", BumpTexture, ".dds"))
-			bUseBump = ConcatAndFindTexture(BumpTexture, AlbedoTexture, "_bump");
-	}
-
-	// Get bump decompression map
-	if (bUseBump)
-	{
-		strcpy_s(BumpCorrectionTexture, sizeof(BumpCorrectionTexture), BumpTexture);
-		strconcat(sizeof(BumpCorrectionTexture), BumpCorrectionTexture, BumpCorrectionTexture, "#");
+		// Get bump decompression map
+		if (bUseBump)
+		{
+			strcpy_s(BumpCorrectionTexture, sizeof(BumpCorrectionTexture), BumpTexture);
+			strconcat(sizeof(BumpCorrectionTexture), BumpCorrectionTexture, BumpCorrectionTexture, "#");
+		}
 	}
 
 	// Get  for base texture for material
@@ -258,14 +262,17 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 		strcpy_s(DetailAlbedoTexture, sizeof(DetailAlbedoTexture), C.detail_texture);
 
-		// Get bump for detail texture
-		bUseDetailBump = ConcatAndFindTexture(DetailBumpTexture, DetailAlbedoTexture, "_bump");
-
-		if (bUseDetailBump)
+		if (!AlbedoOnlyMode)
 		{
-			// Get bump decompression map for detail texture
-			strcpy_s(DetailBumpCorrectionTexture, sizeof(DetailBumpCorrectionTexture), DetailBumpTexture);
-			strconcat(sizeof(DetailBumpCorrectionTexture), DetailBumpCorrectionTexture, DetailBumpCorrectionTexture, "#");
+			// Get bump for detail texture
+			bUseDetailBump = ConcatAndFindTexture(DetailBumpTexture, DetailAlbedoTexture, "_bump");
+
+			if (bUseDetailBump)
+			{
+				// Get bump decompression map for detail texture
+				strcpy_s(DetailBumpCorrectionTexture, sizeof(DetailBumpCorrectionTexture), DetailBumpTexture);
+				strconcat(sizeof(DetailBumpCorrectionTexture), DetailBumpCorrectionTexture, DetailBumpCorrectionTexture, "#");
+			}
 		}
 	}
 
@@ -308,31 +315,31 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	// Get BakedAO texture
 	bool bUseBakedAO = false;
 	string_path BakedAOTexture;
-	bUseBakedAO = ConcatAndFindTexture(BakedAOTexture, AlbedoTexture, "_ao");
+	bUseBakedAO = ConcatAndFindTexture(BakedAOTexture, AlbedoTexture, "_ao") && !AlbedoOnlyMode;
 	C.sh_macro(bUseBakedAO, "USE_BAKED_AO", "1");
 
 	// Get normal texture
 	bool bUseCustomNormal = false;
 	string_path CustomNormalTexture;
-	bUseCustomNormal = ConcatAndFindTexture(CustomNormalTexture, AlbedoTexture, "_normal");
+	bUseCustomNormal = ConcatAndFindTexture(CustomNormalTexture, AlbedoTexture, "_normal") && !AlbedoOnlyMode;
 	C.sh_macro(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
 
 	// Get roughness texture
 	bool bUseCustomRoughness = false;
 	string_path CustomRoughnessTexture;
-	bUseCustomRoughness = ConcatAndFindTexture(CustomRoughnessTexture, AlbedoTexture, "_roughness");
+	bUseCustomRoughness = ConcatAndFindTexture(CustomRoughnessTexture, AlbedoTexture, "_roughness") && !AlbedoOnlyMode;
 	C.sh_macro(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
 
 	// Get metallness texture
 	bool bUseCustomMetallness = false;
 	string_path CustomMetallnessTexture;
-	bUseCustomMetallness = ConcatAndFindTexture(CustomMetallnessTexture, AlbedoTexture, "_metallness");
+	bUseCustomMetallness = ConcatAndFindTexture(CustomMetallnessTexture, AlbedoTexture, "_metallness") && !AlbedoOnlyMode;
 	C.sh_macro(bUseCustomMetallness, "USE_CUSTOM_METALLNESS", "1");
 
 	// Get subsurface power texture
 	bool bUseCustomSubsurface = false;
 	string_path CustomSubsurfaceTexture;
-	bUseCustomSubsurface = ConcatAndFindTexture(CustomSubsurfaceTexture, AlbedoTexture, "_subsurface");
+	bUseCustomSubsurface = ConcatAndFindTexture(CustomSubsurfaceTexture, AlbedoTexture, "_subsurface") && !AlbedoOnlyMode;
 	C.sh_macro(bUseCustomSubsurface, "USE_CUSTOM_SUBSURFACE", "1");
 
 	// Get emissive power texture
@@ -344,13 +351,13 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	// Get displacement texture
 	bool bUseCustomDisplacement = false;
 	string_path CustomDisplacementTexture;
-	bUseCustomDisplacement = ConcatAndFindTexture(CustomDisplacementTexture, AlbedoTexture, "_displacement");
+	bUseCustomDisplacement = ConcatAndFindTexture(CustomDisplacementTexture, AlbedoTexture, "_displacement") && !AlbedoOnlyMode;
 	C.sh_macro(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
 
 	// Get cavity texture
 	bool bUseCustomCavity = false;
 	string_path CustomCavityTexture;
-	bUseCustomCavity = ConcatAndFindTexture(CustomCavityTexture, AlbedoTexture, "_cavity");
+	bUseCustomCavity = ConcatAndFindTexture(CustomCavityTexture, AlbedoTexture, "_cavity") && !AlbedoOnlyMode;
 	C.sh_macro(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
 
 	// Get weight texture
@@ -362,47 +369,50 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	C.sh_macro(bUseBump, "USE_BUMP", "1");
 
 	// Create shader with normal mapping or displacement if need		
-	int DisplacementType = 2;
+	int DisplacementType = 1;
 	bool bUseDisplacement = true;
-
-	// Configuration file have priority above original parameters
-	if (bUseConfigurator && bIsHightQualityGeometry)
+	if (!AlbedoOnlyMode)
 	{
-		Msg("Configurator used");
-
-		// Check do we realy need for displacement or not
-		bUseDisplacement = GetBoolValueIfExist("material_configuration", "use_displacement", false, MaterialConfiguration);
-
-		// Check what displacement type we need to set
-		if (bUseDisplacement)
+		// Configuration file have priority above original parameters
+		if (bUseConfigurator && bIsHightQualityGeometry)
 		{
-			Msg("Displacement enabled");
+			Msg("Configurator used");
 
-			LPCSTR displacement_type = GetStringValueIfExist("material_configuration", "displacement_type", "parallax_occlusion_mapping", MaterialConfiguration);
+			// Check do we realy need for displacement or not
+			bUseDisplacement =
+				GetBoolValueIfExist("material_configuration", "use_displacement", false, MaterialConfiguration);
 
-			if (StringsIsSimilar(displacement_type, "none"))
-				DisplacementType = 1;
-			else if (StringsIsSimilar(displacement_type, "parallax_mapping"))
-				DisplacementType = 2;
-			else if (StringsIsSimilar(displacement_type, "parallax_occlusion_mapping"))
-				DisplacementType = 3;
+			// Check what displacement type we need to set
+			if (bUseDisplacement)
+			{
+				Msg("Displacement enabled");
 
-			Msg("displacement type %d, %s", DisplacementType, AlbedoTexture);
+				LPCSTR displacement_type = GetStringValueIfExist("material_configuration", "displacement_type", "parallax_occlusion_mapping", MaterialConfiguration);
+
+				if (StringsIsSimilar(displacement_type, "none"))
+					DisplacementType = 1;
+				else if (StringsIsSimilar(displacement_type, "parallax_mapping"))
+					DisplacementType = 2;
+				else if (StringsIsSimilar(displacement_type, "parallax_occlusion_mapping"))
+					DisplacementType = 3;
+
+				Msg("displacement type %d, %s", DisplacementType, AlbedoTexture);
+			}
 		}
-	}
-	else
-	{
-		if (ps_r_material_quality == 1 || !bUseBump)
-			DisplacementType = 1; // normal
-		else if (ps_r_material_quality == 2 || !C.bSteepParallax)
-			DisplacementType = 2; // parallax
-		else if ((ps_r_material_quality == 3) && C.bSteepParallax)
-			DisplacementType = 3; // steep parallax
-	}
+		else
+		{
+			if (ps_r_material_quality == 1 || !bUseBump)
+				DisplacementType = 1; // normal
+			else if (ps_r_material_quality == 2 || !C.bSteepParallax)
+				DisplacementType = 2; // parallax
+			else if ((ps_r_material_quality == 3) && C.bSteepParallax)
+				DisplacementType = 3; // steep parallax
+		}
 
-	C.sh_macro(DisplacementType == 1, "USE_NORMAL_MAPPING", "1");
-	C.sh_macro(DisplacementType == 2, "USE_PARALLAX_MAPPING", "1");
-	C.sh_macro(DisplacementType == 3, "USE_PARALLAX_OCCLUSION_MAPPING", "1");
+		C.sh_macro(DisplacementType == 1, "USE_NORMAL_MAPPING", "1");
+		C.sh_macro(DisplacementType == 2, "USE_PARALLAX_MAPPING", "1");
+		C.sh_macro(DisplacementType == 3, "USE_PARALLAX_OCCLUSION_MAPPING", "1");
+	}
 
 	// Create shader with deatil texture if need
 	C.sh_macro(bUseDetail, "USE_TDETAIL", "1");
@@ -459,7 +469,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	if (bUseCustomWeight)
 		C.r_Sampler("s_custom_weight", CustomWeightTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
-	if (bUseBump)
+	if (bUseBump && !AlbedoOnlyMode)
 	{
 		C.r_Sampler("s_bumpX", BumpCorrectionTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
