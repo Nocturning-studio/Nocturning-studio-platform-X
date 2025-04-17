@@ -106,18 +106,12 @@ class ENGINE_API IGame_Persistent :
 	// Depth of field
 	virtual void GetCurrentDof(Fvector3& dof)
 	{
-		dof.set(-1.4f, 0.0f, 250.f);
+		dof.set(10.0f, 0.0f, 250.f);
 	};
 	virtual void SetBaseDof(const Fvector3& dof){};
 	virtual void SetPickableEffectorDOF(bool bSet){};
 	virtual void SetEffectorDOF(const Fvector& needed_dof){};
 	virtual void RestoreEffectorDOF(){};
-
-	virtual void SetDofDiaphragm(float value){};
-	virtual void GetDofDiaphragm(float& value)
-	{
-		value = 1.0f;
-	};
 
 	// Night vision
 	virtual bool GetNightVisionState()

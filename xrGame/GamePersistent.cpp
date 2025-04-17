@@ -116,18 +116,13 @@ CGamePersistent::CGamePersistent(void)
 
 	eQuickLoad = Engine.Event.Handler_Attach("Game:QuickLoad", this);
 
-	m_PickDofFar = READ_IF_EXISTS(pSettings, r_float, "zone_pick_dof", "far", 70);
-	m_PickDofNear = READ_IF_EXISTS(pSettings, r_float, "zone_pick_dof", "near", -70);
+	m_PickDofFstop = READ_IF_EXISTS(pSettings, r_float, "zone_pick_dof", "fstop", 4);
+	m_PickDofFocalDepth = READ_IF_EXISTS(pSettings, r_float, "zone_pick_dof", "focal_depth", 1);
 	m_DofChangeSpeed = READ_IF_EXISTS(pSettings, r_float, "dof_params", "change_speed", 0.2f);
-	m_DofUI = READ_IF_EXISTS(pSettings, r_fvector3, "ui_dof", "dof", Fvector().set(0.0f, 0.5f, 1));
-	m_DiaphragmUI = READ_IF_EXISTS(pSettings, r_float, "ui_dof", "diaphragm", 8);
+	m_DofUI = READ_IF_EXISTS(pSettings, r_fvector3, "ui_dof", "dof", Fvector().set(2.0f, 0.5f, 1));
 
 	Fvector3* DofValue = Console->GetFVectorPtr("r_dof");
 	SetBaseDof(*DofValue);
-
-	float cmd_min = 1.0f, cmd_max = 10.0f;
-	m_DiaphragmBase = Console->GetFloat("r_dof_diaphragm", cmd_min, cmd_max);
-	SetDofDiaphragm(m_DiaphragmBase);
 
 	SetNightVisionState(false);
 }
@@ -760,24 +755,19 @@ void CGamePersistent::RestoreEffectorDOF()
 	SetEffectorDOF(m_dof[3]);
 }
 #include "hudmanager.h"
-
+#pragma todo(NSDeathman to NSDeathman: Доработать)
 //	m_dof		[4];	// 0-dest 1-current 2-from 3-original
 void CGamePersistent::UpdateDof()
 {
 	if (m_bPickableDOF)
 	{
-		Fvector pick_dof;
-		pick_dof.y = HUD().GetCurrentRayQuery().range;
-		pick_dof.x = pick_dof.y + m_PickDofNear;
-		pick_dof.z = pick_dof.y + m_PickDofFar;
-		m_dof[0] = pick_dof;
+		m_dof[0].x = HUD().GetCurrentRayQuery().range;
+		m_dof[0].z = m_PickDofFstop;
 		m_dof[2] = m_dof[1]; // current
 	}
 
 	if (m_dof[1].similar(m_dof[0]))
-	{
 		return;
-	}
 
 	float TimeDelta = Device.fTimeDelta;
 	float Scale = 1.0f / Device.time_factor();
@@ -785,17 +775,13 @@ void CGamePersistent::UpdateDof()
 	diff.sub(m_dof[0], m_dof[2]);
 	diff.mul(TimeDelta / m_DofChangeSpeed);
 	m_dof[1].mad(m_dof[1], diff, Scale);
-	(m_dof[0].x < m_dof[2].x) ? clamp(m_dof[1].x, m_dof[0].x, m_dof[2].x) : clamp(m_dof[1].x, m_dof[2].x, m_dof[0].x);
-	(m_dof[0].y < m_dof[2].y) ? clamp(m_dof[1].y, m_dof[0].y, m_dof[2].y) : clamp(m_dof[1].y, m_dof[2].y, m_dof[0].y);
-	(m_dof[0].z < m_dof[2].z) ? clamp(m_dof[1].z, m_dof[0].z, m_dof[2].z) : clamp(m_dof[1].z, m_dof[2].z, m_dof[0].z);
+	clamp(m_dof[0].x, 1.0f, 1000.0f);
+	clamp(m_dof[1].x, 1.0f, 1000.0f);
+	clamp(m_dof[2].x, 1.0f, 1000.0f);
+	clamp(m_dof[3].x, 1.0f, 1000.0f);
+
+	clamp(m_dof[0].z, 2.0f, 1000.0f);
+	clamp(m_dof[1].z, 2.0f, 1000.0f);
+	clamp(m_dof[2].z, 2.0f, 1000.0f);
+	clamp(m_dof[3].z, 2.0f, 1000.0f);
 }
-
-void CGamePersistent::SetDofDiaphragm(float value)
-{
-	m_dofDiaphragm = value;
-};
-
-void CGamePersistent::GetDofDiaphragm(float& value)
-{
-	value = m_dofDiaphragm;
-};

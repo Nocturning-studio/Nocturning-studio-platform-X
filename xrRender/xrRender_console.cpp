@@ -467,10 +467,10 @@ class CCC_EffPreset : public CCC_Token
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////
-class CCC_DofFar : public CCC_Float
+class CCC_DofFStop : public CCC_Float
 {
   public:
-	CCC_DofFar(LPCSTR N, float* V, float _min = 0.0f, float _max = 10000.0f) : CCC_Float(N, V, _min, _max)
+	CCC_DofFStop(LPCSTR N, float* V, float _min = 2.0f, float _max = 100.0f) : CCC_Float(N, V, _min, _max)
 	{
 	}
 
@@ -478,20 +478,9 @@ class CCC_DofFar : public CCC_Float
 	{
 		float v = float(atof(args));
 
-		if (v < ps_r_dof.y + 0.1f)
-		{
-			char pBuf[256];
-			_snprintf(pBuf, sizeof(pBuf) / sizeof(pBuf[0]), "float value greater or equal to r_dof_focus+0.1");
-			Msg("~ Invalid syntax in call to '%s'", cName);
-			Msg("~ Valid arguments: %s", pBuf);
-			Console->Execute("r_dof_focus");
-		}
-		else
-		{
-			CCC_Float::Execute(args);
-			if (g_pGamePersistent)
-				g_pGamePersistent->SetBaseDof(ps_r_dof);
-		}
+		CCC_Float::Execute(args);
+		if (g_pGamePersistent)
+			g_pGamePersistent->SetBaseDof(ps_r_dof);
 	}
 
 	//	CCC_Dof should save all data as well as load from config
@@ -501,73 +490,18 @@ class CCC_DofFar : public CCC_Float
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////
-class CCC_DofNear : public CCC_Float
+class CCC_DofFocalDepth : public CCC_Float
 {
   public:
-	CCC_DofNear(LPCSTR N, float* V, float _min = 0.0f, float _max = 10000.0f) : CCC_Float(N, V, _min, _max)
+	CCC_DofFocalDepth(LPCSTR N, float* V, float _min = 0.5f, float _max = 100.0f) : CCC_Float(N, V, _min, _max)
 	{
 	}
 
 	virtual void Execute(LPCSTR args)
 	{
-		float v = float(atof(args));
-
-		if (v > ps_r_dof.y - 0.1f)
-		{
-			char pBuf[256];
-			_snprintf(pBuf, sizeof(pBuf) / sizeof(pBuf[0]), "float value less or equal to r_dof_focus-0.1");
-			Msg("~ Invalid syntax in call to '%s'", cName);
-			Msg("~ Valid arguments: %s", pBuf);
-			Console->Execute("r_dof_focus");
-		}
-		else
-		{
-			CCC_Float::Execute(args);
-			if (g_pGamePersistent)
-				g_pGamePersistent->SetBaseDof(ps_r_dof);
-		}
-	}
-
-	//	CCC_Dof should save all data as well as load from config
-	virtual void Save(IWriter* F)
-	{
-		;
-	}
-};
-///////////////////////////////////////////////////////////////////////////////////
-class CCC_DofFocus : public CCC_Float
-{
-  public:
-	CCC_DofFocus(LPCSTR N, float* V, float _min = 0.0f, float _max = 10000.0f) : CCC_Float(N, V, _min, _max)
-	{
-	}
-
-	virtual void Execute(LPCSTR args)
-	{
-		float v = float(atof(args));
-
-		if (v > ps_r_dof.z - 0.1f)
-		{
-			char pBuf[256];
-			_snprintf(pBuf, sizeof(pBuf) / sizeof(pBuf[0]), "float value less or equal to r_dof_far-0.1");
-			Msg("~ Invalid syntax in call to '%s'", cName);
-			Msg("~ Valid arguments: %s", pBuf);
-			Console->Execute("r_dof_far");
-		}
-		else if (v < ps_r_dof.x + 0.1f)
-		{
-			char pBuf[256];
-			_snprintf(pBuf, sizeof(pBuf) / sizeof(pBuf[0]), "float value greater or equal to r_dof_far-0.1");
-			Msg("~ Invalid syntax in call to '%s'", cName);
-			Msg("~ Valid arguments: %s", pBuf);
-			Console->Execute("r_dof_near");
-		}
-		else
-		{
-			CCC_Float::Execute(args);
-			if (g_pGamePersistent)
-				g_pGamePersistent->SetBaseDof(ps_r_dof);
-		}
+		CCC_Float::Execute(args);
+		if (g_pGamePersistent)
+			g_pGamePersistent->SetBaseDof(ps_r_dof);
 	}
 
 	//	CCC_Dof should save all data as well as load from config
@@ -587,21 +521,21 @@ class CCC_Dof : public CCC_Vector3
 
 	virtual void Execute(LPCSTR args)
 	{
-		Fvector v;
-		if (3 != sscanf(args, "%f,%f,%f", &v.x, &v.y, &v.z))
-			InvalidSyntax();
-		else if ((v.x > v.y - 0.1f) || (v.z < v.y + 0.1f))
-		{
-			InvalidSyntax();
-			Msg("x <= y - 0.1");
-			Msg("y <= z - 0.1");
-		}
-		else
-		{
+		//Fvector v;
+		//if (3 != sscanf(args, "%f,%f,%f", &v.x, &v.y, &v.z))
+		//	InvalidSyntax();
+		//else if ((v.x > v.y - 0.1f) || (v.z < v.y + 0.1f))
+		//{
+		//	InvalidSyntax();
+		//	Msg("x <= y - 0.1");
+		//	Msg("y <= z - 0.1");
+		//}
+		//else
+		//{
 			CCC_Vector3::Execute(args);
 			if (g_pGamePersistent)
 				g_pGamePersistent->SetBaseDof(ps_r_dof);
-		}
+		//}
 	}
 	virtual void Status(TStatus& S)
 	{
@@ -610,24 +544,6 @@ class CCC_Dof : public CCC_Vector3
 	virtual void Info(TInfo& I)
 	{
 		sprintf(I, "vector3 in range [%f,%f,%f]-[%f,%f,%f]", min.x, min.y, min.z, max.x, max.y, max.z);
-	}
-};
-///////////////////////////////////////////////////////////////////////////////////
-class CCC_DofDiaphragm : public CCC_Float
-{
-  public:
-	CCC_DofDiaphragm(LPCSTR N, float* V, float _min = 1.0f, float _max = 10.0f) : CCC_Float(N, V, _min, _max)
-	{
-	}
-
-	virtual void Execute(LPCSTR args)
-	{
-		float v = float(atof(args));
-
-		CCC_Float::Execute(args);
-		if (g_pGamePersistent)
-			g_pGamePersistent->SetDofDiaphragm(ps_r_dof_diaphragm_size);
-
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////
@@ -716,10 +632,8 @@ void xrRender_initconsole()
 	tw_min.set(-10000, -10000, 0);
 	tw_max.set(10000, 10000, 10000);
 	CMD4(CCC_Dof, "r_dof", &ps_r_dof, tw_min, tw_max);
-	CMD4(CCC_DofNear, "r_dof_near", &ps_r_dof.x, tw_min.x, tw_max.x);
-	CMD4(CCC_DofFocus, "r_dof_focus", &ps_r_dof.y, tw_min.y, tw_max.y);
-	CMD4(CCC_DofFar, "r_dof_far", &ps_r_dof.z, tw_min.z, tw_max.z);
-	CMD4(CCC_DofDiaphragm, "r_dof_diaphragm", &ps_r_dof_diaphragm_size, 1.0f, 20.f);
+	CMD4(CCC_DofFocalDepth, "r_dof_focal_depth", &ps_r_dof.x, 0.5f, 100.0f);
+	CMD4(CCC_DofFStop, "r_dof_fstop", &ps_r_dof.z, 2.0f, 100.0f);
 	CMD4(CCC_Float, "r_dof_sky", &ps_r_dof_sky, -10000.f, 10000.f);
 	CMD3(CCC_Mask, "r_dof_enabled", &ps_r_postprocess_flags, RFLAG_DOF);
 	CMD3(CCC_Token, "r_dof_quality", &ps_r_dof_quality, dof_quality_token);

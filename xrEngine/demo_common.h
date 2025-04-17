@@ -17,7 +17,6 @@ struct FrameData
 
 	// Postprocess
 	Fvector3 DOF;
-	float DOFAperture;
 
 	// Overlays
 	bool UseCinemaBorders;

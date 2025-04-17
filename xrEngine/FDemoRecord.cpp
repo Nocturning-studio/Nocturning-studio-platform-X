@@ -455,15 +455,6 @@ void CDemoRecord::Update(SCamEffectorInfo& info)
 	g_pGamePersistent->SetBaseDof(g_fDOF);
 }
 
-constexpr double x = 43.266615300557; // Diagonal measurement for a 'normal' 35mm lens
-
-double fov_to_length(double fov)
-{
-	if (fov < 1 || fov > 179)
-		return NULL;
-	return (x / (2 * tan(M_PI * fov / 360.f)));
-}
-
 BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 {
 	if (m_bMakeScreenshot)
@@ -689,16 +680,18 @@ void CDemoRecord::ChangeDepthOfFieldFocalDepth(int direction)
 
 	dof_params_actual = dof_params_old;
 
+	float X = dof_params_old.x * 0.1f;
+
 	if (direction > 0)
-		dof_params_actual.x = dof_params_old.x + 0.1f;
+		dof_params_actual.x = dof_params_old.x + X;
 	else
-		dof_params_actual.x = dof_params_old.x - 0.1f;
+		dof_params_actual.x = dof_params_old.x - X;
 
-	//if (dof_params_actual.x < dof_params_actual.x)
-	//	dof_params_actual.x = dof_params_actual.x + 1.0f;
+	if (dof_params_actual.x <= 0.5f)
+		dof_params_actual.x = 0.5f;
 
-	//if (dof_params_actual.x <= 4.999f)
-	//	dof_params_actual.x = 5.0f;
+	if (dof_params_actual.x >= 100.0f)
+		dof_params_actual.x = 100.0f;
 
 	g_fDOF = dof_params_actual;
 	g_pGamePersistent->SetBaseDof(g_fDOF);
@@ -713,10 +706,12 @@ void CDemoRecord::ChangeDepthOfFieldFocalLength(int direction)
 
 	dof_params_actual = dof_params_old;
 
+	float X = dof_params_old.y * 0.25f;
+
 	if (direction > 0)
-		dof_params_actual.y = dof_params_old.y + 0.1f;
+		dof_params_actual.y = dof_params_old.y + X;
 	else
-		dof_params_actual.y = dof_params_old.y - 0.1f;
+		dof_params_actual.y = dof_params_old.y - X;
 
 	//dof_params_actual.y = dof_params_actual.x + 10.0f;
 
@@ -736,13 +731,18 @@ void CDemoRecord::ChangeDepthOfFieldFStop(int direction)
 
 	dof_params_actual = dof_params_old;
 
-	if (direction > 0)
-		dof_params_actual.z = dof_params_old.z + 0.1f;
-	else
-		dof_params_actual.z = dof_params_old.z - 0.1f;
+	float X = dof_params_old.z * 0.1f;
 
-	// if (dof_params_actual.y <= 0.1f)
-	//	dof_params_actual.y = 0.1f;
+	if (direction > 0)
+		dof_params_actual.z = dof_params_old.z + X;
+	else
+		dof_params_actual.z = dof_params_old.z - X;
+
+	if (dof_params_actual.z <= 2.0f)
+		dof_params_actual.z = 2.0f;
+
+	if (dof_params_actual.z >= 100.0f)
+		dof_params_actual.z = 100.0f;
 
 	g_fDOF = dof_params_actual;
 	g_pGamePersistent->SetBaseDof(g_fDOF);
@@ -752,36 +752,17 @@ void CDemoRecord::ChangeFieldOfView(int direction)
 {
 	float g_fFov_actual = Device.fFOV;
 
+	float X = g_fFov_actual * 0.05f;
+
 	if (direction > 0)
-		g_fFov = g_fFov_actual + 0.5f;
+		g_fFov = g_fFov_actual + X;
 	else
-		g_fFov = g_fFov_actual - 0.5f;
+		g_fFov = g_fFov_actual - X;
 
 	if (g_fFov <= 2.28f)
 		g_fFov = 2.28f;
 	else if (g_fFov >= 113.001f)
 		g_fFov = 113.0f;
-}
-
-void CDemoRecord::ChangeDiaphragm(int direction)
-{
-	float g_fDiaphragm_old = 1.0f;
-	g_pGamePersistent->GetDofDiaphragm(g_fDiaphragm_old);
-	float g_fDiaphragm_actual = g_fDiaphragm_old;
-
-	if (direction > 0)
-		g_fDiaphragm_actual = g_fDiaphragm_old + 0.5f;
-	else
-		g_fDiaphragm_actual = g_fDiaphragm_old - 0.5f;
-
-	if (g_fDiaphragm_actual < 1.0f)
-		g_fDiaphragm_actual = 1.0f;
-	else if (g_fDiaphragm_actual > 20.0f)
-		g_fDiaphragm_actual = 20.0f;
-
-	g_fDiaphragm = g_fDiaphragm_actual;
-
-	g_pGamePersistent->SetDofDiaphragm(g_fDiaphragm);
 }
 
 void CDemoRecord::IR_OnMouseWheel(int direction)
@@ -802,10 +783,6 @@ void CDemoRecord::IR_OnMouseWheel(int direction)
 	{
 		ChangeFieldOfView(direction);
 	}
-	//else if (IR_GetKeyState(DIK_T))
-	//{
-	//	ChangeDiaphragm(direction);
-	//}
 }
 
 void CDemoRecord::DeleteKey()
@@ -819,8 +796,6 @@ void CDemoRecord::DeleteKey()
 
 	g_fDOF = FramesArray[iCount].DOF;
 	g_pGamePersistent->SetBaseDof(g_fDOF);
-	g_fDiaphragm = FramesArray[iCount].DOFAperture;
-	g_pGamePersistent->SetDofDiaphragm(g_fDiaphragm);
 
 	g_fFov = FramesArray[iCount].Fov;
 
@@ -838,7 +813,6 @@ void CDemoRecord::RecordKey(u32 IterpolationType)
 	FramesArray[iCount].InterpolationType = IterpolationType;
 
 	FramesArray[iCount].DOF = g_fDOF;
-	FramesArray[iCount].DOFAperture = g_fDiaphragm;
 
 	FramesArray[iCount].Fov = g_fFov;
 

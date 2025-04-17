@@ -35,8 +35,6 @@ class ENGINE_API CPhotoMode : public CEffectorCam, public IInputReceiver
 	Fvector m_vR;
 	Fvector m_vVelocity;
 	Fvector m_vAngularVelocity;
-	float m_fGlobalDiaphragm;
-	float m_fDiaphragm;
 	float m_fFov;
 	float m_fGlobalFov;
 	float m_fFovNeeded;
@@ -82,17 +80,18 @@ class ENGINE_API CPhotoMode : public CEffectorCam, public IInputReceiver
 
 	void ResetParameters();
 
-	void ChangeDepthOfFieldFar(int direction);
-	void ChangeDepthOfFieldNear(int direction);
-	void ChangeDepthOfFieldFocus(int direction);
+	void ChangeDepthOfFieldFocalLength(int direction);
+	void ChangeDepthOfFieldFocalDepth(int direction);
+	void ChangeDepthOfFieldFStop(int direction);
 	void ChangeFieldOfView(int direction);
-	void ChangeDiaphragm(int direction);
 	void SwitchAutofocusState();
 	void SwitchGridState();
 	void SwitchCinemaBordersState();
 	void SwitchWatermarkVisibility();
 	void SwitchActorVisibility();
 	void SwitchShowInputInfo();
+
+	void ShowInfo();
 
 	virtual void IR_OnKeyboardPress(int dik);
 	virtual void IR_OnKeyboardHold(int dik);

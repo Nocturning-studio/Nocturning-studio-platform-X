@@ -5,6 +5,16 @@
 #include "stdafx.h"
 #include <Blender_depth_of_field.h>
 ///////////////////////////////////////////////////////////////////////////////////
+constexpr double x = 43.266615300557; // Diagonal measurement for a 'normal' 35mm lens
+///////////////////////////////////////////////////////////////////////////////////
+double fov_to_length(double fov)
+{
+	if (fov < 1 || fov > 179)
+		return NULL;
+
+	return (x / (2 * tan(M_PI * fov / 360.f)));
+}
+///////////////////////////////////////////////////////////////////////////////////
 void CRender::render_depth_of_field()
 {
 	OPTICK_EVENT("CRender::render_depth_of_field");
@@ -13,18 +23,17 @@ void CRender::render_depth_of_field()
 	RenderBackend.set_Stencil(FALSE);
 
 	Fvector3 Dof;
-	float DofDiaphragm;
+	float DofFocalLength = fov_to_length(Device.fFOV);
 	g_pGamePersistent->GetCurrentDof(Dof);
-	g_pGamePersistent->GetDofDiaphragm(DofDiaphragm);
 
 	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH], 0);
 	RenderBackend.set_Constant("dof_params", Dof.x, Dof.y, Dof.z, ps_r_dof_sky);
-	RenderBackend.set_Constant("dof_diaphragm", DofDiaphragm / 2);
+	RenderBackend.set_Constant("dof_focal_length", DofFocalLength);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 
 	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH], 1);
 	RenderBackend.set_Constant("dof_params", Dof.x, Dof.y, Dof.z, ps_r_dof_sky);
-	RenderBackend.set_Constant("dof_diaphragm", DofDiaphragm);
+	RenderBackend.set_Constant("dof_focal_length", DofFocalLength);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 ///////////////////////////////////////////////////////////////////////////////////

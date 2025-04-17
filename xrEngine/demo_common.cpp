@@ -17,8 +17,6 @@ float g_fGlobalFov;
 float g_fFov;
 Fvector3 g_vGlobalDepthOfFieldParameters;
 Fvector3 g_fDOF;
-float g_fDiaphragm;
-float g_fGlobalDiaphragm;
 bool g_bAutofocusEnabled;
 bool g_bGridEnabled;
 bool g_bBordersEnabled;
@@ -33,10 +31,6 @@ void SetDefaultParameters()
 	g_fDOF.set(g_vGlobalDepthOfFieldParameters);
 	g_fDOF.z = 1.0f;
 	g_pGamePersistent->SetBaseDof(g_fDOF);
-
-	g_pGamePersistent->GetDofDiaphragm(g_fGlobalDiaphragm);
-	g_fDiaphragm = 2.0f;
-	g_pGamePersistent->SetDofDiaphragm(g_fDiaphragm);
 
 	g_bAutofocusEnabled = false;
 	g_bGridEnabled = false;
@@ -68,11 +62,6 @@ void ApplyFrameParameters(u32 frame, float interpolation_factor)
 	g_fDOF.set(FramesArray[ActualFrame].DOF);
 	g_pGamePersistent->SetBaseDof(g_fDOF);
 
-	float ApertureActual = FramesArray[ActualFrame].DOFAperture;
-	float ApertureNext = FramesArray[NextFrame].DOFAperture;
-	g_fDiaphragm = lerp(ApertureActual, ApertureNext, interpolation_factor);
-	g_pGamePersistent->SetDofDiaphragm(g_fDiaphragm);
-
 	g_bBordersEnabled = FramesArray[ActualFrame].UseCinemaBorders;
 
 	if (g_bBordersEnabled)
@@ -93,7 +82,6 @@ void ResetParameters()
 	g_fDOF = g_vGlobalDepthOfFieldParameters;
 	g_pGamePersistent->SetBaseDof(g_fDOF);
 	g_pGamePersistent->SetPickableEffectorDOF(false);
-	g_pGamePersistent->SetDofDiaphragm(g_fGlobalDiaphragm);
 
 	g_fFov = g_fGlobalFov;
 
@@ -137,7 +125,6 @@ void SaveAllFramesDataToIni(int FramesCount)
 		ini.w_u32(section_name, "interpolation_type", FramesArray[FramesIterator].InterpolationType);
 
 		ini.w_fvector3(section_name, "dof", FramesArray[FramesIterator].DOF);
-		ini.w_float(section_name, "dof_aperture", FramesArray[FramesIterator].DOFAperture);
 
 		ini.w_bool(section_name, "cinema_borders", FramesArray[FramesIterator].UseCinemaBorders);
 		ini.w_bool(section_name, "watermark", FramesArray[FramesIterator].UseWatermark);
@@ -167,7 +154,6 @@ void ReadAllFramesDataFromIni(const char* name)
 		FramesArray[FramesIterator].InterpolationType = ini->r_u32(section_name, "interpolation_type");
 
 		FramesArray[FramesIterator].DOF = ini->r_fvector3(section_name, "dof");
-		FramesArray[FramesIterator].DOFAperture = ini->r_float(section_name, "dof_aperture");
 
 		FramesArray[FramesIterator].UseCinemaBorders = ini->r_bool(section_name, "cinema_borders");
 		FramesArray[FramesIterator].UseWatermark = ini->r_bool(section_name, "watermark");
