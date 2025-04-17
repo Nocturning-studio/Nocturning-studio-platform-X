@@ -738,8 +738,8 @@ void CDemoRecord::ChangeDepthOfFieldFStop(int direction)
 	else
 		dof_params_actual.z = dof_params_old.z - X;
 
-	if (dof_params_actual.z <= 2.0f)
-		dof_params_actual.z = 2.0f;
+	if (dof_params_actual.z <= 1.0f)
+		dof_params_actual.z = 1.0f;
 
 	if (dof_params_actual.z >= 100.0f)
 		dof_params_actual.z = 100.0f;

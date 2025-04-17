@@ -51,7 +51,13 @@ void CRender::precombine_scene()
 	RenderBackend.set_Stencil(FALSE);
 	RenderBackend.set_ColorWriteEnable();
 
+	float additional_ambient = 0.0f;
+
+	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())
+		additional_ambient = 0.5f;
+
 	RenderBackend.set_Element(RenderTarget->s_combine->E[SE_PRECOMBINE_SCENE]);
+	RenderBackend.set_Constant("additional_ambient", additional_ambient);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 ///////////////////////////////////////////////////////////////////////////////////

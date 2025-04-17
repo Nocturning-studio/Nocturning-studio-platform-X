@@ -464,7 +464,7 @@ void CWeapon::Load(LPCSTR section)
 
 	m_ZoomDof = READ_IF_EXISTS(pSettings, r_fvector3, section, "zoom_dof", Fvector().set(0.5, 1.0, 180));
 
-	m_ReloadDof = READ_IF_EXISTS(pSettings, r_fvector4, section, "reload_dof", Fvector4().set(0.0, 0.5, 5, 1.7));
+	m_ReloadDof = READ_IF_EXISTS(pSettings, r_fvector4, section, "reload_dof", Fvector4().set(2.0, 0.5, 5, 1.7));
 
 	//////////////////////////////////////////////////////////
 
@@ -1708,6 +1708,8 @@ void CWeapon::OnStateSwitch(u32 S)
 	inherited::OnStateSwitch(S);
 	m_dwAmmoCurrentCalcFrame = 0;
 
+	#pragma todo(NSDeathman to NSDeathman - вернуть фокус на оружии при перезарядке)
+	/*
 	if (GetState() == eReload)
 	{
 		if (H_Parent() == Level().CurrentEntity() && !fsimilar(m_ReloadDof.w, -1.0f))
@@ -1717,4 +1719,5 @@ void CWeapon::OnStateSwitch(u32 S)
 				current_actor->Cameras().AddCamEffector(xr_new<CEffectorDOF>(m_ReloadDof));
 		}
 	}
+	*/
 }

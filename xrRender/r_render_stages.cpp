@@ -475,7 +475,7 @@ void CRender::render_lights()
 
 void CRender::combine_scene()
 {
-	//precombine_scene();
+	precombine_scene();
 
 	//render_screen_space_reflections();
 

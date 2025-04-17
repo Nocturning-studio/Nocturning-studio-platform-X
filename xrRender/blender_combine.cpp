@@ -27,7 +27,7 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		break;
 	case SE_COMBINE_SCENE:
 		C.r_Pass("screen_quad", "scene_combine_stage", FALSE, FALSE, FALSE, TRUE, D3DBLEND_INVSRCALPHA, D3DBLEND_SRCALPHA);
-		gbuffer(C);
+
 		C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
 		C.r_Sampler_gaussian("s_ao", r_RT_ao);
 		C.r_Sampler("env_s0", r_T_envs0, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
@@ -43,6 +43,7 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 
 		C.r_Sampler_clf("s_autoexposure", r_RT_autoexposure_cur);
 
+		gbuffer(C);
 		jitter(C);
 		C.r_End();
 		break;

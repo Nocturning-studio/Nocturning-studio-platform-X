@@ -746,6 +746,7 @@ void CGamePersistent::SetEffectorDOF(const Fvector& needed_dof)
 {
 	if (m_bPickableDOF)
 		return;
+
 	m_dof[0] = needed_dof;
 	m_dof[2] = m_dof[1]; // current
 }
@@ -780,8 +781,8 @@ void CGamePersistent::UpdateDof()
 	clamp(m_dof[2].x, 1.0f, 1000.0f);
 	clamp(m_dof[3].x, 1.0f, 1000.0f);
 
-	clamp(m_dof[0].z, 2.0f, 1000.0f);
-	clamp(m_dof[1].z, 2.0f, 1000.0f);
-	clamp(m_dof[2].z, 2.0f, 1000.0f);
-	clamp(m_dof[3].z, 2.0f, 1000.0f);
+	clamp(m_dof[0].z, 1.0f, 1000.0f);
+	clamp(m_dof[1].z, 1.0f, 1000.0f);
+	clamp(m_dof[2].z, 1.0f, 1000.0f);
+	clamp(m_dof[3].z, 1.0f, 1000.0f);
 }
