@@ -13,6 +13,10 @@ void CBlender_accum_direct_cascade::Compile(CBlender_Compile& C)
 	case SE_SUN_NEAR: // near pass - enable Z-test to perform depth-clipping
 		C.sh_macro("NEAR_CASCADE", "1");
 	case SE_SUN_MIDDLE:
+		C.sh_macro(ps_r_lighting_flags.test(RFLAG_SUN_SHAFTS), "SUN_SHAFTS_ENABLED", "1");
+		string32 c_sun_shafts_quality;
+		sprintf(c_sun_shafts_quality, "%d", ps_r_sun_shafts_quality);
+		C.sh_macro("SUN_SHAFTS_QUALITY", c_sun_shafts_quality);
 		C.sh_macro("MIDDLE_CASCADE", "1");
 		C.r_Pass("accumulating_light_stage_volume", "accumulating_light_stage_direct", false, TRUE, FALSE, FALSE, D3DBLEND_ONE, D3DBLEND_ZERO);
 		C.PassSET_ZB(TRUE, FALSE, TRUE); // force inverted Z-Buffer

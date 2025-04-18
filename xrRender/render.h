@@ -66,15 +66,12 @@ class CRender : public R_dsgraph_structure
 	// string
 	string32 c_build_id;
 	string32 c_smapsize;
-	string32 c_debugview;
 	string32 c_vignette;
-	string32 c_ao_quality;
 	string32 c_aa_type;
 	string32 c_fxaa_quality;
 	string32 c_bloom_quality;
 	string32 c_material_quality;
 	string32 c_shadow_filter;
-	string32 c_sun_shafts_quality;
 
 	void CheckHWRenderSupporting();
 	void update_options();

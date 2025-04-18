@@ -72,7 +72,7 @@ enum
 	RFLAG_LENS_FLARES = (1 << 0),
 	RFLAG_EXP_MT_CALC = (1 << 1),
 	RFLAG_EXP_HW_OCC = (1 << 2),
-	RFLAG_SEPIA = (1 << 3),
+	RFLAG_LUT = (1 << 3),
 	RFLAG_CHROMATIC_ABBERATION = (1 << 4),
 	RFLAG_DISABLE_POSTPROCESS = (1 << 5)
 };
@@ -182,15 +182,12 @@ extern ECORE_API Flags32 ps_r_postprocess_flags;
 enum
 {
 	RFLAG_AUTOEXPOSURE = (1 << 0),
-	RFLAG_SOFT_WATER = (1 << 1),
-	RFLAG_SOFT_PARTICLES = (1 << 2),
-	RFLAG_BLOOM = (1 << 3),
-	RFLAG_DOF = (1 << 4),
-	RFLAG_MBLUR = (1 << 5),
-	RFLAG_BARREL_BLUR = (1 << 6),
-	RFLAG_CONTRAST_ADAPTIVE_SHARPENING = (1 << 7),
-	RFLAG_ANTI_ALIASING = (1 << 8),
-	RFLAG_ANTI_ALIASING_ALPHA_TEST = (1 << 9)
+	RFLAG_BLOOM = (1 << 1),
+	RFLAG_DOF = (1 << 2),
+	RFLAG_MBLUR = (1 << 3),
+	RFLAG_CONTRAST_ADAPTIVE_SHARPENING = (1 << 4),
+	RFLAG_ANTI_ALIASING = (1 << 5),
+	RFLAG_ANTI_ALIASING_ALPHA_TEST = (1 << 6)
 };
 
 extern ECORE_API Flags32 ps_r_overlay_flags;

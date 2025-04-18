@@ -587,7 +587,7 @@ void xrRender_initconsole()
 
 	CMD3(CCC_Mask, "r_lens_flares", &ps_render_flags, RFLAG_LENS_FLARES);
 
-	CMD3(CCC_Mask, "r_sepia", &ps_render_flags, RFLAG_SEPIA);
+	CMD3(CCC_Mask, "r_lut", &ps_render_flags, RFLAG_LUT);
 	CMD3(CCC_Token, "r_vignette_mode", &ps_vignette_mode, vignette_mode_token);
 	CMD3(CCC_Mask, "r_chromatic_abberation", &ps_render_flags, RFLAG_CHROMATIC_ABBERATION);
 
@@ -599,10 +599,6 @@ void xrRender_initconsole()
 
 	CMD4(CCC_Float, "r_pps_u", &ps_pps_u, -1.f, +1.f);
 	CMD4(CCC_Float, "r_pps_v", &ps_pps_v, -1.f, +1.f);
-
-	// R2/R2a/R2.5-specific commands
-	CMD3(CCC_Mask, "r_soft_water", &ps_r_postprocess_flags, RFLAG_SOFT_WATER);
-	CMD3(CCC_Mask, "r_soft_particles", &ps_r_postprocess_flags, RFLAG_SOFT_PARTICLES);
 
 	CMD3(CCC_Mask, "r_anti_aliasing", &ps_r_postprocess_flags, RFLAG_ANTI_ALIASING);
 	CMD3(CCC_Mask, "r_anti_aliasing_alpha_test", &ps_r_postprocess_flags, RFLAG_ANTI_ALIASING_ALPHA_TEST);
@@ -637,8 +633,6 @@ void xrRender_initconsole()
 	CMD4(CCC_Float, "r_dof_sky", &ps_r_dof_sky, -10000.f, 10000.f);
 	CMD3(CCC_Mask, "r_dof_enabled", &ps_r_postprocess_flags, RFLAG_DOF);
 	CMD3(CCC_Token, "r_dof_quality", &ps_r_dof_quality, dof_quality_token);
-
-	CMD3(CCC_Mask, "r_barrel_blur", &ps_r_postprocess_flags, RFLAG_BARREL_BLUR);
 
 	CMD3(CCC_Mask, "r_cas_enabled", &ps_r_postprocess_flags, RFLAG_CONTRAST_ADAPTIVE_SHARPENING);
 	CMD4(CCC_Float, "r_cas_contrast", &ps_cas_contrast, 0.0f, 1.0f);

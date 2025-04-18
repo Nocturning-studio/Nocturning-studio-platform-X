@@ -222,13 +222,10 @@ void CRender::update_options()
 		Msg("- Nvidia Depth Bounds supported");
 
 	sprintf(c_smapsize, "%d", o.smapsize);
-	sprintf(c_debugview, "%d", ps_r_debug_render);
 	sprintf(c_vignette, "%d", ps_vignette_mode);
 	sprintf(c_bloom_quality, "%d", ps_r_bloom_quality);
 	sprintf(c_shadow_filter, "%d", ps_r_shadow_filtering);
 	sprintf(c_material_quality, "%d", ps_r_material_quality);
-	sprintf(c_ao_quality, "%d", ps_r_ao_quality);
-	sprintf(c_sun_shafts_quality, "%d", ps_r_sun_shafts_quality);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -253,25 +250,11 @@ CShaderMacros CRender::FetchShaderMacros()
 
 	macros.add("VIGNETTE_MODE", c_vignette);
 
-	macros.add(ps_render_flags.test(RFLAG_SEPIA), "USE_SEPIA", "1");
-
 	macros.add(ps_render_flags.test(RFLAG_CHROMATIC_ABBERATION), "USE_CHROMATIC_ABBERATION", "1");
 
 	macros.add("BLOOM_QUALITY", c_bloom_quality);
 
 	macros.add("MATERIAL_QUALITY", c_material_quality);
-
-	macros.add(ps_r_postprocess_flags.test(RFLAG_SOFT_WATER), "USE_SOFT_WATER", "1");
-
-	macros.add(ps_r_postprocess_flags.test(RFLAG_SOFT_PARTICLES), "USE_SOFT_PARTICLES", "1");
-
-	macros.add(ps_render_flags.test(RFLAG_ANTI_ALIASING_ALPHA_TEST), "ALPHA_TEST_AA", "1");
-
-	macros.add("AO_QUALITY", c_ao_quality);
-
-	macros.add(ps_r_lighting_flags.test(RFLAG_SUN_SHAFTS), "SUN_SHAFTS_ENABLED", "1");
-
-	macros.add("SUN_SHAFTS_QUALITY", c_sun_shafts_quality);
 
 	macros.add(ps_r_shading_flags.test(RFLAG_FLAT_SHADING), "DISABLE_SHADING", "1");
 
