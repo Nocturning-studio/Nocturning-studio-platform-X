@@ -167,14 +167,6 @@ xr_token debug_render_token[] =
 	{0, 0}
 };
 
-u32 ps_r_rt_format = 1;
-xr_token ps_rt_format[] = 
-{
-	{"st_opt_rgba_32", 1}, 
-	{"st_opt_rgba_64", 2}, 
-	{0, 0}
-};
-
 /*-------------------------------------------------------------------------------*/
 // Render common values
 /*-------------------------------------------------------------------------------*/
@@ -682,8 +674,6 @@ void xrRender_initconsole()
 
 	CMD3(CCC_Token, "r_debug_render", &ps_r_debug_render, debug_render_token);
 
-	CMD3(CCC_Token, "r_rt_format", &ps_r_rt_format, ps_rt_format);
-
 	CMD4(CCC_Float, "r_ssa_lod_a", &ps_r_ssaLOD_A, 16, 96);
 	CMD4(CCC_Float, "r_ssa_lod_b", &ps_r_ssaLOD_B, 32, 64);
 	CMD4(CCC_Float, "r_detalization_distance", &ps_r_detalization_distance, 10.0f, 100.0f);
@@ -734,7 +724,7 @@ void xrRender_console_apply_conditions()
 ///////////////////////////////////////////////////////////////////////////////////
 void xrRender_apply_tf()
 {
-	Console->Execute("r_tf_aniso");
+	Console->Execute("rs_anisothropy");
 	Console->Execute("r_tf_mipbias");
 }
 ///////////////////////////////////////////////////////////////////////////////////
