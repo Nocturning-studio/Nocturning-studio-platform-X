@@ -353,7 +353,7 @@ void CBackend::RenderViewportSurface(float w, float h, const ref_rt& _1, const r
 
 void CBackend::RenderViewportSurface(float w, float h, IDirect3DSurface9* _1)
 {
-	set_Render_Target_Surface(w, h, _1);
+	set_Render_Target_Surface((u32)w, (u32)h, _1);
 	set_Depth_Buffer(NULL);
 
 	u32 Offset = 0;
@@ -363,7 +363,7 @@ void CBackend::RenderViewportSurface(float w, float h, IDirect3DSurface9* _1)
 
 void CBackend::RenderViewportSurface(float w, float h, IDirect3DSurface9* _1, IDirect3DSurface9* zb)
 {
-	set_Render_Target_Surface(w, h, _1);
+	set_Render_Target_Surface((u32)w, (u32)h, _1);
 	set_Depth_Buffer(zb);
 
 	u32 Offset = 0;
