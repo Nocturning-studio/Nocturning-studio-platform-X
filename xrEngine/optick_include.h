@@ -1,11 +1,9 @@
 #pragma once
 
+#ifdef ENABLE_PROFILING
 #define USE_OPTICK
 #include <optick/optick.h>
 #pragma comment(lib, "OptickCore.lib")
-
-#ifdef ENABLE_PROFILING
-
 #else
 #define OPTICK_EVENT(...)
 #define OPTICK_CATEGORY(NAME, CATEGORY)
