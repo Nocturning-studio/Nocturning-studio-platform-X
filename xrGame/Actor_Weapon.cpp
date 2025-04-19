@@ -28,33 +28,30 @@ float CActor::GetWeaponAccuracy() const
 	CWeapon* W = smart_cast<CWeapon*>(inventory().ActiveItem());
 
 	if (m_bZoomAimingMode && W && !GetWeaponParam(W, IsRotatingToZoom(), false))
-		return m_fDispAim;
+		return GetWeaponParam(W, GetZoomFireDispersion(), 0.0f);
 
-	float dispersion = m_fDispBase * GetWeaponParam(W, Get_PDM_Base(), 1.0f);
+	float dispersion = GetWeaponParam(W, GetFireDispersion(), 0.0f) * GetWeaponParam(W, Get_PDM_Base(), 1.0f);
 
 	CEntity::SEntityState state;
 	if (g_State(state))
 	{
 		// angular factor
-		dispersion *=
-			(1.f + (state.fAVelocity / VEL_A_MAX) * m_fDispVelFactor * GetWeaponParam(W, Get_PDM_Vel_F(), 1.0f));
+		dispersion *= (1.f + (state.fAVelocity / VEL_A_MAX) * GetWeaponParam(W, Get_PDM_Vel_F(), 1.0f));
+
 		//		Msg("--- base=[%f] angular disp=[%f]",m_fDispBase, dispersion);
 		// linear movement factor
 		bool bAccelerated = isActorAccelerated(mstate_real, IsZoomAimingMode());
 		if (bAccelerated)
-			dispersion *=
-				(1.f + (state.fVelocity / VEL_MAX) * m_fDispVelFactor * GetWeaponParam(W, Get_PDM_Vel_F(), 1.0f) *
-						   (1.f + m_fDispAccelFactor * GetWeaponParam(W, Get_PDM_Accel_F(), 1.0f)));
+			dispersion *= (1.f + (state.fVelocity / VEL_MAX) * m_fDispVelFactor * GetWeaponParam(W, Get_PDM_Vel_F(), 1.0f) * GetWeaponParam(W, Get_PDM_Accel_F(), 1.0f));
 		else
-			dispersion *=
-				(1.f + (state.fVelocity / VEL_MAX) * m_fDispVelFactor * GetWeaponParam(W, Get_PDM_Vel_F(), 1.0f));
+			dispersion *= (1.f + (state.fVelocity / VEL_MAX) * m_fDispVelFactor * GetWeaponParam(W, Get_PDM_Vel_F(), 1.0f));
 
 		if (state.bCrouch)
 		{
-			dispersion *= (1.f + m_fDispCrouchFactor * GetWeaponParam(W, Get_PDM_Crouch(), 1.0f));
+			dispersion *= GetWeaponParam(W, Get_PDM_Crouch(), 1.0f);
 
 			if (!bAccelerated)
-				dispersion *= (1.f + m_fDispCrouchNoAccelFactor * GetWeaponParam(W, Get_PDM_Crouch_NA(), 1.0f));
+				dispersion *= GetWeaponParam(W, Get_PDM_Crouch_NA(), 1.0f);
 		}
 	}
 

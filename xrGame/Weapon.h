@@ -561,6 +561,14 @@ class CWeapon : public CHudItemObject, public CShootingObject
 	// Weapon and ammo
 	//////////////////////////////////////////////////////////////////////////
   public:
+	IC float GetFireDispersion()
+	{
+		return camDispersion;
+	}
+	IC float GetZoomFireDispersion()
+	{
+		return zoom_camDispersion;
+	}
 	IC int GetAmmoElapsed() const
 	{
 		return /*int(m_magazine.size())*/ iAmmoElapsed;
