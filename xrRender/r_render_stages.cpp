@@ -527,8 +527,8 @@ void CRender::render_postprocess()
 	render_effectors_pass_combine();
 
 	// Ceneric0 -> Generic0
-	if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
-		render_motion_blur();
+	//if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
+	//	render_motion_blur();
 
 	// Ceneric0 -> Generic0
 	render_effectors_pass_screen_dust();

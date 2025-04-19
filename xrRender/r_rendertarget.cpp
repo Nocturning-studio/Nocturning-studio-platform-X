@@ -46,7 +46,7 @@ void CRenderTarget::create_textures()
 			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_4.create(r_RT_GBuffer_4, dwWidth, dwHeight, D3DFMT_R16F);
+			rt_GBuffer_4.create(r_RT_GBuffer_4, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 		}
 	}
 
@@ -60,9 +60,9 @@ void CRenderTarget::create_textures()
 	
 	//rt_Generic_Prev.create(r_RT_generic_prev, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
-	rt_Motion_Blur_Previous_Frame_Depth.create(r_RT_mblur_previous_frame_depth, dwWidth, dwHeight, D3DFMT_R16F);
-	rt_Motion_Blur_Dilation_Map_0.create(r_RT_mblur_dilation_map_0, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
-	rt_Motion_Blur_Dilation_Map_1.create(r_RT_mblur_dilation_map_1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
+	//rt_Motion_Blur_Previous_Frame_Depth.create(r_RT_mblur_previous_frame_depth, dwWidth, dwHeight, D3DFMT_R16F);
+	//rt_Motion_Blur_Dilation_Map_0.create(r_RT_mblur_dilation_map_0, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
+	//rt_Motion_Blur_Dilation_Map_1.create(r_RT_mblur_dilation_map_1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
 
 	rt_Reflections.create(r_RT_reflections, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F);
 

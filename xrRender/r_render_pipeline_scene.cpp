@@ -40,7 +40,7 @@ void CRender::RenderScene()
 
 	if (m_bFirstFrameAfterReset)
 	{
-		motion_blur_pass_save_depth();
+		//motion_blur_pass_save_depth();
 		return;
 	}
 
