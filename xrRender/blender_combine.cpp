@@ -29,7 +29,7 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_Pass("screen_quad", "scene_combine_stage", FALSE, FALSE, FALSE, TRUE, D3DBLEND_INVSRCALPHA, D3DBLEND_SRCALPHA);
 
 		C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
-		C.r_Sampler_gaussian("s_ao", r_RT_ao);
+		C.r_Sampler_rtf("s_ao", r_RT_ao);
 		C.r_Sampler("env_s0", r_T_envs0, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
 		C.r_Sampler("env_s1", r_T_envs1, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
 		C.r_Sampler("sky_s0", r_T_sky0, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);

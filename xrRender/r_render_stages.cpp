@@ -477,7 +477,7 @@ void CRender::combine_scene()
 {
 	precombine_scene();
 
-	//render_screen_space_reflections();
+	render_screen_space_reflections();
 
 	render_skybox();
 

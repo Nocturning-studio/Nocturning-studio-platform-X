@@ -32,6 +32,7 @@
 #define r_RT_mblur_dilation_map_0 "$user$mblur_dilation_map_0"
 #define r_RT_mblur_dilation_map_1 "$user$mblur_dilation_map_1"
 
+#define r_RT_reflections_raw "$user$reflections_raw"
 #define r_RT_reflections "$user$reflections"
 
 #define r_RT_bloom1 "$user$bloom1"

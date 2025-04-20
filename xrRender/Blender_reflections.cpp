@@ -23,9 +23,15 @@ void CBlender_reflections::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case 0:
+	case SE_RENDER_PASS:
 		C.r_Pass("screen_quad", "postprocess_stage_reflections_pass_render", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
+		gbuffer(C);
+		C.r_End();
+		break;
+	case SE_BLUR_PASS:
+		C.r_Pass("screen_quad", "postprocess_stage_reflections_pass_blur", FALSE, FALSE, FALSE);
+		C.r_Sampler_rtf("s_reflections", r_RT_reflections_raw);
 		gbuffer(C);
 		C.r_End();
 		break;

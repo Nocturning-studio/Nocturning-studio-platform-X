@@ -617,6 +617,8 @@ void xrRender_initconsole()
 	CMD3(CCC_Mask, "r_mblur_enabled", &ps_r_postprocess_flags, RFLAG_MBLUR);
 	CMD4(CCC_Float, "r_mblur_power", &ps_r_mblur, 0.0f, 1.0f);
 
+	CMD3(CCC_Mask, "r_reflections", &ps_r_postprocess_flags, RFLAG_REFLECTIONS);
+
 	tw_min.set(-10000, -10000, 0);
 	tw_max.set(10000, 10000, 10000);
 	CMD4(CCC_Dof, "r_dof", &ps_r_dof, tw_min, tw_max);

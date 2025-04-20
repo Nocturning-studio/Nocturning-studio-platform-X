@@ -311,6 +311,8 @@ class CRender : public R_dsgraph_structure
 	void render_skybox();
 	void precombine_scene();
 	void combine_scene_lighting();
+	void clear_reflections();
+	void render_reflections();
 	void render_screen_space_reflections();
 	void render_screen_overlays();
 	void render_antialiasing();
