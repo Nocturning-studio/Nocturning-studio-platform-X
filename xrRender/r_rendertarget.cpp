@@ -44,8 +44,8 @@ void CRenderTarget::create_textures()
 		else
 		{
 			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_R5G6B5);
+			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_R5G6B5);
 			rt_GBuffer_4.create(r_RT_GBuffer_4, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 		}
 	}
@@ -71,7 +71,7 @@ void CRenderTarget::create_textures()
 	rt_Radiation_Noise1.create(r_RT_radiation_noise1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_L8);
 	rt_Radiation_Noise2.create(r_RT_radiation_noise2, u32(dwWidth * 0.25f), u32(dwHeight * 0.25f), D3DFMT_L8);
 
-	rt_ao.create(r_RT_ao, dwWidth, dwHeight, D3DFMT_R16F);
+	rt_ao.create(r_RT_ao, dwWidth, dwHeight, D3DFMT_L8);
 
 	t_envmap_0.create(r_T_envs0);
 	t_envmap_1.create(r_T_envs1);

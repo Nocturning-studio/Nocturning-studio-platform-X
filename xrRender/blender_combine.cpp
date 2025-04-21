@@ -39,7 +39,7 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
 
-		C.r_Sampler_rtf("s_reflections", r_RT_reflections);
+		C.r_Sampler_clf("s_reflections", r_RT_reflections);
 
 		C.r_Sampler_clf("s_autoexposure", r_RT_autoexposure_cur);
 
