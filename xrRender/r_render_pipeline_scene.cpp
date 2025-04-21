@@ -64,6 +64,9 @@ void CRender::RenderScene()
 
 	start_autoexposure_pipeline();
 
+	if (!is_dynamic_sun_enabled())
+		accumulate_sun_static();
+
 	combine_scene();
 
 	if(ps_render_flags.test(RFLAG_DISABLE_POSTPROCESS))

@@ -41,6 +41,12 @@ void CBlender_accum_direct_cascade::Compile(CBlender_Compile& C)
 		}
 		C.r_End();
 		break;
+	case SE_SUN_STATIC:
+		C.r_Pass("screen_quad", "accumulating_light_stage_direct_static", FALSE, FALSE, FALSE);
+		C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
+		gbuffer(C);
+		C.r_End();
+		break;
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////

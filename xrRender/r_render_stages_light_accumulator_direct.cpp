@@ -252,3 +252,9 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 	// disable depth bounds
 	u_DBT_disable();
 }
+
+void CRender::accumulate_sun_static()
+{
+	RenderBackend.set_Element(RenderTarget->s_accum_direct_cascade->E[SE_SUN_STATIC]);
+	RenderBackend.RenderViewportSurface(Device.dwWidth, Device.dwHeight, RenderTarget->rt_Light_Accumulator, RenderTarget->rt_Shadow_Accumulator);
+}

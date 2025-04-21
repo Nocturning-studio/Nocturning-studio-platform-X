@@ -258,6 +258,8 @@ class ENGINE_API IRender_interface
 	virtual void Render() = 0;
 	virtual void Screenshot(ScreenshotMode mode = SM_NORMAL, LPCSTR name = 0) = 0;
 
+	virtual bool is_dynamic_sun_enabled() = 0;
+
 	// Render mode
 	virtual void set_render_mode(int mode) = 0;
 	virtual u32 memory_usage() = 0;

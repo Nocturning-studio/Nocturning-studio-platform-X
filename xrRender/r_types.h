@@ -120,6 +120,7 @@ const u32 LUMINANCE_size = 16;
 #define SE_SUN_MIDDLE 1
 #define SE_SUN_FAR 2
 #define SE_ACCUMULATE_VOLUMETRIC 3
+#define SE_SUN_STATIC 4
 
 extern float ps_r_gloss_factor;
 

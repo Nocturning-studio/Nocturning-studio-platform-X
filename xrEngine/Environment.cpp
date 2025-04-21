@@ -483,7 +483,10 @@ void CEnvironment::OnFrame()
 	float current_weight;
 	lerp(current_weight);
 
-	calculate_dynamic_sun_dir();
+	if (Render->is_dynamic_sun_enabled())
+		calculate_dynamic_sun_dir();
+	else
+		set_static_sun_dir();
 
 	CurrentEnv->sky_r_textures.push_back(mk_pair(2, autoexposure));
 	CurrentEnv->sky_r_textures_env.push_back(mk_pair(2, autoexposure));
@@ -528,6 +531,11 @@ void CEnvironment::OnFrame()
 	*/
 }
 
+void CEnvironment::set_static_sun_dir()
+{
+	CurrentEnv->sun_dir.setHP(deg2rad(-25.0f), deg2rad(292.0f));
+}
+
 void CEnvironment::calculate_dynamic_sun_dir()
 {
 	float g = (360.0f / 365.25f) * (180.0f + fGameTime / DAY_LENGTH);
@@ -535,12 +543,10 @@ void CEnvironment::calculate_dynamic_sun_dir()
 	g = deg2rad(g);
 
 	//	Declination
-	float D = 0.396372f - 22.91327f * _cos(g) + 4.02543f * _sin(g) - 0.387205f * _cos(2 * g) + 0.051967f * _sin(2 * g) -
-			  0.154527f * _cos(3 * g) + 0.084798f * _sin(3 * g);
+	float D = 0.396372f - 22.91327f * _cos(g) + 4.02543f * _sin(g) - 0.387205f * _cos(2 * g) + 0.051967f * _sin(2 * g) - 0.154527f * _cos(3 * g) + 0.084798f * _sin(3 * g);
 
 	//	Now calculate the time correction for solar angle:
-	float TC =
-		0.004297f + 0.107029f * _cos(g) - 1.837877f * _sin(g) - 0.837378f * _cos(2 * g) - 2.340475f * _sin(2 * g);
+	float TC = 0.004297f + 0.107029f * _cos(g) - 1.837877f * _sin(g) - 0.837378f * _cos(2 * g) - 2.340475f * _sin(2 * g);
 
 	//	IN degrees
 	float Longitude = -30.4f;
@@ -550,6 +556,7 @@ void CEnvironment::calculate_dynamic_sun_dir()
 	//	Need this to correctly determine SHA sign
 	if (SHA > 180)
 		SHA -= 360;
+
 	if (SHA < -180)
 		SHA += 360;
 
@@ -570,6 +577,7 @@ void CEnvironment::calculate_dynamic_sun_dir()
 	float const sin_SZA = _sin(SZA);
 	float const cos_Latitude = _cos(LatitudeR);
 	float const sin_SZA_X_cos_Latitude = sin_SZA * cos_Latitude;
+
 	if (!fis_zero(sin_SZA_X_cos_Latitude))
 		cosAZ = (_sin(deg2rad(D)) - _sin(LatitudeR) * _cos(SZA)) / sin_SZA_X_cos_Latitude;
 

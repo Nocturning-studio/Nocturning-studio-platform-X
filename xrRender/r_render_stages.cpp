@@ -19,6 +19,11 @@ bool CRender::need_render_sun()
 	return ps_r_lighting_flags.test(RFLAG_SUN) && (u_diffuse2s(sun_color.r, sun_color.g, sun_color.b) > EPS);
 }
 
+bool CRender::is_dynamic_sun_enabled()
+{
+	return ps_r_lighting_flags.test(RFLAG_SUN);
+}
+
 void CRender::check_distort()
 {
 	if (!(mapDistort.size() == 0))
