@@ -123,42 +123,6 @@ class cl_VPtexgen : public R_constant_setup
 };
 static cl_VPtexgen binder_VPtexgen;
 
-// fog
-class cl_fog_plane : public R_constant_setup
-{
-	u32 marker;
-	Fvector4 result;
-	virtual void setup(R_constant* C)
-	{
-		if (marker != Device.dwFrame)
-		{
-			// Plane
-			Fvector4 plane;
-			Fmatrix& M = Device.mFullTransform;
-			plane.x = -(M._14 + M._13);
-			plane.y = -(M._24 + M._23);
-			plane.z = -(M._34 + M._33);
-			plane.w = -(M._44 + M._43);
-			float denom = -1.0f / _sqrt(_sqr(plane.x) + _sqr(plane.y) + _sqr(plane.z));
-			plane.mul(denom);
-
-			// Near/Far
-			float FarPlane = g_pGamePersistent->Environment().CurrentEnv->far_plane;
-			float FogFar = FarPlane;
-			float FogIntensity = g_pGamePersistent->Environment().CurrentEnv->fog_density;
-			float FogNear = FogFar * (1.0f - FogIntensity);
-
-			float Fog = 1 / (FogFar - FogNear);
-			Fvector4 FogPlane;
-			FogPlane.set(-plane.x * Fog, -plane.y * Fog, -plane.z * Fog, 1 - (plane.w - FogNear) * Fog);
-
-			result.set(FogPlane);
-		}
-		RenderBackend.set_Constant(C, result);
-	}
-};
-static cl_fog_plane binder_fog_plane;
-
 // fog-params
 class cl_fog_params : public R_constant_setup
 {
@@ -595,7 +559,6 @@ void CBlender_Compile::SetMapping()
 
 #ifndef _EDITOR
 	// fog-params
-	r_Constant("fog_plane", &binder_fog_plane);
 	r_Constant("fog_params", &binder_fog_params);
 	r_Constant("fog_color", &binder_fog_color);
 	r_Constant("fog_density", &binder_fog_density);
