@@ -62,39 +62,44 @@ CEffect_Rain::~CEffect_Rain()
 	::Render->model_Delete(DM_Drop);
 }
 
-// Born
 void CEffect_Rain::Born(Item& dest, float radius)
 {
-	float actual_drop_angle = 45.0f;
-	Fvector axis;
-	axis.set(0, -1, 0);
-	float gust = g_pGamePersistent->Environment().wind_strength_factor / actual_drop_angle;
-	float k = g_pGamePersistent->Environment().CurrentEnv->wind_strength * gust / 100;
-	clamp(k, 0.f, 1.f);
-	float pitch = drop_max_angle * k - PI_DIV_2;
-	float Direction = g_pGamePersistent->Environment().CurrentEnv->wind_direction;
-	axis.setHP(Direction, pitch);
-	Fvector& view = Device.vCameraPosition;
-	float angle = actual_drop_angle; //::Random.randF(0, PI_MUL_2);
-	float dist = ::Random.randF();
-	dist = _sqrt(dist) * radius;
-	float x = _cos(gust * Direction); // dist * _cos(angle);
-	float z = _sin(gust * Direction); // dist * _sin(angle);
+	// Environment defined constants
+	CEnvDescriptorMixer* Environment = g_pGamePersistent->Environment().CurrentEnv;
+	float wind_strength = Environment->wind_strength;
+	float wind_direction = Environment->wind_direction;
 
+	// Particle drop angle
+	// 90 degrees = |||
+	// 45 degrees = ///
+	float angle = 90.0f * (1.6f - wind_strength);
+	clamp(angle, 45.0f, 90.0f);
+
+	// Rotating matrix for apply particle drop angle and wind direction
 	Fmatrix mRotate;
-	mRotate.setXYZi(x, -1.0f, z);
-	//info.d.set(mRotate.k);
-	//info.n.set(mRotate.j);
+	float RotationX = deg2rad(angle);
+	float RotationY = -(wind_direction + 90.0f);
+	float RotationZ = 0.0f;
+	mRotate.setXYZi(RotationX, RotationY, RotationZ);
+	dest.D.set(mRotate.k);
 
-	dest.D.set(mRotate.k); //.random_dir(axis, deg2rad(drop_angle));
+	// Random distance around camera
+	float distance = ::Random.randF();
+	distance = _sqrt(distance) * radius;
 
-	angle = ::Random.randF(0, PI_MUL_2);
-	x = dist * _cos(angle);
-	z = dist * _sin(angle);
+	// Random position inside circle around camera
+	float random = ::Random.randF(0, PI_MUL_2);
 
-	dest.P.set(x + view.x, source_offset + view.y, z + view.z);
-	//	dest.P.set			(x+view.x,height+view.y,z+view.z);
-	dest.fSpeed = ::Random.randF(drop_speed_min, drop_speed_max);
+	// Rain particle offset
+	float OffsetX = distance * _cos(random);
+	float OffsetZ = distance * _sin(random);
+
+	// Create rain particle position with offset
+	Fvector& CameraPos = Device.vCameraPosition;
+	dest.P.set(OffsetX + CameraPos.x, source_offset + CameraPos.y, OffsetZ + CameraPos.z);
+
+	// Particle falling speed
+	dest.fSpeed = ::Random.randF(drop_speed_min, drop_speed_max) * (1.0f + wind_strength);
 
 	float height = max_distance;
 	RenewItem(dest, height, RayPick(dest.P, dest.D, height, collide::rqtBoth));
