@@ -172,11 +172,11 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	bool bUseOpacity = false;
 	string_path OpacityTexture;
 	bUseOpacity = ConcatAndFindTexture(OpacityTexture, AlbedoTexture, "_opacity");
-	C.sh_macro(bUseOpacity, "USE_CUSTOM_OPACITY", "1");
+	C.r_Define(bUseOpacity, "USE_CUSTOM_OPACITY", "1");
 
 	// Create shader with alpha testing if need
-	C.sh_macro(bUseAlphaTest || bUseOpacity, "USE_ALPHA_TEST", "1");
-	C.sh_macro(bNeedHashedAlphaTest, "USE_HASHED_ALPHA_TEST", "1");
+	C.r_Define(bUseAlphaTest || bUseOpacity, "USE_ALPHA_TEST", "1");
+	C.r_Define(bNeedHashedAlphaTest, "USE_HASHED_ALPHA_TEST", "1");
 
 	// Color space params
 	bool bIsSrgbAlbedo = true;
@@ -187,7 +187,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		if (StringsIsSimilar(AlbedoColorSpace, "linear"))
 			bIsSrgbAlbedo = false;
 	}
-	C.sh_macro(bIsSrgbAlbedo, "USE_SRGB_COLOR_CONVERTING", "1");
+	C.r_Define(bIsSrgbAlbedo, "USE_SRGB_COLOR_CONVERTING", "1");
 
 	// Normal map params
 	// Check bump existing
@@ -230,8 +230,8 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 			strconcat(sizeof(BumpCorrectionTexture), BumpCorrectionTexture, BumpCorrectionTexture, "#");
 		}
 	}
-	C.sh_macro(bUseBump, "USE_BUMP", "1");
-	C.sh_macro(bIsOpenGLNormal, "IS_OPENGL_NORMAL", "1");
+	C.r_Define(bUseBump, "USE_BUMP", "1");
+	C.r_Define(bIsOpenGLNormal, "IS_OPENGL_NORMAL", "1");
 
 	// Wind params
 	bool bUseWind = false;
@@ -260,15 +260,15 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		bUseBothAxisAsWeight = GetBoolValueIfExist("wind_configuration", "use_both_axis_as_weight", bUseBothAxisAsWeight, MaterialConfiguration);
 		bInvertWeightAxis = GetBoolValueIfExist("wind_configuration", "invert_weight_axis", bInvertWeightAxis, MaterialConfiguration);
 	}
-	C.sh_macro(bUseWind, "USE_WIND", "1");
-	C.sh_macro(WindTypeNum == 0, "USE_LEGACY_WIND", "1");
-	C.sh_macro(WindTypeNum == 1, "USE_TRUNK_WIND", "1");
-	C.sh_macro(WindTypeNum == 2, "USE_BRANCHCARD_WIND", "1");
-	C.sh_macro(WindTypeNum == 3, "USE_LEAFCARD_WIND", "1");
-	C.sh_macro(bUseXAxisAsWeight, "USE_X_AXIS_AS_WEIGHT", "1");
-	C.sh_macro(bUseYAxisAsWeight, "USE_Y_AXIS_AS_WEIGHT", "1");
-	C.sh_macro(bUseBothAxisAsWeight, "USE_BOTH_AXIS_AS_WEIGHT", "1");
-	C.sh_macro(bInvertWeightAxis, "INVERT_WEIGHT_AXIS", "1");
+	C.r_Define(bUseWind, "USE_WIND", "1");
+	C.r_Define(WindTypeNum == 0, "USE_LEGACY_WIND", "1");
+	C.r_Define(WindTypeNum == 1, "USE_TRUNK_WIND", "1");
+	C.r_Define(WindTypeNum == 2, "USE_BRANCHCARD_WIND", "1");
+	C.r_Define(WindTypeNum == 3, "USE_LEAFCARD_WIND", "1");
+	C.r_Define(bUseXAxisAsWeight, "USE_X_AXIS_AS_WEIGHT", "1");
+	C.r_Define(bUseYAxisAsWeight, "USE_Y_AXIS_AS_WEIGHT", "1");
+	C.r_Define(bUseBothAxisAsWeight, "USE_BOTH_AXIS_AS_WEIGHT", "1");
+	C.r_Define(bInvertWeightAxis, "INVERT_WEIGHT_AXIS", "1");
 
 	strcpy_s(AlbedoTexture, sizeof(AlbedoTexture), *C.L_textures[0]);
 
@@ -285,7 +285,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 				bIsSrgbDetail = false;
 		}
 
-		C.sh_macro(bIsSrgbDetail, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1");
+		C.r_Define(bIsSrgbDetail, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1");
 
 		strcpy_s(DetailAlbedoTexture, sizeof(DetailAlbedoTexture), C.detail_texture);
 
@@ -328,7 +328,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	}
 
 	// Create lightmapped shader if need
-	C.sh_macro(bUseLightMap, "USE_LIGHTMAP", "1");
+	C.r_Define(bUseLightMap, "USE_LIGHTMAP", "1");
 
 	// Get normal texture
 	bool bUseCustomNormal = false;
@@ -366,7 +366,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	bool bUseARMMap = false;
 	string_path ARMTexture;
 	bUseARMMap = ConcatAndFindTexture(ARMTexture, AlbedoTexture, "_arm") && !AlbedoOnlyMode;
-	C.sh_macro(bUseARMMap, "USE_ARM_MAP", "1");
+	C.r_Define(bUseARMMap, "USE_ARM_MAP", "1");
 
 	if (!AlbedoOnlyMode)
 	{
@@ -396,10 +396,10 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 			if (!bUseCustomMetallic)
 				bUseCustomMetallic = ConcatAndFindTexture(CustomMetallicTexture, AlbedoTexture, "_metallic");
 
-			C.sh_macro(bUseBakedAO, "USE_BAKED_AO", "1");
-			C.sh_macro(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
-			C.sh_macro(bUseCustomGloss, "USE_CUSTOM_GLOSS", "1");
-			C.sh_macro(bUseCustomMetallic, "USE_CUSTOM_METALLIC", "1");
+			C.r_Define(bUseBakedAO, "USE_BAKED_AO", "1");
+			C.r_Define(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
+			C.r_Define(bUseCustomGloss, "USE_CUSTOM_GLOSS", "1");
+			C.r_Define(bUseCustomMetallic, "USE_CUSTOM_METALLIC", "1");
 		}
 
 		if (bUseConfigurator)
@@ -418,9 +418,9 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		if (!bUseCustomCavity)
 			bUseCustomCavity = ConcatAndFindTexture(CustomCavityTexture, AlbedoTexture, "_cavity");
 
-		C.sh_macro(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
-		C.sh_macro(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
-		C.sh_macro(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
+		C.r_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
+		C.r_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
+		C.r_Define(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
 	}
 
 	if (bUseConfigurator)
@@ -431,7 +431,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	if (!bUseCustomEmission)
 		bUseCustomEmission = ConcatAndFindTexture(CustomEmissionTexture, AlbedoTexture, "_emission");
 
-	C.sh_macro(bUseCustomEmission, "USE_CUSTOM_EMISSION", "1");
+	C.r_Define(bUseCustomEmission, "USE_CUSTOM_EMISSION", "1");
 
 	// Get weight texture
 	bool bUseCustomWeight = false;
@@ -445,7 +445,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	if (!bUseCustomWeight)
 		bUseCustomWeight = ConcatAndFindTexture(CustomWeightTexture, AlbedoTexture, "_weight");
 
-	C.sh_macro(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
+	C.r_Define(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
 
 	// Create shader with normal mapping or displacement if need		
 	int DisplacementType = 1;
@@ -483,9 +483,9 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 				DisplacementType = 3; // steep parallax
 		}
 
-		C.sh_macro(DisplacementType == 1, "USE_NORMAL_MAPPING", "1");
-		C.sh_macro(DisplacementType == 2, "USE_PARALLAX_MAPPING", "1");
-		C.sh_macro(DisplacementType == 3, "USE_PARALLAX_OCCLUSION_MAPPING", "1");
+		C.r_Define(DisplacementType == 1, "USE_NORMAL_MAPPING", "1");
+		C.r_Define(DisplacementType == 2, "USE_PARALLAX_MAPPING", "1");
+		C.r_Define(DisplacementType == 3, "USE_PARALLAX_OCCLUSION_MAPPING", "1");
 
 		// Get displacement texture
 		if (bUseConfigurator)
@@ -494,13 +494,13 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		if (!bUseCustomDisplacement)
 			bUseCustomDisplacement = ConcatAndFindTexture(CustomDisplacementTexture, AlbedoTexture, "_displacement");
 
-		C.sh_macro(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
+		C.r_Define(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
 	}
 
 	// Create shader with deatil texture if need
-	C.sh_macro(bUseDetail, "USE_TDETAIL", "1");
+	C.r_Define(bUseDetail, "USE_TDETAIL", "1");
 
-	C.sh_macro(bUseDetailBump, "USE_DETAIL_BUMP", "1");
+	C.r_Define(bUseDetailBump, "USE_DETAIL_BUMP", "1");
 
 	// Check do we need to use custom shader
 	if (bUseConfigurator)
@@ -635,72 +635,72 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 			bIsSrgbAlbedo = false;
 	}
 
-	C.sh_macro(bIsSrgbAlbedo, "USE_SRGB_COLOR_CONVERTING", "1");
+	C.r_Define(bIsSrgbAlbedo, "USE_SRGB_COLOR_CONVERTING", "1");
 
-	C.sh_macro(true, "USE_NORMAL_MAPPING", "1");
+	C.r_Define(true, "USE_NORMAL_MAPPING", "1");
 
 	// Get opacity texture
 	bool bUseOpacity = false;
 	string_path OpacityTexture;
 	bUseOpacity = ConcatAndFindTexture(OpacityTexture, AlbedoTexture, "_opacity");
-	C.sh_macro(bUseOpacity, "USE_CUSTOM_OPACITY", "1");
+	C.r_Define(bUseOpacity, "USE_CUSTOM_OPACITY", "1");
 
 	// Create shader with alpha testing if need
-	C.sh_macro(bUseAlpha || bUseOpacity, "USE_ALPHA_TEST", "1");
+	C.r_Define(bUseAlpha || bUseOpacity, "USE_ALPHA_TEST", "1");
 
 	// Get BakedAO texture
 	bool bUseBakedAO = false;
 	string_path BakedAOTexture;
 	bUseBakedAO = ConcatAndFindTexture(BakedAOTexture, AlbedoTexture, "_ao") && !AlbedoOnlyMode;
-	C.sh_macro(bUseBakedAO, "USE_BAKED_AO", "1");
+	C.r_Define(bUseBakedAO, "USE_BAKED_AO", "1");
 
 	// Get normal texture
 	bool bUseCustomNormal = false;
 	string_path CustomNormalTexture;
 	bUseCustomNormal = ConcatAndFindTexture(CustomNormalTexture, AlbedoTexture, "_normal") && !AlbedoOnlyMode;
-	C.sh_macro(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
+	C.r_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
 
 	// Get roughness texture
 	bool bUseCustomRoughness = false;
 	string_path CustomRoughnessTexture;
 	bUseCustomRoughness = ConcatAndFindTexture(CustomRoughnessTexture, AlbedoTexture, "_roughness") && !AlbedoOnlyMode;
-	C.sh_macro(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
+	C.r_Define(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
 
 	// Get metallic texture
 	bool bUseCustomMetallic = false;
 	string_path CustomMetallicTexture;
 	bUseCustomMetallic = ConcatAndFindTexture(CustomMetallicTexture, AlbedoTexture, "_metallic") && !AlbedoOnlyMode;
-	C.sh_macro(bUseCustomMetallic, "USE_CUSTOM_METALLIC", "1");
+	C.r_Define(bUseCustomMetallic, "USE_CUSTOM_METALLIC", "1");
 
 	// Get subsurface_power power texture
 	bool bUseCustomSubsurfacePower = false;
 	string_path CustomSubsurfacePowerTexture;
 	bUseCustomSubsurfacePower = ConcatAndFindTexture(CustomSubsurfacePowerTexture, AlbedoTexture, "_subsurface_power") && !AlbedoOnlyMode;
-	C.sh_macro(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
+	C.r_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
 
 	// Get emission power texture
 	bool bUseCustomEmission = false;
 	string_path CustomEmissionTexture;
 	bUseCustomEmission = ConcatAndFindTexture(CustomEmissionTexture, AlbedoTexture, "_emission");
-	C.sh_macro(bUseCustomEmission, "USE_CUSTOM_EMISSION", "1");
+	C.r_Define(bUseCustomEmission, "USE_CUSTOM_EMISSION", "1");
 
 	// Get displacement texture
 	bool bUseCustomDisplacement = false;
 	string_path CustomDisplacementTexture;
 	bUseCustomDisplacement = ConcatAndFindTexture(CustomDisplacementTexture, AlbedoTexture, "_displacement") && !AlbedoOnlyMode;
-	C.sh_macro(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
+	C.r_Define(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
 
 	// Get cavity texture
 	bool bUseCustomCavity = false;
 	string_path CustomCavityTexture;
 	bUseCustomCavity = ConcatAndFindTexture(CustomCavityTexture, AlbedoTexture, "_cavity") && !AlbedoOnlyMode;
-	C.sh_macro(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
+	C.r_Define(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
 
 	// Get weight texture
 	bool bUseCustomWeight = false;
 	string_path CustomWeightTexture;
 	bUseCustomWeight = ConcatAndFindTexture(CustomWeightTexture, AlbedoTexture, "_weight");
-	C.sh_macro(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
+	C.r_Define(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
 
 	// Create shader pass
 	strconcat(sizeof(NewPixelShaderName), NewPixelShaderName, "gbuffer_stage_", PixelShaderName);

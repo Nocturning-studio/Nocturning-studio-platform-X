@@ -81,11 +81,11 @@ void CBlender_BmmD::Compile(CBlender_Compile& C)
 		else if (ps_r_material_quality == 4)
 			BumpType = 3; // steep parallax
 
-		C.sh_macro(BumpType == 1, "USE_NORMAL_MAPPING", "1");
-		C.sh_macro(BumpType == 2, "USE_PARALLAX_MAPPING", "1");
-		C.sh_macro(BumpType == 3, "USE_PARALLAX_OCCLUSION_MAPPING", "1");
-		C.sh_macro(true, "USE_SRGB_COLOR_CONVERTING", "1");
-		C.sh_macro(true, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1");
+		C.r_Define(BumpType == 1, "USE_NORMAL_MAPPING", "1");
+		C.r_Define(BumpType == 2, "USE_PARALLAX_MAPPING", "1");
+		C.r_Define(BumpType == 3, "USE_PARALLAX_OCCLUSION_MAPPING", "1");
+		C.r_Define(true, "USE_SRGB_COLOR_CONVERTING", "1");
+		C.r_Define(true, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1");
 
 		C.r_Pass("gbuffer_stage_terrain", "gbuffer_stage_terrain", TRUE);
 
@@ -115,8 +115,8 @@ void CBlender_BmmD::Compile(CBlender_Compile& C)
 		C.r_End();
 		break;
 	case SE_NORMAL_LQ: // deffer
-		C.sh_macro(true, "USE_SRGB_COLOR_CONVERTING", "1");
-		C.sh_macro(true, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1");
+		C.r_Define(true, "USE_SRGB_COLOR_CONVERTING", "1");
+		C.r_Define(true, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1");
 		C.r_Pass("gbuffer_stage_terrain_lq", "gbuffer_stage_terrain_lq", TRUE);
 
 		C.r_Sampler("s_lmap", C.L_textures[1], false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_LINEAR);

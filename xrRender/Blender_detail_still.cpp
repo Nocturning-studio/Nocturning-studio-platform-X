@@ -60,7 +60,7 @@ void CBlender_Detail_Still::Compile(CBlender_Compile& C)
 		C.r_End();
 		break;
 	//case SE_DETAIL_DEPTH_PREPASS_ANIMATED:
-	//	C.sh_macro("USE_DETAILWAVE", "1");
+	//	C.r_Define("USE_DETAILWAVE", "1");
 	//case SE_DETAIL_DEPTH_PREPASS_STATIC:
 	//	C.r_Pass("shadow_depth_stage_detail_object", "shadow_depth_stage_detail_object", FALSE);//C.r_Pass("depth_prepass_stage_detail_object", "depth_prepass_stage_detail_object", FALSE);
 	//	C.r_Sampler("s_base", C.L_textures[0]);

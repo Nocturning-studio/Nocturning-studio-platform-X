@@ -5,12 +5,19 @@
 #include "blenders\Blender_Recorder.h"
 #include "blenders\Blender.h"
 
-void CBlender_Compile::sh_macro(BOOL Enabled, string32 Name, string32 Definition)
+void CBlender_Compile::r_Define(string32 Name, float value)
+{
+	string32 Definition;
+	strcpy_s(Definition, sizeof(Definition), std::to_string(value).c_str());
+	macros.add(Name, Definition);
+}
+
+void CBlender_Compile::r_Define(BOOL Enabled, string32 Name, string32 Definition)
 {
 	macros.add(Enabled, Name, Definition);
 }
 
-void CBlender_Compile::sh_macro(string32 Name, string32 Definition)
+void CBlender_Compile::r_Define(string32 Name, string32 Definition)
 {
 	macros.add(Name, Definition);
 }

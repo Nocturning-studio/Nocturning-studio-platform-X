@@ -149,20 +149,20 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 		configure_shader(C, false, tvs, "static_mesh", oBlend.value);
 		break;
 	case SE_SHADOW_DEPTH: // smap-spot
-		C.sh_macro(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
-		C.sh_macro(bUseCustomOpacity, "USE_CUSTOM_OPACITY", "1");
+		C.r_Define(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
+		C.r_Define(bUseCustomOpacity, "USE_CUSTOM_OPACITY", "1");
 
-		C.sh_macro(bNeedHashedAlphaTest, "USE_HASHED_ALPHA_TEST", "1");
+		C.r_Define(bNeedHashedAlphaTest, "USE_HASHED_ALPHA_TEST", "1");
 
-		C.sh_macro(bUseWind, "USE_WIND", "1");
-		C.sh_macro(WindTypeNum == 0, "USE_LEGACY_WIND", "1");
-		C.sh_macro(WindTypeNum == 1, "USE_TRUNK_WIND", "1");
-		C.sh_macro(WindTypeNum == 2, "USE_BRANCHCARD_WIND", "1");
-		C.sh_macro(WindTypeNum == 3, "USE_LEAFCARD_WIND", "1");
-		C.sh_macro(bUseXAxisAsWeight, "USE_X_AXIS_AS_WEIGHT", "1");
-		C.sh_macro(bUseYAxisAsWeight, "USE_Y_AXIS_AS_WEIGHT", "1");
-		C.sh_macro(bUseBothAxisAsWeight, "USE_BOTH_AXIS_AS_WEIGHT", "1");
-		C.sh_macro(bInvertWeightAxis, "INVERT_WEIGHT_AXIS", "1");
+		C.r_Define(bUseWind, "USE_WIND", "1");
+		C.r_Define(WindTypeNum == 0, "USE_LEGACY_WIND", "1");
+		C.r_Define(WindTypeNum == 1, "USE_TRUNK_WIND", "1");
+		C.r_Define(WindTypeNum == 2, "USE_BRANCHCARD_WIND", "1");
+		C.r_Define(WindTypeNum == 3, "USE_LEAFCARD_WIND", "1");
+		C.r_Define(bUseXAxisAsWeight, "USE_X_AXIS_AS_WEIGHT", "1");
+		C.r_Define(bUseYAxisAsWeight, "USE_Y_AXIS_AS_WEIGHT", "1");
+		C.r_Define(bUseBothAxisAsWeight, "USE_BOTH_AXIS_AS_WEIGHT", "1");
+		C.r_Define(bInvertWeightAxis, "INVERT_WEIGHT_AXIS", "1");
 
 		if (oBlend.value || bUseCustomOpacity || bUseAlphaTest)
 		{
