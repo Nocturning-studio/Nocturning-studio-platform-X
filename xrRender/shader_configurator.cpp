@@ -362,6 +362,10 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	bool bUseCustomCavity = false;
 	string_path CustomCavityTexture;
 
+	// Get Specular Tint texture
+	bool bUseCustomSpecularTint = false;
+	string_path CustomSpecularTintTexture;
+
 	// Get AO-Roughness-Metallic texture if needed
 	bool bUseARMMap = false;
 	string_path ARMTexture;
@@ -407,6 +411,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 			bUseCustomNormal = CheckAndApplyManualTexturePath("material_configuration", "normal_path", CustomNormalTexture, MaterialConfiguration);
 			bUseCustomSubsurfacePower = CheckAndApplyManualTexturePath("material_configuration", "subsurface_power_path", CustomSubsurfacePowerTexture, MaterialConfiguration);
 			bUseCustomCavity = CheckAndApplyManualTexturePath("material_configuration", "cavity_path", CustomCavityTexture, MaterialConfiguration);
+			bUseCustomSpecularTint = CheckAndApplyManualTexturePath("material_configuration", "specular_tint_path", CustomSpecularTintTexture, MaterialConfiguration);
 		}
 
 		if (!bUseCustomNormal)
@@ -418,9 +423,13 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		if (!bUseCustomCavity)
 			bUseCustomCavity = ConcatAndFindTexture(CustomCavityTexture, AlbedoTexture, "_cavity");
 
+		if (!bUseCustomSpecularTint)
+			bUseCustomSpecularTint = ConcatAndFindTexture(CustomSpecularTintTexture, AlbedoTexture, "_specular_tint");
+
 		C.r_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
 		C.r_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
 		C.r_Define(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
+		C.r_Define(bUseCustomSpecularTint, "USE_CUSTOM_SPECULAR_TINT", "1");
 	}
 
 	if (bUseConfigurator)
@@ -558,6 +567,9 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 	if (bUseCustomCavity)
 		C.r_Sampler("s_custom_cavity", CustomCavityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+
+	if (bUseCustomSpecularTint)
+		C.r_Sampler("s_custom_specular_tint", CustomSpecularTintTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomWeight)
 		C.r_Sampler("s_custom_weight", CustomWeightTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);

@@ -93,7 +93,8 @@ CPhotoMode::CPhotoMode(float life_time) : CEffectorCam(cefDemo, life_time)
 
 	g_pGamePersistent->GetCurrentDof(m_vGlobalDepthOfFieldParameters);
 	m_fDOF.set(m_vGlobalDepthOfFieldParameters);
-	m_fDOF.z = 100.0f;
+	m_fDOF.z = 2.0f;
+	m_fDOF.x = 10.0f;
 	g_pGamePersistent->SetBaseDof(m_fDOF);
 
 	m_bAutofocusEnabled = false;

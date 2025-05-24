@@ -20,6 +20,7 @@ void CBlender_depth_of_field::Compile(CBlender_Compile& C)
 		gbuffer(C);
 		C.r_End();
 
+		C.r_Define("POST_FILTER", "1");
 		C.r_Pass("screen_quad", "postprocess_stage_depth_of_field", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
 		gbuffer(C);

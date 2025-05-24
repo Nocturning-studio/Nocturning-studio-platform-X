@@ -26,14 +26,17 @@ void CRender::render_depth_of_field()
 	float DofFocalLength = fov_to_length(Device.fFOV);
 	g_pGamePersistent->GetCurrentDof(Dof);
 
-	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH], 0);
-	RenderBackend.set_Constant("dof_params", Dof.x, 0.5f, Dof.z, ps_r_dof_sky);
-	RenderBackend.set_Constant("dof_focal_length", DofFocalLength);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
+	for (int i = 0; i < 1; i++)
+	{
+		RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH], 0);
+		RenderBackend.set_Constant("dof_params", Dof.x, 0.5f, Dof.z, ps_r_dof_sky);
+		RenderBackend.set_Constant("dof_focal_length", DofFocalLength);
+		RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 
-	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH], 1);
-	RenderBackend.set_Constant("dof_params", Dof.x, 1.0f, Dof.z, ps_r_dof_sky);
-	RenderBackend.set_Constant("dof_focal_length", DofFocalLength);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+		RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH], 1);
+		RenderBackend.set_Constant("dof_params", Dof.x, 1.0f, Dof.z, ps_r_dof_sky);
+		RenderBackend.set_Constant("dof_focal_length", DofFocalLength);
+		RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+	}
 }
 ///////////////////////////////////////////////////////////////////////////////////
