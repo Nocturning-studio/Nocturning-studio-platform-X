@@ -63,7 +63,7 @@ float CalcTurbulence(float Time, float Offset, float Turbulence)
 
 void CEnvDescriptorMixer::onFrame()
 {
-	wind_turbulence = CalcTurbulence(Device.fTimeGlobal * wind_strength, 1, wind_gusting + 1);
+	wind_turbulence = CalcTurbulence(Device.fTimeGlobal * wind_strength, 2, wind_gusting + 1);
 	clamp(wind_turbulence, -1.0f, 1.0f);
 }
 

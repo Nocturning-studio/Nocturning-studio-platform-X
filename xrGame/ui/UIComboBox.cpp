@@ -115,6 +115,12 @@ void CUIComboBox::SetCurrentValue()
 	m_list.Clear();
 	xr_token* tok = GetOptToken();
 
+	if (tok == nullptr)
+	{
+		Msg("!CUIComboBox::SetCurrentValue() - Token is nullptr!");
+		return;
+	}
+	
 	while (tok->name)
 	{
 		AddItem_(tok->name, tok->id);
@@ -122,6 +128,7 @@ void CUIComboBox::SetCurrentValue()
 	}
 
 	LPCSTR cur_val = *CStringTable().translate(GetOptTokenValue());
+
 	m_text.SetText(cur_val);
 	m_list.SetSelectedText(cur_val);
 

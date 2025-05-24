@@ -622,7 +622,7 @@ void CEnvironment::calculate_dynamic_sun_dir()
 	CurrentEnv->sun_color.mul(fSunBlend);
 
 	float AmbientBrightness = CurrentEnv->ambient_brightness;
-	float MinAmb = 0.25f;
+	float MinAmb = 0.5f;
 	CurrentEnv->ambient_brightness = MinAmb + fSunBlend * (AmbientBrightness - MinAmb);
 }
 
