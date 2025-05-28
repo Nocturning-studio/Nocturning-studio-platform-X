@@ -533,12 +533,12 @@ void xrRender_initconsole()
 	CMD4(CCC_Float, "r_ao_radius", &ps_r_ao_radius, 1, 10);
 	CMD4(CCC_Float, "r_ao_bias", &ps_r_ao_bias, -1.0f, 1.0f);
 
-	CMD4(CCC_Integer, "r_lsleep_frames", &ps_r_LightSleepFrames, 4, 30);
+	//CMD4(CCC_Integer, "r_lsleep_frames", &ps_r_LightSleepFrames, 4, 30);
 	CMD4(CCC_Float, "r_ssa_glod_start", &ps_r_GLOD_ssa_start, 128, 512);
 	CMD4(CCC_Float, "r_ssa_glod_end", &ps_r_GLOD_ssa_end, 16, 96);
-	CMD4(CCC_Float, "r_wallmark_shift_pp", &ps_r_WallmarkSHIFT, 0.0f, 1.f);
-	CMD4(CCC_Float, "r_wallmark_shift_v", &ps_r_WallmarkSHIFT_V, 0.0f, 1.f);
-	CMD4(CCC_Float, "r_wallmark_ttl", &ps_r_WallmarkTTL, 1.0f, 5.f * 60.f);
+	//CMD4(CCC_Float, "r_wallmark_shift_pp", &ps_r_WallmarkSHIFT, 0.0f, 1.f);
+	//CMD4(CCC_Float, "r_wallmark_shift_v", &ps_r_WallmarkSHIFT_V, 0.0f, 1.f);
+	//CMD4(CCC_Float, "r_wallmark_ttl", &ps_r_WallmarkTTL, 1.0f, 5.f * 60.f);
 	CMD1(CCC_ModelPoolStat, "stat_models");
 
 	CMD3(CCC_Token, "r_cubemap_size", &ps_r_cubemap_size, cubemap_size_token);
@@ -547,34 +547,34 @@ void xrRender_initconsole()
 
 	CMD4(CCC_Float, "r_detail_density", &ps_r_Detail_density, .01f, 0.6f);
 
-	CMD4(CCC_Float, "r_detail_l_ambient", &ps_r_Detail_l_ambient, .5f, .95f);
-	CMD4(CCC_Float, "r_detail_l_aniso", &ps_r_Detail_l_aniso, .1f, .5f);
+	//CMD4(CCC_Float, "r_detail_l_ambient", &ps_r_Detail_l_ambient, .5f, .95f);
+	//CMD4(CCC_Float, "r_detail_l_aniso", &ps_r_Detail_l_aniso, .1f, .5f);
 
-	CMD4(CCC_Float, "r_d_tree_w_amp", &ps_r_Tree_w_amp, .001f, 1.f);
-	CMD4(CCC_Float, "r_d_tree_w_rot", &ps_r_Tree_w_rot, .01f, 100.f);
-	CMD4(CCC_Float, "r_d_tree_w_speed", &ps_r_Tree_w_speed, 1.0f, 10.f);
+	//CMD4(CCC_Float, "r_d_tree_w_amp", &ps_r_Tree_w_amp, .001f, 1.f);
+	//CMD4(CCC_Float, "r_d_tree_w_rot", &ps_r_Tree_w_rot, .01f, 100.f);
+	//CMD4(CCC_Float, "r_d_tree_w_speed", &ps_r_Tree_w_speed, 1.0f, 10.f);
 
 	tw_min.set(EPS, EPS, EPS);
 	tw_max.set(2, 2, 2);
-	CMD4(CCC_Vector3, "r_d_tree_wave", &ps_r_Tree_Wave, tw_min, tw_max);
+	//CMD4(CCC_Vector3, "r_d_tree_wave", &ps_r_Tree_Wave, tw_min, tw_max);
 
 	CMD3(CCC_Mask, "r_lens_flares", &ps_render_flags, RFLAG_LENS_FLARES);
 
-	CMD3(CCC_Mask, "r_lut", &ps_render_flags, RFLAG_LUT);
+	//CMD3(CCC_Mask, "r_lut", &ps_render_flags, RFLAG_LUT);
 	CMD3(CCC_Token, "r_vignette_mode", &ps_vignette_mode, vignette_mode_token);
 	CMD3(CCC_Mask, "r_chromatic_abberation", &ps_render_flags, RFLAG_CHROMATIC_ABBERATION);
 
-	CMD3(CCC_Mask, "r_mt", &ps_render_flags, RFLAG_EXP_MT_CALC);
+	//CMD3(CCC_Mask, "r_mt", &ps_render_flags, RFLAG_EXP_MT_CALC);
 
-	CMD4(CCC_Integer, "r_wait_sleep", &ps_r_thread_wait_sleep, 0, 1);
+	//CMD4(CCC_Integer, "r_wait_sleep", &ps_r_thread_wait_sleep, 0, 1);
 
 	CMD3(CCC_Mask, "r_hardware_occlusion_culling", &ps_render_flags, RFLAG_EXP_HW_OCC);
 
-	CMD4(CCC_Float, "r_pps_u", &ps_pps_u, -1.f, +1.f);
-	CMD4(CCC_Float, "r_pps_v", &ps_pps_v, -1.f, +1.f);
+	//CMD4(CCC_Float, "r_pps_u", &ps_pps_u, -1.f, +1.f);
+	//CMD4(CCC_Float, "r_pps_v", &ps_pps_v, -1.f, +1.f);
 
 	CMD3(CCC_Mask, "r_anti_aliasing", &ps_r_postprocess_flags, RFLAG_ANTI_ALIASING);
-	CMD3(CCC_Mask, "r_anti_aliasing_alpha_test", &ps_r_postprocess_flags, RFLAG_ANTI_ALIASING_ALPHA_TEST);
+	//CMD3(CCC_Mask, "r_anti_aliasing_alpha_test", &ps_r_postprocess_flags, RFLAG_ANTI_ALIASING_ALPHA_TEST);
 	CMD4(CCC_Float, "r_fxaa_subpix", &ps_r_fxaa_subpix, 0.0f, 1.0f);
 	CMD4(CCC_Float, "r_fxaa_treshold", &ps_r_fxaa_edge_treshold, 0.0f, 1.0f);
 	CMD4(CCC_Float, "r_fxaa_treshold_min", &ps_r_fxaa_edge_treshold_min, 0.0f, 1.0f);
@@ -582,18 +582,18 @@ void xrRender_initconsole()
 	CMD3(CCC_Token, "r_ao_quality", &ps_r_ao_quality, ao_quality_token);
 	CMD4(CCC_Float, "r_ao_brightness", &ps_r_ao_brightness, 0.0f, 1.0f);
 
-	CMD3(CCC_Mask, "r_autoexposure", &ps_r_postprocess_flags, RFLAG_AUTOEXPOSURE);
-	CMD4(CCC_Float, "r_autoexposure_middlegray", &ps_r_autoexposure_middlegray, 0.0f, 2.0f);
-	CMD4(CCC_Float, "r_autoexposure_adaptation", &ps_r_autoexposure_adaptation, 0.01f, 10.0f);
-	CMD4(CCC_Float, "r_autoexposure_lowlum", &ps_r_autoexposure_low_lum, 0.0f, 1.0f);
-	CMD4(CCC_Float, "r_autoexposure_amount", &ps_r_autoexposure_amount, 0.0f, 1.0f);
+	//CMD3(CCC_Mask, "r_autoexposure", &ps_r_postprocess_flags, RFLAG_AUTOEXPOSURE);
+	//CMD4(CCC_Float, "r_autoexposure_middlegray", &ps_r_autoexposure_middlegray, 0.0f, 2.0f);
+	//CMD4(CCC_Float, "r_autoexposure_adaptation", &ps_r_autoexposure_adaptation, 0.01f, 10.0f);
+	//CMD4(CCC_Float, "r_autoexposure_lowlum", &ps_r_autoexposure_low_lum, 0.0f, 1.0f);
+	//CMD4(CCC_Float, "r_autoexposure_amount", &ps_r_autoexposure_amount, 0.0f, 1.0f);
 
 	CMD3(CCC_Mask, "r_bloom", &ps_r_postprocess_flags, RFLAG_BLOOM);
 	CMD3(CCC_Token, "r_bloom_quality", &ps_r_bloom_quality, bloom_quality_token);
-	CMD4(CCC_Float, "r_bloom_threshold", &ps_r_bloom_threshold, 0.0f, 1.0f);
-	CMD4(CCC_Float, "r_bloom_brightness", &ps_r_bloom_brightness, 0.0f, 10.0f);
-	CMD4(CCC_Float, "r_bloom_blades_threshold", &ps_r_bloom_blades_threshold, 0.0f, 1.0f);
-	CMD4(CCC_Float, "r_bloom_blades_brightness", &ps_r_bloom_blades_brightness, 0.0f, 10.0f);
+	//CMD4(CCC_Float, "r_bloom_threshold", &ps_r_bloom_threshold, 0.0f, 1.0f);
+	//CMD4(CCC_Float, "r_bloom_brightness", &ps_r_bloom_brightness, 0.0f, 10.0f);
+	//CMD4(CCC_Float, "r_bloom_blades_threshold", &ps_r_bloom_blades_threshold, 0.0f, 1.0f);
+	//CMD4(CCC_Float, "r_bloom_blades_brightness", &ps_r_bloom_blades_brightness, 0.0f, 10.0f);
 
 	CMD3(CCC_Mask, "r_mblur_enabled", &ps_r_postprocess_flags, RFLAG_MBLUR);
 	CMD4(CCC_Float, "r_mblur_power", &ps_r_mblur, 0.0f, 1.0f);
@@ -622,9 +622,9 @@ void xrRender_initconsole()
 	CMD3(CCC_Token, "r_shadow_filtering", &ps_r_shadow_filtering, shadow_filter_token);
 	CMD3(CCC_Mask, "r_sun", &ps_r_lighting_flags, RFLAG_SUN);
 	CMD3(CCC_Mask, "r_sun_details", &ps_r_lighting_flags, RFLAG_SUN_DETAILS);
-	CMD3(CCC_Mask, "r_exp_donttest_uns", &ps_r_lighting_flags, RFLAG_EXP_DONT_TEST_UNSHADOWED);
+	//CMD3(CCC_Mask, "r_exp_donttest_uns", &ps_r_lighting_flags, RFLAG_EXP_DONT_TEST_UNSHADOWED);
 	CMD4(CCC_Float, "r_sun_tsm_bias", &ps_r_sun_tsm_bias, -0.5, +0.5);
-	CMD4(CCC_Float, "r_sun_near", &ps_r_sun_near, 1.f, 50.f);
+	//CMD4(CCC_Float, "r_sun_near", &ps_r_sun_near, 1.f, 50.f);
 	CMD4(CCC_Float, "r_sun_far", &ps_r_sun_far, 100.f, 360.f);
 
 	CMD4(CCC_Float, "r_sun_depth_far_scale", &ps_r_sun_depth_far_scale, 0.5, 1.5);
@@ -636,24 +636,24 @@ void xrRender_initconsole()
 	CMD4(CCC_Float, "r_sun_depth_normal_bias", &ps_r_sun_depth_normal_bias, -0.5, +0.5);
 	CMD4(CCC_Float, "r_sun_depth_directional_bias", &ps_r_sun_depth_directional_bias, -0.5, +0.5);
 
-	CMD4(CCC_Float, "r_sun_lumscale", &ps_r_sun_lumscale, -1.0, +3.0);
-	CMD4(CCC_Float, "r_sun_lumscale_hemi", &ps_r_sun_lumscale_hemi, 0.0, +3.0);
-	CMD4(CCC_Float, "r_sun_lumscale_amb", &ps_r_sun_lumscale_amb, 0.0, +3.0);
+	//CMD4(CCC_Float, "r_sun_lumscale", &ps_r_sun_lumscale, -1.0, +3.0);
+	//CMD4(CCC_Float, "r_sun_lumscale_hemi", &ps_r_sun_lumscale_hemi, 0.0, +3.0);
+	//CMD4(CCC_Float, "r_sun_lumscale_amb", &ps_r_sun_lumscale_amb, 0.0, +3.0);
 
-	CMD3(CCC_Mask, "r_shadow_cascede_zcul", &ps_r_lighting_flags, RFLAGEXT_SUN_ZCULLING);
+	//CMD3(CCC_Mask, "r_shadow_cascede_zcul", &ps_r_lighting_flags, RFLAGEXT_SUN_ZCULLING);
 
 	CMD3(CCC_Mask, "r_flat_shading", &ps_r_shading_flags, RFLAG_FLAT_SHADING);
 
 	CMD3(CCC_Mask, "r_allow_r1_lights", &ps_r_lighting_flags, RFLAG_R1LIGHTS);
 
-	CMD4(CCC_Float, "r_slight_fade", &ps_r_slight_fade, .02f, 2.f);
+	//CMD4(CCC_Float, "r_slight_fade", &ps_r_slight_fade, .02f, 2.f);
 
-	CMD4(CCC_Integer, "r_dhemi_count", &ps_r_dhemi_count, 4, 25);
-	CMD4(CCC_Float, "r_dhemi_scale", &ps_r_dhemi_scale, .5f, 3.f);
-	CMD4(CCC_Float, "r_dhemi_smooth", &ps_r_lt_smooth, 0.f, 10.f);
+	//CMD4(CCC_Integer, "r_dhemi_count", &ps_r_dhemi_count, 4, 25);
+	//CMD4(CCC_Float, "r_dhemi_scale", &ps_r_dhemi_scale, .5f, 3.f);
+	//CMD4(CCC_Float, "r_dhemi_smooth", &ps_r_lt_smooth, 0.f, 10.f);
 
 	CMD3(CCC_Token, "r_material_quality", &ps_r_material_quality, material_quality_token);
-	CMD4(CCC_Float, "r_parallax_h", &ps_r_df_parallax_h, .0f, .5f);
+	//CMD4(CCC_Float, "r_parallax_h", &ps_r_df_parallax_h, .0f, .5f);
 
 	CMD3(CCC_Token, "r_debug_render", &ps_r_debug_render, debug_render_token);
 
@@ -665,13 +665,13 @@ void xrRender_initconsole()
 
 	CMD3(CCC_Mask, "r_z_prepass", &ps_r_ls_flags, RFLAG_Z_PREPASS);
 
-	CMD4(CCC_Float, "r_gloss_factor", &ps_r_gloss_factor, 1.f, 3.f);
+	//CMD4(CCC_Float, "r_gloss_factor", &ps_r_gloss_factor, 1.f, 3.f);
 
-	CMD3(CCC_Mask, "r_use_nvdbt", &ps_r_ls_flags, RFLAG_USE_NVDBT);
+	//CMD3(CCC_Mask, "r_use_nvdbt", &ps_r_ls_flags, RFLAG_USE_NVDBT);
 
 	CMD4(CCC_Float, "r_ls_depth_scale", &ps_r_ls_depth_scale, 0.5, 1.5);
 	CMD4(CCC_Float, "r_ls_depth_bias", &ps_r_ls_depth_bias, -0.5, +0.5);
-	CMD4(CCC_Float, "r_ls_squality", &ps_r_ls_squality, .5f, 1.f);
+	//CMD4(CCC_Float, "r_ls_squality", &ps_r_ls_squality, .5f, 1.f);
 	CMD4(CCC_Float, "r_tsm_bias", &ps_r_sun_tsm_bias, -0.5, +0.5);
 	CMD4(CCC_Float, "r_ls_far", &ps_r_ls_far, 50.0f, 300.f);
 
