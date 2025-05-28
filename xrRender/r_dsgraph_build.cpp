@@ -881,16 +881,16 @@ void CRender::add_leafs_Dynamic(IRender_Visual* pVisual)
 			switch (ps_geometry_opt_mode)
 			{
 			case 0:
-				switch_distance = 25.0f;
+				switch_distance = 100.0f;
 				break;
 			case 1:
-				switch_distance = 15.0f;
+				switch_distance = 50.0f;
 				break;
 			case 2:
-				switch_distance = 10.0f;
+				switch_distance = 25.0f;
 				break;
 			case 3:
-				switch_distance = 5.0f;
+				switch_distance = 10.0f;
 				break;
 			}
 
@@ -974,16 +974,16 @@ void CRender::add_leafs_Static(IRender_Visual* pVisual)
 		switch (ps_geometry_opt_mode)
 		{
 		case 0:
-			switch_distance = 25.0f;
+			switch_distance = 100.0f;
 			break;
 		case 1:
-			switch_distance = 15.0f;
+			switch_distance = 50.0f;
 			break;
 		case 2:
-			switch_distance = 10.0f;
+			switch_distance = 25.0f;
 			break;
 		case 3:
-			switch_distance = 5.0f;
+			switch_distance = 10.0f;
 			break;
 		}
 
@@ -1142,16 +1142,16 @@ BOOL CRender::add_Dynamic(IRender_Visual* pVisual, u32 planes)
 			switch (ps_geometry_opt_mode)
 			{
 			case 0:
-				switch_distance = 25.0f;
+				switch_distance = 100.0f;
 				break;
 			case 1:
-				switch_distance = 15.0f;
+				switch_distance = 50.0f;
 				break;
 			case 2:
-				switch_distance = 10.0f;
+				switch_distance = 25.0f;
 				break;
 			case 3:
-				switch_distance = 5.0f;
+				switch_distance = 10.0f;
 				break;
 			}
 
@@ -1271,16 +1271,16 @@ void CRender::add_Static(IRender_Visual* pVisual, u32 planes)
 		switch (ps_geometry_opt_mode)
 		{
 		case 0:
-			switch_distance = 25.0f;
+			switch_distance = 100.0f;
 			break;
 		case 1:
-			switch_distance = 15.0f;
+			switch_distance = 50.0f;
 			break;
 		case 2:
-			switch_distance = 10.0f;
+			switch_distance = 25.0f;
 			break;
 		case 3:
-			switch_distance = 5.0f;
+			switch_distance = 10.0f;
 			break;
 		}
 

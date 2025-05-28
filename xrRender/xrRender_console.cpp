@@ -75,12 +75,12 @@ xr_token vignette_mode_token[] =
 	{0, 0}
 };
 
-u32 ps_geometry_opt_mode = 2;
+u32 ps_geometry_opt_mode = 0;
 xr_token geometry_opt_mode_token[] = 
 {
 	{"st_opt_disabled", 0}, 
 	{"st_opt_weak", 1}, 
-	{"st_opt_medium", 2}, 
+	{"st_opt_normal", 2}, 
 	{"st_opt_agressive", 3}, 
 	{0, 0}
 };
