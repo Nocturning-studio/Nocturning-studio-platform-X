@@ -308,8 +308,6 @@ class CRender : public R_dsgraph_structure
 	void save_scene_luminance();
 	void apply_exposure();
 	void render_autoexposure();
-	void start_autoexposure_pipeline();
-	void clear_autoexposure_pipeline();
 	void combine_additional_postprocess();
 	void combine_sun_shafts();
 	void render_skybox();

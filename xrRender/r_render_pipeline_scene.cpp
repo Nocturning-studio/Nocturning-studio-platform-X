@@ -62,8 +62,6 @@ void CRender::RenderScene()
 
 	render_ambient_occlusion();
 
-	start_autoexposure_pipeline();
-
 	if (!is_dynamic_sun_enabled())
 		accumulate_sun_static();
 
@@ -78,8 +76,6 @@ void CRender::RenderScene()
 		g_pGamePersistent->OnRenderPPUI_main();
 
 	output_frame_to_screen();
-
-	clear_autoexposure_pipeline();
 
 	m_saved_viewproj.set(Device.mFullTransform);
 	m_saved_invview.invert(Device.mView);

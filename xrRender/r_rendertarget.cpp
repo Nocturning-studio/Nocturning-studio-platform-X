@@ -96,20 +96,6 @@ void CRenderTarget::create_textures()
 
 	rt_SceneLuminance.create(r_RT_autoexposure_luminance, 8, 8, D3DFMT_R16F);
 	rt_SceneLuminancePrevious.create(r_RT_autoexposure_luminance_previous, 8, 8, D3DFMT_R16F);
-
-	t_LUM_src.create(r_RT_autoexposure_src);
-	t_LUM_dest.create(r_RT_autoexposure_cur);
-
-	// create pool
-	for (u32 it = 0; it < 4; it++)
-	{
-		string256 name;
-		sprintf(name, "%s_%d", r_RT_autoexposure_pool, it);
-		rt_LUM_pool[it].create(name, 1, 1, D3DFMT_L8);
-		RenderBackend.set_Render_Target_Surface(rt_LUM_pool[it]);
-		RenderBackend.set_Depth_Buffer(NULL);
-		CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0x7f7f7f7f, 1.0f, 0L));
-	}
 }
 
 void CRenderTarget::create_blenders()
@@ -263,9 +249,6 @@ CRenderTarget::CRenderTarget()
 
 CRenderTarget::~CRenderTarget()
 {
-	t_LUM_src->surface_set(NULL);
-	t_LUM_dest->surface_set(NULL);
-
 #ifdef DEBUG
 	_SHOW_REF("t_envmap_0 - #small", t_envmap_0->pSurface);
 	_SHOW_REF("t_envmap_1 - #small", t_envmap_1->pSurface);

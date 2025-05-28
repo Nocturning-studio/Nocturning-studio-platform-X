@@ -75,10 +75,6 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_SceneLuminance;
 	ref_rt rt_SceneLuminancePrevious;
 
-	ref_rt rt_LUM_pool[4];	// 1xfp32,1x1,		exp-result -> scaler
-	ref_texture t_LUM_src;	// source
-	ref_texture t_LUM_dest; // destination & usage for current frame
-
 	ref_rt rt_ReflectionsRaw;
 	ref_rt rt_Reflections;
 

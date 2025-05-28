@@ -40,7 +40,7 @@ void CBlender_autoexposure::Compile(CBlender_Compile& C)
 
 		// pass 2
 		C.r_Pass("screen_quad", "postprocess_stage_autoexposure_pass_downsampling_step_2", false, FALSE, FALSE, FALSE);
-		C.r_Sampler_gaussian("s_image", r_RT_autoexposure_t64);
+		C.r_Sampler_gaussian("s_image", r_RT_autoexposure_t8);
 		C.r_End();
 		break;
 
