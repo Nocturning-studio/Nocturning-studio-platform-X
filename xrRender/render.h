@@ -304,6 +304,9 @@ class CRender : public R_dsgraph_structure
 	void clear_bloom();
 	void calculate_bloom();
 	void render_bloom();
+	void downsample_scene_luminance();
+	void save_scene_luminance();
+	void apply_exposure();
 	void render_autoexposure();
 	void start_autoexposure_pipeline();
 	void clear_autoexposure_pipeline();

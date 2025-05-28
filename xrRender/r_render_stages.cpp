@@ -508,9 +508,6 @@ void CRender::render_postprocess()
 
 	render_bloom();
 
-	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
-		render_autoexposure();
-
 	// Generic1 -> Generic0 -> Generic1
 	if (ps_r_postprocess_flags.test(RFLAG_DOF))
 		render_depth_of_field();
@@ -520,6 +517,10 @@ void CRender::render_postprocess()
 
 	// Generic1 -> Generic0
 	combine_additional_postprocess();
+
+	// Generic0 -> Generic0
+	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
+		render_autoexposure();
 
 	//Generic_0 -> Generic_1
 	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())

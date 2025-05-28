@@ -72,6 +72,8 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_LUM_128;
 	ref_rt rt_LUM_64;  // 64bit, 64x64,	log-average in all components
 	ref_rt rt_LUM_8;   // 64bit, 8x8,		log-average in all components
+	ref_rt rt_SceneLuminance;
+	ref_rt rt_SceneLuminancePrevious;
 
 	ref_rt rt_LUM_pool[4];	// 1xfp32,1x1,		exp-result -> scaler
 	ref_texture t_LUM_src;	// source

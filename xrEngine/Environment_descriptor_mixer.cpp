@@ -55,20 +55,31 @@ int get_ref_count(IUnknown* ii);
 float CalcTurbulence(float Time, float Offset, float Turbulence)
 {
 	const float TurbulenceFrequrencyFactor = 0.1f;
+
 	float OscillationsX = sinf(Time * TurbulenceFrequrencyFactor + Offset);
 	float OscillationsY = cosf(Time * Turbulence * TurbulenceFrequrencyFactor + Offset);
 
 	return 1.0f - ((OscillationsX * OscillationsX) * (OscillationsY * OscillationsY) * Turbulence);
 }
 
+float _lerp(float a, float b, float f)
+{
+	return a + f * (b - a);
+}
+
 void CEnvDescriptorMixer::onFrame()
 {
 	wind_turbulence = CalcTurbulence(Device.fTimeGlobal * wind_strength, 2, wind_gusting + 1);
 	clamp(wind_turbulence, -1.0f, 1.0f);
+	wind_turbulence = _lerp(wind_strength, wind_turbulence, wind_gusting);
 }
 
-void CEnvDescriptorMixer::lerp(CEnvironment*, CEnvDescriptor& A, CEnvDescriptor& B, float f, CEnvModifier& Mdf,
-							   float modifier_power)
+void CEnvDescriptorMixer::lerp(	CEnvironment*, 
+								CEnvDescriptor& A, 
+								CEnvDescriptor& B, 
+								float f, 
+								CEnvModifier& Mdf,
+								float modifier_power )
 {
 	float modif_power = 1.f / (modifier_power + 1); // the environment itself
 	float fi = 1 - f;

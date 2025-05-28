@@ -37,7 +37,7 @@ void CRender::calculate_bloom()
 	}
 
 	//Main bloom effect
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PROCESS_BLOOM], 0);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
@@ -49,13 +49,16 @@ void CRender::calculate_bloom()
 	}
 
 	// Blades effect
-	for (int i = 0; i < 2; i++)
 	{
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PROCESS_BLADES], 0);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
 		RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Bloom_Blades_2);
 
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PROCESS_BLADES], 1);
+		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
+		RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Bloom_Blades_1);
+
+		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PROCESS_BLADES], 2);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
 		RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Bloom_Blades_1);
 	}

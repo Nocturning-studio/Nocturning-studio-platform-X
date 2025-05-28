@@ -88,12 +88,14 @@ void CRenderTarget::create_textures()
 	rt_Bloom_Blades_2.create(r_RT_bloom_blades2, w, h, D3DFMT_A16B16G16R16F);
 
 	// autoexposure
-	rt_LUM_512.create(r_RT_autoexposure_t512, 512, 512, D3DFMT_L8);
-	rt_LUM_256.create(r_RT_autoexposure_t256, 256, 256, D3DFMT_L8);
-	rt_LUM_128.create(r_RT_autoexposure_t128, 128, 128, D3DFMT_L8);
-	rt_LUM_64.create(r_RT_autoexposure_t64, 64, 64, D3DFMT_L8);
-	rt_LUM_8.create(r_RT_autoexposure_t8, 8, 8, D3DFMT_L8);
-	f_autoexposure_adapt = 0.5f;
+	rt_LUM_512.create(r_RT_autoexposure_t512, 512, 512, D3DFMT_R16F);
+	rt_LUM_256.create(r_RT_autoexposure_t256, 256, 256, D3DFMT_R16F);
+	rt_LUM_128.create(r_RT_autoexposure_t128, 128, 128, D3DFMT_R16F);
+	rt_LUM_64.create(r_RT_autoexposure_t64, 64, 64, D3DFMT_R16F);
+	rt_LUM_8.create(r_RT_autoexposure_t8, 8, 8, D3DFMT_R16F);
+
+	rt_SceneLuminance.create(r_RT_autoexposure_luminance, 8, 8, D3DFMT_R16F);
+	rt_SceneLuminancePrevious.create(r_RT_autoexposure_luminance_previous, 8, 8, D3DFMT_R16F);
 
 	t_LUM_src.create(r_RT_autoexposure_src);
 	t_LUM_dest.create(r_RT_autoexposure_cur);

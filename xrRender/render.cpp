@@ -246,13 +246,6 @@ CShaderMacros CRender::FetchShaderMacros()
 	macros.add(o.forceskinw, "SKIN_COLOR", "1");
 
 	macros.add("SMAP_SIZE", c_smapsize);
-	macros.add("SHADOW_FILTER", c_shadow_filter);
-
-	macros.add("VIGNETTE_MODE", c_vignette);
-
-	macros.add(ps_render_flags.test(RFLAG_CHROMATIC_ABBERATION), "USE_CHROMATIC_ABBERATION", "1");
-
-	macros.add("BLOOM_QUALITY", c_bloom_quality);
 
 	macros.add("MATERIAL_QUALITY", c_material_quality);
 

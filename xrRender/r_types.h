@@ -58,6 +58,9 @@
 #define r_RT_autoexposure_cur "$user$autoexposure"	 // --- result
 #define r_RT_autoexposure_pool "$user$autoexposure"		 // --- pool
 
+#define r_RT_autoexposure_luminance "$user$autoexposure_luminance"
+#define r_RT_autoexposure_luminance_previous "$user$autoexposure_luminance_previous"
+
 // Shadow map
 #define r_RT_smap_surf "$user$smap_surf"	// --- directional
 #define r_RT_smap_depth "$user$smap_depth" // ---directional
