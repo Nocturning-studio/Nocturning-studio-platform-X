@@ -220,7 +220,7 @@ float ps_r_tf_Mipbias = -0.5f;
 
 float ps_r_df_parallax_h = 0.02f;
 
-float ps_r_ao_brightness = 0.0f;
+float ps_r_ao_brightness = 1.0f;
 
 float ps_r_autoexposure_middlegray = 1.f;
 float ps_r_autoexposure_adaptation = 1.f;
