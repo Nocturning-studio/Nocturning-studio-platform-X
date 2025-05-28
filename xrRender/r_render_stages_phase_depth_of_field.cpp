@@ -26,7 +26,22 @@ void CRender::render_depth_of_field()
 	float DofFocalLength = fov_to_length(Device.fFOV);
 	g_pGamePersistent->GetCurrentDof(Dof);
 
-	for (int i = 0; i < 1; i++)
+	int IterationsNum = 1;
+
+	switch (ps_r_dof_quality)
+	{
+	case 1:
+		IterationsNum = 1;
+		break;
+	case 2:
+		IterationsNum = 1;
+		break;
+	case 3:
+		IterationsNum = 2;
+		break;
+	}
+
+	for (int i = 0; i < IterationsNum; i++)
 	{
 		RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH], 0);
 		RenderBackend.set_Constant("dof_params", Dof.x, 0.5f, Dof.z, ps_r_dof_sky);

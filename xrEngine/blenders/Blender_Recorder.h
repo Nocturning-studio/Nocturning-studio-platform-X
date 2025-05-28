@@ -131,7 +131,7 @@ class ENGINE_API CBlender_Compile
 	void i_Filter(u32 s, u32 _min, u32 _mip, u32 _mag);
 	void i_sRGB(u32 s, bool state = true);
 
-	void r_Define(string32 Name, float value);
+	void r_Define(string32 Name, int value);
 
 	// R1/R2-compiler	[programmable]		- templates
 	void r_Define(BOOL Enabled, string32 Name, string32 Definition);

@@ -519,8 +519,8 @@ void CRender::render_postprocess()
 	combine_additional_postprocess();
 
 	// Generic0 -> Generic0
-	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
-		render_autoexposure();
+	//if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
+	//	render_autoexposure();
 
 	//Generic_0 -> Generic_1
 	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())

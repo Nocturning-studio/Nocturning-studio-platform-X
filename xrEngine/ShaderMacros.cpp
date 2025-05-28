@@ -35,6 +35,13 @@ void CShaderMacros::add(BOOL Enabled, string32 Name, string32 Definition)
 	}
 }
 
+void CShaderMacros::add(string32 Name, int value)
+{
+	string32 Definition;
+	sprintf(Definition, "%d", value);
+	add(TRUE, Name, Definition);
+}
+
 void CShaderMacros::add(string32 Name, string32 Definition)
 {
 	add(TRUE, Name, Definition);

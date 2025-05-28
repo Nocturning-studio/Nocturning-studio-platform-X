@@ -72,6 +72,7 @@ class CRender : public R_dsgraph_structure
 	string32 c_bloom_quality;
 	string32 c_material_quality;
 	string32 c_shadow_filter;
+	string32 c_sun_shafts_quality;
 
 	void CheckHWRenderSupporting();
 	void update_options();

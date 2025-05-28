@@ -49,6 +49,7 @@ void CRender::calculate_bloom()
 	}
 
 	// Blades effect
+	if (ps_r_bloom_quality > 1)
 	{
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PROCESS_BLADES], 0);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);

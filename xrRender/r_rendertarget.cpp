@@ -131,8 +131,8 @@ void CRenderTarget::create_blenders()
 	b_bloom = xr_new<CBlender_bloom>();
 	s_bloom.create(b_bloom, "r\\bloom");
 
-	b_autoexposure = xr_new<CBlender_autoexposure>();
-	s_autoexposure.create(b_autoexposure, "r\\autoexposure");
+	//b_autoexposure = xr_new<CBlender_autoexposure>();
+	//s_autoexposure.create(b_autoexposure, "r\\autoexposure");
 
 	b_combine = xr_new<CBlender_combine>();
 	s_combine.create(b_combine, "r\\combine");
@@ -149,8 +149,8 @@ void CRenderTarget::create_blenders()
 	b_dof = xr_new<CBlender_depth_of_field>();
 	s_dof.create(b_dof, "r\\dof");
 
-	b_motion_blur = xr_new<CBlender_motion_blur>();
-	s_motion_blur.create(b_motion_blur, "r\\motion_blur");
+	//b_motion_blur = xr_new<CBlender_motion_blur>();
+	//s_motion_blur.create(b_motion_blur, "r\\motion_blur");
 
 	b_frame_overlay = xr_new<CBlender_frame_overlay>();
 	s_frame_overlay.create(b_frame_overlay, "r\\frame_overlay");
@@ -161,13 +161,13 @@ void CRenderTarget::delete_blenders()
 	Msg("Deleting blenders");
 
 	xr_delete(b_frame_overlay);
-	xr_delete(b_motion_blur);
+	//xr_delete(b_motion_blur);
 	xr_delete(b_dof);
 	xr_delete(b_reflections);
 	xr_delete(b_distortion);
 	xr_delete(b_antialiasing);
 	xr_delete(b_combine);
-	xr_delete(b_autoexposure);
+	//xr_delete(b_autoexposure);
 	xr_delete(b_bloom);
 	xr_delete(b_ambient_occlusion);
 	xr_delete(b_output_to_screen);

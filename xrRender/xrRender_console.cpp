@@ -11,12 +11,8 @@ u32 ps_Preset = 3;
 xr_token qpreset_token[] = 
 {
 	{"Minimum", 0}, 
-	{"Low", 1},		
-	{"Default", 2}, 
-	{"High", 3},
-	{"Maximum", 4}, 
-	{"Extreme", 5}, 
-	{"Ultra", 6},	
+	{"Default", 1}, 
+	{"Maximum", 2}, 
 	{0, 0}
 };
 
@@ -105,17 +101,15 @@ xr_token bloom_quality_token[] =
 	{"st_opt_low", 1}, 
 	{"st_opt_medium", 2}, 
 	{"st_opt_high", 3}, 
-	{"st_opt_ultra", 4}, 
 	{0, 0}
 };
 
 u32 ps_r_shadow_filtering = 2;
 xr_token shadow_filter_token[] = 
 {
-	{"st_opt_disable", 0}, 
-	{"st_opt_min", 1}, 
-	{"st_opt_mid", 2}, 
-	{"st_opt_max", 3}, 
+	{"st_opt_low", 1}, 
+	{"st_opt_medium", 2}, 
+	{"st_opt_high", 3}, 
 	{0, 0}
 };
 
@@ -144,7 +138,6 @@ xr_token dof_quality_token[] =
 	{"st_opt_low", 1}, 
 	{"st_opt_medium", 2}, 
 	{"st_opt_high", 3}, 
-	{"st_opt_ultra", 4}, 
 	{0, 0}
 };
 
@@ -406,22 +399,10 @@ class CCC_Preset : public CCC_Token
 			strcpy(_cfg, "rspec_minimum.ltx");
 			break;
 		case 1:
-			strcpy(_cfg, "rspec_low.ltx");
-			break;
-		case 2:
 			strcpy(_cfg, "rspec_default.ltx");
 			break;
-		case 3:
-			strcpy(_cfg, "rspec_high.ltx");
-			break;
-		case 4:
+		case 2:
 			strcpy(_cfg, "rspec_maximum.ltx");
-			break;
-		case 5:
-			strcpy(_cfg, "rspec_extreme.ltx");
-			break;
-		case 6:
-			strcpy(_cfg, "rspec_ultra.ltx");
 			break;
 		}
 		FS.update_path(_cfg, "$game_config$", _cfg);

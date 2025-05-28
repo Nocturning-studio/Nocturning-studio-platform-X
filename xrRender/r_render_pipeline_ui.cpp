@@ -61,7 +61,7 @@ void CRender::RenderMenu()
 
 	u32 FrameEndTime = Device.TimerGlobal.GetElapsed_ms();
 	u32 FrameTime = (FrameEndTime - FrameStartTime);
-	u32 DSUpdateDelta = 18.6f;
+	u32 DSUpdateDelta = 16.6f;
 	if (FrameTime < DSUpdateDelta)
 	{
 		Sleep(DSUpdateDelta - FrameTime);

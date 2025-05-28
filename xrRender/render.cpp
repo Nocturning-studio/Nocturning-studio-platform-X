@@ -248,6 +248,7 @@ CShaderMacros CRender::FetchShaderMacros()
 	macros.add("SMAP_SIZE", c_smapsize);
 
 	macros.add("MATERIAL_QUALITY", c_material_quality);
+	macros.add("SHADOW_FILTER_QUALITY", c_shadow_filter);
 
 	macros.add(ps_r_shading_flags.test(RFLAG_FLAT_SHADING), "DISABLE_SHADING", "1");
 

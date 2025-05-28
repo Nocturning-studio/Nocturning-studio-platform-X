@@ -28,6 +28,7 @@ private:
 
   public:
 	void add(BOOL Enabled, string32 Name, string32 Definition);
+	void add(string32 Name, int value);
 	void add(string32 Name, string32 Definition);
 	void add(CShaderMacros& Macros);
 	void undef(string32 Name);
