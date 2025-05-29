@@ -82,56 +82,75 @@ void CRender::render_effectors_pass_night_vision()
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 
-void CRender::render_effectors_pass_screen_dust()
+void CRender::render_effectors_pass_color_blind_filter()
 {
-	OPTICK_EVENT("CRenderTarget::render_effectors_pass_screen_dust");
+	OPTICK_EVENT("CRenderTarget::render_effectors_pass_color_blind_filter");
 
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	float BlendFactor = 0.0f;
+	Fvector3 RedMatrix;
+	Fvector3 GreenMatrix;
+	Fvector3 BlueMatrix;
 
-	if (g_pGamePersistent)
-		BlendFactor = g_pGamePersistent->Environment().GetFlaresBlendFactor();
+	switch (ps_r_color_blind_mode)
+	{
+	case 1: // achromatomaly
+		RedMatrix.set(0.618, 0.32, 0.062);
+		GreenMatrix.set(0.163, 0.775, 0.062);
+		BlueMatrix.set(0.163, 0.320, 0.516);
+		break;
+	case 2: // achromatopsia
+		RedMatrix.set(0.299, 0.587, 0.114);
+		GreenMatrix.set(0.299, 0.587, 0.114);
+		BlueMatrix.set(0.299, 0.587, 0.114);
+		break;
+	case 3: // deuteranomaly
+		RedMatrix.set(0.8, 0.2, 0.0);
+		GreenMatrix.set(0.25833, 0.74167, 0.0);
+		BlueMatrix.set(0.0, 0.14167, 0.85833);
+		break;
+	case 4: // deuteranopia
+		RedMatrix.set(0.625, 0.375, 0.0);
+		GreenMatrix.set(0.7, 0.3, 0.0);
+		BlueMatrix.set(0.0, 0.3, 0.7);
+		break;
+	case 5: // protanomaly
+		RedMatrix.set(0.81667, 0.18333, 0.0);
+		GreenMatrix.set(0.33333, 0.66667, 0.0);
+		BlueMatrix.set(0.0, 0.125, 0.875);
+		break;
+	case 6: // protanopia
+		RedMatrix.set(0.56667, 0.43333, 0.0);
+		GreenMatrix.set(0.55833, 0.44167, 0.0);
+		BlueMatrix.set(0.0, 0.24167, 0.75833);
+		break;
+	case 7: // tritanomaly
+		RedMatrix.set(0.96667, 0.03333, 0.0);
+		GreenMatrix.set(0.0, 0.73333, 0.26667);
+		BlueMatrix.set(0.0, 0.18333, 0.81667);
+		break;
+	case 8: // tritanopia
+		RedMatrix.set(0.95, 0.05, 0);
+		GreenMatrix.set(0.0, 0.43333, 0.56667);
+		BlueMatrix.set(0.0, 0.475, 0.525);
+		break;
+	default:
+		RedMatrix.set(1.0f, 0.0f, 0.0f);
+		GreenMatrix.set(0.0f, 1.0f, 0.0f);
+		BlueMatrix.set(0.0f, 0.0f, 1.0f);
+		break;
+	}
 
-	Fvector vSunDir;
-	vSunDir.set(g_pGamePersistent->Environment().CurrentEnv->sun_dir);
-	vSunDir.mul(vSunDir, -1);
-	R_ASSERT(_valid(vSunDir));
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_COLOR_BLIND_FILTER], 0);
 
-	float fDot;
+	RenderBackend.set_Constant("red_matrix", RedMatrix.x, RedMatrix.y, RedMatrix.z);
+	RenderBackend.set_Constant("green_matrix", GreenMatrix.x, GreenMatrix.y, GreenMatrix.z);
+	RenderBackend.set_Constant("blue_matrix", BlueMatrix.x, BlueMatrix.y, BlueMatrix.z);
 
-	Fvector vecPos;
-
-	Fmatrix matEffCamPos;
-	matEffCamPos.identity();
-	// Calculate our position and direction
-
-	matEffCamPos.i.set(Device.vCameraRight);
-	matEffCamPos.j.set(Device.vCameraTop);
-	matEffCamPos.k.set(Device.vCameraDirection);
-	vecPos.set(Device.vCameraPosition);
-
-	Fvector vecDir;
-	vecDir.set(0.0f, 0.0f, 1.0f);
-	matEffCamPos.transform_dir(vecDir);
-	vecDir.normalize();
-
-	// Figure out of light (or flare) might be visible
-	Fvector vecLight;
-	vecLight.set(vSunDir);
-	vecLight.normalize();
-
-	fDot = vecLight.dotproduct(vecDir);
-
-	if (fDot < 0.0001f)
-		fDot = 0.0f;
-
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_SCREEN_DUST], 0);
-	RenderBackend.set_Constant("blend_factor", BlendFactor, fDot);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_SCREEN_DUST], 1);
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_COLOR_BLIND_FILTER], 1);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
@@ -196,7 +215,6 @@ void CRender::render_effectors_pass_resolve_gamma()
 	RenderBackend.set_Stencil(FALSE);
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_RESOLVE_GAMMA]);
-
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 

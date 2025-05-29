@@ -342,7 +342,7 @@ class CRender : public R_dsgraph_structure
 	void render_fog_scattering();
 	void render_effectors_pass_generate_radiation_noise();
 	void render_effectors_pass_night_vision();
-	void render_effectors_pass_screen_dust();
+	void render_effectors_pass_color_blind_filter();
 	void render_effectors_pass_lut();
 	void render_effectors_pass_combine();
 	void render_effectors_pass_resolve_gamma();

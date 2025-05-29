@@ -153,6 +153,8 @@ extern ECORE_API float ps_r_ao_brightness;
 
 extern ECORE_API u32 ps_r_debug_render;
 
+extern ECORE_API u32 ps_r_color_blind_mode;
+
 extern ECORE_API float ps_r_df_parallax_h;
 extern ECORE_API u32 ps_r_material_quality;
 

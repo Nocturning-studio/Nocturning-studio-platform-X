@@ -160,6 +160,19 @@ xr_token debug_render_token[] =
 	{0, 0}
 };
 
+u32 ps_r_color_blind_mode = 0;
+xr_token color_blind_token[] = 
+{
+	{"st_opt_disable", 0},
+	{"st_opt_achromatomaly", 1},
+	{"st_opt_achromatopsia", 2},
+	{"st_opt_deuteranomaly", 3},
+	{"st_opt_protanomaly", 4},
+	{"st_opt_protanopia", 5},
+	{"st_opt_tritanomaly", 6},
+	{"st_opt_tritanopia", 7},
+	{0, 0}
+};
 /*-------------------------------------------------------------------------------*/
 // Render common values
 /*-------------------------------------------------------------------------------*/
@@ -655,7 +668,9 @@ void xrRender_initconsole()
 	CMD3(CCC_Token, "r_material_quality", &ps_r_material_quality, material_quality_token);
 	//CMD4(CCC_Float, "r_parallax_h", &ps_r_df_parallax_h, .0f, .5f);
 
-	CMD3(CCC_Token, "r_debug_render", &ps_r_debug_render, debug_render_token);
+	CMD3(CCC_Token, "r_debug_render", &ps_r_debug_render, debug_render_token);	
+	
+	CMD3(CCC_Token, "r_color_blind_mode", &ps_r_color_blind_mode, color_blind_token);
 
 	CMD4(CCC_Float, "r_ssa_lod_a", &ps_r_ssaLOD_A, 16, 96);
 	CMD4(CCC_Float, "r_ssa_lod_b", &ps_r_ssaLOD_B, 32, 64);

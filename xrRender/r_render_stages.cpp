@@ -536,14 +536,14 @@ void CRender::render_postprocess()
 	//if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
 	//	render_motion_blur();
 
-	// Ceneric0 -> Generic0
-	render_effectors_pass_screen_dust();
-
 	//Generic_0 -> Generic_1
 	render_effectors_pass_resolve_gamma();
 
 	//Generic_1 -> Generic_0
 	render_effectors_pass_lut();
+
+	// Ceneric0 -> Generic0
+	render_effectors_pass_color_blind_filter();
 
 	// Generic0 -> Generic1
 	render_screen_overlays();

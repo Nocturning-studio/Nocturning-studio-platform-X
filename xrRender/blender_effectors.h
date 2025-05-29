@@ -11,7 +11,7 @@ enum
 	SE_PASS_RADIATION,
 	SE_PASS_RESOLVE_GAMMA,
 	SE_PASS_LUT,
-	SE_PASS_SCREEN_DUST,
+	SE_PASS_COLOR_BLIND_FILTER,
 };
 ///////////////////////////////////////////////////////////////////////////////////
 class CBlender_effectors : public IBlender

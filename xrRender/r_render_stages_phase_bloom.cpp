@@ -58,10 +58,6 @@ void CRender::calculate_bloom()
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PROCESS_BLADES], 1);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
 		RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Bloom_Blades_1);
-
-		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PROCESS_BLADES], 2);
-		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
-		RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Bloom_Blades_1);
 	}
 }
 
