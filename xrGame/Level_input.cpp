@@ -142,19 +142,19 @@ void CLevel::IR_OnKeyboardPress(int key)
 
 	EGameActions _curr = get_binded_action(key);
 
-	Msg("Keyboard pressed");
+	//Msg("Keyboard pressed");
 	DebugUI->IR_OnKeyboardPress(key);
 
 	switch (_curr)
 	{
 
-	case kSCREENSHOT:
-		Render->Screenshot();
+	case kCONSOLE:
+		Console->Show();
 		return;
 		break;
 
-	case kCONSOLE:
-		Console->Show();
+	case kSCREENSHOT:
+		Render->Screenshot();
 		return;
 		break;
 

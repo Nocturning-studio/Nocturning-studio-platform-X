@@ -443,8 +443,8 @@ void CMainMenu::OnFrame()
 			Device.seqRender.Remove(g_pGameLevel);
 		};
 
-		if (m_Flags.test(flRestoreConsole))
-			Console->Show();
+		//if (m_Flags.test(flRestoreConsole))
+		//	Console->Show();
 	}
 
 	if (IsActive() || m_sPDProgress.IsInProgress)
@@ -475,7 +475,7 @@ void CMainMenu::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		};
 		m_screenshotFrame = Device.dwFrame + 1;
 		//m_Flags.set(flRestoreConsole, Console->bVisible);
-		//Console->Hide();
+		Console->Hide();
 	}
 }
 

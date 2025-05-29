@@ -435,7 +435,7 @@ void CGamePersistent::start_logo_intro()
 	if (0 != strstr(Core.Params, "-nointro") || !(ps_game_ls_flags.test(INTRO_ENABLE)))
 	{
 		m_intro_event = 0;
-		Console->Show();
+		//Console->Show();
 		Console->Execute("main_menu on");
 		return;
 	}

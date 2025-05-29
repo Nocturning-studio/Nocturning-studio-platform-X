@@ -112,7 +112,7 @@ CApplication::CApplication()
 	else
 		Device.seqFrame.Add(&SoundProcessor);
 
-	Console->Show();
+	//Console->Show();
 
 	DiscordAPI.Init();
 
@@ -200,16 +200,16 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 		if (g_pGameLevel)
 		{
 			// Get visibility of console BEFORE hiding, for show it again if we needed
-			bool bConsoleVisibility = Console->GetVisibility();
+			//bool bConsoleVisibility = Console->GetVisibility();
 
-			if (bConsoleVisibility)
-				Console->Hide();
+			//if (bConsoleVisibility)
+			//	Console->Hide();
 
 			g_pGameLevel->net_Stop();
 			DEL_INSTANCE(g_pGameLevel);
 
-			if (bConsoleVisibility)
-				Console->Show();
+			//if (bConsoleVisibility)
+			//	Console->Show();
 
 			if ((FALSE == Engine.Event.Peek("KERNEL:quit")) && (FALSE == Engine.Event.Peek("KERNEL:start")))
 			{
