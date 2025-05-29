@@ -1149,6 +1149,8 @@ void CActor::shedule_Update(u32 DT)
 	// звук тяжелого дыхания при уталости и хромании
 	if (this == Level().CurrentControlEntity() && !g_dedicated_server)
 	{
+		Render->set_actor_health(conditions().GetHealth());
+
 		if (LastChanceMode() && !m_bLastChanceActivated && m_bLastChanceAvailable && (conditions().GetHealth() < 0.2f) && g_Alive())
 		{
 			Msg("Last chance used");
@@ -1648,7 +1650,7 @@ void CActor::UpdateArtefactsOnBelt()
 			conditions().ChangeBleeding(artefact->m_fBleedingRestoreSpeed * f_update_time);
 			conditions().ChangeHealth(artefact->m_fHealthRestoreSpeed * f_update_time);
 			conditions().ChangePower(artefact->m_fPowerRestoreSpeed * f_update_time);
-			//			conditions().ChangeSatiety			(artefact->m_fSatietyRestoreSpeed*f_update_time);
+			conditions().ChangeSatiety(artefact->m_fSatietyRestoreSpeed*f_update_time);
 			conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time);
 		}
 	}

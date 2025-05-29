@@ -733,6 +733,8 @@ CRender::CRender() : m_bFirstFrameAfterReset(false)
 		make_string("Can't find 'D3DCompiler_43.dll'\nPlease install latest version of DirectX before running this program");
 
 	init_cacades();
+
+	m_actor_health = 1.0f;
 }
 
 CRender::~CRender()

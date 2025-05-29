@@ -183,6 +183,10 @@ class ENGINE_API IRender_interface
 	virtual void level_Load(IReader*) = 0;
 	virtual void level_Unload() = 0;
 
+	#pragma todo(Deathman to Deathman : Переписать передачу здоровья в рендер)
+	virtual void set_actor_health(float health) = 0;
+	virtual float get_actor_health() = 0;
+
 	virtual IDirect3DBaseTexture9* texture_load(LPCSTR fname, u32& msize) = 0;
 	void shader_option_skinning(s32 mode)
 	{

@@ -223,6 +223,19 @@ class CRender : public R_dsgraph_structure
 
 	virtual IDirect3DBaseTexture9* texture_load(LPCSTR fname, u32& msize);
 
+	/**/
+	#pragma todo(Deathman to Deathman: Переписать передачу здоровья в рендер)
+	float m_actor_health;
+	virtual void set_actor_health(float health)
+	{
+		m_actor_health = health;
+	}
+	virtual float get_actor_health()
+	{
+		return m_actor_health;
+	}
+	/**/
+
 	// Information
 	virtual void Statistics(CGameFont* F);
 	virtual LPCSTR getShaderPath()
