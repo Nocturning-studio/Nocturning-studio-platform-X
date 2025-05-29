@@ -543,7 +543,8 @@ void CRender::render_postprocess()
 	render_effectors_pass_lut();
 
 	// Ceneric0 -> Generic0
-	render_effectors_pass_color_blind_filter();
+	if (ps_r_color_blind_mode)
+		render_effectors_pass_color_blind_filter();
 
 	// Generic0 -> Generic1
 	render_screen_overlays();
