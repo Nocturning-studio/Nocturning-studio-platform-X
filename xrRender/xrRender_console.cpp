@@ -249,7 +249,7 @@ float ps_r_dof_sky = 300;								  //	distance to sky
 float ps_r_dof_diaphragm_size = 5.0f;
 
 float ps_r_ls_depth_scale = 1.00001f;
-float ps_r_ls_depth_bias = -0.0001f;
+float ps_r_ls_depth_bias = -0.001f;
 float ps_r_ls_squality = 1.0f;
 float ps_r_tsm_bias = -0.05f;
 float ps_r_ls_far = 200.0f;
