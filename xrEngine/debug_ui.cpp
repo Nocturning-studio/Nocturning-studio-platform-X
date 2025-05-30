@@ -13,6 +13,7 @@
 ///////////////////////////////////////////////////////////////
 CImguiAPI* ImguiAPI = nullptr;
 ///////////////////////////////////////////////////////////////
+/*
 void CDebugUI::Initialize()
 {
 	ImguiAPI = new CImguiAPI();
@@ -44,7 +45,6 @@ void CDebugUI::OnFrameEnd()
 
 void CDebugUI::DrawUI()
 {
-	/*
 	ImGuiIO& InputOutputParams = ImGui::GetIO();
 	InputOutputParams.MouseDrawCursor = false;
 
@@ -66,7 +66,6 @@ void CDebugUI::DrawUI()
 	//ImGui::PopFont();
 
 	ImGui::End();
-	*/
 }
 
 void CDebugUI::OnResetBegin()
@@ -142,4 +141,5 @@ void CDebugUI::IR_OnMouseRelease(int key)
 		break;
 	}
 }
+*/
 ///////////////////////////////////////////////////////////////
