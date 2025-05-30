@@ -60,9 +60,9 @@ void CRenderTarget::create_textures()
 	
 	//rt_Generic_Prev.create(r_RT_generic_prev, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
-	//rt_Motion_Blur_Previous_Frame_Depth.create(r_RT_mblur_previous_frame_depth, dwWidth, dwHeight, D3DFMT_R16F);
-	//rt_Motion_Blur_Dilation_Map_0.create(r_RT_mblur_dilation_map_0, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
-	//rt_Motion_Blur_Dilation_Map_1.create(r_RT_mblur_dilation_map_1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
+	rt_Motion_Blur_Previous_Frame_Depth.create(r_RT_mblur_previous_frame_depth, dwWidth, dwHeight, D3DFMT_R16F);
+	rt_Motion_Blur_Dilation_Map_0.create(r_RT_mblur_dilation_map_0, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
+	rt_Motion_Blur_Dilation_Map_1.create(r_RT_mblur_dilation_map_1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
 
 	rt_ReflectionsRaw.create(r_RT_reflections_raw, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F);
 	rt_Reflections.create(r_RT_reflections, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F);
@@ -149,8 +149,8 @@ void CRenderTarget::create_blenders()
 	b_dof = xr_new<CBlender_depth_of_field>();
 	s_dof.create(b_dof, "r\\dof");
 
-	//b_motion_blur = xr_new<CBlender_motion_blur>();
-	//s_motion_blur.create(b_motion_blur, "r\\motion_blur");
+	b_motion_blur = xr_new<CBlender_motion_blur>();
+	s_motion_blur.create(b_motion_blur, "r\\motion_blur");
 
 	b_frame_overlay = xr_new<CBlender_frame_overlay>();
 	s_frame_overlay.create(b_frame_overlay, "r\\frame_overlay");
@@ -161,7 +161,7 @@ void CRenderTarget::delete_blenders()
 	Msg("Deleting blenders");
 
 	xr_delete(b_frame_overlay);
-	//xr_delete(b_motion_blur);
+	xr_delete(b_motion_blur);
 	xr_delete(b_dof);
 	xr_delete(b_reflections);
 	xr_delete(b_distortion);

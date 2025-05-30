@@ -11,7 +11,6 @@ void CRender::RenderScene()
 
 	if (m_bFirstFrameAfterReset)
 	{
-		m_bFirstFrameAfterReset = false;
 		m_saved_viewproj.set(Device.mFullTransform);
 		m_saved_invview.invert(Device.mView);
 	}
@@ -40,7 +39,8 @@ void CRender::RenderScene()
 
 	if (m_bFirstFrameAfterReset)
 	{
-		//motion_blur_pass_save_depth();
+		m_bFirstFrameAfterReset = false;
+		motion_blur_pass_save_depth();
 		return;
 	}
 

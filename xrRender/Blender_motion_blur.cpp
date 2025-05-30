@@ -33,14 +33,12 @@ void CBlender_motion_blur::Compile(CBlender_Compile& C)
 	case SE_PASS_BLUR_FRAME:
 		C.r_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur_horizontal", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
-		C.r_Sampler_rtf("s_previous_depth", r_RT_mblur_previous_frame_depth);
 		C.r_Sampler_rtf("s_dilation_map", r_RT_mblur_dilation_map_0);
 		gbuffer(C);
 		C.r_End();
 
 		C.r_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur_vertical", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r_RT_generic1);
-		C.r_Sampler_rtf("s_previous_depth", r_RT_mblur_previous_frame_depth);
 		C.r_Sampler_rtf("s_dilation_map", r_RT_mblur_dilation_map_0);
 		gbuffer(C);
 		C.r_End();

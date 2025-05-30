@@ -533,8 +533,8 @@ void CRender::render_postprocess()
 	render_effectors_pass_combine();
 
 	// Ceneric0 -> Generic0
-	//if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
-	//	render_motion_blur();
+	if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
+		render_motion_blur();
 
 	//Generic_0 -> Generic_1
 	render_effectors_pass_resolve_gamma();

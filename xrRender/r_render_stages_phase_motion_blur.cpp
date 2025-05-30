@@ -27,13 +27,16 @@ void CRender::motion_blur_pass_prepare_dilation_map()
 	RenderBackend.set_Constant("m_previous", m_previous);
 	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_0);
 
-	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_BLUR_DILATION_MAP], 0);
-	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
-	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_1);
+	for (int i = 0; i < 2; i++)
+	{
+		RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_BLUR_DILATION_MAP], 0);
+		RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
+		RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_1);
 
-	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_BLUR_DILATION_MAP], 1);
-	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
-	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_0);
+		RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_BLUR_DILATION_MAP], 1);
+		RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
+		RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Motion_Blur_Dilation_Map_0);
+	}
 }
 
 void CRender::motion_blur_pass_blur()
