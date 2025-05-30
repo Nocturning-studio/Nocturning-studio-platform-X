@@ -106,7 +106,7 @@ class ENGINE_API IGame_Persistent :
 	// Depth of field
 	virtual void GetCurrentDof(Fvector3& dof)
 	{
-		dof.set(10.0f, 0.0f, 250.f);
+		dof.set(100.0f, 100.0f, 100.f);
 	};
 	virtual void SetBaseDof(const Fvector3& dof){};
 	virtual void SetPickableEffectorDOF(bool bSet){};

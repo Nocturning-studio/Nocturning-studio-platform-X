@@ -82,8 +82,6 @@ CWeapon::CWeapon(LPCSTR name)
 
 CWeapon::~CWeapon()
 {
-	Device.time_factor(m_fSavedTimeFactor);
-
 	xr_delete(m_UIScope);
 }
 

@@ -30,7 +30,7 @@ float CActor::GetWeaponAccuracy() const
 	if (m_bZoomAimingMode && W && !GetWeaponParam(W, IsRotatingToZoom(), false))
 		return GetWeaponParam(W, GetZoomFireDispersion(), 0.0f);
 
-	float dispersion = GetWeaponParam(W, GetFireDispersion(), 0.0f) * GetWeaponParam(W, Get_PDM_Base(), 1.0f);
+	float dispersion = GetWeaponParam(W, GetFireDispersion(), 0.0f);
 
 	CEntity::SEntityState state;
 	if (g_State(state))
