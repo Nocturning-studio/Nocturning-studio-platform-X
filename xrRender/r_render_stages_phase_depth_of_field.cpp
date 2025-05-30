@@ -44,11 +44,11 @@ void CRender::render_depth_of_field()
 	for (int i = 0; i < IterationsNum; i++)
 	{
 		RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH], 0);
-		RenderBackend.set_Constant("dof_params", Dof.x, DofFocalLength, Dof.z);
+		RenderBackend.set_Constant("dof_params", Dof.x, DofFocalLength, Dof.z, 0.5f);
 		RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 
 		RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH], 1);
-		RenderBackend.set_Constant("dof_params", Dof.x, DofFocalLength, Dof.z);
+		RenderBackend.set_Constant("dof_params", Dof.x, DofFocalLength, Dof.z, 1.0f);
 		RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 	}
 }
