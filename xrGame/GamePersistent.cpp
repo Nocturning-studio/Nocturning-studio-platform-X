@@ -728,6 +728,7 @@ bool CGamePersistent::CanBePaused()
 void CGamePersistent::SetPickableEffectorDOF(bool bSet)
 {
 	m_bPickableDOF = bSet;
+
 	if (!bSet)
 		RestoreEffectorDOF();
 }

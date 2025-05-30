@@ -76,11 +76,14 @@ CWeapon::CWeapon(LPCSTR name)
 	m_ef_weapon_type = u32(-1);
 	m_UIScope = NULL;
 	m_set_next_ammoType_on_reload = u32(-1);
+
 	m_fSavedTimeFactor = Device.time_factor();
 }
 
 CWeapon::~CWeapon()
 {
+	Device.time_factor(m_fSavedTimeFactor);
+
 	xr_delete(m_UIScope);
 }
 
@@ -1317,7 +1320,9 @@ void CWeapon::OnZoomOut()
 	m_fZoomFactor = g_fov;
 
 	StartHudInertion();
-	GamePersistent().SetPickableEffectorDOF(false);
+
+	if (!IsScopeAttached())
+		GamePersistent().SetPickableEffectorDOF(false);
 }
 
 CUIStaticItem* CWeapon::ZoomTexture()
