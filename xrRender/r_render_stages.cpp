@@ -522,7 +522,7 @@ void CRender::render_postprocess()
 	//if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
 	//	render_autoexposure();
 
-	//Generic_0 -> Generic_1
+	//Generic_0 -> Generic_0
 	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())
 		render_effectors_pass_night_vision();
 

@@ -31,6 +31,10 @@ void CBlender_effectors::Compile(CBlender_Compile& C)
 		C.r_Pass("screen_quad", "postprocess_stage_pass_night_vision", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
 		C.r_End();
+
+		C.r_Pass("null", "simple_image", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
+		C.r_Sampler_rtf("s_image", r_RT_generic1);
+		C.r_End();
 		break;
 	case SE_PASS_RESOLVE_GAMMA:
 		C.r_Pass("screen_quad", "postprocess_stage_pass_resolve_gamma", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);

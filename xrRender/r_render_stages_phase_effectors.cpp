@@ -77,9 +77,11 @@ void CRender::render_effectors_pass_night_vision()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_NIGHT_VISION]);
-
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_NIGHT_VISION], 0);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_NIGHT_VISION], 1);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
 void CRender::render_effectors_pass_color_blind_filter()
