@@ -244,9 +244,7 @@ float ps_r_fxaa_edge_treshold_min = 0.0f;
 
 float ps_r_mblur = 0.5f;
 
-Fvector3 ps_r_dof = Fvector3().set(-1.25f, 1.4f, 600.f); //	x - min (0), y - focus (1.4), z - max (100)
-float ps_r_dof_sky = 300;								  //	distance to sky
-float ps_r_dof_diaphragm_size = 5.0f;
+Fvector3 ps_r_dof = Fvector3().set(100.0f, 100.0f, 100.0f);
 
 float ps_r_ls_depth_scale = 1.00001f;
 float ps_r_ls_depth_bias = -0.001f;
@@ -618,7 +616,6 @@ void xrRender_initconsole()
 	CMD4(CCC_Dof, "r_dof", &ps_r_dof, tw_min, tw_max);
 	CMD4(CCC_DofFocalDepth, "r_dof_focal_depth", &ps_r_dof.x, 0.5f, 100.0f);
 	CMD4(CCC_DofFStop, "r_dof_fstop", &ps_r_dof.z, 1.0f, 100.0f);
-	CMD4(CCC_Float, "r_dof_sky", &ps_r_dof_sky, -10000.f, 10000.f);
 	CMD3(CCC_Mask, "r_dof_enabled", &ps_r_postprocess_flags, RFLAG_DOF);
 	CMD3(CCC_Token, "r_dof_quality", &ps_r_dof_quality, dof_quality_token);
 

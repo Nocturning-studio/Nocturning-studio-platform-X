@@ -1308,8 +1308,7 @@ void CWeapon::OnZoomIn()
 
 	StopHudInertion();
 
-	//if (!IsScopeAttached())
-	if (psActorFlags.test(AF_NEED_DOF))
+	if (psActorFlags.test(AF_NEED_DOF) && !IsScopeAttached())
 		GamePersistent().SetPickableEffectorDOF(true);
 }
 
@@ -1323,8 +1322,7 @@ void CWeapon::OnZoomOut()
 
 	StartHudInertion();
 
-	//if (!IsScopeAttached())
-	if (psActorFlags.test(AF_NEED_DOF))
+	if (psActorFlags.test(AF_NEED_DOF) && !IsScopeAttached())
 		GamePersistent().SetPickableEffectorDOF(false);
 }
 

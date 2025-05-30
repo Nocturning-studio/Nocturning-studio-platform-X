@@ -110,11 +110,9 @@ extern ECORE_API float ps_r_fxaa_subpix;
 extern ECORE_API float ps_r_fxaa_edge_treshold;
 extern ECORE_API float ps_r_fxaa_edge_treshold_min;
 
-extern ECORE_API float ps_r_mblur; // .5f
+extern ECORE_API float ps_r_mblur;
 
-extern ECORE_API Fvector3 ps_r_dof;		  //	x - min (0), y - focus (1.4), z - max (100)
-extern ECORE_API float ps_r_dof_sky;		  //	distance to sky
-extern ECORE_API float ps_r_dof_diaphragm_size; //	7.0f
+extern ECORE_API Fvector3 ps_r_dof;
 extern ECORE_API u32 ps_r_dof_quality;
 
 extern ECORE_API float ps_r_ls_depth_scale; // 1.0f

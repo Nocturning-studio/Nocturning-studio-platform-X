@@ -116,7 +116,7 @@ CGamePersistent::CGamePersistent(void)
 
 	eQuickLoad = Engine.Event.Handler_Attach("Game:QuickLoad", this);
 
-	m_PickDofFstop = READ_IF_EXISTS(pSettings, r_float, "zone_pick_dof", "fstop", 4);
+	m_PickDofFstop = READ_IF_EXISTS(pSettings, r_float, "zone_pick_dof", "fstop", 8);
 	m_PickDofFocalDepth = READ_IF_EXISTS(pSettings, r_float, "zone_pick_dof", "focal_depth", 1);
 	m_DofChangeSpeed = READ_IF_EXISTS(pSettings, r_float, "dof_params", "change_speed", 0.2f);
 	m_DofUI = READ_IF_EXISTS(pSettings, r_fvector3, "ui_dof", "dof", Fvector().set(2.0f, 0.5f, 1));
