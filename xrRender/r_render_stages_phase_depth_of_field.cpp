@@ -45,11 +45,13 @@ void CRender::render_depth_of_field()
 
 	for (int i = 0; i < IterationsNum; i++)
 	{
-		RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH], 0);
-		RenderBackend.set_Constant("dof_params", Dof.x, DofFocalLength, Dof.z, 0.5f);
+		int ShaderPass = ps_r_dof_quality > 2 ? SE_PASS_PROCESS_BOKEH_HQ : SE_PASS_PROCESS_BOKEH_LQ;
+		RenderBackend.set_Element(RenderTarget->s_dof->E[ShaderPass], 0);
+		RenderBackend.set_Constant("dof_params", Dof.x, DofFocalLength, Dof.z, 1.0f);
 		RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 
-		RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH], 1);
+		ShaderPass = ps_r_dof_quality > 1 ? SE_PASS_PROCESS_BOKEH_HQ : SE_PASS_DOF_DUMMY;
+		RenderBackend.set_Element(RenderTarget->s_dof->E[ShaderPass], 1);
 		RenderBackend.set_Constant("dof_params", Dof.x, DofFocalLength, Dof.z, 1.0f);
 		RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 	}
