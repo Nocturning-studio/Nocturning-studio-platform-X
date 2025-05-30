@@ -11,6 +11,7 @@ enum
 	AF_PSP = (1 << 6),
 	AF_ZOOM_TIME_SLOW_MO = (1 << 7),
 	AF_LAST_CHANCE = (1 << 8),
+	AF_NEED_DOF = (1 << 9)
 };
 
 extern Flags32 psActorFlags;

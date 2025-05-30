@@ -1907,6 +1907,8 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask, "gh_zoom_time_slow_mo", &psActorFlags, AF_ZOOM_TIME_SLOW_MO);
 	CMD3(CCC_Mask, "gh_last_chance", &psActorFlags, AF_LAST_CHANCE);
 
+	CMD3(CCC_Mask, "need_zoom_dof", &psActorFlags, AF_NEED_DOF);
+
 #ifdef DEBUG
 	CMD1(CCC_LuaHelp, "lua_help");
 	CMD1(CCC_ShowSmartCastStats, "show_smart_cast_stats");
