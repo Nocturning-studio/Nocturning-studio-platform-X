@@ -226,7 +226,7 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 	Device.mFullTransform.transform(center_pt);
 	zMax = center_pt.z;
 
-	if (u_DBT_enable(zMin, zMax))
+	if (0)//(u_DBT_enable(zMin, zMax))
 	{
 		// z-test always
 		HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);

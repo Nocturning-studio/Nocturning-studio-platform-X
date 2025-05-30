@@ -33,7 +33,7 @@ void CBlender_bloom::Compile(CBlender_Compile& C)
 		C.r_Sampler_gaussian("s_bloom_blades", r_RT_bloom_blades1);
 		C.r_End();
 
-		C.r_Pass("screen_quad", "postprocess_stage_bloom_blades_filter_vertical", FALSE, FALSE, FALSE);
+		C.r_Pass("screen_quad", "postprocess_stage_bloom_blades_filter_horizontal", FALSE, FALSE, FALSE);
 		C.r_Sampler_gaussian("s_bloom_blades", r_RT_bloom_blades2);
 		C.r_End();
 
