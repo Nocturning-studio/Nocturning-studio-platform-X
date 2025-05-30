@@ -28,6 +28,7 @@ void CRender::render_depth_of_field()
 
 	int IterationsNum = 1;
 
+	/*
 	switch (ps_r_dof_quality)
 	{
 	case 1:
@@ -40,6 +41,7 @@ void CRender::render_depth_of_field()
 		IterationsNum = 2;
 		break;
 	}
+	*/
 
 	for (int i = 0; i < IterationsNum; i++)
 	{
