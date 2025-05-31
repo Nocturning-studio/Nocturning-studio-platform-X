@@ -20,24 +20,27 @@ void CBlender_bloom::Compile(CBlender_Compile& C)
 		C.r_End();
 		break;
 	case SE_PASS_PROCESS_BLOOM:
-		C.r_Pass("screen_quad", "postprocess_stage_bloom_filter_vertical", FALSE, FALSE, FALSE);
+		C.r_Pass("screen_quad", "postprocess_stage_bloom_filter", FALSE, FALSE, FALSE);
 		C.r_Sampler_gaussian("s_bloom", r_RT_bloom1);
 		C.r_End();
 
-		C.r_Pass("screen_quad", "postprocess_stage_bloom_filter_horizontal", FALSE, FALSE, FALSE);
+		C.r_Pass("screen_quad", "postprocess_stage_bloom_filter", FALSE, FALSE, FALSE);
 		C.r_Sampler_gaussian("s_bloom", r_RT_bloom2);
 		C.r_End();
 		break;
 	case SE_PASS_PROCESS_BLADES:
-		C.r_Pass("screen_quad", "postprocess_stage_bloom_blades_filter_horizontal", FALSE, FALSE, FALSE);
+		C.r_Define("FILTER_STEP", "1");
+		C.r_Pass("screen_quad", "postprocess_stage_bloom_blades_filter", FALSE, FALSE, FALSE);
 		C.r_Sampler_gaussian("s_bloom_blades", r_RT_bloom_blades1);
 		C.r_End();
 
-		C.r_Pass("screen_quad", "postprocess_stage_bloom_blades_filter_horizontal", FALSE, FALSE, FALSE);
+		C.r_Define("FILTER_STEP", "2");
+		C.r_Pass("screen_quad", "postprocess_stage_bloom_blades_filter", FALSE, FALSE, FALSE);
 		C.r_Sampler_gaussian("s_bloom_blades", r_RT_bloom_blades2);
 		C.r_End();
 
-		C.r_Pass("screen_quad", "postprocess_stage_bloom_blades_filter_vertical", FALSE, FALSE, FALSE);
+		C.r_Define("FILTER_STEP", "3");
+		C.r_Pass("screen_quad", "postprocess_stage_bloom_blades_filter", FALSE, FALSE, FALSE);
 		C.r_Sampler_gaussian("s_bloom_blades", r_RT_bloom_blades1);
 		C.r_End();
 		break;
