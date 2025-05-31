@@ -204,6 +204,8 @@ void CRender::render_effectors_pass_combine()
 								color_get_B(p_brightness) / 255.f, 
 								RenderTarget->param_noise);
 
+	RenderBackend.set_Constant("actor_health", get_actor_health());
+
 	RenderBackend.set_Geometry(RenderTarget->g_effectors);
 
 	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);

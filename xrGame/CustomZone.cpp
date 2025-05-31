@@ -1382,22 +1382,22 @@ void CCustomZone::net_Relcase(CObject* O)
 
 void CCustomZone::enter_Zone(SZoneObjectInfo& io)
 {
-	if (m_zone_flags.test(eAffectPickDOF) && Level().CurrentEntity())
-	{
-		if (io.object->ID() == Level().CurrentEntity()->ID())
-			GamePersistent().SetPickableEffectorDOF(true);
-	}
+	//if (m_zone_flags.test(eAffectPickDOF) && Level().CurrentEntity())
+	//{
+	//	if (io.object->ID() == Level().CurrentEntity()->ID())
+	//		GamePersistent().SetPickableEffectorDOF(true);
+	//}
 }
 
 void CCustomZone::exit_Zone(SZoneObjectInfo& io)
 {
 	StopObjectIdleParticles(io.object);
 
-	if (m_zone_flags.test(eAffectPickDOF) && Level().CurrentEntity())
-	{
-		if (io.object->ID() == Level().CurrentEntity()->ID())
-			GamePersistent().SetPickableEffectorDOF(false);
-	}
+	//if (m_zone_flags.test(eAffectPickDOF) && Level().CurrentEntity())
+	//{
+	//	if (io.object->ID() == Level().CurrentEntity()->ID())
+	//		GamePersistent().SetPickableEffectorDOF(false);
+	//}
 }
 
 void CCustomZone::PlayAccumParticles()

@@ -262,7 +262,7 @@ void CInventoryOwner::StartTalk(CInventoryOwner* talk_partner, bool start_trade)
 	m_bTalking = true;
 	m_pTalkPartner = talk_partner;
 
-	GamePersistent().SetPickableEffectorDOF(true);
+	//GamePersistent().SetPickableEffectorDOF(true);
 
 	// тут же включаем торговлю
 	if (start_trade)
@@ -277,7 +277,7 @@ void CInventoryOwner::StopTalk()
 	m_pTalkPartner = NULL;
 	m_bTalking = false;
 
-	GamePersistent().SetPickableEffectorDOF(false);
+	//GamePersistent().SetPickableEffectorDOF(false);
 
 	GetTrade()->StopTrade();
 
