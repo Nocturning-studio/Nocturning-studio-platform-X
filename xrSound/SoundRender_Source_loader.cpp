@@ -162,10 +162,27 @@ void CSoundRender_Source::load(LPCSTR name)
 	if (!FS.exist("$level$", fn))
 		FS.update_path(fn, "$game_sounds$", fn);
 
+	#pragma todo(NSDeathman to NSDeathman - кастыль)
 	if (!FS.exist(fn))
 	{
-		Msg("! Can't find sound '%s'", name);
-		FS.update_path(fn, "$game_sounds$", "$no_sound.ogg");
+		Msg("! Can't find sound '%s', try to find _l.ogg version", name);
+
+		string_path DummyPath = {0};
+		string_path ResultPath = {0};
+		strcpy_s(fn, sizeof(fn), name);
+		strconcat(sizeof(fn), fn, fn, "_l.ogg");
+
+		FS.update_path(fn, "$game_sounds$", fn);
+
+		if (!FS.exist(fn))
+		{
+			Msg("! Can't find sound '%s'", ResultPath);
+			FS.update_path(fn, "$game_sounds$", "$no_sound.ogg");
+		}
+		else
+		{
+			Msg("- Successfuly finded _l.ogg version of sound '%s', replace it", fn);
+		}
 	}
 
 	LoadWave(fn);
