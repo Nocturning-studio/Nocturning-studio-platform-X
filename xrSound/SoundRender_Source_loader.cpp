@@ -167,8 +167,6 @@ void CSoundRender_Source::load(LPCSTR name)
 	{
 		Msg("! Can't find sound '%s', try to find _l.ogg version", name);
 
-		string_path DummyPath = {0};
-		string_path ResultPath = {0};
 		strcpy_s(fn, sizeof(fn), name);
 		strconcat(sizeof(fn), fn, fn, "_l.ogg");
 
@@ -176,7 +174,7 @@ void CSoundRender_Source::load(LPCSTR name)
 
 		if (!FS.exist(fn))
 		{
-			Msg("! Can't find sound '%s'", ResultPath);
+			Msg("! Can't find sound '%s'", fn);
 			FS.update_path(fn, "$game_sounds$", "$no_sound.ogg");
 		}
 		else
