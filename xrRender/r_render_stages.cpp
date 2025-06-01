@@ -499,9 +499,6 @@ void CRender::render_postprocess()
 
 	Device.Statistic->RenderCALC_POSTPROCESS.Begin();
 
-	// Generic0 -> Generic1
-	render_antialiasing();
-
 	create_distortion_mask();
 
 	render_distortion();
@@ -538,6 +535,9 @@ void CRender::render_postprocess()
 
 	//Generic_0 -> Generic_1
 	render_effectors_pass_resolve_gamma();
+
+	// Generic1 -> Generic0 -> Generic1
+	render_antialiasing();
 
 	//Generic_1 -> Generic_0
 	render_effectors_pass_lut();

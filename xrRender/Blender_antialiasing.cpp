@@ -17,6 +17,10 @@ void CBlender_antialiasing::Compile(CBlender_Compile& C)
 	{
 	case SE_PASS_FXAA:
 		C.r_Pass("screen_quad", "postprocess_stage_antialiasing_pass_fxaa", FALSE, FALSE, FALSE);
+		C.r_Sampler_rtf("s_image", r_RT_generic1);
+		C.r_End();
+
+		C.r_Pass("screen_quad", "postprocess_stage_antialiasing_pass_fxaa", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
 		C.r_End();
 		break;
