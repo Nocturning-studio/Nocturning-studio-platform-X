@@ -94,7 +94,7 @@ void CXRay::InitConsole()
 	}
 	else
 	{
-		strcpy_s(Console->ConfigFile, sizeof(Console->ConfigFile), "user_game_settings.ltx");
+		strcpy_s(Console->ConfigFile, sizeof(Console->ConfigFile), "user_game_settings");
 		Msg("Execute game settings file: %s", Console->ConfigFile);
 	}
 }
