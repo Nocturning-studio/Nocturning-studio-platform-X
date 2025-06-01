@@ -449,7 +449,6 @@ struct debug_memory_guard
 #endif // DEBUG_MEMORY_MANAGER
 
 bool DemoStarted = false;
-bool FirstFrame = true;
 
 void CLevel::OnFrame()
 {
@@ -601,26 +600,21 @@ void CLevel::OnFrame()
 
 	#pragma todo(NSDeathman to NSDeathman : Переписать)
 #ifdef BENCHMARK_BUILD
-	if (!FirstFrame)
+	if (!DemoStarted)
 	{
-		if (!DemoStarted)
+		if (strstr(Core.Params, "-demo_play "))
 		{
-			if (strstr(Core.Params, "-demo_play "))
-			{
-				DemoStarted = true;
-				LPCSTR pStartup = strstr(Core.Params, "-demo_play ");
-				Console->Execute(pStartup + 1);
-				Msg("%s", pStartup);
-			}
-			else
-			{
-				Console->Execute("quit");
-			}
+			DemoStarted = true;
+			LPCSTR pStartup = strstr(Core.Params, "-demo_play ");
+			Console->Execute(pStartup + 1);
+			Msg("%s", pStartup);
+		}
+		else
+		{
+			Console->Execute("quit");
 		}
 	}
 #endif
-
-	FirstFrame = false;
 }
 
 int psLUA_GCSTEP = 10;
