@@ -227,7 +227,7 @@ void CDemoPlay::Update(SCamEffectorInfo& info)
 	// Отслеживаем подошли ли мы к последним кадрам демо
 	// чтобы засетить в это время вывод статистики
 #ifdef BENCHMARK_BUILD
-	if (frame == (m_frames_count - 10))
+	if (Frame == (m_frames_count - 10))
 		EnableBenchmarkResultPrint();
 #endif
 
