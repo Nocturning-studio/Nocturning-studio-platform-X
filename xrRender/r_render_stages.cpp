@@ -537,7 +537,8 @@ void CRender::render_postprocess()
 	render_effectors_pass_resolve_gamma();
 
 	// Generic1 -> Generic0 -> Generic1
-	render_antialiasing();
+	if (ps_r_postprocess_flags.test(RFLAG_ANTI_ALIASING))
+		render_antialiasing();
 
 	//Generic_1 -> Generic_0
 	render_effectors_pass_lut();
