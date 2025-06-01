@@ -13,14 +13,14 @@ string_path demo_file_name;
 
 u32 TotalFramesCount;
 /////////////////////////////////////////////////////////////////
-float g_fGlobalFov;
-float g_fFov;
+float g_fGlobalFov = 67.5f;
+float g_fFov = 67.5f;
 Fvector3 g_vGlobalDepthOfFieldParameters;
 Fvector3 g_fDOF;
-bool g_bAutofocusEnabled;
-bool g_bGridEnabled;
-bool g_bBordersEnabled;
-bool g_bWatermarkEnabled;
+bool g_bAutofocusEnabled = false;
+bool g_bGridEnabled = false;
+bool g_bBordersEnabled = false;
+bool g_bWatermarkEnabled = false;
 /////////////////////////////////////////////////////////////////
 void SetDefaultParameters()
 {

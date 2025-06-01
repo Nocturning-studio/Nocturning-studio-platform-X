@@ -449,28 +449,11 @@ struct debug_memory_guard
 #endif // DEBUG_MEMORY_MANAGER
 
 bool DemoStarted = false;
+bool FirstFrame = true;
 
 void CLevel::OnFrame()
 {
 	OPTICK_EVENT("CLevel::OnFrame");
-
-#pragma todo(NSDeathman to NSDeathman: Переписать)
-#ifdef BENCHMARK_BUILD
-	if (!DemoStarted)
-	{
-		if (strstr(Core.Params, "-demo_play "))
-		{
-			DemoStarted = true;
-			LPCSTR pStartup = strstr(Core.Params, "-demo_play ");
-			Console->Execute(pStartup + 1);
-			Msg("%s", pStartup);
-		}
-		else
-		{
-			Console->Execute("quit");
-		}
-	}
-#endif
 
 #ifdef DEBUG_MEMORY_MANAGER
 	debug_memory_guard __guard__;
@@ -615,6 +598,29 @@ void CLevel::OnFrame()
 		pStatGraphR->AppendItem(float(m_dwRPC) * fRPC_Mult, 0xffff0000, 1);
 		pStatGraphR->AppendItem(float(m_dwRPS) * fRPS_Mult, 0xff00ff00, 0);
 	};
+
+	#pragma todo(NSDeathman to NSDeathman : Переписать)
+#ifdef BENCHMARK_BUILD
+	if (!FirstFrame)
+	{
+		if (!DemoStarted)
+		{
+			if (strstr(Core.Params, "-demo_play "))
+			{
+				DemoStarted = true;
+				LPCSTR pStartup = strstr(Core.Params, "-demo_play ");
+				Console->Execute(pStartup + 1);
+				Msg("%s", pStartup);
+			}
+			else
+			{
+				Console->Execute("quit");
+			}
+		}
+	}
+#endif
+
+	FirstFrame = false;
 }
 
 int psLUA_GCSTEP = 10;

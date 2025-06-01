@@ -226,6 +226,7 @@ void CRender::update_options()
 	sprintf(c_bloom_quality, "%d", ps_r_bloom_quality);
 	sprintf(c_shadow_filter, "%d", ps_r_shadow_filtering);
 	sprintf(c_material_quality, "%d", ps_r_material_quality);
+	sprintf(c_sun_shafts_quality, "%d", ps_r_sun_shafts_quality);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -248,7 +249,12 @@ CShaderMacros CRender::FetchShaderMacros()
 	macros.add("SMAP_SIZE", c_smapsize);
 
 	macros.add("MATERIAL_QUALITY", c_material_quality);
+
 	macros.add("SHADOW_FILTER_QUALITY", c_shadow_filter);
+
+	macros.add(ps_r_lighting_flags.test(RFLAG_SUN_SHAFTS), "SUN_SHAFTS_ENABLED", "1");
+
+	macros.add("SUN_SHAFTS_QUALITY", c_sun_shafts_quality);
 
 	macros.add(ps_r_shading_flags.test(RFLAG_FLAT_SHADING), "DISABLE_SHADING", "1");
 
