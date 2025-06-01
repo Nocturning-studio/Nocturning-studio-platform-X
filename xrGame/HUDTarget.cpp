@@ -162,7 +162,7 @@ void CHUDTarget::Render()
 		F->OutNext("%4.1f", RQ.range);
 	}
 
-	if (psHUD_Flags.test(HUD_INFO) && psHUD_Flags.test(HUD_DRAW))
+	if (psHUD_Flags.test(HUD_INFO))
 	{
 		if (RQ.O)
 		{
