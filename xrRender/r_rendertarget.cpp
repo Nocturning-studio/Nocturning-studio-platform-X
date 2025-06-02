@@ -80,7 +80,7 @@ void CRenderTarget::create_textures()
 	t_LUT_1.create(r_T_LUTs1);
 
 	// BLOOM
-	float BloomResolutionMultiplier = 0.2f;
+	float BloomResolutionMultiplier = 0.25f;
 	u32 w = u32(dwWidth * BloomResolutionMultiplier), h = u32(dwHeight * BloomResolutionMultiplier);
 	rt_Bloom_1.create(r_RT_bloom1, w, h, D3DFMT_A16B16G16R16F);
 	rt_Bloom_2.create(r_RT_bloom2, w, h, D3DFMT_A16B16G16R16F);

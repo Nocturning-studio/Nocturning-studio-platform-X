@@ -20,7 +20,7 @@ void CRender::calculate_bloom()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	float BloomResolutionMultiplier = 0.2f;
+	float BloomResolutionMultiplier = 0.25f;
 
 	float w = float(Device.dwWidth) * BloomResolutionMultiplier;
 	float h = float(Device.dwHeight) * BloomResolutionMultiplier;
@@ -28,7 +28,7 @@ void CRender::calculate_bloom()
 	// Downsample, prepare image and store in rt_Bloom_1 and rt_Bloom_Blades
 	{
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PREPARE]);
-		RenderBackend.set_Constant("bloom_parameters", ps_r_bloom_threshold, 
+		RenderBackend.set_Constant("bloom_parameters",  ps_r_bloom_threshold, 
 														ps_r_bloom_brightness, 
 														ps_r_bloom_blades_threshold, 
 														ps_r_bloom_blades_brightness);

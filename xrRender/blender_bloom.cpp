@@ -20,6 +20,7 @@ void CBlender_bloom::Compile(CBlender_Compile& C)
 		C.r_End();
 		break;
 	case SE_PASS_PROCESS_BLOOM:
+		C.r_Define("USE_HORIZONTAL_FILTER", "1");
 		C.r_Pass("screen_quad", "postprocess_stage_bloom_filter", FALSE, FALSE, FALSE);
 		C.r_Sampler_gaussian("s_bloom", r_RT_bloom1);
 		C.r_End();
