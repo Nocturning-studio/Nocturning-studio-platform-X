@@ -617,13 +617,13 @@ void CEnvironment::calculate_dynamic_sun_dir()
 	CurrentEnv->sun_color.set(1, 1, 1);
 	CurrentEnv->sun_color.y *= fSunBlend1;
 	CurrentEnv->sun_color.z *= fSunBlend1 * 0.9f;
-#endif
-
-	CurrentEnv->sun_color.mul(fSunBlend);
 
 	float AmbientBrightness = CurrentEnv->ambient_brightness;
 	float MinAmb = 0.5f;
 	CurrentEnv->ambient_brightness = MinAmb + fSunBlend * (AmbientBrightness - MinAmb);
+#endif
+
+	CurrentEnv->sun_color.mul(fSunBlend);
 }
 
 void CEnvironment::create_mixer()
