@@ -343,21 +343,21 @@
     <LibraryPath>$(SolutionDir)third-party\lib\;$(SolutionDir)..\libraries\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;.;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\DXSDK\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third-party\lib\x86\;$(LibraryPath);$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries-benchmark\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;.;$(SolutionDir)third-party\include\;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\DXSDK\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third-party\lib\x86\;$(LibraryPath);$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;.;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\DXSDK\;$(IncludePath)</IncludePath>
@@ -371,7 +371,7 @@
     <LibraryPath>$(SolutionDir)third-party\lib\x86\;$(LibraryPath);$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrLua\src\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\DXSDK\;$(IncludePath)</IncludePath>

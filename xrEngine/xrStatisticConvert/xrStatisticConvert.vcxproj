@@ -193,19 +193,19 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries-benchmark\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\</LibraryPath>
@@ -217,7 +217,7 @@
     <LibraryPath>$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\</LibraryPath>

@@ -223,21 +223,21 @@
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(ProjectDir)src\;$(ProjectDir)dynasm\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(ProjectDir)src\;$(ProjectDir)dynasm\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries-benchmark\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(ProjectDir)src\;$(ProjectDir)dynasm\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(ProjectDir)src\;$(ProjectDir)dynasm\;$(IncludePath)</IncludePath>
@@ -251,7 +251,7 @@
     <LibraryPath>$(SolutionDir)third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\;$(SolutionDir)xrCore\;$(ProjectDir)src\;$(ProjectDir)dynasm\;$(IncludePath)</IncludePath>

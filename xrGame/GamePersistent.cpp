@@ -728,6 +728,9 @@ bool CGamePersistent::CanBePaused()
 
 void CGamePersistent::SetPickableEffectorDOF(bool bSet)
 {
+	if ((m_bPickableDOF == false) && (bSet == false))
+		return;
+
 	m_bPickableDOF = bSet;
 
 	if (!bSet)
@@ -757,6 +760,7 @@ void CGamePersistent::RestoreEffectorDOF()
 {
 	SetEffectorDOF(m_dof[3]);
 }
+
 #include "hudmanager.h"
 #pragma todo(NSDeathman to NSDeathman: Доработать)
 //	m_dof		[4];	// 0-dest 1-current 2-from 3-original
@@ -778,6 +782,7 @@ void CGamePersistent::UpdateDof()
 	diff.sub(m_dof[0], m_dof[2]);
 	diff.mul(TimeDelta / m_DofChangeSpeed);
 	m_dof[1].mad(m_dof[1], diff, Scale);
+
 	clamp(m_dof[0].x, 1.0f, 1000.0f);
 	clamp(m_dof[1].x, 1.0f, 1000.0f);
 	clamp(m_dof[2].x, 1.0f, 1000.0f);
