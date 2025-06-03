@@ -32,6 +32,8 @@ class ENGINE_API CDemoPlay : public CEffectorCam, public IInputReceiver
 
 	Fmatrix m_Camera;
 
+	bool m_bIsFirstFrame;
+
 	void Update(SCamEffectorInfo& info);
 	void PrintSummaryBanchmarkStatistic();
 	void ResetPerFrameStatistic();

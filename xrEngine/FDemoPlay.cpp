@@ -16,6 +16,8 @@
 #include "../xrGame/Level.h"
 #include "CustomHUD.h"
 //////////////////////////////////////////////////////////////////////
+//#define BENCHMARK_BUILD
+//////////////////////////////////////////////////////////////////////
 CDemoPlay::CDemoPlay(const char* name, float ms, u32 cycles, float life_time): CEffectorCam(cefDemo, life_time)
 {
 	// Есть ли файл
@@ -71,6 +73,11 @@ CDemoPlay::CDemoPlay(const char* name, float ms, u32 cycles, float life_time): C
 
 	// Переменные для сбора общей и покадровой статистики
 	ResetPerFrameStatistic();
+
+	// Флаг, для того чтобы на первом кадре
+	// поставить камеру на нужное место
+	// чтобы не сломались транформы
+	m_bIsFirstFrame = true;
 }
 
 CDemoPlay::~CDemoPlay()
@@ -254,7 +261,9 @@ void CDemoPlay::Update(SCamEffectorInfo& info)
 	ApplyFrameParameters(Frame, InterpolationFactor);
 
 	// Move обновляет view матрицу при помощи нужного типа интерполяции
-	if (NeedInterpolation(Frame) && Frame != m_frames_count)
+	// Проверка на m_bIsFirstFrame нужна чтобы телепортировать камеру на стартовую точку
+	// чтобы трансформы не сломались
+	if (NeedInterpolation(Frame) && (Frame != m_frames_count) && !m_bIsFirstFrame)
 	{
 		MoveCamera(Frame, InterpolationFactor, GetInterpolationType(Frame));
 	}
@@ -301,6 +310,8 @@ BOOL CDemoPlay::ProcessCam(SCamEffectorInfo& info)
 
 	Update(info);
 
+	m_bIsFirstFrame = false;
+
 	return TRUE;
 }
 
@@ -342,7 +353,6 @@ void CDemoPlay::IR_OnKeyboardPress(int dik)
 		Screenshot();
 }
 
-
 void CDemoPlay::PrintSummaryBanchmarkStatistic()
 {
 	// Выравниваем надпись по левому краю строки
@@ -356,6 +366,9 @@ void CDemoPlay::PrintSummaryBanchmarkStatistic()
 	ChooseTextColor(fFPS_max);
 	pApp->pFontSystem->OutNext("FPS Maximal: %f", fFPS_max);
 
+	ChooseTextColor(fFPS_avg);
+	pApp->pFontSystem->OutNext("FPS Average: %f", fFPS_avg);
+
 	ChooseTextColor(fFPS_min);
 	pApp->pFontSystem->OutNext("FPS Minimal: %f", fFPS_min);
 
@@ -367,9 +380,13 @@ void CDemoPlay::PrintSummaryBanchmarkStatistic()
 
 void CDemoPlay::ResetPerFrameStatistic()
 {
-	fFPS = 0.0f;
+	fFPS = NULL;
 	fFPS_min = flt_max;
 	fFPS_max = flt_min;
+	fFPS_avg = NULL;
+
+	stat_StartFrame = Device.dwFrame;
+	stat_Timer_total.Start();
 }
 
 // Разные цвета для разных значений кадров в секунду
@@ -395,6 +412,11 @@ void CDemoPlay::ShowPerFrameStatistic()
 	float fInv = 1.f - fOne;
 	fFPS = fInv * fFPS + fOne * fps;
 
+	// Средний FPS
+	float stat_total = stat_Timer_total.GetElapsed_sec();
+	u32 dwFramesTotal = Device.dwFrame - stat_StartFrame;
+	fFPS_avg = float(dwFramesTotal) / stat_total;
+
 	// При alt + tab бывает скачок количества кадров
 	// попытка убавить значение до среднего чтобы в
 	// следующем вызове он выравнялся до нормального
@@ -411,17 +433,32 @@ void CDemoPlay::ShowPerFrameStatistic()
 	if (fFPS > fFPS_max)
 		fFPS_max = fFPS;
 
+	// FPS средний не может быть FPS максимального, 
+	// перезапускаем отсчет
+	if (fFPS_avg > fFPS_max)
+	{
+		fFPS_avg = fFPS_max;
+		stat_StartFrame = Device.dwFrame;
+		stat_Timer_total.Start();
+	}
+
 	// Выравниваем надпись по левому краю строки
 	pApp->pFontSystem->SetAligment(CGameFont::alLeft);
 
 	// Сетим надписи в левом верхнем углу
-	pApp->pFontSystem->OutSetI(-1.0, -0.8f);
+	if (g_bBordersEnabled)
+		pApp->pFontSystem->OutSetI(-1.0, -0.8f);
+	else
+		pApp->pFontSystem->OutSetI(-1.0, -1.0f);
 
 	ChooseTextColor(fFPS);
 	pApp->pFontSystem->OutNext("FPS: %f", fFPS);
 
 	ChooseTextColor(fFPS_max);
 	pApp->pFontSystem->OutNext("FPS Maximal: %f", fFPS_max);
+
+	ChooseTextColor(fFPS_avg);
+	pApp->pFontSystem->OutNext("FPS Average: %f", fFPS_avg);
 
 	ChooseTextColor(fFPS_min);
 	pApp->pFontSystem->OutNext("FPS Minimal: %f", fFPS_min);

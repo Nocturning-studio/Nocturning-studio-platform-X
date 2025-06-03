@@ -164,12 +164,15 @@ void ReadAllFramesDataFromIni(const char* name)
 /////////////////////////////////////////////////////////////////
 Fmatrix MakeCameraMatrixFromFrameNumber(int Frame)
 {
-	Fvector3 HPB;
-	HPB.set(FramesArray[Frame].HPB);
-
+	Fvector3 HPB, Position;
 	Fmatrix Camera;
+
+	HPB.set(FramesArray[Frame].HPB);
+	Position.set(FramesArray[Frame].Position);
+
 	Camera.setHPB(HPB.x, HPB.y, HPB.z);
-	Camera.translate_over(FramesArray[Frame].Position);
+	Camera.translate_over(Position);
+
 	return Camera;
 }
 
