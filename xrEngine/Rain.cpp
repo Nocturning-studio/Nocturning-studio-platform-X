@@ -68,11 +68,14 @@ void CEffect_Rain::Born(Item& dest, float radius)
 	CEnvDescriptorMixer* Environment = g_pGamePersistent->Environment().CurrentEnv;
 	float wind_strength = Environment->wind_strength;
 	float wind_direction = Environment->wind_direction;
+	float wind_turbulence = Environment->wind_turbulence;
 
 	// Particle drop angle
 	// 90 degrees = |||
 	// 45 degrees = ///
-	float angle = 90.0f * (1.6f - wind_strength);
+	float angle_multiplier = wind_strength * (1.0f + wind_turbulence);
+	clamp(angle_multiplier, 0.0f, 1.0f);
+	float angle = 90.0f * (1.6f - angle_multiplier);
 	clamp(angle, 45.0f, 90.0f);
 
 	// Rotating matrix for apply particle drop angle and wind direction
@@ -102,6 +105,7 @@ void CEffect_Rain::Born(Item& dest, float radius)
 	dest.fSpeed = ::Random.randF(drop_speed_min, drop_speed_max) * (1.0f + wind_strength);
 
 	float height = max_distance;
+
 	RenewItem(dest, height, RayPick(dest.P, dest.D, height, collide::rqtBoth));
 }
 
