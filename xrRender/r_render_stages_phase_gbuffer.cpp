@@ -9,7 +9,7 @@ void CRender::clear_gbuffer()
 {
 	OPTICK_EVENT("CRenderTarget::clear_gbuffer");
 
-	if (ps_r_shading_flags.test(RFLAG_FLAT_SHADING))
+	if (!ps_r_shading_flags.test(RFLAG_ENABLE_PBR))
 		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_GBuffer_1, 
 												RenderTarget->rt_GBuffer_2, 
 												RenderTarget->rt_GBuffer_3);
@@ -28,7 +28,7 @@ void CRender::set_gbuffer()
 {
 	OPTICK_EVENT("CRenderTarget::set_gbuffer");
 
-	if (ps_r_shading_flags.test(RFLAG_FLAT_SHADING))
+	if (!ps_r_shading_flags.test(RFLAG_ENABLE_PBR))
 		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_GBuffer_1, 
 												RenderTarget->rt_GBuffer_2, 
 												RenderTarget->rt_GBuffer_3);

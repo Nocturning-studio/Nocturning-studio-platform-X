@@ -97,16 +97,21 @@ void CShootingObject::LoadFireParams(LPCSTR section, LPCSTR prefix)
 	string32 buffer;
 	shared_str s_sHitPower;
 
+	// базова€ дисперси€ оружи€
+	fireDispersionBase = pSettings->r_float(section, "fire_dispersion_base");
+	fireDispersionBase = deg2rad(fireDispersionBase);
+
 	// –азброс в прицеле
 	if (pSettings->line_exist(section, "zoom_fire_dispersion_base")) // ≈сли нашли секцию то читаем ее
 	{
 		zoom_fireDispersionBase = pSettings->r_float(section, "zoom_fire_dispersion_base");
 		zoom_fireDispersionBase = deg2rad(zoom_fireDispersionBase);
 	}
+	else
+	{
+		zoom_fireDispersionBase = fireDispersionBase * 0.5f;
+	}
 
-	// базова€ дисперси€ оружи€
-	fireDispersionBase = pSettings->r_float(section, "fire_dispersion_base");
-	fireDispersionBase = deg2rad(fireDispersionBase);
 	// сила выстрела и его мощьность
 	s_sHitPower = pSettings->r_string_wb(
 		section, strconcat(sizeof(full_name), full_name, prefix, "hit_power")); // читаем строку силы хита пули оружи€

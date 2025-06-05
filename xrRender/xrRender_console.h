@@ -175,7 +175,7 @@ enum
 extern ECORE_API Flags32 ps_r_shading_flags;
 enum
 {
-	RFLAG_FLAT_SHADING = (1 << 0)
+	RFLAG_ENABLE_PBR = (1 << 0)
 };
 
 extern ECORE_API Flags32 ps_r_postprocess_flags;

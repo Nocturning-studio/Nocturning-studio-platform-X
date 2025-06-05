@@ -27,27 +27,23 @@ void CRenderTarget::create_textures()
 	Msg("Creating render target textures");
 
 	// SCREENSHOT
-	{
-		R_CHK(HW.pDevice->CreateOffscreenPlainSurface(dwWidth, dwHeight, HW.Caps.fTarget, D3DPOOL_SYSTEMMEM, &surf_screenshot_normal, NULL));
-		R_CHK(HW.pDevice->CreateTexture(128, 128, 1, NULL, D3DFMT_DXT5, D3DPOOL_SYSTEMMEM, &tex_screenshot_gamesave, NULL));
-		R_CHK(tex_screenshot_gamesave->GetSurfaceLevel(0, &surf_screenshot_gamesave));
-	}
+	R_CHK(HW.pDevice->CreateOffscreenPlainSurface(dwWidth, dwHeight, HW.Caps.fTarget, D3DPOOL_SYSTEMMEM, &surf_screenshot_normal, NULL));
+	R_CHK(HW.pDevice->CreateTexture(128, 128, 1, NULL, D3DFMT_DXT5, D3DPOOL_SYSTEMMEM, &tex_screenshot_gamesave, NULL));
+	R_CHK(tex_screenshot_gamesave->GetSurfaceLevel(0, &surf_screenshot_gamesave));
 
 	// G-Buffer
+	if (!ps_r_shading_flags.test(RFLAG_ENABLE_PBR))
 	{
-		if (ps_r_shading_flags.test(RFLAG_FLAT_SHADING))
-		{
-			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_R16F);
-		}
-		else
-		{
-			rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-			rt_GBuffer_4.create(r_RT_GBuffer_4, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
-		}
+		rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+		rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A2B10G10R10);
+		rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_G16R16F);
+	}
+	else
+	{
+		rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+		rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+		rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+		rt_GBuffer_4.create(r_RT_GBuffer_4, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	}
 
 	rt_Light_Accumulator.create(r_RT_Light_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
