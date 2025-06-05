@@ -22,10 +22,10 @@ void CRender::render_reflections()
 	float h = float(Device.dwHeight);
 
 	RenderBackend.set_Element(RenderTarget->s_reflections->E[SE_RENDER_PASS]);
-	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_ReflectionsRaw);
+	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Reflections);
 
-	RenderBackend.set_Element(RenderTarget->s_reflections->E[SE_BLUR_PASS]);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Reflections);
+	//RenderBackend.set_Element(RenderTarget->s_reflections->E[SE_BLUR_PASS]);
+	//RenderBackend.RenderViewportSurface(RenderTarget->rt_Reflections);
 }
 
 void CRender::render_screen_space_reflections()
