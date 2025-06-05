@@ -125,7 +125,6 @@ xr_token qsun_shafts_token[] =
 u32 ps_r_material_quality = 1;
 xr_token material_quality_token[] = 
 {
-	{"st_opt_disable", 0}, 
 	{"st_opt_low", 1}, 
 	{"st_opt_medium", 2}, 
 	{"st_opt_high", 3}, 

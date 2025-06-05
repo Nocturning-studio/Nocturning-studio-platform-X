@@ -227,7 +227,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		strcpy_s(BumpCorrectionTexture, sizeof(BumpCorrectionTexture), BumpTexture);
 		strconcat(sizeof(BumpCorrectionTexture), BumpCorrectionTexture, BumpCorrectionTexture, "#");
 
-		if (FS.exist(Dummy, "$game_textures$", BumpCorrectionTexture, ".dds"))
+		if (FS.exist(Dummy, "$game_textures$", BumpCorrectionTexture, ".dds") && (ps_r_material_quality > 1))
 			C.r_Define("USE_BUMP_DECOMPRESSION", "1");
 	}
 
