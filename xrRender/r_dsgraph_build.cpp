@@ -578,7 +578,7 @@ IC bool IsValuableToRender(IRender_Visual* pVisual, bool isStatic, bool sm, Fmat
 
 		if (isStatic)
 		{
-			if (ps_geometry_opt_mode == 1)
+			/*if (ps_geometry_quality_mode == 3)
 			{
 				if ((sphere_volume < o_optimize_static_l1_size.y) && (adjusted_distane > o_optimize_static_l1_dist.y))
 					return false;
@@ -616,7 +616,7 @@ IC bool IsValuableToRender(IRender_Visual* pVisual, bool isStatic, bool sm, Fmat
 						 (adjusted_distane > o_optimize_static_l12_dist.y))
 					return false;
 			}
-			else if (ps_geometry_opt_mode == 2)
+			else*/  if (ps_geometry_quality_mode == 2)
 			{
 				if ((sphere_volume < o_optimize_static_l1_size.z) && (adjusted_distane > o_optimize_static_l1_dist.z))
 					return false;
@@ -654,7 +654,7 @@ IC bool IsValuableToRender(IRender_Visual* pVisual, bool isStatic, bool sm, Fmat
 						 (adjusted_distane > o_optimize_static_l12_dist.z))
 					return false;
 			}
-			else if (ps_geometry_opt_mode == 3)
+			else if (ps_geometry_quality_mode == 1)
 			{
 				if ((sphere_volume < o_optimize_static_l1_size.w) && (adjusted_distane > o_optimize_static_l1_dist.w))
 					return false;
@@ -733,7 +733,7 @@ IC bool IsValuableToRender(IRender_Visual* pVisual, bool isStatic, bool sm, Fmat
 		}
 		else
 		{
-			if (ps_geometry_opt_mode == 1)
+			/*if (ps_geometry_quality_mode == 3)
 			{
 				if ((sphere_volume < o_optimize_dynamic_l1_size.y) && (adjusted_distane > o_optimize_dynamic_l1_dist.y))
 					return false;
@@ -750,7 +750,7 @@ IC bool IsValuableToRender(IRender_Visual* pVisual, bool isStatic, bool sm, Fmat
 						 (adjusted_distane > o_optimize_dynamic_l5_dist.y))
 					return false;
 			}
-			else if (ps_geometry_opt_mode == 2)
+			else*/  if (ps_geometry_quality_mode == 2)
 			{
 				if ((sphere_volume < o_optimize_dynamic_l1_size.z) && (adjusted_distane > o_optimize_dynamic_l1_dist.z))
 					return false;
@@ -767,7 +767,7 @@ IC bool IsValuableToRender(IRender_Visual* pVisual, bool isStatic, bool sm, Fmat
 						 (adjusted_distane > o_optimize_dynamic_l5_dist.z))
 					return false;
 			}
-			else if (ps_geometry_opt_mode == 3)
+			else if (ps_geometry_quality_mode == 1)
 			{
 				if ((sphere_volume < o_optimize_dynamic_l1_size.w) && (adjusted_distane > o_optimize_dynamic_l1_dist.w))
 					return false;
@@ -878,19 +878,16 @@ void CRender::add_leafs_Dynamic(IRender_Visual* pVisual)
 			val_pTransform->transform_tiny(pos, pVisual->vis.sphere.P);
 			float adjusted_distane = GetDistFromCamera(pos);
 			float switch_distance = 100.0f;
-			switch (ps_geometry_opt_mode)
+			switch (ps_geometry_quality_mode)
 			{
-			case 0:
+			case 3:
 				switch_distance = 100.0f;
 				break;
-			case 1:
+			case 2:
 				switch_distance = 50.0f;
 				break;
-			case 2:
+			case 1:
 				switch_distance = 25.0f;
-				break;
-			case 3:
-				switch_distance = 10.0f;
 				break;
 			}
 
@@ -971,19 +968,16 @@ void CRender::add_leafs_Static(IRender_Visual* pVisual)
 		val_pTransform->transform_tiny(pos, pVisual->vis.sphere.P);
 		float adjusted_distane = GetDistFromCamera(pos);
 		float switch_distance = 100.0f;
-		switch (ps_geometry_opt_mode)
+		switch (ps_geometry_quality_mode)
 		{
-		case 0:
+		case 3:
 			switch_distance = 100.0f;
 			break;
-		case 1:
+		case 2:
 			switch_distance = 50.0f;
 			break;
-		case 2:
+		case 1:
 			switch_distance = 25.0f;
-			break;
-		case 3:
-			switch_distance = 10.0f;
 			break;
 		}
 
@@ -1139,19 +1133,16 @@ BOOL CRender::add_Dynamic(IRender_Visual* pVisual, u32 planes)
 			val_pTransform->transform_tiny(pos, pVisual->vis.sphere.P);
 			float adjusted_distance = GetDistFromCamera(pos);
 			float switch_distance = 100.0f;
-			switch (ps_geometry_opt_mode)
+			switch (ps_geometry_quality_mode)
 			{
-			case 0:
+			case 3:
 				switch_distance = 100.0f;
 				break;
-			case 1:
+			case 2:
 				switch_distance = 50.0f;
 				break;
-			case 2:
+			case 1:
 				switch_distance = 25.0f;
-				break;
-			case 3:
-				switch_distance = 10.0f;
 				break;
 			}
 
@@ -1268,19 +1259,16 @@ void CRender::add_Static(IRender_Visual* pVisual, u32 planes)
 		val_pTransform->transform_tiny(pos, pVisual->vis.sphere.P);
 		float adjusted_distance = GetDistFromCamera(pos);
 		float switch_distance = 100.0f;
-		switch (ps_geometry_opt_mode)
+		switch (ps_geometry_quality_mode)
 		{
-		case 0:
+		case 3:
 			switch_distance = 100.0f;
 			break;
-		case 1:
+		case 2:
 			switch_distance = 50.0f;
 			break;
-		case 2:
+		case 1:
 			switch_distance = 25.0f;
-			break;
-		case 3:
-			switch_distance = 10.0f;
 			break;
 		}
 

@@ -71,13 +71,12 @@ xr_token vignette_mode_token[] =
 	{0, 0}
 };
 
-u32 ps_geometry_opt_mode = 0;
-xr_token geometry_opt_mode_token[] = 
+u32 ps_geometry_quality_mode = 3;
+xr_token geometry_quality_mode_token[] = 
 {
-	{"st_opt_disabled", 0}, 
-	{"st_opt_weak", 1}, 
-	{"st_opt_normal", 2}, 
-	{"st_opt_agressive", 3}, 
+	{"st_opt_low", 1}, 
+	{"st_opt_medium", 2}, 
+	{"st_opt_high", 3}, 
 	{0, 0}
 };
 
@@ -693,7 +692,7 @@ void xrRender_initconsole()
 	CMD4(CCC_Float, "r_debug_reserved_2", &ps_r_debug_reserved_2, -1000, 1000);
 	CMD4(CCC_Float, "r_debug_reserved_3", &ps_r_debug_reserved_3, -1000, 1000);
 
-	CMD3(CCC_Token, "r_geometry_opt_mode", &ps_geometry_opt_mode, geometry_opt_mode_token);
+	CMD3(CCC_Token, "r_geometry_quality_mode", &ps_geometry_quality_mode, geometry_quality_mode_token);
 
 	// !!! —“–Œ√Œ ¬Õ»«” œŒ—À≈ ¬—≈’ Œœ÷»… !!!
 //#pragma todo("¡Ûı")
