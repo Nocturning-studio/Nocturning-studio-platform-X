@@ -1315,13 +1315,13 @@ void CWeapon::OnZoomOut()
 	if (psActorFlags.test(AF_ZOOM_TIME_SLOW_MO))
 		Device.time_factor(m_fSavedTimeFactor);
 
+	if (psActorFlags.test(AF_NEED_DOF) && m_bZoomMode) // && !IsScopeAttached())
+		GamePersistent().SetPickableEffectorDOF(false);
+
 	m_bZoomMode = false;
 	m_fZoomFactor = g_fov;
 
 	StartHudInertion();
-
-	if (psActorFlags.test(AF_NEED_DOF))// && !IsScopeAttached())
-		GamePersistent().SetPickableEffectorDOF(false);
 }
 
 CUIStaticItem* CWeapon::ZoomTexture()
