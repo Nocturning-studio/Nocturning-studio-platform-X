@@ -244,8 +244,8 @@ void CRender::render_depth_prepass()
 
 	RenderBackend.enable_anisotropy_filtering();
 
-	if (Details)
-		Details->Render();
+	//if (Details)
+	//	Details->Render();
 
 	r_dsgraph_render_hud();
 

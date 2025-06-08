@@ -90,8 +90,7 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 
 	if (bUseConfigurator)
 	{
-		LPCSTR AlphaTestType = GetStringValueIfExist("material_configuration", "shadows_alpha_test_type",
-													 "alpha_hashed", MaterialConfiguration);
+		LPCSTR AlphaTestType = GetStringValueIfExist("material_configuration", "shadows_alpha_test_type", "alpha_hashed", MaterialConfiguration);
 
 		if (StringsIsSimilar(AlphaTestType, "alpha_clip"))
 			bNeedHashedAlphaTest = false;
@@ -149,46 +148,40 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 		configure_shader(C, false, tvs, "static_mesh", oBlend.value);
 		break;
 	case SE_SHADOW_DEPTH: // smap-spot
-		C.r_Define(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
-		C.r_Define(bUseCustomOpacity, "USE_CUSTOM_OPACITY", "1");
+	case SE_DEPTH_PREPASS:
+		//C.r_Define(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
+		//C.r_Define(bUseCustomOpacity, "USE_CUSTOM_OPACITY", "1");
 
-		C.r_Define(bNeedHashedAlphaTest, "USE_HASHED_ALPHA_TEST", "1");
+		//C.r_Define(bNeedHashedAlphaTest, "USE_HASHED_ALPHA_TEST", "1");
 
-		C.r_Define(bUseWind, "USE_WIND", "1");
-		C.r_Define(WindTypeNum == 0, "USE_LEGACY_WIND", "1");
-		C.r_Define(WindTypeNum == 1, "USE_TRUNK_WIND", "1");
-		C.r_Define(WindTypeNum == 2, "USE_BRANCHCARD_WIND", "1");
-		C.r_Define(WindTypeNum == 3, "USE_LEAFCARD_WIND", "1");
-		C.r_Define(bUseXAxisAsWeight, "USE_X_AXIS_AS_WEIGHT", "1");
-		C.r_Define(bUseYAxisAsWeight, "USE_Y_AXIS_AS_WEIGHT", "1");
-		C.r_Define(bUseBothAxisAsWeight, "USE_BOTH_AXIS_AS_WEIGHT", "1");
-		C.r_Define(bInvertWeightAxis, "INVERT_WEIGHT_AXIS", "1");
+		//C.r_Define(bUseWind, "USE_WIND", "1");
+		//C.r_Define(WindTypeNum == 0, "USE_LEGACY_WIND", "1");
+		//C.r_Define(WindTypeNum == 1, "USE_TRUNK_WIND", "1");
+		//C.r_Define(WindTypeNum == 2, "USE_BRANCHCARD_WIND", "1");
+		//C.r_Define(WindTypeNum == 3, "USE_LEAFCARD_WIND", "1");
+		//C.r_Define(bUseXAxisAsWeight, "USE_X_AXIS_AS_WEIGHT", "1");
+		//C.r_Define(bUseYAxisAsWeight, "USE_Y_AXIS_AS_WEIGHT", "1");
+		//C.r_Define(bUseBothAxisAsWeight, "USE_BOTH_AXIS_AS_WEIGHT", "1");
+		//C.r_Define(bInvertWeightAxis, "INVERT_WEIGHT_AXIS", "1");
 
-		if (oBlend.value || bUseCustomOpacity || bUseAlphaTest)
-		{
-			C.r_Pass(tvs_s, "shadow_depth_stage_static_mesh_alphatest", FALSE);
+		//if (oBlend.value || bUseCustomOpacity || bUseAlphaTest)
+		//{
+		//	C.r_Pass(tvs_s, "shadow_depth_stage_static_mesh_alphatest", FALSE);
 
-			C.r_Sampler("s_custom_opacity", CustomOpacityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
-		}
-		else
-		{
-			C.r_Pass(tvs_s, "shadow_depth_stage_static_mesh", FALSE);
-		}
-		C.r_Sampler("s_base", C.L_textures[0]);
+		//	C.r_Sampler("s_custom_opacity", CustomOpacityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		//}
+		//else
+		//{
+		//	C.r_Pass(tvs_s, "shadow_depth_stage_static_mesh", FALSE);
+		//}
+		//C.r_Sampler("s_base", C.L_textures[0]);
 
-		if (bUseCustomWeight)
-			C.r_Sampler("s_custom_weight", CustomWeightTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		//if (bUseCustomWeight)
+		//	C.r_Sampler("s_custom_weight", CustomWeightTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
-		jitter(C);
-		C.r_End();
-		break;
-	case SE_DEPTH_PREPASS: // smap-spot
-		if (oBlend.value)
-			C.r_Pass(tvs_s, "depth_prepass_stage_static_mesh_alphatest", FALSE, TRUE, TRUE, FALSE);
-		else
-			C.r_Pass(tvs_s, "depth_prepass_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
-		C.r_Sampler("s_base", C.L_textures[0]);
-		jitter(C);
+		//jitter(C);
+		configure_shader(C, true, tvs, "static_mesh", oBlend.value, true);
+
 		C.r_End();
 		break;
 	}

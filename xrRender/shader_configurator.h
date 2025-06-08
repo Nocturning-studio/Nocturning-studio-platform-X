@@ -14,7 +14,7 @@ extern LPCSTR GetStringValueIfExist(LPCSTR section_name, LPCSTR line_name, LPCST
 extern bool GetBoolValueIfExist(LPCSTR section_name, LPCSTR line_name, bool default_state, CInifile* config);
 extern bool StringsIsSimilar(LPCSTR x, LPCSTR y);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-extern void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR VertexShaderName, LPCSTR PixelShaderName, BOOL bUseAlpha);
+extern void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR VertexShaderName, LPCSTR PixelShaderName, BOOL bUseAlpha, BOOL bUseDepthOnly = false);
 extern void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR VertexShaderName, LPCSTR PixelShaderName, BOOL bUseAlpha);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif // SHADER_CONFIGURATOR_INCLUDED
