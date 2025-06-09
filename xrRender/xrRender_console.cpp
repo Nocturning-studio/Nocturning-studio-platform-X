@@ -80,7 +80,7 @@ xr_token geometry_quality_mode_token[] =
 	{0, 0}
 };
 
-Flags32 ps_r_ls_flags = { NULL };
+Flags32 ps_r_ls_flags = {RFLAG_Z_PREPASS};
 
 /*-------------------------------------------------------------------------------*/
 // R2a/R2/R2.5 specific tokens

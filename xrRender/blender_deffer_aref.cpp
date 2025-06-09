@@ -82,16 +82,17 @@ void CBlender_deffer_aref::Compile(CBlender_Compile& C)
 			configure_shader(C, false, "static_mesh", "static_mesh", true);
 			break;
 		case SE_SHADOW_DEPTH: // smap
-			C.r_Pass("shadow_depth_stage_static_mesh_alphatest", "shadow_depth_stage_static_mesh_alphatest", FALSE);
-			C.r_Sampler("s_base", C.L_textures[0]);
-			jitter(C);
-			C.r_End();
-			break;
+			//C.r_Pass("shadow_depth_stage_static_mesh_alphatest", "shadow_depth_stage_static_mesh_alphatest", FALSE);
+			//C.r_Sampler("s_base", C.L_textures[0]);
+			//jitter(C);
+			//C.r_End();
+			//break;
 		case SE_DEPTH_PREPASS:
-			C.r_Pass("depth_prepass_stage_static_mesh_alphatest", "depth_prepass_stage_static_mesh_alphatest", FALSE, TRUE, TRUE, FALSE);
-			C.r_Sampler("s_base", C.L_textures[0]);
-			jitter(C);
-			C.r_End();
+			//C.r_Pass("depth_prepass_stage_static_mesh_alphatest", "depth_prepass_stage_static_mesh_alphatest", FALSE, TRUE, TRUE, FALSE);
+			//C.r_Sampler("s_base", C.L_textures[0]);
+			//jitter(C);
+			//C.r_End();
+			configure_shader(C, true, "static_mesh", "static_mesh", true, true);
 			break;
 		}
 	}

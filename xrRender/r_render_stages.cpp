@@ -249,7 +249,9 @@ void CRender::render_depth_prepass()
 
 	r_dsgraph_render_hud();
 
-	r_dsgraph_render_lods(true, true);
+	r_dsgraph_render_graph(0);
+
+	//r_dsgraph_render_lods(true, true);
 
 	RenderBackend.disable_anisotropy_filtering();
 

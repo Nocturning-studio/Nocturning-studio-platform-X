@@ -212,14 +212,11 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 			bUseBump = GetBoolValueIfExist("material_configuration", "use_bump", bUseBump, MaterialConfiguration);
 
 			// Check for details using
-			bUseDetail =
-				GetBoolValueIfExist("material_configuration", "use_detail_map", bUseDetail, MaterialConfiguration);
+			bUseDetail = GetBoolValueIfExist("material_configuration", "use_detail_map", bUseDetail, MaterialConfiguration);
 
-			bUseAlphaTest =
-				GetBoolValueIfExist("material_configuration", "use_alpha_test", bUseAlpha, MaterialConfiguration);
+			bUseAlphaTest = GetBoolValueIfExist("material_configuration", "use_alpha_test", bUseAlpha, MaterialConfiguration);
 
-			bIsOpenGLNormal =
-				GetBoolValueIfExist("normal_configuration", "is_opengl_type", bIsOpenGLNormal, MaterialConfiguration);
+			bIsOpenGLNormal = GetBoolValueIfExist("normal_configuration", "is_opengl_type", bIsOpenGLNormal, MaterialConfiguration);
 		}
 
 		// Get bump map texture
@@ -293,8 +290,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 	if (bUseConfigurator)
 	{
-		bUseCustomWeight = CheckAndApplyManualTexturePath("wind_configuration", "weight_path", CustomWeightTexture,
-														  MaterialConfiguration);
+		bUseCustomWeight = CheckAndApplyManualTexturePath("wind_configuration", "weight_path", CustomWeightTexture, MaterialConfiguration);
 	}
 
 	if (!bUseCustomWeight)
@@ -373,8 +369,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 			{
 				// Get bump decompression map for detail texture
 				strcpy_s(DetailBumpCorrectionTexture, sizeof(DetailBumpCorrectionTexture), DetailBumpTexture);
-				strconcat(sizeof(DetailBumpCorrectionTexture), DetailBumpCorrectionTexture, DetailBumpCorrectionTexture,
-						  "#");
+				strconcat(sizeof(DetailBumpCorrectionTexture), DetailBumpCorrectionTexture, DetailBumpCorrectionTexture, "#");
 			}
 		}
 
@@ -414,18 +409,14 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 			{
 				if (bUseConfigurator)
 				{
-					bUseBakedAO = CheckAndApplyManualTexturePath("material_configuration", "ao_path", BakedAOTexture,
-																 MaterialConfiguration);
+					bUseBakedAO = CheckAndApplyManualTexturePath("material_configuration", "ao_path", BakedAOTexture, MaterialConfiguration);
 
 					if (LineIsExist("material_configuration", "gloss_path", MaterialConfiguration))
-						bUseCustomGloss = CheckAndApplyManualTexturePath("material_configuration", "gloss_path",
-																		 CustomGlossTexture, MaterialConfiguration);
+						bUseCustomGloss = CheckAndApplyManualTexturePath("material_configuration", "gloss_path", CustomGlossTexture, MaterialConfiguration);
 					else
-						bUseCustomRoughness = CheckAndApplyManualTexturePath(
-							"material_configuration", "roughness_path", CustomRoughnessTexture, MaterialConfiguration);
+						bUseCustomRoughness = CheckAndApplyManualTexturePath("material_configuration", "roughness_path", CustomRoughnessTexture, MaterialConfiguration);
 
-					bUseCustomMetallic = CheckAndApplyManualTexturePath("material_configuration", "metallic_path",
-																		CustomMetallicTexture, MaterialConfiguration);
+					bUseCustomMetallic = CheckAndApplyManualTexturePath("material_configuration", "metallic_path", CustomMetallicTexture, MaterialConfiguration);
 				}
 
 				if (!bUseBakedAO)
@@ -448,30 +439,23 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 			if (bUseConfigurator)
 			{
-				bUseCustomNormal = CheckAndApplyManualTexturePath("material_configuration", "normal_path",
-																  CustomNormalTexture, MaterialConfiguration);
-				bUseCustomSubsurfacePower =
-					CheckAndApplyManualTexturePath("material_configuration", "subsurface_power_path",
-												   CustomSubsurfacePowerTexture, MaterialConfiguration);
-				bUseCustomCavity = CheckAndApplyManualTexturePath("material_configuration", "cavity_path",
-																  CustomCavityTexture, MaterialConfiguration);
-				bUseCustomSpecularTint = CheckAndApplyManualTexturePath(
-					"material_configuration", "specular_tint_path", CustomSpecularTintTexture, MaterialConfiguration);
+				bUseCustomNormal = CheckAndApplyManualTexturePath("material_configuration", "normal_path", CustomNormalTexture, MaterialConfiguration);
+				bUseCustomSubsurfacePower = CheckAndApplyManualTexturePath("material_configuration", "subsurface_power_path", CustomSubsurfacePowerTexture, MaterialConfiguration);
+				bUseCustomCavity = CheckAndApplyManualTexturePath("material_configuration", "cavity_path", CustomCavityTexture, MaterialConfiguration);
+				bUseCustomSpecularTint = CheckAndApplyManualTexturePath("material_configuration", "specular_tint_path", CustomSpecularTintTexture, MaterialConfiguration);
 			}
 
 			if (!bUseCustomNormal)
 				bUseCustomNormal = ConcatAndFindTexture(CustomNormalTexture, AlbedoTexture, "_normal");
 
 			if (!bUseCustomSubsurfacePower)
-				bUseCustomSubsurfacePower =
-					ConcatAndFindTexture(CustomSubsurfacePowerTexture, AlbedoTexture, "_subsurface_power");
+				bUseCustomSubsurfacePower = ConcatAndFindTexture(CustomSubsurfacePowerTexture, AlbedoTexture, "_subsurface_power");
 
 			if (!bUseCustomCavity)
 				bUseCustomCavity = ConcatAndFindTexture(CustomCavityTexture, AlbedoTexture, "_cavity");
 
 			if (!bUseCustomSpecularTint)
-				bUseCustomSpecularTint =
-					ConcatAndFindTexture(CustomSpecularTintTexture, AlbedoTexture, "_specular_tint");
+				bUseCustomSpecularTint = ConcatAndFindTexture(CustomSpecularTintTexture, AlbedoTexture, "_specular_tint");
 
 			C.r_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
 			C.r_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
@@ -504,8 +488,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 			// Check what displacement type we need to set
 			if (bUseDisplacement)
 			{
-				LPCSTR displacement_type = GetStringValueIfExist("material_configuration", "displacement_type",
-																 "parallax_occlusion_mapping", MaterialConfiguration);
+				LPCSTR displacement_type = GetStringValueIfExist("material_configuration", "displacement_type", "parallax_occlusion_mapping", MaterialConfiguration);
 
 				if (StringsIsSimilar(displacement_type, "normal_mapping"))
 					DisplacementType = 1;
@@ -531,8 +514,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 		// Get displacement texture
 		if (bUseConfigurator)
-			bUseCustomDisplacement = CheckAndApplyManualTexturePath("material_configuration", "displacement_path",
-																	CustomDisplacementTexture, MaterialConfiguration);
+			bUseCustomDisplacement = CheckAndApplyManualTexturePath("material_configuration", "displacement_path", CustomDisplacementTexture, MaterialConfiguration);
 
 		if (!bUseCustomDisplacement)
 			bUseCustomDisplacement = ConcatAndFindTexture(CustomDisplacementTexture, AlbedoTexture, "_displacement");
@@ -547,10 +529,8 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		// Check do we need to use custom shader
 		if (bUseConfigurator)
 		{
-			LPCSTR CustomPixelShader =
-				GetStringValueIfExist("material_configuration", "pixel_shader", "default", MaterialConfiguration);
-			LPCSTR CustomVertexShader =
-				GetStringValueIfExist("material_configuration", "vertex_shader", "default", MaterialConfiguration);
+			LPCSTR CustomPixelShader = GetStringValueIfExist("material_configuration", "pixel_shader", "default", MaterialConfiguration);
+			LPCSTR CustomVertexShader = GetStringValueIfExist("material_configuration", "vertex_shader", "default", MaterialConfiguration);
 
 			if (!StringsIsSimilar(CustomPixelShader, "default"))
 				PixelShaderName = CustomPixelShader;
