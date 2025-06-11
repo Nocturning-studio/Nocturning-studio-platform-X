@@ -18,17 +18,20 @@ void CRender::render_ambient_occlusion()
 	float w = float(Device.dwWidth);
 	float h = float(Device.dwHeight);
 
-	int AOType = SE_AO_SSAO;
+	int AOType = SE_AO_MXAO;
 	switch (ps_r_ao_quality)
 	{
 	case 1:
-		AOType = SE_AO_SSAO_LOW_QUALITY;
+		AOType = SE_AO_SSAO;
 		break;
 	case 2:
-		AOType = SE_AO_SSAO;
+		AOType = SE_AO_MXAO;
 		break;
 	case 3:
 		AOType = SE_AO_HBAO_PLUS;
+		break;
+	case 4:
+		AOType = SE_AO_SSAO_PATH_TRACE;
 		break;
 	}
 

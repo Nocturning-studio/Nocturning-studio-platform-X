@@ -6,9 +6,10 @@
 ///////////////////////////////////////////////////////////////////////////////////
 enum
 {
+	SE_AO_MXAO,
 	SE_AO_SSAO,
-	SE_AO_SSAO_LOW_QUALITY,
 	SE_AO_HBAO_PLUS,
+	SE_AO_SSAO_PATH_TRACE,
 	SE_AO_GTAO,
 	SE_AO_DENOISE,
 };
