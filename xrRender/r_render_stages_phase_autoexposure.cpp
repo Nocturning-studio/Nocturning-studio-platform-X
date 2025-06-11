@@ -76,11 +76,11 @@ void CRender::render_autoexposure()
 {
 	OPTICK_EVENT("CRender::render_autoexposure");
 
-	downsample_scene_luminance();
+	//downsample_scene_luminance();
 
-	apply_exposure();
+	//apply_exposure();
 
-	save_scene_luminance();
+	//save_scene_luminance();
 }
 ///////////////////////////////////////////////////////////////////////////////////
 

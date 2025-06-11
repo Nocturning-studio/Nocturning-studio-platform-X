@@ -168,7 +168,8 @@ class CRenderTarget : public IRender_Target
 
 	ref_shader s_effectors;
 	ref_geom g_effectors;
-	ref_shader s_menu;
+	ref_shader s_menu_distortion;
+	ref_shader s_menu_gamma;
 
   public:
 #pragma todo("NSDeathman to NSDeathman: вынести из рендертаргета")

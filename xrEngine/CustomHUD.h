@@ -13,6 +13,9 @@ ENGINE_API extern Flags32 psHUD_Flags;
 #define HUD_CROSSHAIR_DYNAMIC (1 << 7)
 #define HUD_CROSSHAIR_RT2 (1 << 9)
 #define HUD_DRAW_RT (1 << 10)
+#define HUD_DRAW_MINIMAP (1 << 11)
+#define HUD_DRAW_HEALTH_BAR (1 << 12)
+#define HUD_DRAW_MOTION_BAR (1 << 13)
 
 class ENGINE_API IRender_Visual;
 class CUI;

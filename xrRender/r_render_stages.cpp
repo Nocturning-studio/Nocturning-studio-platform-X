@@ -251,7 +251,7 @@ void CRender::render_depth_prepass()
 
 	r_dsgraph_render_graph(0);
 
-	//r_dsgraph_render_lods(true, true);
+	r_dsgraph_render_lods(true, true);
 
 	RenderBackend.disable_anisotropy_filtering();
 
@@ -314,7 +314,8 @@ void CRender::render_gbuffer_secondary()
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
 
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL));
+	if (ps_r_ls_flags.test(RFLAG_Z_PREPASS))
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL));
 
 	RenderBackend.set_ZWriteEnable(FALSE);
 

@@ -543,7 +543,7 @@ IC bool IsValuableToRender(IRender_Visual* pVisual, bool isStatic, bool sm, Fmat
 
 		if (sm) // Highest cut off for shadow map
 		{
-			if (sphere_volume < 50000.f && adjusted_distane > 160)
+			if (sphere_volume < 50000.f && adjusted_distane > ps_r_sun_far)
 				// don't need geometry behind the farest sun shadow cascade
 				return false;
 
@@ -692,7 +692,7 @@ IC bool IsValuableToRender(IRender_Visual* pVisual, bool isStatic, bool sm, Fmat
 						 (adjusted_distane > o_optimize_static_l12_dist.w))
 					return false;
 			}
-			else
+			/*else
 			{
 				if ((sphere_volume < o_optimize_static_l1_size.x) && (adjusted_distane > o_optimize_static_l1_dist.x))
 					return false;
@@ -729,7 +729,7 @@ IC bool IsValuableToRender(IRender_Visual* pVisual, bool isStatic, bool sm, Fmat
 				else if ((sphere_volume < o_optimize_static_l12_size.x) &&
 						 (adjusted_distane > o_optimize_static_l12_dist.x))
 					return false;
-			}
+			}*/
 		}
 		else
 		{
@@ -784,7 +784,7 @@ IC bool IsValuableToRender(IRender_Visual* pVisual, bool isStatic, bool sm, Fmat
 						 (adjusted_distane > o_optimize_dynamic_l5_dist.w))
 					return false;
 			}
-			else
+			/*else
 			{
 				if ((sphere_volume < o_optimize_dynamic_l1_size.x) && (adjusted_distane > o_optimize_dynamic_l1_dist.x))
 					return false;
@@ -800,7 +800,7 @@ IC bool IsValuableToRender(IRender_Visual* pVisual, bool isStatic, bool sm, Fmat
 				else if ((sphere_volume < o_optimize_dynamic_l5_size.x) &&
 						 (adjusted_distane > o_optimize_dynamic_l5_dist.x))
 					return false;
-			}
+			}*/
 		}
 	}
 

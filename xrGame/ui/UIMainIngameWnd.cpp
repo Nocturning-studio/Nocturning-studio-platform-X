@@ -260,19 +260,26 @@ void CUIMainIngameWnd::Draw()
 #ifdef DEBUG
 	test_draw();
 #endif
+
+	/*
 	// show IO icon
 	bool IOActive = (FS.dwOpenCounter > 0);
+
 	if (IOActive)
 		UIStaticDiskIO_start_time = Device.fTimeGlobal;
 
 	if ((UIStaticDiskIO_start_time + 1.0f) < Device.fTimeGlobal)
+	{
 		UIStaticDiskIO.Show(false);
+	}
 	else
 	{
 		u32 alpha = clampr(iFloor(255.f * (1.f - (Device.fTimeGlobal - UIStaticDiskIO_start_time) / 1.f)), 0, 255);
 		UIStaticDiskIO.Show(true);
 		UIStaticDiskIO.SetColor(color_rgba(255, 255, 255, alpha));
 	}
+	*/
+
 	FS.dwOpenCounter = 0;
 
 	if (!IsGameTypeSingle())
@@ -285,12 +292,16 @@ void CUIMainIngameWnd::Draw()
 		cur_lum = luminocity * 0.01f + cur_lum * 0.99f;
 		UIMotionIcon.SetLuminosity((s16)iFloor(cur_lum * 100.0f));
 	}
+
 	if (!m_pActor)
 		return;
 
 	UIMotionIcon.SetNoise((s16)(0xffff & iFloor(m_pActor->m_snd_noise * 100.0f)));
+
 	CUIWindow::Draw();
-	UIZoneMap->Render();
+
+	if (psHUD_Flags.is(HUD_DRAW_MINIMAP))
+		UIZoneMap->Render();
 
 	RenderQuickInfos();
 
@@ -409,7 +420,7 @@ void CUIMainIngameWnd::Update()
 
 		// Armor indicator stuff
 		PIItem pItem = m_pActor->inventory().ItemFromSlot(OUTFIT_SLOT);
-		if (pItem)
+		if (pItem && psHUD_Flags.is(HUD_DRAW_HEALTH_BAR))
 		{
 			UIArmorBar.Show(true);
 			UIStaticArmor.Show(true);
@@ -481,8 +492,11 @@ void CUIMainIngameWnd::Update()
 	}
 
 	// health&armor
-	UIHealthBar.SetProgressPos(m_pActor->GetfHealth() * 100.0f);
-	UIMotionIcon.SetPower(m_pActor->conditions().GetPower() * 100.0f);
+	if (psHUD_Flags.is(HUD_DRAW_HEALTH_BAR))
+		UIHealthBar.SetProgressPos(m_pActor->GetfHealth() * 100.0f);
+
+	if (psHUD_Flags.is(HUD_DRAW_MOTION_BAR))
+		UIMotionIcon.SetPower(m_pActor->conditions().GetPower() * 100.0f);
 
 	UIZoneMap->UpdateRadar(Device.vCameraPosition);
 	float h, p;

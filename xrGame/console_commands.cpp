@@ -1776,6 +1776,9 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask, "hud_weapon", &psHUD_Flags, HUD_WEAPON);
 	CMD3(CCC_Mask, "hud_info", &psHUD_Flags, HUD_INFO);
 	CMD3(CCC_Mask, "hud_draw", &psHUD_Flags, HUD_DRAW);
+	CMD3(CCC_Mask, "hud_draw_minimap", &psHUD_Flags, HUD_DRAW_MINIMAP);	
+	CMD3(CCC_Mask, "hud_draw_health_bar", &psHUD_Flags, HUD_DRAW_HEALTH_BAR);
+	CMD3(CCC_Mask, "hud_draw_motion_bar", &psHUD_Flags, HUD_DRAW_MOTION_BAR);
 	// hud
 	psHUD_Flags.set(HUD_CROSSHAIR, true);
 	psHUD_Flags.set(HUD_WEAPON, true);
