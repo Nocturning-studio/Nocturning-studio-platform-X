@@ -509,10 +509,6 @@ void CRender::render_postprocess()
 	render_bloom();
 
 	// Generic1 -> Generic0 -> Generic1
-	if (ps_r_postprocess_flags.test(RFLAG_ANTI_ALIASING))
-		render_antialiasing();
-
-	// Generic1 -> Generic0 -> Generic1
 	if (ps_r_postprocess_flags.test(RFLAG_DOF))
 		render_depth_of_field();
 
@@ -542,6 +538,10 @@ void CRender::render_postprocess()
 
 	//Generic_0 -> Generic_1
 	render_effectors_pass_resolve_gamma();
+
+	// Generic1 -> Generic0 -> Generic1
+	if (ps_r_postprocess_flags.test(RFLAG_ANTI_ALIASING))
+		render_antialiasing();
 
 	//Generic_1 -> Generic_0
 	render_effectors_pass_lut();

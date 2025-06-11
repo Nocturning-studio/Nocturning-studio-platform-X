@@ -8,6 +8,8 @@
 enum
 {
 	SE_PASS_FXAA,
+	SE_PASS_NFAA,
+	SE_PASS_AA_DUMMY
 };
 ///////////////////////////////////////////////////////////////////////////////////
 class CBlender_antialiasing : public IBlender
