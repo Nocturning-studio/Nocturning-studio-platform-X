@@ -244,12 +244,14 @@ void CUIMainIngameWnd::Init()
 		this->AttachChild(m_artefactPanel);
 	}
 
+	/*
 	AttachChild(&UIStaticDiskIO);
 	UIStaticDiskIO.SetWndRect(1000, 750, 16, 16);
 	UIStaticDiskIO.GetUIStaticItem().SetRect(0, 0, 16, 16);
 	UIStaticDiskIO.InitTexture("ui\\ui_disk_io");
 	UIStaticDiskIO.SetOriginalRect(0, 0, 32, 32);
 	UIStaticDiskIO.SetStretchTexture(TRUE);
+	*/
 
 	HUD_SOUND::LoadSound("maingame_ui", "snd_new_contact", m_contactSnd, SOUND_TYPE_IDLE);
 }
@@ -318,7 +320,7 @@ void CUIMainIngameWnd::SetMPChatLog(CUIWindow* pChat, CUIWindow* pLog)
 
 void CUIMainIngameWnd::SetAmmoIcon(const shared_str& sect_name)
 {
-	if (!sect_name.size())
+	if (!sect_name.size() || !psHUD_Flags.is(HUD_DRAW_AMMO_BAR))
 	{
 		UIWeaponIcon.Show(false);
 		return;
@@ -425,11 +427,16 @@ void CUIMainIngameWnd::Update()
 			UIArmorBar.Show(true);
 			UIStaticArmor.Show(true);
 			UIArmorBar.SetProgressPos(pItem->GetCondition() * 100);
+			UIHealthBar.Show(true);
+			UIStaticHealth.Show(true);
+			UIHealthBar.SetProgressPos(m_pActor->GetfHealth() * 100.0f);
 		}
 		else
 		{
 			UIArmorBar.Show(false);
 			UIStaticArmor.Show(false);
+			UIHealthBar.Show(false);
+			UIStaticHealth.Show(false);
 		}
 
 		UpdateActiveItemInfo();
@@ -491,14 +498,10 @@ void CUIMainIngameWnd::Update()
 		}
 	}
 
-	// health&armor
-	if (psHUD_Flags.is(HUD_DRAW_HEALTH_BAR))
-		UIHealthBar.SetProgressPos(m_pActor->GetfHealth() * 100.0f);
-
-	if (psHUD_Flags.is(HUD_DRAW_MOTION_BAR))
-		UIMotionIcon.SetPower(m_pActor->conditions().GetPower() * 100.0f);
+	UIMotionIcon.SetPower(m_pActor->conditions().GetPower() * 100.0f);
 
 	UIZoneMap->UpdateRadar(Device.vCameraPosition);
+
 	float h, p;
 	Device.vCameraDirection.getHP(h, p);
 	UIZoneMap->SetHeading(-h);
@@ -1145,7 +1148,7 @@ void CUIMainIngameWnd::UpdatePickUpItem()
 void CUIMainIngameWnd::UpdateActiveItemInfo()
 {
 	PIItem item = m_pActor->inventory().ActiveItem();
-	if (item)
+	if (item && psHUD_Flags.is(HUD_DRAW_AMMO_BAR))
 	{
 		xr_string str_name;
 		xr_string icon_sect_name;

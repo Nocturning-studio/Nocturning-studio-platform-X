@@ -2,8 +2,8 @@
 #include "UIArtefactPanel.h"
 #include "UIInventoryUtilities.h"
 #include "UIXmlInit.h"
-
 #include "../artifact.h"
+#include "../HUDManager.h"
 
 using namespace InventoryUtilities;
 
@@ -42,6 +42,9 @@ void CUIArtefactPanel::InitIcons(const xr_vector<const CArtefact*>& artefacts)
 
 void CUIArtefactPanel::Draw()
 {
+	if (!psHUD_Flags.is(HUD_DRAW_ARTEFACTS_PANEL))
+		return;
+
 	const float iIndent = 1.0f;
 	float x = 0.0f;
 	float y = 0.0f;

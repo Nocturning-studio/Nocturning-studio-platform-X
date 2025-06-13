@@ -16,6 +16,9 @@ ENGINE_API extern Flags32 psHUD_Flags;
 #define HUD_DRAW_MINIMAP (1 << 11)
 #define HUD_DRAW_HEALTH_BAR (1 << 12)
 #define HUD_DRAW_MOTION_BAR (1 << 13)
+#define HUD_DRAW_MESSAGES (1 << 14)
+#define HUD_DRAW_ARTEFACTS_PANEL (1 << 15)
+#define HUD_DRAW_AMMO_BAR (1 << 16)
 
 class ENGINE_API IRender_Visual;
 class CUI;

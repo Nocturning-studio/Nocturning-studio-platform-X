@@ -166,7 +166,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (itm)
 			{
 				inventory().Eat(itm);
-				if (psHUD_Flags.test(HUD_DRAW))
+				if (psHUD_Flags.test(HUD_DRAW) || psHUD_Flags.test(HUD_DRAW_MESSAGES))
 				{
 					SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
 					_s->m_endTime = Device.fTimeGlobal + 3.0f; // 3sec

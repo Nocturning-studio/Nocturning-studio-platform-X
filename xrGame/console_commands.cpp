@@ -521,7 +521,7 @@ class CCC_ALifeSave : public IConsole_Command
 #ifdef DEBUG
 		Msg("Game save overhead  : %f milliseconds", timer.GetElapsed_sec() * 1000.f);
 #endif
-		if (psHUD_Flags.test(HUD_DRAW))
+		if (psHUD_Flags.test(HUD_DRAW) || psHUD_Flags.test(HUD_DRAW_MESSAGES))
 		{
 			SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("game_saved", true);
 			_s->m_endTime = Device.fTimeGlobal + 3.0f; // 3sec
@@ -1779,6 +1779,9 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask, "hud_draw_minimap", &psHUD_Flags, HUD_DRAW_MINIMAP);	
 	CMD3(CCC_Mask, "hud_draw_health_bar", &psHUD_Flags, HUD_DRAW_HEALTH_BAR);
 	CMD3(CCC_Mask, "hud_draw_motion_bar", &psHUD_Flags, HUD_DRAW_MOTION_BAR);
+	CMD3(CCC_Mask, "hud_draw_use_messages", &psHUD_Flags, HUD_DRAW_MESSAGES);
+	CMD3(CCC_Mask, "hud_draw_artefacts_panel", &psHUD_Flags, HUD_DRAW_ARTEFACTS_PANEL);
+	CMD3(CCC_Mask, "hud_draw_ammo_bar", &psHUD_Flags, HUD_DRAW_AMMO_BAR);
 	// hud
 	psHUD_Flags.set(HUD_CROSSHAIR, true);
 	psHUD_Flags.set(HUD_WEAPON, true);

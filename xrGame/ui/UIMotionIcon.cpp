@@ -2,6 +2,7 @@
 #include "UIMainIngameWnd.h"
 #include "UIMotionIcon.h"
 #include "UIXmlInit.h"
+#include "../HUDManager.h"
 #include <ppl.h>
 
 const LPCSTR MOTION_ICON_XML = "motion_icon.xml";
@@ -73,12 +74,14 @@ void CUIMotionIcon::ShowState(EState state)
 {
 	if (m_curren_state == state)
 		return;
+
 	if (m_curren_state != stLast)
 	{
 
 		m_states[m_curren_state].Show(false);
 		m_states[m_curren_state].Enable(false);
 	}
+
 	m_states[state].Show(true);
 	m_states[state].Enable(true);
 
@@ -100,6 +103,15 @@ void CUIMotionIcon::SetLuminosity(float Pos)
 {
 	Pos = clampr(Pos, m_luminosity_progress.GetRange_min(), m_luminosity_progress.GetRange_max());
 	m_luminosity = Pos;
+}
+
+void CUIMotionIcon::Draw()
+{
+	if (!psHUD_Flags.is(HUD_DRAW_MOTION_BAR))
+		return;
+
+	inherited::Draw();
+	CUIStatic::Draw();
 }
 
 void CUIMotionIcon::Update()
