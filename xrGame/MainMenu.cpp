@@ -698,7 +698,7 @@ LPCSTR CMainMenu::GetGSVer()
 {
 	static string256 Version;
 
-	sprintf(Version, "%d", build_id);
+	sprintf(Version, "X-Platform BuildID %d", build_id);
 
 	return Version;
 }
