@@ -47,10 +47,10 @@ void CRender::motion_blur_pass_blur()
 	RenderBackend.set_Stencil(FALSE);
 
 	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_BLUR_FRAME], 0);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 
 	RenderBackend.set_Element(RenderTarget->s_motion_blur->E[SE_PASS_BLUR_FRAME], 1);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 
 void CRender::motion_blur_pass_save_depth()

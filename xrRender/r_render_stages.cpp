@@ -522,35 +522,31 @@ void CRender::render_postprocess()
 	//if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
 	//	render_autoexposure();
 
-	//Generic_0 -> Generic_0
-	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())
-		render_effectors_pass_night_vision();
-
 	//Radiation
 	render_effectors_pass_generate_radiation_noise();
 
-	//"Postprocess" params and colormapping (Generic_1 -> Generic_0)
+	//"Postprocess" params and colormapping (Generic_0 -> Generic_1)
 	render_effectors_pass_combine();
 
-	// Ceneric0 -> Generic0
+	// Ceneric1 -> Generic1
 	if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
 		render_motion_blur();
 
-	//Generic_0 -> Generic_1
+	//Generic_1 -> Generic_0
 	render_effectors_pass_resolve_gamma();
 
-	// Generic1 -> Generic0 -> Generic1
+	// Generic0 -> Generic1 -> Generic0
 	if (ps_r_postprocess_flags.test(RFLAG_ANTI_ALIASING))
 		render_antialiasing();
 
-	//Generic_1 -> Generic_0
+	//Generic_0 -> Generic_1
 	render_effectors_pass_lut();
 
-	// Ceneric0 -> Generic0
+	// Ceneric1 -> Generic1
 	if (ps_r_color_blind_mode)
 		render_effectors_pass_color_blind_filter();
 
-	// Generic0 -> Generic1
+	// Generic1 -> Generic0
 	render_screen_overlays();
 
 	if (g_pGamePersistent)

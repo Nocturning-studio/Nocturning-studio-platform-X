@@ -67,10 +67,7 @@ void CRender::RenderScene()
 
 	combine_scene();
 
-	if(ps_render_flags.test(RFLAG_DISABLE_POSTPROCESS))
-		render_effectors_pass_resolve_gamma(); //Generic_0 -> Generic_1
-	else
-		render_postprocess();
+	render_postprocess();
 
 	if (g_pGamePersistent)
 		g_pGamePersistent->OnRenderPPUI_main();

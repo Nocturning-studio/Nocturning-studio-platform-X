@@ -13,7 +13,7 @@ void CRender::combine_additional_postprocess()
 
 	RenderBackend.set_Element(RenderTarget->s_combine->E[SE_COMBINE_POSTPROCESS]);
 	RenderBackend.set_Constant("cas_params", ps_cas_contrast, ps_cas_sharpening, 0, 0);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 ///////////////////////////////////////////////////////////////////////////////////
 void CRender::combine_sun_shafts()

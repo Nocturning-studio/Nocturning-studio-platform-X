@@ -29,7 +29,7 @@ void CRenderTarget::u_calc_tc_duality_ss(Fvector2& r0, Fvector2& r1, Fvector2& l
 	l0.set(p0.x + shift_u, p0.y + shift_v);
 	l1.set(p1.x, p1.y);
 }
-
+///////////////////////////////////////////////////////////////////////////////////
 struct TL_2c3uv
 {
 	Fvector4 p;
@@ -46,7 +46,7 @@ struct TL_2c3uv
 		uv[2].set(u2, v2);
 	}
 };
-
+///////////////////////////////////////////////////////////////////////////////////
 void CRender::render_effectors_pass_generate_radiation_noise()
 {
 	OPTICK_EVENT("CRenderTarget::render_effectors_pass_generate_radiation_noise");
@@ -68,20 +68,6 @@ void CRender::render_effectors_pass_generate_radiation_noise()
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_RADIATION]);
 	RenderBackend.set_Constant("noise_intesity", RenderTarget->param_radiation_intensity, 0.33f);
 	RenderBackend.RenderViewportSurface(w * 0.25f, h * 0.25f, RenderTarget->rt_Radiation_Noise2);
-}
-
-void CRender::render_effectors_pass_night_vision()
-{
-	OPTICK_EVENT("CRenderTarget::render_effectors_pass_night_vision");
-
-	RenderBackend.set_CullMode(CULL_NONE);
-	RenderBackend.set_Stencil(FALSE);
-
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_NIGHT_VISION], 0);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
-
-	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_NIGHT_VISION], 1);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
 void CRender::render_effectors_pass_color_blind_filter()
@@ -150,10 +136,10 @@ void CRender::render_effectors_pass_color_blind_filter()
 	RenderBackend.set_Constant("green_matrix", GreenMatrix.x, GreenMatrix.y, GreenMatrix.z);
 	RenderBackend.set_Constant("blue_matrix", BlueMatrix.x, BlueMatrix.y, BlueMatrix.z);
 
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_COLOR_BLIND_FILTER], 1);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 
 void CRender::render_effectors_pass_combine()
@@ -161,7 +147,7 @@ void CRender::render_effectors_pass_combine()
 	OPTICK_EVENT("CRenderTarget::render_effectors_pass_combine");
 
 	// combination/postprocess
-	RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Generic_0);
+	RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Generic_1);
 	RenderBackend.set_Depth_Buffer(NULL);
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_COMBINE]);
@@ -179,6 +165,11 @@ void CRender::render_effectors_pass_combine()
 
 	Fvector2 r0, r1, l0, l1;
 	RenderTarget->u_calc_tc_duality_ss(r0, r1, l0, l1);
+
+	float NightVisionEnabled = 0.0f;
+
+	if (g_pGamePersistent && g_pGamePersistent->GetNightVisionState())
+		NightVisionEnabled = 1.0f;
 
 	// Fill vertex buffer
 	float du = ps_pps_u, dv = ps_pps_v;
@@ -204,6 +195,8 @@ void CRender::render_effectors_pass_combine()
 								color_get_B(p_brightness) / 255.f, 
 								RenderTarget->param_noise);
 
+	RenderBackend.set_Constant("night_vision_enabled", NightVisionEnabled);
+
 	RenderBackend.set_Constant("actor_health", get_actor_health());
 
 	RenderBackend.set_Geometry(RenderTarget->g_effectors);
@@ -219,7 +212,7 @@ void CRender::render_effectors_pass_resolve_gamma()
 	RenderBackend.set_Stencil(FALSE);
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_RESOLVE_GAMMA]);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 
 void CRender::render_effectors_pass_lut()
@@ -249,6 +242,6 @@ void CRender::render_effectors_pass_lut()
 	//	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_LUT], 1);
 	//}
 
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 ///////////////////////////////////////////////////////////////////////////////////
