@@ -16,6 +16,7 @@
 #include "level.h"
 #include "object_broker.h"
 #include "string_table.h"
+#include <GamePersistent.h>
 
 CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapon(name)
 {
@@ -32,6 +33,9 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_iShotNum = 0;
 	m_iQueueSize = WEAPON_ININITE_QUEUE;
 	m_bLockType = false;
+
+	m_fSavedTimeFactor = Device.time_factor();
+	GamePersistent().GetCurrentDof(m_SavedDof);
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -644,6 +648,7 @@ void CWeaponMagazined::switch2_Idle()
 #include "ai\stalker\ai_stalker.h"
 #include "object_handler_planner.h"
 #endif
+
 void CWeaponMagazined::switch2_Fire()
 {
 	CInventoryOwner* io = smart_cast<CInventoryOwner*>(H_Parent());
@@ -1101,6 +1106,11 @@ bool CWeaponMagazined::TryPlayAnimIdle()
 				m_pHUD->animPlay(random_anim(mhud.mhud_idle_sprint), TRUE, NULL, GetState());
 				return true;
 			}
+			else
+			{
+				m_pHUD->animPlay(random_anim(mhud.mhud_idle), TRUE, NULL, GetState());
+				return true;
+			}
 		}
 	}
 	return false;
@@ -1130,6 +1140,7 @@ void CWeaponMagazined::PlayAnimShoot()
 	m_pHUD->animPlay(random_anim(mhud.mhud_shots), TRUE, this, GetState());
 }
 
+#pragma todo(NSDeathman - убрать эти блядские кастыли с глубиной резкости)
 void CWeaponMagazined::OnZoomIn()
 {
 	inherited::OnZoomIn();
@@ -1148,6 +1159,18 @@ void CWeaponMagazined::OnZoomIn()
 		};
 		S->SetRndSeed(pActor->GetZoomRndSeed());
 		R_ASSERT(S);
+
+		if (psActorFlags.test(AF_ZOOM_TIME_SLOW_MO))
+		{
+			m_fSavedTimeFactor = Device.time_factor();
+			Device.time_factor(0.5f);
+		}
+
+		if (psActorFlags.test(AF_NEED_DOF)) // && !IsScopeAttached())
+		{
+			GamePersistent().GetCurrentDof(m_SavedDof);
+			GamePersistent().SetPickableEffectorDOF(true);
+		}
 	}
 }
 void CWeaponMagazined::OnZoomOut()
@@ -1162,7 +1185,18 @@ void CWeaponMagazined::OnZoomOut()
 
 	CActor* pActor = smart_cast<CActor*>(H_Parent());
 	if (pActor)
+	{
 		pActor->Cameras().RemoveCamEffector(eCEZoom);
+
+		if (psActorFlags.test(AF_ZOOM_TIME_SLOW_MO))
+			Device.time_factor(m_fSavedTimeFactor);
+
+		if (psActorFlags.test(AF_NEED_DOF)) // && !IsScopeAttached())
+		{
+			GamePersistent().SetPickableEffectorDOF(false);
+			GamePersistent().SetBaseDof(m_SavedDof);
+		}
+	}
 }
 
 // переключение режимов стрельбы одиночными и очередями

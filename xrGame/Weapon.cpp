@@ -76,8 +76,6 @@ CWeapon::CWeapon(LPCSTR name)
 	m_ef_weapon_type = u32(-1);
 	m_UIScope = NULL;
 	m_set_next_ammoType_on_reload = u32(-1);
-
-	m_fSavedTimeFactor = Device.time_factor();
 }
 
 CWeapon::~CWeapon()
@@ -1295,29 +1293,14 @@ float CWeapon::CurrentZoomFactor()
 
 void CWeapon::OnZoomIn()
 {
-	if (psActorFlags.test(AF_ZOOM_TIME_SLOW_MO))
-	{
-		m_fSavedTimeFactor = Device.time_factor();
-		Device.time_factor(0.5f);
-	}
-
 	m_bZoomMode = true;
 	m_fZoomFactor = CurrentZoomFactor();
 
 	StopHudInertion();
-
-	if (psActorFlags.test(AF_NEED_DOF))// && !IsScopeAttached())
-		GamePersistent().SetPickableEffectorDOF(true);
 }
 
 void CWeapon::OnZoomOut()
 {
-	if (psActorFlags.test(AF_ZOOM_TIME_SLOW_MO))
-		Device.time_factor(m_fSavedTimeFactor);
-
-	if (psActorFlags.test(AF_NEED_DOF) && m_bZoomMode) // && !IsScopeAttached())
-		GamePersistent().SetPickableEffectorDOF(false);
-
 	m_bZoomMode = false;
 	m_fZoomFactor = g_fov;
 

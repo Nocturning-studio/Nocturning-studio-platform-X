@@ -13,6 +13,7 @@ xr_token qpreset_token[] =
 	{"Minimum", 0}, 
 	{"Default", 1}, 
 	{"Maximum", 2}, 
+	{"Ultra", 3}, 
 	{0, 0}
 };
 
@@ -413,6 +414,9 @@ class CCC_Preset : public CCC_Token
 			break;
 		case 2:
 			strcpy(_cfg, "rspec_maximum.ltx");
+			break;
+		case 3:
+			strcpy(_cfg, "rspec_ultra.ltx");
 			break;
 		}
 		FS.update_path(_cfg, "$game_config$", _cfg);

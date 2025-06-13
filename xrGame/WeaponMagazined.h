@@ -181,6 +181,8 @@ class CWeaponMagazined : public CWeapon
 	bool m_bAmmoInChamberAllowed;
 	bool m_bChamberHasAmmo;
 
+	float m_fSavedTimeFactor;
+	Fvector3 m_SavedDof;
 	//////////////////////////////////////////////
 	// режим приближения
 	//////////////////////////////////////////////

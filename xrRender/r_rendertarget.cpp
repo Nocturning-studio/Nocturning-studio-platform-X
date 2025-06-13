@@ -99,58 +99,58 @@ void CRenderTarget::create_blenders()
 	Msg("Creating blenders");
 
 	b_occq = xr_new<CBlender_light_occq>();
-	s_occq.create(b_occq, "r\\occq");
+	s_occq.create(b_occq);
 
 	b_accum_mask = xr_new<CBlender_accum_direct_mask>();
-	s_accum_mask.create(b_accum_mask, "r\\accum_mask");
+	s_accum_mask.create(b_accum_mask);
 
 	b_accum_direct_cascade = xr_new<CBlender_accum_direct_cascade>();
-	s_accum_direct_cascade.create(b_accum_direct_cascade, "r\\accumulate_sun");
+	s_accum_direct_cascade.create(b_accum_direct_cascade);
 
 	b_accum_point = xr_new<CBlender_accum_point>();
-	s_accum_point.create(b_accum_point, "r\\accum_point_s");
+	s_accum_point.create(b_accum_point);
 
 	b_accum_spot = xr_new<CBlender_accum_spot>();
 	s_accum_spot.create(b_accum_spot, "r\\accum_spot_s", "lights\\lights_spot01");
 
 	b_effectors = xr_new<CBlender_effectors>();
-	s_effectors.create(b_effectors, "postprocess_stage_pass_effectors");
+	s_effectors.create(b_effectors);
 
 	b_output_to_screen = xr_new<CBlender_output_to_screen>();
-	s_output_to_screen.create(b_output_to_screen, "output_to_screen_stage");
+	s_output_to_screen.create(b_output_to_screen);
 
 	s_menu_distortion.create("main_menu_distort");
 	s_menu_gamma.create("main_menu_gamma");
 
 	b_ambient_occlusion = xr_new<CBlender_ambient_occlusion>();
-	s_ambient_occlusion.create(b_ambient_occlusion, "r\\ambient_occlusion");
+	s_ambient_occlusion.create(b_ambient_occlusion);
 
 	b_bloom = xr_new<CBlender_bloom>();
-	s_bloom.create(b_bloom, "r\\bloom");
+	s_bloom.create(b_bloom);
 
 	//b_autoexposure = xr_new<CBlender_autoexposure>();
-	//s_autoexposure.create(b_autoexposure, "r\\autoexposure");
+	//s_autoexposure.create(b_autoexposure);
 
 	b_combine = xr_new<CBlender_combine>();
-	s_combine.create(b_combine, "r\\combine");
+	s_combine.create(b_combine);
 
 	b_antialiasing = xr_new<CBlender_antialiasing>();
-	s_antialiasing.create(b_antialiasing, "r\\antialiasing");
+	s_antialiasing.create(b_antialiasing);
 
 	b_distortion = xr_new<CBlender_distortion>();
-	s_distortion.create(b_distortion, "r\\distortion");
+	s_distortion.create(b_distortion);
 
 	b_reflections = xr_new<CBlender_reflections>();
-	s_reflections.create(b_reflections, "r\\reflections");
+	s_reflections.create(b_reflections);
 
 	b_dof = xr_new<CBlender_depth_of_field>();
-	s_dof.create(b_dof, "r\\dof");
+	s_dof.create(b_dof);
 
 	b_motion_blur = xr_new<CBlender_motion_blur>();
-	s_motion_blur.create(b_motion_blur, "r\\motion_blur");
+	s_motion_blur.create(b_motion_blur);
 
 	b_frame_overlay = xr_new<CBlender_frame_overlay>();
-	s_frame_overlay.create(b_frame_overlay, "r\\frame_overlay");
+	s_frame_overlay.create(b_frame_overlay);
 }
 
 void CRenderTarget::delete_blenders()
