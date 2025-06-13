@@ -102,6 +102,16 @@ void CEatableItem::UseBy(CEntityAlive* entity_alive)
 
 	entity_alive->conditions().SetMaxPower(entity_alive->conditions().GetMaxPower() + m_fMaxPowerUpInfluence);
 
+	if (pSettings->line_exist(m_physic_item->cNameSect(), "use_sound"))
+	{
+		if (m_use_sound._feedback())
+			m_use_sound.stop();
+
+		shared_str snd_name = pSettings->r_string(m_physic_item->cNameSect(), "use_sound");
+		m_use_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
+		m_use_sound.play(nullptr, sm_2D);
+	}
+
 	// уменьшить количество порций
 	if (m_iPortionsNum > 0)
 		--(m_iPortionsNum);

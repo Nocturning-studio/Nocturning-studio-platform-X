@@ -13,6 +13,8 @@ class CEatableItem : public CInventoryItem
   private:
 	CPhysicItem* m_physic_item;
 
+	ref_sound m_use_sound;
+
   public:
 	CEatableItem();
 	virtual ~CEatableItem();
