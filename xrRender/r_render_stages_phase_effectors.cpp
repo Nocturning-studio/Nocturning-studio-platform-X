@@ -222,26 +222,17 @@ void CRender::render_effectors_pass_lut()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	//if (ps_render_flags.test(RFLAG_LUT))
-	//{
-		CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
-		IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
-		RenderTarget->t_LUT_0->surface_set(e0);
-		_RELEASE(e0);
+	CEnvDescriptorMixer* envdesc = g_pGamePersistent->Environment().CurrentEnv;
+	IDirect3DBaseTexture9* e0 = envdesc->lut_r_textures[0].second->surface_get();
+	RenderTarget->t_LUT_0->surface_set(e0);
+	_RELEASE(e0);
 
-		IDirect3DBaseTexture9* e1 = envdesc->lut_r_textures[1].second->surface_get();
-		RenderTarget->t_LUT_1->surface_set(e1);
-		_RELEASE(e1);
+	IDirect3DBaseTexture9* e1 = envdesc->lut_r_textures[1].second->surface_get();
+	RenderTarget->t_LUT_1->surface_set(e1);
+	_RELEASE(e1);
 
-		RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_LUT], 0);
-
-		RenderBackend.set_Constant("c_lut_params", envdesc->weight, 0, 0, 0);
-	//}
-	//else
-	//{
-	//	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_LUT], 1);
-	//}
-
+	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_LUT], 0);
+	RenderBackend.set_Constant("c_lut_params", envdesc->weight, 0, 0, 0);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 ///////////////////////////////////////////////////////////////////////////////////

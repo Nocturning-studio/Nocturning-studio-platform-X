@@ -35,8 +35,8 @@ void CBlender_effectors::Compile(CBlender_Compile& C)
 	case SE_PASS_LUT:
 		C.r_Pass("screen_quad", "postprocess_stage_pass_lut", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
 		C.r_Sampler_rtf("s_image", r_RT_generic0);
-		C.r_Sampler_clf("s_lut0", r_T_LUTs0);
-		C.r_Sampler_clf("s_lut1", r_T_LUTs1);
+		C.r_Sampler_clf("s_env_lut0", r_T_LUTs0);
+		C.r_Sampler_clf("s_env_lut1", r_T_LUTs1);
 		C.r_End();
 
 		C.r_Pass("screen_quad", "simple_image", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
