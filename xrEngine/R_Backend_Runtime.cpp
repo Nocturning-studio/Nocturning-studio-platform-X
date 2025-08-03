@@ -286,13 +286,24 @@ void CBackend::set_viewport_geometry(float w, float h, ref_geom geometry, u32& v
 
 	// Fill vertex buffer
 	FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, geometry->vb_stride, vOffset);
-	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y);
+	pv->set_position(0, h, d_Z, d_W);
+	pv->set_color(C);
+	pv->set_uv(p0.x, p1.y);
 	pv++;
-	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y);
+
+	pv->set_position(0, 0, d_Z, d_W);
+	pv->set_color(C);
+	pv->set_uv(p0.x, p0.y);
 	pv++;
-	pv->set(w, h, d_Z, d_W, C, p1.x, p1.y);
+
+	pv->set_position(w, h, d_Z, d_W);
+	pv->set_color(C);
+	pv->set_uv(p1.x, p1.y);
 	pv++;
-	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y);
+
+	pv->set_position(w, 0, d_Z, d_W);
+	pv->set_color(C);
+	pv->set_uv(p1.x, p0.y);
 	pv++;
 	RenderBackend.Vertex.Unlock(4, geometry->vb_stride);
 

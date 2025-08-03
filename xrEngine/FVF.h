@@ -135,6 +135,19 @@ struct TL
 		uv.x = u;
 		uv.y = v;
 	};
+	IC void set_position(float x, float y, float z, float w)
+	{
+		p.set(x, y, z, w);
+	};
+	IC void set_color(u32 c)
+	{
+		color = c;
+	};
+	IC void set_uv(float u, float v)
+	{
+		uv.x = u;
+		uv.y = v;
+	};
 	IC void transform(const Fvector& v, const Fmatrix& matSet)
 	{
 		// Transform it through the matrix set. Takes in mean projection.
