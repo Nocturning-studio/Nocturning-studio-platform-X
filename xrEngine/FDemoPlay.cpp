@@ -57,6 +57,9 @@ CDemoPlay::CDemoPlay(const char* name, float ms, u32 cycles, float life_time): C
 	fSpeed = ms;
 	dwCyclesLeft = cycles ? cycles : 1;
 
+	if (strstr(Core.Params, "-loop_demo"))
+		dwCyclesLeft = 999;
+
 	// Запущен ли сбор общей статистики (для бенчмарка)
 	stat_started = FALSE;
 
@@ -243,11 +246,17 @@ void CDemoPlay::Update(SCamEffectorInfo& info)
 	{
 #ifdef BENCHMARK_BUILD
 		// Закольцовываем демо в себе
-		//ResetPerFrameStatistic();
-		//frame = 0;
-		//fStartTime = 1;
-		//fLifeTime = 10000;
-		Console->Execute("quit");
+		if (strstr(Core.Params, "-loop_demo"))
+		{
+			ResetPerFrameStatistic();
+			Frame = 0;
+			fStartTime = 1;
+			fLifeTime = 10000;
+		}
+		else
+		{
+			Console->Execute("quit");
+		}
 #else
 		dwCyclesLeft--;
 
@@ -293,7 +302,7 @@ void CDemoPlay::Update(SCamEffectorInfo& info)
 		Screenshot();
 	}
 
-	if (Device.dwTimeGlobal >= uTimeToQuit)
+	if (Device.dwTimeGlobal >= uTimeToQuit && !strstr(Core.Params, "-loop_demo"))
 		Console->Execute("quit");
 #endif
 }
