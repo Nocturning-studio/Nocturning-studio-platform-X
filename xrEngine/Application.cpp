@@ -37,7 +37,7 @@ struct _SoundProcessor : public pureFrame
 ////////////////////////////////////////////////////////////////////////////////
 LPCSTR _GetFontTexName(LPCSTR section)
 {
-	static char* tex_names[] = {"texture800", "texture", "texture1600"};
+	static char* tex_names[] = {"texture800", "texture", "texture1600", "texture2k"};
 	int def_idx = 1; // default 1024x768
 	int idx = def_idx;
 
@@ -45,10 +45,12 @@ LPCSTR _GetFontTexName(LPCSTR section)
 
 	if (h <= 600)
 		idx = 0;
-	else if (h <= 900)
-		idx = 1;
-	else
+	else if (h <= 1024)
 		idx = 2;
+	else if (h <= 1440)
+		idx = 3;
+	else
+		idx = 3;
 
 	while (idx >= 0)
 	{
