@@ -55,6 +55,7 @@ void CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_Sampler_clf("s_bloom_blades", r_RT_bloom_blades1);
 		C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
 		jitter(C);
+		gbuffer(C);
 		C.r_End();
 		break;
 	case SE_COMBINE_VOLUMETRIC:

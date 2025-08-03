@@ -42,7 +42,6 @@ void CBlender_Detail_Still::Compile(CBlender_Compile& C)
 	{
 	case SE_DETAIL_NORMAL_ANIMATED:
 		configure_shader_detail_object(C, false, "detail_object_animated", "detail_object", false);
-		C.r_End();
 		break;
 	case SE_DETAIL_NORMAL_STATIC:
 		configure_shader_detail_object(C, false, "detail_object", "detail_object", false);

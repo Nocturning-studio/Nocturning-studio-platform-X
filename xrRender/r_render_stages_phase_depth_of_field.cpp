@@ -43,6 +43,9 @@ void CRender::render_depth_of_field()
 	}
 	*/
 
+	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_DOF_PREPARE_BUFFER]);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+
 	for (int i = 0; i < IterationsNum; i++)
 	{
 		int ShaderPass = ps_r_dof_quality > 2 ? SE_PASS_PROCESS_BOKEH_HQ : SE_PASS_PROCESS_BOKEH_LQ;

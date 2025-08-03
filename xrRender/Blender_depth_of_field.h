@@ -8,6 +8,7 @@ enum
 {
 	SE_PASS_PROCESS_BOKEH_HQ,
 	SE_PASS_PROCESS_BOKEH_LQ,
+	SE_PASS_DOF_PREPARE_BUFFER,
 	SE_PASS_DOF_DUMMY
 };
 ///////////////////////////////////////////////////////////////////////////////////

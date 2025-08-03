@@ -24,6 +24,21 @@ bool ConcatAndFindTexture(string_path& ResultPath, string_path AlbedoPath, LPCST
 	return SearchResult;
 }
 
+bool ConcatAndFindLevelTexture(string_path& ResultPath, string_path AlbedoPath, LPCSTR TexturePrefix)
+{
+	string_path DummyPath = {0};
+
+	bool SearchResult = false;
+
+	strcpy_s(ResultPath, sizeof(ResultPath), AlbedoPath);
+	strconcat(sizeof(ResultPath), ResultPath, ResultPath, TexturePrefix);
+
+	if (FS.exist(DummyPath, "$level$", ResultPath, ".dds"))
+		SearchResult = true;
+
+	return SearchResult;
+}
+
 bool FindTexture(string_path& ResultPath, LPCSTR TexturePath)
 {
 	string_path DummyPath = {0};
@@ -302,6 +317,10 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	bool bUseARMMap = false;
 	string_path ARMTexture;
 
+	// Get Empty-Roughness-Metallic texture
+	bool bUseERMMap = false;
+	string_path ERMTexture;
+
 	// Get normal texture
 	bool bUseCustomNormal = false;
 	string_path CustomNormalTexture;
@@ -403,9 +422,13 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		bUseARMMap = ConcatAndFindTexture(ARMTexture, AlbedoTexture, "_arm") && !DisablePBR;
 		C.r_Define(bUseARMMap, "USE_ARM_MAP", "1");
 
+		// Get Empty-Roughness-Metallic texture if needed
+		bUseERMMap = ConcatAndFindTexture(ERMTexture, AlbedoTexture, "_erm") && !DisablePBR;
+		C.r_Define(bUseERMMap, "USE_ERM_MAP", "1");
+
 		if (!DisablePBR)
 		{
-			if (!bUseARMMap)
+			if (!bUseARMMap && !bUseERMMap)
 			{
 				if (bUseConfigurator)
 				{
@@ -555,6 +578,11 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	}
 	else
 	{
+		if (bUseERMMap)
+		{
+			C.r_Sampler("s_erm_map", ERMTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		}
+
 		if (bUseBakedAO)
 			C.r_Sampler("s_baked_ao", BakedAOTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
@@ -669,7 +697,7 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 	// Get opacity texture
 	bool bUseOpacity = false;
 	string_path OpacityTexture;
-	bUseOpacity = ConcatAndFindTexture(OpacityTexture, AlbedoTexture, "_opacity");
+	bUseOpacity = ConcatAndFindLevelTexture(OpacityTexture, AlbedoTexture, "_opacity");
 	C.r_Define(bUseOpacity, "USE_CUSTOM_OPACITY", "1");
 
 	// Create shader with alpha testing if need
@@ -678,55 +706,56 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 	// Get BakedAO texture
 	bool bUseBakedAO = false;
 	string_path BakedAOTexture;
-	bUseBakedAO = ConcatAndFindTexture(BakedAOTexture, AlbedoTexture, "_ao") && !DisablePBR;
+	bUseBakedAO = ConcatAndFindLevelTexture(BakedAOTexture, AlbedoTexture, "_ao") && !DisablePBR;
 	C.r_Define(bUseBakedAO, "USE_BAKED_AO", "1");
 
 	// Get normal texture
 	bool bUseCustomNormal = false;
 	string_path CustomNormalTexture;
-	bUseCustomNormal = ConcatAndFindTexture(CustomNormalTexture, AlbedoTexture, "_normal") && !DisablePBR;
+	bUseCustomNormal = ConcatAndFindLevelTexture(CustomNormalTexture, AlbedoTexture, "_normal") && !DisablePBR;
 	C.r_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
 
 	// Get roughness texture
 	bool bUseCustomRoughness = false;
 	string_path CustomRoughnessTexture;
-	bUseCustomRoughness = ConcatAndFindTexture(CustomRoughnessTexture, AlbedoTexture, "_roughness") && !DisablePBR;
+	bUseCustomRoughness = ConcatAndFindLevelTexture(CustomRoughnessTexture, AlbedoTexture, "_roughness") && !DisablePBR;
 	C.r_Define(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
 
 	// Get metallic texture
 	bool bUseCustomMetallic = false;
 	string_path CustomMetallicTexture;
-	bUseCustomMetallic = ConcatAndFindTexture(CustomMetallicTexture, AlbedoTexture, "_metallic") && !DisablePBR;
+	bUseCustomMetallic = ConcatAndFindLevelTexture(CustomMetallicTexture, AlbedoTexture, "_metallic") && !DisablePBR;
 	C.r_Define(bUseCustomMetallic, "USE_CUSTOM_METALLIC", "1");
 
 	// Get subsurface_power power texture
 	bool bUseCustomSubsurfacePower = false;
 	string_path CustomSubsurfacePowerTexture;
-	bUseCustomSubsurfacePower = ConcatAndFindTexture(CustomSubsurfacePowerTexture, AlbedoTexture, "_subsurface_power") && !DisablePBR;
+	bUseCustomSubsurfacePower = ConcatAndFindLevelTexture(CustomSubsurfacePowerTexture, AlbedoTexture, "_subsurface_power") && !DisablePBR;
 	C.r_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
+	Msg("CustomSubsurfacePowerTexture %s", CustomSubsurfacePowerTexture);
 
 	// Get emission power texture
 	bool bUseCustomEmission = false;
 	string_path CustomEmissionTexture;
-	bUseCustomEmission = ConcatAndFindTexture(CustomEmissionTexture, AlbedoTexture, "_emission");
+	bUseCustomEmission = ConcatAndFindLevelTexture(CustomEmissionTexture, AlbedoTexture, "_emission");
 	C.r_Define(bUseCustomEmission, "USE_CUSTOM_EMISSION", "1");
 
 	// Get displacement texture
 	bool bUseCustomDisplacement = false;
 	string_path CustomDisplacementTexture;
-	bUseCustomDisplacement = ConcatAndFindTexture(CustomDisplacementTexture, AlbedoTexture, "_displacement") && !DisablePBR;
+	bUseCustomDisplacement = ConcatAndFindLevelTexture(CustomDisplacementTexture, AlbedoTexture, "_displacement") && !DisablePBR;
 	C.r_Define(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
 
 	// Get cavity texture
 	bool bUseCustomCavity = false;
 	string_path CustomCavityTexture;
-	bUseCustomCavity = ConcatAndFindTexture(CustomCavityTexture, AlbedoTexture, "_cavity") && !DisablePBR;
+	bUseCustomCavity = ConcatAndFindLevelTexture(CustomCavityTexture, AlbedoTexture, "_cavity") && !DisablePBR;
 	C.r_Define(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
 
 	// Get weight texture
 	bool bUseCustomWeight = false;
 	string_path CustomWeightTexture;
-	bUseCustomWeight = ConcatAndFindTexture(CustomWeightTexture, AlbedoTexture, "_weight");
+	bUseCustomWeight = ConcatAndFindLevelTexture(CustomWeightTexture, AlbedoTexture, "_weight");
 	C.r_Define(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
 
 	// Create shader pass
@@ -734,48 +763,37 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 	strconcat(sizeof(NewVertexShaderName), NewVertexShaderName, "gbuffer_stage_", VertexShaderName);
 	C.r_Pass(NewVertexShaderName, NewPixelShaderName, FALSE);
 
-	C.r_Sampler("s_base", AlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR,
-				D3DTEXF_ANISOTROPIC, true);
+	C.r_Sampler("s_base", AlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 
 	if (bUseOpacity)
-		C.r_Sampler("s_custom_opacity", OpacityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR,
-					D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_opacity", OpacityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseBakedAO)
-		C.r_Sampler("s_baked_ao", BakedAOTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR,
-					D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_baked_ao", BakedAOTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomNormal)
-		C.r_Sampler("s_custom_normal", CustomNormalTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_normal", CustomNormalTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomRoughness)
-		C.r_Sampler("s_custom_roughness", CustomRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_roughness", CustomRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomMetallic)
-		C.r_Sampler("s_custom_metallic", CustomMetallicTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_metallic", CustomMetallicTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomSubsurfacePower)
-		C.r_Sampler("s_custom_subsurface_power", CustomSubsurfacePowerTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_subsurface_power", CustomSubsurfacePowerTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomEmission)
-		C.r_Sampler("s_custom_emission", CustomEmissionTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_emission", CustomEmissionTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomDisplacement)
-		C.r_Sampler("s_custom_displacement", CustomDisplacementTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_displacement", CustomDisplacementTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomCavity)
-		C.r_Sampler("s_custom_cavity", CustomCavityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_cavity", CustomCavityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomWeight)
-		C.r_Sampler("s_custom_weight", CustomWeightTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
-					D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.r_Sampler("s_custom_weight", CustomWeightTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	jitter(C);
 
