@@ -18,7 +18,12 @@ void CRender::render_ambient_occlusion()
 	float w = float(Device.dwWidth);
 	float h = float(Device.dwHeight);
 
+	// HBAO+ stuff
+	float negInvR2 = -(1.0f / (pow(ps_r_ao_radius, 2.0f)));
+	float RadiusPrecalc = (10.0f * h * 0.5f);
+
 	int AOType = SE_AO_MXAO;
+
 	switch (ps_r_ao_quality)
 	{
 	case 1:
@@ -37,7 +42,7 @@ void CRender::render_ambient_occlusion()
 
 	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[AOType]);
 	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
-	RenderBackend.set_Constant("ao_params", ps_r_ao_bias, ps_r_ao_radius);
+	RenderBackend.set_Constant("ao_params", ps_r_ao_bias, ps_r_ao_radius, negInvR2, RadiusPrecalc);
 	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_ao);
 
 	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[SE_AO_DENOISE]);
