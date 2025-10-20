@@ -255,16 +255,16 @@
     <ClInclude Include="occRasterizer.h">
       <Filter>Core\Occlusion culling\HOM Occlusion</Filter>
     </ClInclude>
-    <ClInclude Include="blender_deffer_aref.h">
+    <ClInclude Include="Blender_transluent.h">
       <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
     </ClInclude>
-    <ClInclude Include="blender_deffer_flat.h">
+    <ClInclude Include="Blender_static_mesh.h">
       <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
     </ClInclude>
-    <ClInclude Include="blender_deffer_model.h">
+    <ClInclude Include="Blender_skinned_mesh.h">
       <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
     </ClInclude>
-    <ClInclude Include="Blender_BmmD.h">
+    <ClInclude Include="Blender_terrain.h">
       <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
     </ClInclude>
     <ClInclude Include="blender_combine.h">
@@ -327,7 +327,7 @@
     <ClInclude Include="ColorMapManager.h">
       <Filter>Render pipeline\Render stages\Stages\Postprocess stages\ColorMap</Filter>
     </ClInclude>
-    <ClInclude Include="Blender_detail_still.h">
+    <ClInclude Include="Blender_detail_object.h">
       <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
     </ClInclude>
     <ClInclude Include="Blender_Lm(EbB).h">
@@ -339,7 +339,7 @@
     <ClInclude Include="Blender_Screen_SET.h">
       <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
     </ClInclude>
-    <ClInclude Include="Blender_tree.h">
+    <ClInclude Include="Blender_multiple_usage.h">
       <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
     </ClInclude>
     <ClInclude Include="r_color_converting.h">
@@ -515,53 +515,8 @@
     <ClCompile Include="r_render_stages_phase_effectors.cpp">
       <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
     </ClCompile>
-    <ClCompile Include="blender_deffer_aref.cpp">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_deffer_flat.cpp">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_deffer_model.cpp">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_BmmD.cpp">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_combine.cpp">
-      <Filter>Render pipeline\Blenders\Combine stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_frame_overlay.cpp">
-      <Filter>Render pipeline\Blenders\Overlays stage</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_light_direct_cascade.cpp">
-      <Filter>Render pipeline\Blenders\Light accumulating stage</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_light_mask.cpp">
-      <Filter>Render pipeline\Blenders\Light accumulating stage</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_light_occq.cpp">
-      <Filter>Render pipeline\Blenders\Light accumulating stage</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_light_point.cpp">
-      <Filter>Render pipeline\Blenders\Light accumulating stage</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_light_spot.cpp">
-      <Filter>Render pipeline\Blenders\Light accumulating stage</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_bloom.cpp">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Bloom</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_motion_blur.cpp">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Motion blur</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_depth_of_field.cpp">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Depth of field</Filter>
-    </ClCompile>
     <ClCompile Include="shader_configurator.cpp">
       <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Particle.cpp">
-      <Filter>Render pipeline\Blenders\Forward rendering</Filter>
     </ClCompile>
     <ClCompile Include="r_render_stages_phase_motion_blur.cpp">
       <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
@@ -571,9 +526,6 @@
     </ClCompile>
     <ClCompile Include="r_render_stages_phase_antialiasing.cpp">
       <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_antialiasing.cpp">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Antialiasing</Filter>
     </ClCompile>
     <ClCompile Include="r_render_stages_light_accumulator_direct.cpp">
       <Filter>Render pipeline\Render stages\Stages\Light accumulation stage\Direct</Filter>
@@ -629,17 +581,8 @@
     <ClCompile Include="r_render_stages_phase_distortion.cpp">
       <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
     </ClCompile>
-    <ClCompile Include="Blender_distortion.cpp">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Distortion</Filter>
-    </ClCompile>
     <ClCompile Include="r_render_stages_phase_autoexposure.cpp">
       <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_autoexposure.cpp">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Autoexposure</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_ambient_occlusion.cpp">
-      <Filter>Render pipeline\Blenders\Ambient occlusion stage</Filter>
     </ClCompile>
     <ClCompile Include="r_render_stages_ambient_occlusion.cpp">
       <Filter>Render pipeline\Render stages\Stages\Ambient occlusion</Filter>
@@ -647,35 +590,11 @@
     <ClCompile Include="r_render_stages_phase_ssr.cpp">
       <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
     </ClCompile>
-    <ClCompile Include="Blender_reflections.cpp">
-      <Filter>Render pipeline\Blenders\Reflections stage</Filter>
-    </ClCompile>
     <ClCompile Include="ColorMapManager.cpp">
       <Filter>Render pipeline\Render stages\Stages\Postprocess stages\ColorMap</Filter>
     </ClCompile>
-    <ClCompile Include="Blender_detail_still.cpp">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Lm(EbB).cpp">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Model_EbB.cpp">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Screen_SET.cpp">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_tree.cpp">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_effectors.cpp">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Effectors</Filter>
-    </ClCompile>
     <ClCompile Include="r_render_stages_output_to_screen.cpp">
       <Filter>Render pipeline\Render stages\Stages\Output to screen stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_output_to_screen.cpp">
-      <Filter>Render pipeline\Blenders\Output to screen stage</Filter>
     </ClCompile>
     <ClCompile Include="xrRender_console.cpp">
       <Filter>Render Console</Filter>

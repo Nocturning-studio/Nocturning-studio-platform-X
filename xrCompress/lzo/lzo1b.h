@@ -59,7 +59,7 @@ extern "C" {
 /* compression levels */
 #define LZO1B_BEST_SPEED             1
 #define LZO1B_BEST_COMPRESSION       9
-#define LZO1B_DEFAULT_COMPRESSION  (-1)     /* fastest by default */
+#define LZO1B_B_DEFAULT_COMPRESSION  (-1)     /* fastest by default */
 
 
 LZO_EXTERN(int)

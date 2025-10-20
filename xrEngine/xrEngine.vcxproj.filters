@@ -851,9 +851,6 @@
     <ClCompile Include="Blenders\Blender_Recorder.cpp">
       <Filter>Render\Execution &amp; 3D\Shaders\Blender</Filter>
     </ClCompile>
-    <ClCompile Include="Blender_Recorder_R2.cpp">
-      <Filter>Render\Execution &amp; 3D\Shaders\Blender</Filter>
-    </ClCompile>
     <ClCompile Include="Blender_Recorder_StandartBinding.cpp">
       <Filter>Render\Execution &amp; 3D\Shaders\Blender</Filter>
     </ClCompile>

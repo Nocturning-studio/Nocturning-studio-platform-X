@@ -4,6 +4,9 @@
 ///////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
+#include "r_types.h"
+///////////////////////////////////////////////////////////////////////////////////
 class CBlender_distortion : public IBlender
 {
   public:
@@ -12,19 +15,30 @@ class CBlender_distortion : public IBlender
 		return "INTERNAL: Distortion";
 	}
 
-	virtual BOOL canBeDetailed()
+	CBlender_distortion()
 	{
-		return FALSE;
+		description.CLS = 0;
 	}
 
-	virtual BOOL canBeLMAPped()
+	~CBlender_distortion()
 	{
-		return FALSE;
 	}
 
-	virtual void Compile(CBlender_Compile& C);
+	void Compile(CBlender_Compile& C)
+	{
+		IBlender::Compile(C);
 
-	CBlender_distortion();
-	virtual ~CBlender_distortion();
+		switch (C.iElement)
+		{
+		case 0:
+			C.r_Pass("screen_quad", "postprocess_stage_distortion", FALSE, FALSE, FALSE);
+			gbuffer(C);
+			C.r_Sampler_rtf("s_image", r_RT_generic1);
+			C.r_Sampler_clf("s_distort", r_RT_distortion_mask);
+			jitter(C);
+			C.r_End();
+			break;
+		}
+	}
 };
 ///////////////////////////////////////////////////////////////////////////////////

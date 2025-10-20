@@ -41,12 +41,10 @@ void CRender::render_depth_of_field()
 	RenderBackend.set_Constant("dof_coc_precalculated", FocalPlane, B, CPremultiplied, FocalLength);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 
-	int ShaderPass = ps_r_dof_quality > 2 ? SE_PASS_PROCESS_BOKEH_HQ : SE_PASS_PROCESS_BOKEH_LQ;
-	RenderBackend.set_Element(RenderTarget->s_dof->E[ShaderPass], 0);
+	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH_HQ], 0);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 
-	ShaderPass = ps_r_dof_quality > 1 ? SE_PASS_PROCESS_BOKEH_HQ : SE_PASS_DOF_DUMMY;
-	RenderBackend.set_Element(RenderTarget->s_dof->E[ShaderPass], 1);
+	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH_HQ], 1);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 ///////////////////////////////////////////////////////////////////////////////////

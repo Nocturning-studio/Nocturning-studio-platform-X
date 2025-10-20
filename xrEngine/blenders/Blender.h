@@ -68,7 +68,10 @@ class ENGINE_API IBlender : public CPropertyBase
 	{
 		return FALSE;
 	}
-	virtual BOOL canBeLMAPped() = 0;
+	virtual BOOL canBeLMAPped()
+	{
+		return FALSE;
+	}
 
 	virtual void Save(IWriter& fs);
 	virtual void Load(IReader& fs, u16 version);

@@ -4,6 +4,9 @@
 ///////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
+#include "r_types.h"
+///////////////////////////////////////////////////////////////////////////////////
 enum
 {
 	SE_AO_MXAO,
@@ -17,22 +20,45 @@ enum
 class CBlender_ambient_occlusion : public IBlender
 {
   public:
-	virtual LPCSTR getComment()
-	{
-		return "INTERNAL: Ambient occlusion";
-	}
+	virtual LPCSTR getComment() { return "INTERNAL: Ambient occlusion"; }
 
-	virtual BOOL canBeDetailed()
+	virtual void Compile(CBlender_Compile& C)
 	{
-		return FALSE;
-	}
+		IBlender::Compile(C);
 
-	virtual BOOL canBeLMAPped()
-	{
-		return FALSE;
+		switch (C.iElement)
+		{
+		case SE_AO_SSAO:
+			C.r_Pass("screen_quad", "ambient_occlusion_stage_pass_ssao", FALSE, FALSE, FALSE);
+			gbuffer(C);
+			jitter(C);
+			C.r_End();
+			break;
+		case SE_AO_MXAO:
+			C.r_Pass("screen_quad", "ambient_occlusion_stage_pass_mxao", FALSE, FALSE, FALSE);
+			gbuffer(C);
+			jitter(C);
+			C.r_End();
+			break;
+		case SE_AO_HBAO_PLUS:
+			C.r_Pass("screen_quad", "ambient_occlusion_stage_pass_hbao_plus", FALSE, FALSE, FALSE);
+			gbuffer(C);
+			jitter(C);
+			C.r_End();
+			break;
+		case SE_AO_SSAO_PATH_TRACE:
+			C.r_Pass("screen_quad", "ambient_occlusion_stage_pass_ssao_pt", FALSE, FALSE, FALSE);
+			gbuffer(C);
+			jitter(C);
+			C.r_End();
+			break;
+		case SE_AO_DENOISE:
+			C.r_Pass("screen_quad", "ambient_occlusion_blurring_stage_pass_bilinear_filter", FALSE, FALSE, FALSE);
+			C.r_Sampler("s_ao", r_RT_ao);
+			C.r_End();
+			break;
+		}
 	}
-
-	virtual void Compile(CBlender_Compile& C);
 
 	CBlender_ambient_occlusion() = default;
 	virtual ~CBlender_ambient_occlusion() = default;

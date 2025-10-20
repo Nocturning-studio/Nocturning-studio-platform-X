@@ -1794,7 +1794,6 @@
     <ClCompile Include="Blenders\Blender.cpp" />
     <ClCompile Include="Blenders\Blender_Palette.cpp" />
     <ClCompile Include="Blenders\Blender_Recorder.cpp" />
-    <ClCompile Include="Blender_Recorder_R2.cpp" />
     <ClCompile Include="Blender_Recorder_StandartBinding.cpp" />
     <ClCompile Include="CameraBase.cpp" />
     <ClCompile Include="CameraManager.cpp" />

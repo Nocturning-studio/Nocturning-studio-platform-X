@@ -1,5 +1,9 @@
+///////////////////////////////////////////////////////////////////////////////////
 #pragma once
-
+///////////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
+#include "r_types.h"
+///////////////////////////////////////////////////////////////////////////////////
 class CBlender_output_to_screen : public IBlender
 {
   public:
@@ -18,8 +22,25 @@ class CBlender_output_to_screen : public IBlender
 		return FALSE;
 	}
 
-	virtual void Compile(CBlender_Compile& C);
+	CBlender_output_to_screen()
+	{
+		description.CLS = 0;
+	}
 
-	CBlender_output_to_screen();
-	virtual ~CBlender_output_to_screen();
+	~CBlender_output_to_screen() = default;
+
+	void Compile(CBlender_Compile& C)
+	{
+		IBlender::Compile(C);
+
+		switch (C.iElement)
+		{
+		case 0:
+			C.r_Pass("screen_quad", "output_to_screen_stage", FALSE, FALSE, FALSE);
+			C.r_Sampler_rtf("s_image", r_RT_generic0);
+			C.r_End();
+			break;
+		}
+	}
 };
+///////////////////////////////////////////////////////////////////////////////////

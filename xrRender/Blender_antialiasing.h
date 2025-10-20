@@ -5,6 +5,9 @@
 ///////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
+#include "r_types.h"
+///////////////////////////////////////////////////////////////////////////////////
 enum
 {
 	SE_PASS_FXAA,
@@ -20,17 +23,24 @@ class CBlender_antialiasing : public IBlender
 		return "INTERNAL: Antialiasing";
 	}
 
-	virtual BOOL canBeDetailed()
+	void Compile(CBlender_Compile& C)
 	{
-		return FALSE;
-	}
+		IBlender::Compile(C);
 
-	virtual BOOL canBeLMAPped()
-	{
-		return FALSE;
+		switch (C.iElement)
+		{
+		case SE_PASS_NFAA:
+			C.r_Pass("screen_quad", "postprocess_stage_antialiasing_pass_nfaa", FALSE, FALSE, FALSE);
+			C.r_Sampler_rtf("s_image", r_RT_generic0);
+			C.r_End();
+			break;
+		case SE_PASS_AA_DUMMY:
+			C.r_Pass("screen_quad", "simple_image", FALSE, FALSE, FALSE);
+			C.r_Sampler_rtf("s_image", r_RT_generic1);
+			C.r_End();
+			break;
+		}
 	}
-
-	virtual void Compile(CBlender_Compile& C);
 
 	CBlender_antialiasing() = default;
 	virtual ~CBlender_antialiasing() = default;

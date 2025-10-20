@@ -52,7 +52,7 @@ lzo_compress_t _lzo1b_get_compress_func(int clevel)
 
 	if (clevel < LZO1B_BEST_SPEED || clevel > LZO1B_BEST_COMPRESSION)
 	{
-		if (clevel == LZO1B_DEFAULT_COMPRESSION)
+		if (clevel == LZO1B_B_DEFAULT_COMPRESSION)
 			clevel = LZO1B_BEST_SPEED;
 		else
 			return 0;

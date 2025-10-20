@@ -446,6 +446,28 @@ void CEnvironment::lerp(float& current_weight)
 	CurrentEnv->lerp(this, *Current[0], *Current[1], current_weight, EM, mpower);
 }
 
+float CalcTurbulence(float Time, float Offset, float Turbulence)
+{
+	const float TurbulenceFrequrencyFactor = 0.1f;
+
+	float OscillationsX = sinf(Time * TurbulenceFrequrencyFactor + Offset);
+	float OscillationsY = cosf(Time * Turbulence * TurbulenceFrequrencyFactor + Offset);
+
+	return 1.0f - ((OscillationsX * OscillationsX) * (OscillationsY * OscillationsY) * Turbulence);
+}
+
+float _lerp(float a, float b, float f)
+{
+	return a + f * (b - a);
+}
+
+void CEnvironment::CalcWindValues()
+{
+	CurrentEnv->wind_turbulence = CalcTurbulence(Device.fTimeGlobal * CurrentEnv->wind_strength, 2, CurrentEnv->wind_gusting + 1);
+	clamp(CurrentEnv->wind_turbulence, -1.0f, 1.0f);
+	CurrentEnv->wind_turbulence = _lerp(CurrentEnv->wind_strength, CurrentEnv->wind_turbulence, CurrentEnv->wind_gusting);
+}
+
 void CEnvironment::OnFrame()
 {
 	OPTICK_EVENT("CEnvironment::OnFrame");
@@ -477,7 +499,7 @@ void CEnvironment::OnFrame()
 		return;
 #endif
 
-	CurrentEnv->onFrame();
+	CalcWindValues();
 
 	// if (pInput->iGetAsyncKeyState(DIK_O))		SetWeatherFX("surge_day");
 	float current_weight;

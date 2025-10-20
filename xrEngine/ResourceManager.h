@@ -203,6 +203,7 @@ class ENGINE_API CResourceManager
 	template <typename T> void DestroyShader(const T* sh);
 	template <typename T> HRESULT ReadShaderCache(string_path name, T*& result, time_t sourceModTime);
 	template <typename T> HRESULT ReflectShader(DWORD const* src, UINT size, T*& result);
+	void RecompileDependentShaders(const std::string& changedHeader);
 };
 
 template <class T> BOOL reclaim(xr_vector<T*>& vec, const T* ptr)

@@ -1,5 +1,9 @@
+///////////////////////////////////////////////////////////////////////////////////
 #pragma once
-
+///////////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
+#include "r_types.h"
+///////////////////////////////////////////////////////////////////////////////////
 class CBlender_light_occq : public IBlender
 {
   public:
@@ -7,17 +11,26 @@ class CBlender_light_occq : public IBlender
 	{
 		return "INTERNAL: occlusion testing";
 	}
-	virtual BOOL canBeDetailed()
+
+	CBlender_light_occq()
 	{
-		return FALSE;
-	}
-	virtual BOOL canBeLMAPped()
-	{
-		return FALSE;
+		description.CLS = 0;
 	}
 
-	virtual void Compile(CBlender_Compile& C);
+	~CBlender_light_occq() = default;
 
-	CBlender_light_occq();
-	virtual ~CBlender_light_occq();
+	void Compile(CBlender_Compile& C)
+	{
+		IBlender::Compile(C);
+
+		switch (C.iElement)
+		{
+		case 0: // occlusion testing
+			C.r_Pass("accumulating_light_stage_occlusion_culling", "accumulating_light_stage_occlusion_culling", false,
+					 TRUE, FALSE, FALSE);
+			C.r_End();
+			break;
+		}
+	}
 };
+///////////////////////////////////////////////////////////////////////////////////

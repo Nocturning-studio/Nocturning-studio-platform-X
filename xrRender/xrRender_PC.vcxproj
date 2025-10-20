@@ -912,15 +912,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Blender_BmmD.h" />
-    <ClInclude Include="Blender_detail_still.h" />
+    <ClInclude Include="Blender_terrain.h" />
+    <ClInclude Include="Blender_detail_object.h" />
     <ClInclude Include="blender_effectors.h" />
     <ClInclude Include="Blender_Lm(EbB).h" />
     <ClInclude Include="Blender_Model_EbB.h" />
     <ClInclude Include="Blender_output_to_screen.h" />
     <ClInclude Include="Blender_Particle.h" />
     <ClInclude Include="Blender_Screen_SET.h" />
-    <ClInclude Include="Blender_tree.h" />
+    <ClInclude Include="Blender_multiple_usage.h" />
     <ClInclude Include="DetailManager.h" />
     <ClInclude Include="DetailModel.h" />
     <ClInclude Include="FLOD.h" />
@@ -956,9 +956,9 @@
     <ClInclude Include="Blender_ambient_occlusion.h" />
     <ClInclude Include="blender_bloom.h" />
     <ClInclude Include="blender_combine.h" />
-    <ClInclude Include="blender_deffer_aref.h" />
-    <ClInclude Include="blender_deffer_flat.h" />
-    <ClInclude Include="blender_deffer_model.h" />
+    <ClInclude Include="Blender_transluent.h" />
+    <ClInclude Include="Blender_static_mesh.h" />
+    <ClInclude Include="Blender_skinned_mesh.h" />
     <ClInclude Include="Blender_depth_of_field.h" />
     <ClInclude Include="Blender_distortion.h" />
     <ClInclude Include="Blender_frame_overlay.h" />
@@ -985,15 +985,6 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Blender_BmmD.cpp" />
-    <ClCompile Include="Blender_detail_still.cpp" />
-    <ClCompile Include="blender_effectors.cpp" />
-    <ClCompile Include="Blender_Lm(EbB).cpp" />
-    <ClCompile Include="Blender_Model_EbB.cpp" />
-    <ClCompile Include="Blender_output_to_screen.cpp" />
-    <ClCompile Include="Blender_Particle.cpp" />
-    <ClCompile Include="Blender_Screen_SET.cpp" />
-    <ClCompile Include="Blender_tree.cpp" />
     <ClCompile Include="DetailManager.cpp" />
     <ClCompile Include="DetailManager_CACHE.cpp" />
     <ClCompile Include="DetailManager_Decompress.cpp" />
@@ -1082,24 +1073,6 @@
     <ClCompile Include="WallmarksEngine.cpp" />
     <ClCompile Include="xrRender_console.cpp" />
     <ClCompile Include="xrStripify.cpp" />
-    <ClCompile Include="Blender_antialiasing.cpp" />
-    <ClCompile Include="Blender_ambient_occlusion.cpp" />
-    <ClCompile Include="blender_bloom.cpp" />
-    <ClCompile Include="blender_combine.cpp" />
-    <ClCompile Include="blender_deffer_aref.cpp" />
-    <ClCompile Include="blender_deffer_flat.cpp" />
-    <ClCompile Include="blender_deffer_model.cpp" />
-    <ClCompile Include="Blender_depth_of_field.cpp" />
-    <ClCompile Include="Blender_distortion.cpp" />
-    <ClCompile Include="Blender_frame_overlay.cpp" />
-    <ClCompile Include="blender_light_direct_cascade.cpp" />
-    <ClCompile Include="blender_light_mask.cpp" />
-    <ClCompile Include="blender_light_occq.cpp" />
-    <ClCompile Include="blender_light_point.cpp" />
-    <ClCompile Include="blender_light_spot.cpp" />
-    <ClCompile Include="blender_autoexposure.cpp" />
-    <ClCompile Include="Blender_motion_blur.cpp" />
-    <ClCompile Include="Blender_reflections.cpp" />
     <ClCompile Include="ColorMapManager.cpp" />
     <ClCompile Include="du_sphere_part.cpp" />
     <ClCompile Include="Light_Render_Direct.cpp" />

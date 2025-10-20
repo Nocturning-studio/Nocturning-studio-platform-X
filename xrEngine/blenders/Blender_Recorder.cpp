@@ -78,31 +78,9 @@ void CBlender_Compile::_cpp_Compile(ShaderElement* _SH)
 	if (bDetail)
 		Device.Resources->m_textures_description.GetTextureUsage(base, bDetail_Diffuse, bDetail_Bump);
 
-	// KD
 	bSteepParallax = FALSE;
 	Device.Resources->m_textures_description.GetParallax(base, bSteepParallax);
-	// KD
-	/*
-		if (bDetail && Device.Resources->m_description->line_exist("association",base))
-		{
-			LPCSTR		descr			=	Device.Resources->m_description->r_string("association",base);
-			if (strstr(descr,"usage[diffuse_or_bump]"))
-			{
-				bDetail_Diffuse	= TRUE;
-				bDetail_Bump = TRUE;
-			}
 
-			if (strstr(descr,"usage[diffuse]"))
-			{
-				bDetail_Diffuse	= TRUE;
-			}
-
-			if (strstr(descr,"usage[bump]"))
-			{
-				bDetail_Bump		= TRUE;
-			}
-		}
-	*/
 	// Compile
 	BT->Compile(*this);
 }
@@ -126,7 +104,6 @@ void CBlender_Compile::SetParams(int iPriority, bool bStrictB2F)
 	// SH->Flags.bLighting		= FALSE;
 }
 
-//
 void CBlender_Compile::PassBegin()
 {
 	RS.Invalidate();
@@ -193,6 +170,7 @@ void CBlender_Compile::PassSET_ablend_mode(BOOL bABlend, u32 abSRC, u32 abDST)
 	RS.SetRS(D3DRS_SRCBLEND, bABlend ? abSRC : D3DBLEND_ONE);
 	RS.SetRS(D3DRS_DESTBLEND, bABlend ? abDST : D3DBLEND_ZERO);
 }
+
 void CBlender_Compile::PassSET_ablend_aref(BOOL bATest, u32 aRef)
 {
 	clamp(aRef, 0u, 255u);
@@ -221,11 +199,11 @@ void CBlender_Compile::PassSET_LightFog(BOOL bLight, BOOL bFog)
 	// SH->Flags.bLighting				|= !!bLight;
 }
 
-//
 void CBlender_Compile::StageBegin()
 {
 	StageSET_Address(D3DTADDRESS_WRAP); // Wrapping enabled by default
 }
+
 void CBlender_Compile::StageEnd()
 {
 	dwStage++;
@@ -235,6 +213,7 @@ void CBlender_Compile::StageSET_Address(u32 adr)
 	RS.SetSAMP(Stage(), D3DSAMP_ADDRESSU, adr);
 	RS.SetSAMP(Stage(), D3DSAMP_ADDRESSV, adr);
 }
+
 void CBlender_Compile::StageSET_XForm(u32 tf, u32 tc)
 {
 #ifdef _EDITOR
@@ -242,18 +221,22 @@ void CBlender_Compile::StageSET_XForm(u32 tf, u32 tc)
 	RS.SetTSS(Stage(), D3DTSS_TEXCOORDINDEX, tc);
 #endif
 }
+
 void CBlender_Compile::StageSET_Color(u32 a1, u32 op, u32 a2)
 {
 	RS.SetColor(Stage(), a1, op, a2);
 }
+
 void CBlender_Compile::StageSET_Color3(u32 a1, u32 op, u32 a2, u32 a3)
 {
 	RS.SetColor3(Stage(), a1, op, a2, a3);
 }
+
 void CBlender_Compile::StageSET_Alpha(u32 a1, u32 op, u32 a2)
 {
 	RS.SetAlpha(Stage(), a1, op, a2);
 }
+
 void CBlender_Compile::StageSET_TMC(LPCSTR T, LPCSTR M, LPCSTR C, int UVW_channel)
 {
 	Stage_Texture(T);
@@ -284,6 +267,7 @@ void CBlender_Compile::Stage_Texture(LPCSTR name, u32, u32 fmin, u32 fmip, u32 f
 	//	i_Address				(Stage(),address);
 	i_Filter(Stage(), fmin, fmip, fmag);
 }
+
 void CBlender_Compile::Stage_Matrix(LPCSTR name, int iChannel)
 {
 	sh_list& lst = L_matrices;
@@ -325,4 +309,202 @@ void CBlender_Compile::Stage_Constant(LPCSTR name)
 	sh_list& lst = L_constants;
 	int id = ParseName(name);
 	passConstants.push_back(Device.Resources->_CreateConstant((id >= 0) ? *lst[id] : name));
+}
+
+void CBlender_Compile::r_Define(string32 Name, int value)
+{
+	string32 Definition;
+	sprintf(Definition, "%d", value);
+	macros.add(Name, Definition);
+}
+
+void CBlender_Compile::r_Define(BOOL Enabled, string32 Name, string32 Definition)
+{
+	macros.add(Enabled, Name, Definition);
+}
+
+void CBlender_Compile::r_Define(string32 Name, string32 Definition)
+{
+	macros.add(Name, Definition);
+}
+
+void CBlender_Compile::r_Pass(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest, BOOL bZwrite, BOOL bABlend,
+							  D3DBLEND abSRC, D3DBLEND abDST, BOOL aTest, u32 aRef)
+{
+	RS.Invalidate();
+	ctable.clear();
+	passTextures.clear();
+	passMatrices.clear();
+	passConstants.clear();
+	dwStage = 0;
+
+	// Setup FF-units (Z-buffer, blender)
+	PassSET_ZB(bZtest, bZwrite);
+	PassSET_Blend(bABlend, abSRC, abDST, aTest, aRef);
+	PassSET_LightFog(FALSE, bFog);
+
+	// Create shaders
+	SPS* ps = Device.Resources->CreateShader<SPS>(_ps, macros);
+	SVS* vs = Device.Resources->CreateShader<SVS>(_vs, macros);
+	macros.clear();
+	dest.ps = ps;
+	dest.vs = vs;
+	ctable.merge(&ps->constants);
+	ctable.merge(&vs->constants);
+	SetMapping();
+
+	// Last Stage - disable
+	if (0 == stricmp(_ps, "null"))
+	{
+		RS.SetTSS(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
+		RS.SetTSS(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+	}
+}
+
+void CBlender_Compile::r_Constant(LPCSTR name, R_constant_setup* s)
+{
+	R_ASSERT(s);
+	ref_constant C = ctable.get(name);
+	if (C)
+		C->handler = s;
+}
+
+u32 CBlender_Compile::i_Sampler(LPCSTR _name)
+{
+	//
+	string256 name;
+	strcpy_s(name, _name);
+	//. andy	if (strext(name)) *strext(name)=0;
+	Device.Resources->fix_texture_name(name);
+
+	// Find index
+	ref_constant C = ctable.get(name);
+	if (!C)
+		return u32(-1);
+	R_ASSERT(C->type == RC_sampler);
+	u32 stage = C->samp.index;
+
+	// Create texture
+	// while (stage>=passTextures.size())	passTextures.push_back		(NULL);
+	return stage;
+}
+
+void CBlender_Compile::i_Texture(u32 s, LPCSTR name)
+{
+	if (name)
+		passTextures.push_back(mk_pair(s, ref_texture(Device.Resources->_CreateTexture(name))));
+}
+
+void CBlender_Compile::i_Projective(u32 s, bool b)
+{
+	if (b)
+		RS.SetTSS(s, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE | D3DTTFF_PROJECTED);
+	else
+		RS.SetTSS(s, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+}
+
+void CBlender_Compile::i_Address(u32 s, u32 address)
+{
+	RS.SetSAMP(s, D3DSAMP_ADDRESSU, address);
+	RS.SetSAMP(s, D3DSAMP_ADDRESSV, address);
+	RS.SetSAMP(s, D3DSAMP_ADDRESSW, address);
+}
+
+void CBlender_Compile::i_BorderColor(u32 s, u32 color)
+{
+	RS.SetSAMP(s, D3DSAMP_BORDERCOLOR, color);
+}
+
+void CBlender_Compile::i_Filter_Min(u32 s, u32 f)
+{
+	RS.SetSAMP(s, D3DSAMP_MINFILTER, f);
+}
+
+void CBlender_Compile::i_Filter_Mip(u32 s, u32 f)
+{
+	RS.SetSAMP(s, D3DSAMP_MIPFILTER, f);
+}
+
+void CBlender_Compile::i_Filter_Mag(u32 s, u32 f)
+{
+	RS.SetSAMP(s, D3DSAMP_MAGFILTER, f);
+}
+
+void CBlender_Compile::i_Filter(u32 s, u32 _min, u32 _mip, u32 _mag)
+{
+	i_Filter_Min(s, _min);
+	i_Filter_Mip(s, _mip);
+	i_Filter_Mag(s, _mag);
+}
+
+u32 CBlender_Compile::r_Sampler(LPCSTR _name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, u32 address, u32 fmin,
+								u32 fmip, u32 fmag, bool b_srgb)
+{
+	dwStage = i_Sampler(_name);
+	if (u32(-1) != dwStage)
+	{
+		i_Texture(dwStage, texture);
+
+		// force ANISO-TF for "s_base"
+		if ((0 == xr_strcmp(_name, "s_base")) && (fmin == D3DTEXF_LINEAR))
+		{
+			fmin = D3DTEXF_ANISOTROPIC;
+			fmag = D3DTEXF_ANISOTROPIC;
+		}
+		if ((0 == xr_strcmp(_name, "s_detail")) && (fmin == D3DTEXF_LINEAR))
+		{
+			fmin = D3DTEXF_ANISOTROPIC;
+			fmag = D3DTEXF_ANISOTROPIC;
+		}
+
+		// Sampler states
+		i_Address(dwStage, address);
+		i_Filter(dwStage, fmin, fmip, fmag);
+
+		if (dwStage < 4)
+			i_Projective(dwStage, b_ps1x_ProjectiveDivide);
+	}
+	return dwStage;
+}
+
+void CBlender_Compile::r_Sampler_rtf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
+{
+	r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT,
+			  b_SRGB);
+}
+
+void CBlender_Compile::r_Sampler_clf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
+{
+	r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_LINEAR,
+			  b_SRGB);
+}
+
+void CBlender_Compile::r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
+{
+	u32 s = r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE,
+					  D3DTEXF_LINEAR, b_SRGB);
+	if (u32(-1) != s)
+		RS.SetSAMP(s, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
+}
+
+void CBlender_Compile::r_Sampler_tex(LPCSTR name, LPCSTR texture, bool b_SRGB)
+{
+	r_Sampler(name, texture, false, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
+}
+
+void CBlender_Compile::r_Sampler_gaussian(LPCSTR name, LPCSTR texture, bool b_SRGB)
+{
+	r_Sampler(name, texture, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_GAUSSIANQUAD, b_SRGB);
+}
+
+void CBlender_Compile::r_End()
+{
+	dest.constants = Device.Resources->_CreateConstantTable(ctable);
+	dest.state = Device.Resources->_CreateState(RS.GetContainer());
+	dest.T = Device.Resources->_CreateTextureList(passTextures);
+	dest.C = 0;
+
+	ref_matrix_list temp(0);
+	SH->passes.push_back(
+		Device.Resources->_CreatePass(dest.state, dest.ps, dest.vs, dest.constants, dest.T, temp, dest.C));
 }

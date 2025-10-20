@@ -129,6 +129,8 @@ class ENGINE_API CEnvironment
 
 	void load_level_specific_ambients();
 
+	void CalcWindValues();
+
 	void OnFrame();
 	void set_static_sun_dir();
 	void calculate_dynamic_sun_dir();

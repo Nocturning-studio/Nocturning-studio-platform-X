@@ -1,9 +1,6 @@
 // Blender_Recorder.h: interface for the CBlender_Recorder class.
 //
 //////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_BLENDER_RECORDER_H__1F549674_8674_4EB2_95E6_E6BC19218A6C__INCLUDED_)
-#define AFX_BLENDER_RECORDER_H__1F549674_8674_4EB2_95E6_E6BC19218A6C__INCLUDED_
 #pragma once
 
 #include "..\tss.h"
@@ -136,7 +133,7 @@ class ENGINE_API CBlender_Compile
 	// R1/R2-compiler	[programmable]		- templates
 	void r_Define(BOOL Enabled, string32 Name, string32 Definition);
 	void r_Define(string32 Name, string32 Definition);
-	void r_Pass(LPCSTR vs, LPCSTR ps, bool bFog, BOOL bZtest = TRUE, BOOL bZwrite = TRUE, BOOL bABlend = FALSE,
+	void r_Pass(LPCSTR vs, LPCSTR ps, bool bFog = FALSE, BOOL bZtest = TRUE, BOOL bZwrite = TRUE, BOOL bABlend = FALSE,
 				D3DBLEND abSRC = D3DBLEND_ONE, D3DBLEND abDST = D3DBLEND_ZERO, BOOL aTest = FALSE, u32 aRef = 0);
 	void r_Constant(LPCSTR name, R_constant_setup* s);
 	u32 r_Sampler(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, u32 address = D3DTADDRESS_WRAP,
@@ -150,7 +147,6 @@ class ENGINE_API CBlender_Compile
 	void r_Sampler_clf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
 	void r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
 	void r_Sampler_tex(LPCSTR name, LPCSTR texture, bool b_SRGB = true);
-	void r_Sampler_tex(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB = true);
 	void r_Sampler_gaussian(LPCSTR name, LPCSTR texture, bool b_SRGB = true);
 	void r_End();
 
@@ -161,5 +157,3 @@ class ENGINE_API CBlender_Compile
 	ShaderElement* _lua_Compile(LPCSTR namesp, LPCSTR name);
 };
 #pragma pack(pop)
-
-#endif // !defined(AFX_BLENDER_RECORDER_H__1F549674_8674_4EB2_95E6_E6BC19218A6C__INCLUDED_)

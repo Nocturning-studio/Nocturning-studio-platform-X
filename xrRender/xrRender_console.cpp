@@ -604,10 +604,10 @@ void xrRender_initconsole()
 
 	CMD3(CCC_Mask, "r_bloom", &ps_r_postprocess_flags, RFLAG_BLOOM);
 	CMD3(CCC_Token, "r_bloom_quality", &ps_r_bloom_quality, bloom_quality_token);
-	//CMD4(CCC_Float, "r_bloom_threshold", &ps_r_bloom_threshold, 0.0f, 1.0f);
-	//CMD4(CCC_Float, "r_bloom_brightness", &ps_r_bloom_brightness, 0.0f, 10.0f);
-	//CMD4(CCC_Float, "r_bloom_blades_threshold", &ps_r_bloom_blades_threshold, 0.0f, 1.0f);
-	//CMD4(CCC_Float, "r_bloom_blades_brightness", &ps_r_bloom_blades_brightness, 0.0f, 10.0f);
+	CMD4(CCC_Float, "r_bloom_threshold", &ps_r_bloom_threshold, 0.0f, 1.0f);
+	CMD4(CCC_Float, "r_bloom_brightness", &ps_r_bloom_brightness, 0.0f, 10.0f);
+	CMD4(CCC_Float, "r_bloom_blades_threshold", &ps_r_bloom_blades_threshold, 0.0f, 1.0f);
+	CMD4(CCC_Float, "r_bloom_blades_brightness", &ps_r_bloom_blades_brightness, 0.0f, 10.0f);
 
 	CMD3(CCC_Mask, "r_mblur_enabled", &ps_r_postprocess_flags, RFLAG_MBLUR);
 	CMD4(CCC_Float, "r_mblur_power", &ps_r_mblur, 0.0f, 1.0f);

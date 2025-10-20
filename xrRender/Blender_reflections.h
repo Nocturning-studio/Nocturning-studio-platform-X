@@ -4,6 +4,9 @@
 ///////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
+#include "r_types.h"
+///////////////////////////////////////////////////////////////////////////////////
 enum
 {
 	SE_RENDER_PASS,
@@ -23,14 +26,32 @@ class CBlender_reflections : public IBlender
 		return FALSE;
 	}
 
-	virtual BOOL canBeLMAPped()
+	CBlender_reflections()
 	{
-		return FALSE;
+		description.CLS = 0;
 	}
 
-	virtual void Compile(CBlender_Compile& C);
+	~CBlender_reflections() = default;
 
-	CBlender_reflections();
-	virtual ~CBlender_reflections();
+	void Compile(CBlender_Compile& C)
+	{
+		IBlender::Compile(C);
+
+		switch (C.iElement)
+		{
+		case SE_RENDER_PASS:
+			C.r_Pass("screen_quad", "postprocess_stage_reflections_pass_render", FALSE, FALSE, FALSE);
+			C.r_Sampler_gaussian("s_image", r_RT_generic0);
+			gbuffer(C);
+			C.r_End();
+			break;
+		case SE_BLUR_PASS:
+			C.r_Pass("screen_quad", "postprocess_stage_reflections_pass_blur", FALSE, FALSE, FALSE);
+			C.r_Sampler_rtf("s_reflections", r_RT_reflections_raw);
+			gbuffer(C);
+			C.r_End();
+			break;
+		}
+	}
 };
 ///////////////////////////////////////////////////////////////////////////////////
