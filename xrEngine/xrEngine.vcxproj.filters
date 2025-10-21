@@ -483,21 +483,6 @@
     <ClInclude Include="du_sphere_part.h">
       <Filter>Render\Execution &amp; 3D\DebugDraw</Filter>
     </ClInclude>
-    <ClInclude Include="FVF.h">
-      <Filter>Render\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="R_Backend.h">
-      <Filter>Render\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="R_Backend_Runtime.h">
-      <Filter>Render\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="R_Backend_xform.h">
-      <Filter>Render\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="R_Backend_Data_Streams.h">
-      <Filter>Render\Backend</Filter>
-    </ClInclude>
     <ClInclude Include="Properties.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -588,12 +573,6 @@
     <ClInclude Include="Optick_Capture.h">
       <Filter>Engine\Profiling</Filter>
     </ClInclude>
-    <ClInclude Include="R_Backend_hemi.h">
-      <Filter>Render\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="R_Backend_tree.h">
-      <Filter>Render\Backend</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>General\Kernel</Filter>
     </ClInclude>
@@ -638,6 +617,27 @@
     </ClInclude>
     <ClInclude Include="demo_common.h">
       <Filter>Game API\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="FVF.h">
+      <Filter>Render\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="R_Backend.h">
+      <Filter>Render\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="R_Backend_Data_Streams.h">
+      <Filter>Render\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="R_Backend_hemi.h">
+      <Filter>Render\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="R_Backend_Runtime.h">
+      <Filter>Render\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="R_Backend_tree.h">
+      <Filter>Render\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="R_Backend_xform.h">
+      <Filter>Render\Backend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -944,21 +944,6 @@
     <ClCompile Include="du_sphere_part.cpp">
       <Filter>Render\Execution &amp; 3D\DebugDraw</Filter>
     </ClCompile>
-    <ClCompile Include="R_Backend.cpp">
-      <Filter>Render\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="R_Backend_DBG.cpp">
-      <Filter>Render\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="R_Backend_Runtime.cpp">
-      <Filter>Render\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="R_Backend_xform.cpp">
-      <Filter>Render\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="R_Backend_Data_Streams.cpp">
-      <Filter>Render\Backend</Filter>
-    </ClCompile>
     <ClCompile Include="pure.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -1040,12 +1025,6 @@
     <ClCompile Include="Optick_Capture.cpp">
       <Filter>Engine\Profiling</Filter>
     </ClCompile>
-    <ClCompile Include="R_Backend_hemi.cpp">
-      <Filter>Render\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="R_Backend_tree.cpp">
-      <Filter>Render\Backend</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>General\Kernel</Filter>
     </ClCompile>
@@ -1117,6 +1096,27 @@
     </ClCompile>
     <ClCompile Include="demo_common.cpp">
       <Filter>Game API\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="R_Backend.cpp">
+      <Filter>Render\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="R_Backend_Data_Streams.cpp">
+      <Filter>Render\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="R_Backend_DBG.cpp">
+      <Filter>Render\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="R_Backend_hemi.cpp">
+      <Filter>Render\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="R_Backend_Runtime.cpp">
+      <Filter>Render\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="R_Backend_tree.cpp">
+      <Filter>Render\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="R_Backend_xform.cpp">
+      <Filter>Render\Backend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

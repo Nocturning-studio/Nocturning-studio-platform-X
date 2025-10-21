@@ -377,6 +377,9 @@ class ENGINE_API CBackend
 	void OnDeviceDestroy();
 	void DeleteResources();
 
+	void reset_begin();
+	void reset_end();
+
 	// Debug render
 	void dbg_DP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 vBase, u32 pc);
 	void dbg_DIP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC);
@@ -437,7 +440,6 @@ class ENGINE_API CBackend
 	void ClearTexture(const ref_rt& _1, const ref_rt& _2 = NULL, u32 color = color_rgba(0, 0, 0, 0));
 	void ClearTexture(const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, u32 color = color_rgba(0, 0, 0, 0));
 	void ClearTexture(const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL, u32 color = color_rgba(0, 0, 0, 0));
-
 };
 
 extern ENGINE_API CBackend RenderBackend;

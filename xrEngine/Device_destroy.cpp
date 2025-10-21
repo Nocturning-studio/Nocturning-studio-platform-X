@@ -76,6 +76,8 @@ void CRenderDevice::Reset(bool precache)
 	//.		g_pGamePersistent->Environment().OnDeviceDestroy();
 	//}
 
+	RenderBackend.reset_begin();
+
 	Resources->reset_begin();
 	Memory.mem_compact();
 	HW.Reset(m_hWnd);
@@ -100,6 +102,8 @@ void CRenderDevice::Reset(bool precache)
 #endif
 
 	seqDeviceReset.Process(rp_DeviceReset);
+
+	RenderBackend.reset_end();
 
 	bool b_16_after = (float)dwWidth / (float)dwHeight > (1024.0f / 768.0f + 0.01f);
 	if (b_16_after != b_16_before && g_pGameLevel && g_pGameLevel->pHUD)

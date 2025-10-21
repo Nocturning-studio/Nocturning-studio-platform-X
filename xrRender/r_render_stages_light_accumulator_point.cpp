@@ -80,7 +80,7 @@ void CRender::accumulate_point_lights(light* L)
 		RenderBackend.set_Element(shader->E[_id]);
 
 		// Constants
-		RenderBackend.set_Constant("Ldynamic_pos", L_pos.x, L_pos.y, L_pos.z, 1 / (L_R * L_R));
+		RenderBackend.set_Constant("Ldynamic_pos", L_pos.x, L_pos.y, L_pos.z, L_R * L_R);
 		RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
 		RenderBackend.set_Constant("m_texgen", m_Texgen);
 

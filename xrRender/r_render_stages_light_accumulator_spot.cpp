@@ -155,8 +155,24 @@ void CRender::accumulate_spot_lights(light* L)
 
 		// Constants
 		float att_R = L->range * .95f;
-		float att_factor = 1.f / (att_R * att_R);
+		float att_factor = 1.f / (att_R * att_R); 
+		
+		// ѕолучаем параметры spot света
+		float spot_cutoff = L->cone; // внешний угол (в радианах)
+
+		// ¬ычисл€ем внутренний и внешний углы
+		// ќбычно внутренний угол составл€ет 80-90% от внешнего
+		float spot_inner_angle = spot_cutoff * 0.8f; // внутренний угол = 80% от внешнего
+		float spot_outer_angle = spot_cutoff;		 // внешний угол
+
+		//  онвертируем углы в косинусы дл€ шейдера
+		float cos_inner = cosf(spot_inner_angle);
+		float cos_outer = cosf(spot_outer_angle);
+
+		float LightSourceRangeSqr = L->range * L->range;
+
 		RenderBackend.set_Constant("Ldynamic_pos", L_pos.x, L_pos.y, L_pos.z, att_factor);
+		RenderBackend.set_Constant("Ldynamic_spot_att", cos_inner, cos_outer, LightSourceRangeSqr, 0);
 		RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
 		RenderBackend.set_Constant("m_texgen", m_Texgen);
 		RenderBackend.set_Constant("m_shadow", m_Shadow);

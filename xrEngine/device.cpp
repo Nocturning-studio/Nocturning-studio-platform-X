@@ -130,7 +130,23 @@ void CRenderDevice::End(void)
 
 	DebugUI->OnFrameEnd();
 
-	Present();
+	BOOL needsPresent = TRUE;
+
+	// Не делаем Present если:
+	// 1. Мы в режиме precache
+	// 2. Нет активных изменений
+	// 3. Окно минимизировано
+	if (dwPrecacheFrame || !b_is_Active || IsIconic(m_hWnd))
+	{
+		needsPresent = FALSE;
+	}
+
+	if (needsPresent)
+	{
+		Statistic->RenderTOTAL_Real.End();
+		Statistic->RenderTOTAL_Real.FrameEnd();
+		Present();
+	}
 #endif
 }
 

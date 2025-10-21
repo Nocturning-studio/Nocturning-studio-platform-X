@@ -70,6 +70,20 @@ template <class T> struct _matrix
 		_44_ = a._44;
 		return *this;
 	}
+
+	// Добавленный метод similar для сравнения матриц с заданной точностью
+	ICF bool similar(const Self& other, T epsilon = flt_zero) const
+	{
+		return (fsimilar(_11, other._11, epsilon) && fsimilar(_12, other._12, epsilon) &&
+				fsimilar(_13, other._13, epsilon) && fsimilar(_14, other._14, epsilon) &&
+				fsimilar(_21, other._21, epsilon) && fsimilar(_22, other._22, epsilon) &&
+				fsimilar(_23, other._23, epsilon) && fsimilar(_24, other._24, epsilon) &&
+				fsimilar(_31, other._31, epsilon) && fsimilar(_32, other._32, epsilon) &&
+				fsimilar(_33, other._33, epsilon) && fsimilar(_34, other._34, epsilon) &&
+				fsimilar(_41, other._41, epsilon) && fsimilar(_42, other._42, epsilon) &&
+				fsimilar(_43, other._43, epsilon) && fsimilar(_44, other._44, epsilon));
+	}
+
 	ICF SelfRef set(const Tvector& R, const Tvector& N, const Tvector& D, const Tvector& C)
 	{
 		i.set(R);

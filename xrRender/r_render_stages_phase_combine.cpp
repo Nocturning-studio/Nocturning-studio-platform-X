@@ -13,6 +13,10 @@ void CRender::combine_additional_postprocess()
 
 	RenderBackend.set_Element(RenderTarget->s_combine->E[SE_COMBINE_POSTPROCESS]);
 	RenderBackend.set_Constant("cas_params", ps_cas_contrast, ps_cas_sharpening, 0, 0);
+	RenderBackend.set_Constant("bloom_parameters",  ps_r_bloom_threshold, 
+												ps_r_bloom_brightness, 
+												ps_r_bloom_blades_threshold, 
+												ps_r_bloom_blades_brightness);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
 }
 ///////////////////////////////////////////////////////////////////////////////////

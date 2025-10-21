@@ -33,7 +33,7 @@ class CBlender_accum_direct_cascade : public IBlender
 			C.r_Pass("accumulating_light_stage_volume", "accumulating_light_stage_direct", false, TRUE, FALSE, FALSE, D3DBLEND_ONE, D3DBLEND_ZERO);
 			C.PassSET_ZB(TRUE, FALSE, TRUE); // force inverted Z-Buffer
 			C.r_Sampler("s_lmap", r_sunmask);
-			C.r_Sampler_gaussian("s_smap", r_RT_smap_depth);
+			C.r_Sampler_rtf("s_smap", r_RT_smap_depth);
 			gbuffer(C);
 			jitter(C);
 			C.r_End();
@@ -43,7 +43,7 @@ class CBlender_accum_direct_cascade : public IBlender
 			C.r_Define("FAR_CASCADE", "1");
 			C.r_Pass("accumulating_light_stage_volume", "accumulating_light_stage_direct", false, TRUE, FALSE, FALSE, D3DBLEND_ONE, D3DBLEND_ZERO);
 			C.r_Sampler("s_lmap", r_sunmask);
-			C.r_Sampler_gaussian("s_smap", r_RT_smap_depth);
+			C.r_Sampler_rtf("s_smap", r_RT_smap_depth);
 			gbuffer(C);
 			jitter(C);
 			{

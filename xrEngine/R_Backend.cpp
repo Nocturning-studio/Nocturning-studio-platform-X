@@ -49,6 +49,8 @@ void CBackend::OnDeviceCreate()
 	// invalidate caching
 	Invalidate();
 
+	constants.reset_dirty();
+
 	g_viewport.create(FVF::F_TL, Vertex.Buffer(), QuadIB);
 }
 
@@ -60,8 +62,20 @@ void CBackend::OnDeviceDestroy()
 	Index.Destroy();
 	Vertex.Destroy();
 
+	constants.reset_dirty();
+
 	// Quad
 	_RELEASE(QuadIB);
+}
+
+void CBackend::reset_begin()
+{
+	constants.force_dirty();
+}
+
+void CBackend::reset_end()
+{
+	constants.reset_dirty();
 }
 
 void CBackend::DeleteResources()

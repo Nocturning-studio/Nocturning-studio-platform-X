@@ -20,7 +20,7 @@ void CRender::calculate_bloom()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	float BloomResolutionMultiplier = 0.25f;
+	float BloomResolutionMultiplier = 0.5f;
 
 	float w = float(Device.dwWidth) * BloomResolutionMultiplier;
 	float h = float(Device.dwHeight) * BloomResolutionMultiplier;
@@ -41,10 +41,12 @@ void CRender::calculate_bloom()
 	{
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PROCESS_BLOOM], 0);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
+		RenderBackend.set_Constant("bloom_blur_params", float(i) / 4, 0, 0, 0);
 		RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Bloom_2);
 
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PROCESS_BLOOM], 1);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
+		RenderBackend.set_Constant("bloom_blur_params", float(i) / 4, 0, 0, 0);
 		RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Bloom_1);
 	}
 
@@ -53,10 +55,12 @@ void CRender::calculate_bloom()
 	{
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PROCESS_BLADES], 0);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
+		RenderBackend.set_Constant("bloom_blur_params", 0.5f, 0, 0, 0);
 		RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Bloom_Blades_2);
 
 		RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_PROCESS_BLADES], 1);
 		RenderBackend.set_Constant("bloom_resolution", w, h, 1.0f / w, 1.0f / h);
+		RenderBackend.set_Constant("bloom_blur_params", 0.5f, 0, 0, 0);
 		RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Bloom_Blades_1);
 	}
 }

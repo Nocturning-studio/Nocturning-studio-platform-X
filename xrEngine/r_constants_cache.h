@@ -3,6 +3,7 @@
 #pragma once
 
 #include "r_constants.h"
+#include "device.h" // Òåïåğü Device äîñòóïåí
 
 template <class T, u32 limit> class R_constant_cache
 {
@@ -16,6 +17,7 @@ template <class T, u32 limit> class R_constant_cache
 		array.resize(limit);
 		flush();
 	}
+
 	ICF T* access(u32 id)
 	{
 		return &array[id];
@@ -41,27 +43,65 @@ template <class T, u32 limit> class R_constant_cache
 	}
 };
 
-class R_constant_array
+class ENGINE_API R_constant_array
 {
   public:
 	typedef R_constant_cache<Fvector4, 256> t_f;
-	typedef R_constant_cache<Ivector4, 16> t_i;
-	typedef R_constant_cache<BOOL, 16> t_b;
 
   public:
 	ALIGN(16) t_f c_f;
-	//	ALIGN(16)	t_i					c_i;
-	//	ALIGN(16)	t_b					c_b;
 	BOOL b_dirty;
 
+  private:
+	// ÄÎÁÀÂËßÅÌ: Dirty-ñèñòåìà
+	u32 m_dirtyFrame;
+	u32 m_lastFlushFrame;
+
+	u32 getFrame();
+
   public:
+	// ÄÎÁÀÂËßÅÌ: Êîíñòğóêòîğ äëÿ èíèöèàëèçàöèè
+	R_constant_array() : b_dirty(FALSE), m_dirtyFrame(0), m_lastFlushFrame(0)
+	{
+	}
+
+	// ÄÎÁÀÂËßÅÌ: Dirty-ìåòîäû
+	ICF void mark_dirty()
+	{
+		m_dirtyFrame = getFrame();
+		b_dirty = TRUE;
+	}
+
+	ICF bool needs_flush() const
+	{
+		// ÈÑÏĞÀÂËÅÍÈÅ: ïğîâåğÿåì ÷òî dirty frame áîëüøå last flush frame
+		return b_dirty && (m_dirtyFrame > m_lastFlushFrame);
+	}
+
+	ICF void mark_flushed()
+	{
+		m_lastFlushFrame = getFrame();
+		b_dirty = FALSE;
+	}
+
+	ICF void reset_dirty()
+	{
+		m_dirtyFrame = 0;
+		m_lastFlushFrame = 0;
+		b_dirty = FALSE;
+	}
+
+	ICF void force_dirty()
+	{
+		mark_dirty();
+	}
+
 	t_f& get_array_f()
 	{
 		return c_f;
 	}
-	//	t_i&					get_array_i		()	{ return c_i;	}
-	//	t_b&					get_array_b		()	{ return c_b;	}
 
+	// ÌÎÄÈÔÈÖÈĞÓÅÌ ñóùåñòâóşùèå ìåòîäû - äîáàâëÿåì mark_dirty()
 	void set(R_constant* C, R_constant_load& L, const Fmatrix& A)
 	{
 		VERIFY(RC_float == C->type);
@@ -93,6 +133,7 @@ class R_constant_array
 			NODEFAULT;
 #endif
 		}
+		mark_dirty();
 	}
 
 	void set(R_constant* C, R_constant_load& L, const Fvector4& A)
@@ -101,6 +142,7 @@ class R_constant_array
 		VERIFY(RC_1x4 == L.cls);
 		c_f.access(L.index)->set(A);
 		c_f.dirty(L.index, L.index + 1);
+		mark_dirty();
 	}
 
 	void seta(R_constant* C, R_constant_load& L, u32 e, const Fmatrix& A)
@@ -141,6 +183,7 @@ class R_constant_array
 			NODEFAULT;
 #endif
 		}
+		mark_dirty();
 	}
 
 	void seta(R_constant* C, R_constant_load& L, u32 e, const Fvector4& A)
@@ -150,6 +193,7 @@ class R_constant_array
 		u32 base = L.index + e;
 		c_f.access(base)->set(A);
 		c_f.dirty(base, base + 1);
+		mark_dirty();
 	}
 };
 
@@ -159,36 +203,43 @@ class ENGINE_API R_constants
 	ALIGN(16) R_constant_array a_pixel;
 	ALIGN(16) R_constant_array a_vertex;
 
+	// ÄÎÁÀÂËßÅÌ: Êîíñòğóêòîğ
+	R_constants()
+	{
+	}
+
 	void flush_cache();
 
   public:
-	// fp, non-array versions
+	// ÂĞÅÌÅÍÍÎ ÂÎÇÂĞÀÙÀÅÌ ñòàğóş ëîãèêó äëÿ îòëàäêè
 	ICF void set(R_constant* C, const Fmatrix& A)
 	{
 		if (C->destination & 1)
 		{
 			a_pixel.set(C, C->ps, A);
-			a_pixel.b_dirty = TRUE;
+			a_pixel.b_dirty = TRUE; // ÂĞÅÌÅÍÍÎ ÎÑÒÀÂËßÅÌ
 		}
 		if (C->destination & 2)
 		{
 			a_vertex.set(C, C->vs, A);
-			a_vertex.b_dirty = TRUE;
+			a_vertex.b_dirty = TRUE; // ÂĞÅÌÅÍÍÎ ÎÑÒÀÂËßÅÌ
 		}
 	}
+
 	ICF void set(R_constant* C, const Fvector4& A)
 	{
 		if (C->destination & 1)
 		{
 			a_pixel.set(C, C->ps, A);
-			a_pixel.b_dirty = TRUE;
+			a_pixel.b_dirty = TRUE; // ÂĞÅÌÅÍÍÎ ÎÑÒÀÂËßÅÌ
 		}
 		if (C->destination & 2)
 		{
 			a_vertex.set(C, C->vs, A);
-			a_vertex.b_dirty = TRUE;
+			a_vertex.b_dirty = TRUE; // ÂĞÅÌÅÍÍÎ ÎÑÒÀÂËßÅÌ
 		}
 	}
+
 	ICF void set(R_constant* C, float x, float y, float z, float w)
 	{
 		Fvector4 data;
@@ -196,33 +247,34 @@ class ENGINE_API R_constants
 		set(C, data);
 	}
 
-	// fp, array versions
 	ICF void seta(R_constant* C, u32 e, const Fmatrix& A)
 	{
 		if (C->destination & 1)
 		{
 			a_pixel.seta(C, C->ps, e, A);
-			a_pixel.b_dirty = TRUE;
+			a_pixel.b_dirty = TRUE; // ÂĞÅÌÅÍÍÎ ÎÑÒÀÂËßÅÌ
 		}
 		if (C->destination & 2)
 		{
 			a_vertex.seta(C, C->vs, e, A);
-			a_vertex.b_dirty = TRUE;
+			a_vertex.b_dirty = TRUE; // ÂĞÅÌÅÍÍÎ ÎÑÒÀÂËßÅÌ
 		}
 	}
+
 	ICF void seta(R_constant* C, u32 e, const Fvector4& A)
 	{
 		if (C->destination & 1)
 		{
 			a_pixel.seta(C, C->ps, e, A);
-			a_pixel.b_dirty = TRUE;
+			a_pixel.b_dirty = TRUE; // ÂĞÅÌÅÍÍÎ ÎÑÒÀÂËßÅÌ
 		}
 		if (C->destination & 2)
 		{
 			a_vertex.seta(C, C->vs, e, A);
-			a_vertex.b_dirty = TRUE;
+			a_vertex.b_dirty = TRUE; // ÂĞÅÌÅÍÍÎ ÎÑÒÀÂËßÅÌ
 		}
 	}
+
 	ICF void seta(R_constant* C, u32 e, float x, float y, float z, float w)
 	{
 		Fvector4 data;
@@ -230,11 +282,22 @@ class ENGINE_API R_constants
 		seta(C, e, data);
 	}
 
-	//
 	ICF void flush()
 	{
 		if (a_pixel.b_dirty || a_vertex.b_dirty)
 			flush_cache();
+	}
+
+	ICF void force_dirty()
+	{
+		a_pixel.force_dirty();
+		a_vertex.force_dirty();
+	}
+
+	ICF void reset_dirty()
+	{
+		a_pixel.reset_dirty();
+		a_vertex.reset_dirty();
 	}
 };
 #endif
