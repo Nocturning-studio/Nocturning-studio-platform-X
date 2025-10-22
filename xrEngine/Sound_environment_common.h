@@ -1,13 +1,16 @@
 ﻿///////////////////////////////////////////////////////////////////////////////////
-// Created: 10.12.2024
+// Created: 22.10.2025
 // Author: NSDeathman
-// EAX Environment Data Structure
+// Path tracing EAX
+// Nocturning studio for X-Platform
 ///////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief Balanced hemisphere directions for initial sampling
+ */
 static const Fvector3 BalancedHemisphereDirections[] = {
-	// Основные направления (первое полушарие)
 	{0.000000, 0.000000, 1.000000},	  {0.577350, 0.577350, 0.577350},	{0.577350, -0.577350, 0.577350},
 	{-0.577350, 0.577350, 0.577350},  {-0.577350, -0.577350, 0.577350}, {0.850651, 0.000000, 0.525731},
 	{-0.850651, 0.000000, 0.525731},  {0.525731, 0.850651, 0.000000},	{0.525731, -0.850651, 0.000000},
@@ -20,14 +23,16 @@ static const Fvector3 BalancedHemisphereDirections[] = {
 static const u32 BALANCED_DIRECTIONS_COUNT = sizeof(BalancedHemisphereDirections) / sizeof(Fvector3);
 static const float SMART_RAY_DISTANCE = 10000.0f;
 
-// Структура для хранения информации о попадании луча
+/**
+ * @brief Structure for storing raycast hit information
+ */
 struct SRayHitInfo
 {
-	Fvector vPosition;
-	Fvector vNormal;
-	float fDistance;
-	u32 material_type;
-	bool bHit;
+	Fvector vPosition; ///< Hit position in world space
+	Fvector vNormal;   ///< Surface normal at hit point
+	float fDistance;   ///< Distance from ray origin to hit point
+	u32 material_type; ///< Classified material type (0=air, 1-4=surfaces)
+	bool bHit;		   ///< Whether ray hit anything
 
 	SRayHitInfo() : fDistance(0), material_type(0), bHit(false)
 	{
@@ -36,45 +41,52 @@ struct SRayHitInfo
 	}
 };
 
+/**
+ * @brief Reflection analysis results
+ */
 struct SReflectionAnalysis
 {
-	float fPrimaryReflections;	 // Первичные отражения
-	float fSecondaryReflections; // Вторичные отражения
-	float fReflectionDelay;		 // Средняя задержка отражений
-	float fReflectionEnergy;	 // Общая энергия отражений
-	float fSurfaceComplexity;	 // Сложность поверхностей
+	float fPrimaryReflections;	 ///< Primary reflection intensity
+	float fSecondaryReflections; ///< Secondary reflection intensity
+	float fReflectionDelay;		 ///< Average reflection delay time
+	float fReflectionEnergy;	 ///< Total reflection energy
+	float fSurfaceComplexity;	 ///< Surface complexity factor (0-1)
 };
 
-// Физические акустические параметры
+/**
+ * @brief Physical acoustic parameters
+ */
 struct SPhysicalAcoustics
 {
-	float fRoomVolume;		 // Объем помещения (м³)
-	float fEchoStrength;	 // Сила эха (0-1) на основе физической модели
-	float fReverbTime;		 // Время реверберации (сек)
-	float fCriticalDistance; // Критическое расстояние (м)
-	float fAdjustedRadius;	 // Исправленный радиус с учетом открытости
+	float fRoomVolume;		 ///< Room volume in cubic meters
+	float fEchoStrength;	 ///< Echo strength (0-1) for EAX
+	float fReverbTime;		 ///< Reverberation time in seconds for EAX
+	float fCriticalDistance; ///< Critical distance in meters
+	float fAdjustedRadius;	 ///< Adjusted radius accounting for openness for EAX
+
+	SPhysicalAcoustics()
+		: fRoomVolume(100.0f), fEchoStrength(0.3f), fReverbTime(1.0f), fCriticalDistance(5.0f), fAdjustedRadius(10.0f)
+	{
+	}
 };
 
-// Усовершенствованная система направлений для точного анализа
+/**
+ * @brief Detailed sphere directions for comprehensive environment analysis
+ */
+
 static const Fvector3 DetailedSphereDirections[] = {
 	// Основные оси (6 направлений)
 	{1.000000, 0.000000, 0.000000},
 	{-1.000000, 0.000000, 0.000000},
 	{0.000000, 1.000000, 0.000000},
-	{0.000000, -1.000000, 0.000000},
 	{0.000000, 0.000000, 1.000000},
 	{0.000000, 0.000000, -1.000000},
-
 	// Углы куба (8 направлений)
 	{0.577350, 0.577350, 0.577350},
 	{0.577350, 0.577350, -0.577350},
 	{0.577350, -0.577350, 0.577350},
-	{0.577350, -0.577350, -0.577350},
-	{-0.577350, 0.577350, 0.577350},
-	{-0.577350, 0.577350, -0.577350},
 	{-0.577350, -0.577350, 0.577350},
 	{-0.577350, -0.577350, -0.577350},
-
 	// Дополнительные направления для лучшего покрытия (42 направления)
 	{0.850651, 0.000000, 0.525731},
 	{-0.850651, 0.000000, 0.525731},
@@ -129,40 +141,40 @@ static const Fvector3 DetailedSphereDirections[] = {
 
 static const u32 DETAILED_DIRECTIONS_COUNT = sizeof(DetailedSphereDirections) / sizeof(Fvector3);
 
-static const float MAX_RAY_DISTANCE = 10000.0f; // Максимальное расстояние трассировки
-static const float MIN_RAY_DISTANCE = 0.1f;		// Минимальное расстояние трассировки
-
+/**
+ * @brief Main EAX environment data structure
+ */
 struct SEAXEnvironmentData
 {
-	SReflectionAnalysis sReflectionData;
-	SPhysicalAcoustics sPhysicalData;
+	SReflectionAnalysis sReflectionData; ///< Reflection analysis results for EAX
+	SPhysicalAcoustics sPhysicalData;	 ///< Physical acoustic parameters for EAX
 
-	// Основные геометрические параметры
-	float fEnvironmentRadius;	// Средний радиус окружения (метры)
-	float fEnvironmentVariance; // Разброс расстояний (0-1), определяет "открытость"
-	float fEnvironmentDensity; // Плотность окружения (0-1), отношение попавших лучей
+	// Core geometric parameters
+	float fEnvironmentRadius;	///< Average environment radius in meters
+	float fEnvironmentVariance; ///< Distance variance (0-1)
+	float fEnvironmentDensity;	///< Environment density (0-1)
 
-	// Акустические свойства
-	float fFogDensity;	 // Плотность тумана/воздуха
-	float fRoomSize;	 // Нормализованный размер помещения (0-1)
-	float fReflectivity; // Коэффициент отражения поверхностей (0-1)
+	// Acoustic properties
+	float fFogDensity;	 ///< Fog/air density for EAX air absorption
+	float fRoomSize;	 ///< Normalized room size (0-1)
+	float fReflectivity; ///< Surface reflection coefficient (0-1)
 
-	// Производные параметры для EAX
-	float fOpenness;	 // Степень открытости пространства (0-1)
-	float fEnclosedness; // Степень закрытости пространства (0-1)
-	float fUniformity;	 // Равномерность распределения поверхностей (0-1)
+	// Derived parameters for EAX
+	float fOpenness;	 ///< Space openness degree (0-1) for EAX
+	float fEnclosedness; ///< Space enclosedness degree (0-1) for EAX
+	float fUniformity;	 ///< Surface distribution uniformity (0-1)
 
-	// Временные метки и валидация
-	u32 dwFrameStamp; // Кадр, в котором были обновлены данные
-	bool bDataValid;  // Флаг валидности данных
+	// Timestamps and validation
+	u32 dwFrameStamp; ///< Frame when data was updated
+	bool bDataValid;  ///< Data validity flag
 
-	// Конструктор по умолчанию
+	/// Default constructor
 	SEAXEnvironmentData()
 	{
 		Reset();
 	}
 
-	// Сброс к значениям по умолчанию
+	/// Resets to default values optimized for EAX
 	void Reset()
 	{
 		fEnvironmentRadius = 10.0f;
@@ -175,13 +187,14 @@ struct SEAXEnvironmentData
 		fEnclosedness = 0.5f;
 		fUniformity = 0.5f;
 
-		// Сброс физических параметров
+		// Reset physical parameters for EAX
 		sPhysicalData.fRoomVolume = 100.0f;
 		sPhysicalData.fEchoStrength = 0.3f;
 		sPhysicalData.fReverbTime = 1.0f;
 		sPhysicalData.fCriticalDistance = 5.0f;
+		sPhysicalData.fAdjustedRadius = 10.0f;
 
-		// Сброс анализа отражений
+		// Reset reflection analysis for EAX
 		sReflectionData.fPrimaryReflections = 0.1f;
 		sReflectionData.fSecondaryReflections = 0.05f;
 		sReflectionData.fReflectionDelay = 0.02f;
@@ -192,7 +205,7 @@ struct SEAXEnvironmentData
 		bDataValid = false;
 	}
 
-	// Копирование данных
+	/// Copies data from another instance
 	void CopyFrom(const SEAXEnvironmentData& other)
 	{
 		fEnvironmentRadius = other.fEnvironmentRadius;
@@ -205,70 +218,21 @@ struct SEAXEnvironmentData
 		fEnclosedness = other.fEnclosedness;
 		fUniformity = other.fUniformity;
 
-		// Копирование физических параметров
-		sPhysicalData = other.sPhysicalData;
+		// Copy physical parameters for EAX
+		sPhysicalData.fRoomVolume = other.sPhysicalData.fRoomVolume;
+		sPhysicalData.fEchoStrength = other.sPhysicalData.fEchoStrength;
+		sPhysicalData.fReverbTime = other.sPhysicalData.fReverbTime;
+		sPhysicalData.fCriticalDistance = other.sPhysicalData.fCriticalDistance;
+		sPhysicalData.fAdjustedRadius = other.sPhysicalData.fAdjustedRadius;
 
-		// Копирование анализа отражений
-		sReflectionData = other.sReflectionData;
+		// Copy reflection analysis for EAX
+		sReflectionData.fPrimaryReflections = other.sReflectionData.fPrimaryReflections;
+		sReflectionData.fSecondaryReflections = other.sReflectionData.fSecondaryReflections;
+		sReflectionData.fReflectionDelay = other.sReflectionData.fReflectionDelay;
+		sReflectionData.fReflectionEnergy = other.sReflectionData.fReflectionEnergy;
+		sReflectionData.fSurfaceComplexity = other.sReflectionData.fSurfaceComplexity;
 
 		dwFrameStamp = other.dwFrameStamp;
 		bDataValid = other.bDataValid;
-	}
-
-	// Проверка на значительное изменение
-	bool HasSignificantChange(const SEAXEnvironmentData& other, float threshold = 0.1f) const
-	{
-		if (!bDataValid || !other.bDataValid)
-			return true;
-
-		return (fabs(fEnvironmentRadius - other.fEnvironmentRadius) > threshold * 5.0f) ||
-			   (fabs(fEnvironmentDensity - other.fEnvironmentDensity) > threshold) ||
-			   (fabs(fFogDensity - other.fFogDensity) > threshold) || (fabs(fOpenness - other.fOpenness) > threshold);
-	}
-
-	// Расчет производных параметров
-	void CalculateDerivedParameters()
-	{
-		// Нормализация радиуса для расчетов
-		float normalizedRadius = fEnvironmentRadius / 500.0f; // предполагаем макс радиус 500м
-		clamp(normalizedRadius, 0.1f, 1.0f);
-
-		// Основные производные параметры
-		fOpenness = 1.0f - fEnvironmentDensity;
-		fEnclosedness = fEnvironmentDensity;
-		fUniformity = 1.0f - fEnvironmentVariance;
-
-		// Размер помещения зависит от радиуса и плотности
-		fRoomSize = normalizedRadius * (0.3f + 0.7f * fOpenness);
-
-		// Коэффициент отражения зависит от равномерности и плотности
-		fReflectivity = 0.3f + 0.7f * (fUniformity * fEnclosedness);
-
-		// Корректировка границ
-		clamp(fOpenness, 0.0f, 1.0f);
-		clamp(fEnclosedness, 0.0f, 1.0f);
-		clamp(fUniformity, 0.0f, 1.0f);
-		clamp(fRoomSize, 0.1f, 1.0f);
-		clamp(fReflectivity, 0.1f, 1.0f);
-
-		bDataValid = true;
-	}
-
-	// Сериализация для отладки
-	void DumpToLog(const char* prefix = "") const
-	{
-		Msg("%sEAX Environment Data:", prefix);
-		Msg("%s  Radius: %.2f", prefix, fEnvironmentRadius);
-		Msg("%s  Volume: %.0f m³", prefix, sPhysicalData.fRoomVolume);
-		Msg("%s  EchoStrength: %.2f", prefix, sPhysicalData.fEchoStrength);
-		Msg("%s  ReverbTime: %.2f", prefix, sPhysicalData.fReverbTime);
-		Msg("%s  Density: %.3f", prefix, fEnvironmentDensity);
-		Msg("%s  Fog Density: %.3f", prefix, fFogDensity);
-		Msg("%s  Openness: %.3f", prefix, fOpenness);
-		Msg("%s  Enclosedness: %.3f", prefix, fEnclosedness);
-		Msg("%s  Uniformity: %.3f", prefix, fUniformity);
-		Msg("%s  Room Size: %.3f", prefix, fRoomSize);
-		Msg("%s  Reflectivity: %.3f", prefix, fReflectivity);
-		Msg("%s  Valid: %s", prefix, bDataValid ? "true" : "false");
 	}
 };

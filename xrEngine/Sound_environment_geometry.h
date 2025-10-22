@@ -1,9 +1,16 @@
-﻿#pragma once
+﻿///////////////////////////////////////////////////////////////////////////////////
+// Created: 22.10.2025
+// Author: NSDeathman
+// Path tracing EAX
+// Nocturning studio for X-Platform
+///////////////////////////////////////////////////////////////////////////////////
+#pragma once
+///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
+///////////////////////////////////////////////////////////////////////////////////
 #include "Sound_environment_common.h"
-#include "Sound_environment_reflections.h"
 #include "Sound_environment_common.h"
-
+///////////////////////////////////////////////////////////////////////////////////
 struct SGeometryAnalysis
 {
 	float fApproxVolume;	 // Приблизительный объем пространства (м³)
@@ -15,7 +22,7 @@ struct SGeometryAnalysis
 	float fVerticality;		 // Вертикальная протяженность
 	Fvector vMainAxis;		 // Основная ось помещения
 };
-
+///////////////////////////////////////////////////////////////////////////////////
 class ENGINE_API CGeometryAnalyzer
 {
   private:
@@ -31,9 +38,7 @@ class ENGINE_API CGeometryAnalyzer
 	};
 
   public:
-	void AnalyzeEnvironmentGeometry(Fvector start_pos, SGeometryAnalysis& result);
-	float CalculateVolumeMonteCarlo(Fvector center, float estimated_radius);
-	void BuildVoxelApproximation(Fvector center, float radius, SVoxelGrid& grid);
 	Fvector EstimateMainAxis(const std::vector<Fvector>& hit_points);
-	float CalculateSurfaceComplexity(const SVoxelGrid& grid);
+	void AnalyzeEnvironmentGeometry(Fvector start_pos, SGeometryAnalysis& result);
 };
+///////////////////////////////////////////////////////////////////////////////////

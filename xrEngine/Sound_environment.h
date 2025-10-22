@@ -1,73 +1,46 @@
 ///////////////////////////////////////////////////////////////////////////////////
-// Created: 10.12.2024
+// Created: 22.10.2025
 // Author: NSDeathman
-// Improved EAX calculations
+// Path tracing EAX
+// Nocturning studio for X-Platform
 ///////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////////////////////////
 #include "Sound_environment_common.h"
-#include "Sound_environment_reflections.h"
 #include "Sound_environment_geometry.h"
 #include "Sound_environment_pathtracing.h"
-#include "xr_collide_defs.h"
 ///////////////////////////////////////////////////////////////////////////////////
-class ENGINE_API CSoundEnvironment;
-///////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * @class CSoundEnvironment
+ * @brief Main sound environment processor that analyzes 3D acoustic properties
+ */
 class ENGINE_API CSoundEnvironment
 {
   private:
-	SEAXEnvironmentData m_CurrentData;
-	SEAXEnvironmentData m_PrevData;
-	CAdvancedReflectionAnalyzer m_ReflectionAnalyzer;
+	SEAXEnvironmentData m_CurrentData;	   ///< Current frame's environment data
+	SEAXEnvironmentData m_PrevData;		   ///< Previous frame's environment data
+	u32 m_LastUpdatedFrame;				   ///< Last frame when environment was updated
+	static const u32 UPDATE_INTERVAL = 10; ///< Minimum frames between updates
 
-	u32 m_LastUpdatedFrame;
-	static const u32 UPDATE_INTERVAL = 10;
+	class CGeometryAnalyzer m_GeometryAnalyzer; ///< Geometry analysis subsystem
+	SGeometryAnalysis m_CurrentGeometry;		///< Current geometry analysis results
 
-	// Физическая акустическая модель
-	class CPhysicalAcousticModel
-	{
-	  private:
-		static const float SOUND_SPEED;			// Скорость звука м/с
-		static const float AIR_ABSORPTION_COEF; // Коэффициент поглощения воздуха
+	class CPathTracingSystem m_PathTracer;	///< Path tracing subsystem
+	SPathTracingResult m_PathTracingResult; ///< Current path tracing results
 
-	  public:
-		// Нелинейная зависимость эха от объема помещения
-		float CalculateEchoStrength(float volume, float reflectivity, float openness);
-
-		// Расчет времени реверберации (упрощенная формула Сабине)
-		float CalculateReverbTime(float volume, float absorption);
-
-		// Расчет критического расстояния
-		float CalculateCriticalDistance(float volume);
-	};
-
-	CPhysicalAcousticModel m_AcousticModel;
-
-	// Новая система анализа геометрии
-	class CGeometryAnalyzer m_GeometryAnalyzer;
-	SGeometryAnalysis m_CurrentGeometry;
-
-	// Усовершенствованная трассировка
-	float PerformDetailedRaycast(Fvector start, Fvector dir, float max_dist, u32& material_type, bool bCollectInfo = false);
+	// Core analysis methods
+	float PerformDetailedRaycast(Fvector start, Fvector dir, float max_dist, u32& material_type);
 	void AnalyzeSpatialDistribution(Fvector center, std::vector<float>& distances, SEAXEnvironmentData& result);
 
-	class CPathTracingSystem m_PathTracer;
-	SPathTracingResult m_PathTracingResult;
+	// Update methods
+	bool NeedUpdate() const;
+	void __stdcall MT_CALC();
+	void CalculateEnvironmentData();
 
   public:
-	void __stdcall MT_CALC();
-	void CalculateEnhancedEnvironmentData();
-	void Update();
-	bool NeedUpdate() const;
-
-	float PerformSmartRaycast(Fvector start, Fvector dir, float max_dist, u32& material_type);
-
-	const SEAXEnvironmentData& GetEnvironmentData() const
-	{
-		return m_CurrentData;
-	}
-
 	CSoundEnvironment();
 	~CSoundEnvironment();
+
+	void Update(); ///< Main update method called each frame
 };
+///////////////////////////////////////////////////////////////////////////////////

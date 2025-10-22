@@ -1,11 +1,16 @@
+///////////////////////////////////////////////////////////////////////////////////
+// Created: 22.10.2025
+// Author: NSDeathman
+// Path tracing EAX
+// Nocturning studio for X-Platform
+///////////////////////////////////////////////////////////////////////////////////
 #pragma once
-#pragma once
+///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
+///////////////////////////////////////////////////////////////////////////////////
 #include "Sound_environment_common.h"
-#include "Sound_environment_reflections.h"
 #include "xr_collide_defs.h"
-#include "Sound_environment_common.h"
-
+///////////////////////////////////////////////////////////////////////////////////
 struct SPathTracingResult
 {
 	float fTotalEnergy;
@@ -22,12 +27,11 @@ struct SPathTracingResult
 class ENGINE_API CPathTracingSystem
 {
   private:
-	static const u32 MAX_PATH_DEPTH = 6; // Максимальное количество переотражений
-	static const u32 PATHS_PER_DIRECTION = 8; // Путей на каждое начальное направление
-	static const float ENERGY_THRESHOLD; // Порог энергии для прекращения трассировки
-	static const float RAY_OFFSET;		 // Смещение от поверхности для нового луча
+	static const u32 MAX_PATH_DEPTH = 6;	  ///< Maximum number of reflections
+	static const u32 PATHS_PER_DIRECTION = 8; ///< Paths per initial direction
+	static const float ENERGY_THRESHOLD;	  ///< Energy threshold for stopping tracing
+	static const float RAY_OFFSET;			  ///< Surface offset for new rays
 
-	// Улучшенная структура для пути
 	struct SPathSegment
 	{
 		Fvector vStart;
@@ -44,13 +48,13 @@ class ENGINE_API CPathTracingSystem
 
   public:
 	void PerformPathTracingAnalysis(Fvector start_pos, SPathTracingResult& result);
+
+  private:
+	void TraceSinglePath(Fvector start, Fvector initial_dir, SPathTracingResult& path_result);
 	SRayHitInfo PerformRaycastWithNormal(Fvector start, Fvector dir, float max_dist);
 	Fvector CalculateDiffuseReflection(Fvector incident, Fvector normal, float roughness = 0.3f);
 	Fvector CalculateSpecularReflection(Fvector incident, Fvector normal);
 	float CalculateMaterialReflectivity(const SRayHitInfo& hit);
 	float CalculateEnergyDecay(float distance, float reflectivity, float angle_factor);
-
-  private:
-	void TraceSinglePath(Fvector start, Fvector initial_dir, SPathTracingResult& path_result);
 	bool ShouldContinueTracing(float energy, u32 depth);
 };

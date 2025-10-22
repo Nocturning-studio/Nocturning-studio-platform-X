@@ -1,6 +1,12 @@
+///////////////////////////////////////////////////////////////////////////////////
+// Created: 22.10.2025
+// Author: NSDeathman
+// Path tracing EAX
+// Nocturning studio for X-Platform
+///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #pragma hdrstop
-
+///////////////////////////////////////////////////////////////////////////////////
 #ifdef _EDITOR
 #include "ui_toolscustom.h"
 #else
@@ -11,12 +17,12 @@
 #include "xr_collide_defs.h"
 #include "../xrCDB/xrCDB.h"
 #endif
-
+///////////////////////////////////////////////////////////////////////////////////
 #include "Sound_environment_pathtracing.h"
-
+///////////////////////////////////////////////////////////////////////////////////
 const float CPathTracingSystem::ENERGY_THRESHOLD = 0.001f;
 const float CPathTracingSystem::RAY_OFFSET = 0.01f;
-
+///////////////////////////////////////////////////////////////////////////////////
 SRayHitInfo CPathTracingSystem::PerformRaycastWithNormal(Fvector start, Fvector dir, float max_dist)
 {
 	SRayHitInfo result;
@@ -24,7 +30,6 @@ SRayHitInfo CPathTracingSystem::PerformRaycastWithNormal(Fvector start, Fvector 
 	collide::rq_result RQ;
 	CObject* ViewEntity = g_pGameLevel->CurrentViewEntity();
 
-	// Используем RayPick для получения быстрого попадания
 	BOOL bHit = g_pGameLevel->ObjectSpace.RayPick(start, dir, max_dist, collide::rqtStatic, RQ, ViewEntity);
 
 	if (bHit && RQ.range > 0.01f)
@@ -33,81 +38,25 @@ SRayHitInfo CPathTracingSystem::PerformRaycastWithNormal(Fvector start, Fvector 
 		result.fDistance = RQ.range;
 		result.vPosition.mad(start, dir, RQ.range);
 
-		// ПОЛУЧАЕМ РЕАЛЬНУЮ НОРМАЛЬ через дополнительный запрос
-		collide::rq_result detailed_rq;
-		Fvector detailed_start;
-		detailed_start.mad(result.vPosition, dir, -0.1f); // Немного отступаем назад
+		// Simplified normal calculation
+		result.vNormal.set(-dir.x, -dir.y, -dir.z);
+		result.vNormal.normalize_safe();
 
-		// Делаем очень короткий луч для получения нормали
-		if (g_pGameLevel->ObjectSpace.RayPick(detailed_start, dir, 0.2f, collide::rqtStatic, detailed_rq, ViewEntity))
-		{
-			// Вычисляем нормаль на основе разности положений
-			// В реальном движке нужно получить нормаль из CDB
-			Fvector hit_pos;
-			hit_pos.mad(detailed_start, dir, detailed_rq.range);
-
-			// Упрощенное вычисление нормали (в реальном проекте используйте нормали из COLLIDE)
-			// Создаем псевдо-нормаль на основе направления
-			result.vNormal.set(-dir.x, -dir.y, -dir.z);
-			result.vNormal.normalize_safe();
-
-			// Альтернативный метод: делаем несколько лучей вокруг для определения нормали
-			Fvector pseudo_normal;
-			pseudo_normal.set(0, 0, 0);
-			int valid_normals = 0;
-
-			// Небольшие смещения для определения плоскости
-			float offsets[][2] = {{0.01f, 0.0f}, {-0.01f, 0.0f}, {0.0f, 0.01f}, {0.0f, -0.01f}};
-
-			for (int i = 0; i < 4; i++)
-			{
-				Fvector offset_dir = dir;
-				offset_dir.x += offsets[i][0];
-				offset_dir.y += offsets[i][1];
-				offset_dir.normalize_safe();
-
-				collide::rq_result offset_rq;
-				if (g_pGameLevel->ObjectSpace.RayPick(detailed_start, offset_dir, 0.2f, collide::rqtStatic, offset_rq,
-													  ViewEntity))
-				{
-					Fvector offset_pos;
-					offset_pos.mad(detailed_start, offset_dir, offset_rq.range);
-					Fvector diff;
-					diff.sub(offset_pos, hit_pos);
-					pseudo_normal.add(diff);
-					valid_normals++;
-				}
-			}
-
-			if (valid_normals > 0)
-			{
-				pseudo_normal.mul(1.0f / valid_normals);
-				result.vNormal = pseudo_normal;
-				result.vNormal.normalize_safe();
-			}
-		}
-		else
-		{
-			// Резервный метод: нормаль противоположна направлению луча
-			result.vNormal.set(-dir.x, -dir.y, -dir.z);
-			result.vNormal.normalize_safe();
-		}
-
-		// Определяем тип материала на основе расстояния
+		// Material type based on distance
 		if (result.fDistance < 2.0f)
-			result.material_type = 1; // Близкие поверхности - высокое отражение
+			result.material_type = 1;
 		else if (result.fDistance < 8.0f)
-			result.material_type = 2; // Средние расстояния
+			result.material_type = 2;
 		else if (result.fDistance < 20.0f)
-			result.material_type = 3; // Далёкие поверхности
+			result.material_type = 3;
 		else
-			result.material_type = 4; // Очень далекие поверхности
+			result.material_type = 4;
 	}
 	else
 	{
 		result.bHit = false;
 		result.fDistance = max_dist;
-		result.material_type = 0; // Воздух
+		result.material_type = 0;
 	}
 
 	return result;
@@ -115,10 +64,9 @@ SRayHitInfo CPathTracingSystem::PerformRaycastWithNormal(Fvector start, Fvector 
 
 Fvector CPathTracingSystem::CalculateDiffuseReflection(Fvector incident, Fvector normal, float roughness)
 {
-	// Реализация диффузного отражения с некоторой случайностью
 	Fvector random_dir;
 
-	// Генерируем случайное направление в полусфере
+	// Generate random direction in hemisphere
 	float u1 = rand() / (float)RAND_MAX;
 	float u2 = rand() / (float)RAND_MAX;
 
@@ -129,15 +77,12 @@ Fvector CPathTracingSystem::CalculateDiffuseReflection(Fvector incident, Fvector
 	random_dir.y = sinf(phi) * sinf(theta);
 	random_dir.z = cosf(phi);
 
-	// Убеждаемся, что направление в той же полусфере, что и нормаль
 	if (random_dir.dotproduct(normal) < 0)
 	{
 		random_dir.invert();
 	}
 
-	// Смешиваем с идеальным отражением на основе шероховатости
 	Fvector ideal_reflection = CalculateSpecularReflection(incident, normal);
-
 	Fvector result;
 	result.lerp(ideal_reflection, random_dir, roughness);
 	result.normalize_safe();
@@ -147,7 +92,6 @@ Fvector CPathTracingSystem::CalculateDiffuseReflection(Fvector incident, Fvector
 
 Fvector CPathTracingSystem::CalculateSpecularReflection(Fvector incident, Fvector normal)
 {
-	// Идеальное зеркальное отражение
 	Fvector reflection;
 	float dot = incident.dotproduct(normal);
 	reflection.mad(incident, normal, -2.0f * dot);
@@ -160,25 +104,24 @@ float CPathTracingSystem::CalculateMaterialReflectivity(const SRayHitInfo& hit)
 	if (!hit.bHit)
 		return 0.0f;
 
-	// УМЕНЬШАЕМ базовую отражательную способность
-	float distance_factor = 1.0f - (hit.fDistance / 80.0f); // Увеличили дистанцию затухания
+	float distance_factor = 1.0f - (hit.fDistance / 80.0f);
 	clamp(distance_factor, 0.05f, 1.0f);
 
 	float base_reflectivity = 0.0f;
 
 	switch (hit.material_type)
 	{
-	case 1:						  // Близкие поверхности
-		base_reflectivity = 0.6f; // Уменьшили с 0.8f
+	case 1:
+		base_reflectivity = 0.6f;
 		break;
-	case 2:						  // Средние расстояния
-		base_reflectivity = 0.4f; // Уменьшили с 0.6f
+	case 2:
+		base_reflectivity = 0.4f;
 		break;
-	case 3:						   // Далёкие поверхности
-		base_reflectivity = 0.25f; // Уменьшили с 0.4f
+	case 3:
+		base_reflectivity = 0.25f;
 		break;
-	case 4:						  // Очень далекие поверхности
-		base_reflectivity = 0.1f; // Уменьшили с 0.2f
+	case 4:
+		base_reflectivity = 0.1f;
 		break;
 	default:
 		base_reflectivity = 0.0f;
@@ -190,10 +133,9 @@ float CPathTracingSystem::CalculateMaterialReflectivity(const SRayHitInfo& hit)
 
 float CPathTracingSystem::CalculateEnergyDecay(float distance, float reflectivity, float angle_factor)
 {
-	// Физически корректное затухание энергии
-	float distance_decay = 1.0f / (1.0f + distance * 0.1f); // Обратно пропорционально расстоянию
+	float distance_decay = 1.0f / (1.0f + distance * 0.1f);
 	float material_decay = reflectivity;
-	float incidence_decay = angle_factor; // Учет угла падения
+	float incidence_decay = angle_factor;
 
 	return distance_decay * material_decay * incidence_decay;
 }
@@ -208,7 +150,6 @@ void CPathTracingSystem::TraceSinglePath(Fvector start, Fvector initial_dir, SPa
 	std::vector<SPathSegment> active_segments;
 	active_segments.reserve(MAX_PATH_DEPTH);
 
-	// УМЕНЬШАЕМ начальную энергию и добавляем случайность
 	float initial_energy = 0.5f + (rand() / (float)RAND_MAX) * 0.5f;
 	active_segments.push_back(SPathSegment(start, initial_dir, initial_energy, 0, 0.0f));
 
@@ -227,21 +168,18 @@ void CPathTracingSystem::TraceSinglePath(Fvector start, Fvector initial_dir, SPa
 			float segment_delay = hit.fDistance / 340.0f;
 			float total_delay = current.fAccumulatedDelay + segment_delay;
 
-			// СИЛЬНОЕ ЗАТУХАНИЕ ЭНЕРГИИ С КАЖДЫМ ОТРАЖЕНИЕМ
 			float cos_angle = fabs(current.vDirection.dotproduct(hit.vNormal));
 			float reflectivity = CalculateMaterialReflectivity(hit);
 
-			// ОСНОВНОЕ ИСПРАВЛЕНИЕ: сильное затухание с расстоянием и глубиной
-			float distance_decay = 1.0f / (1.0f + hit.fDistance * 0.2f); // Увеличили затухание с расстоянием
-			float depth_decay = 1.0f / (1.0f + current.iDepth * 2.0f); // Сильное затухание с глубиной
-			float material_decay = reflectivity * 0.7f;		 // Уменьшили влияние материала
-			float incidence_decay = 0.3f + 0.7f * cos_angle; // Ослабили влияние угла
+			float distance_decay = 1.0f / (1.0f + hit.fDistance * 0.2f);
+			float depth_decay = 1.0f / (1.0f + current.iDepth * 2.0f);
+			float material_decay = reflectivity * 0.7f;
+			float incidence_decay = 0.3f + 0.7f * cos_angle;
 
 			float energy_decay = distance_decay * depth_decay * material_decay * incidence_decay;
 			float segment_energy = current.fEnergy * energy_decay;
 
-			// УМЕНЬШАЕМ вес энергии для каждого последующего отражения
-			float energy_weight = 1.0f / (1.0f + current.iDepth * current.iDepth); // Квадратичное затухание
+			float energy_weight = 1.0f / (1.0f + current.iDepth * current.iDepth);
 			path_result.fTotalEnergy += segment_energy * energy_weight;
 			path_result.fTotalDelay += total_delay * segment_energy * energy_weight;
 			path_result.iNumBounces = _max(path_result.iNumBounces, current.iDepth + 1);
@@ -253,21 +191,18 @@ void CPathTracingSystem::TraceSinglePath(Fvector start, Fvector initial_dir, SPa
 				new_start.mad(hit.vPosition, hit.vNormal, RAY_OFFSET);
 
 				Fvector specular_reflection = CalculateSpecularReflection(current.vDirection, hit.vNormal);
-				Fvector diffuse_reflection =
-					CalculateDiffuseReflection(current.vDirection, hit.vNormal, 0.5f); // Увеличили шероховатость
+				Fvector diffuse_reflection = CalculateDiffuseReflection(current.vDirection, hit.vNormal, 0.5f);
 
-				// СИЛЬНО УМЕНЬШАЕМ энергию для следующих отражений
 				active_segments.push_back(SPathSegment(new_start, specular_reflection, segment_energy * 0.4f,
-													   current.iDepth + 1, total_delay)); // Уменьшили с 0.7f до 0.4f
+													   current.iDepth + 1, total_delay));
 
 				active_segments.push_back(SPathSegment(new_start, diffuse_reflection, segment_energy * 0.2f,
-													   current.iDepth + 1, total_delay)); // Уменьшили с 0.3f до 0.2f
+													   current.iDepth + 1, total_delay));
 			}
 		}
 		else
 		{
-			// СИЛЬНО УМЕНЬШАЕМ энергию для лучей, ушедших в открытое пространство
-			path_result.fTotalEnergy += current.fEnergy * 0.02f; // Уменьшили с 0.1f до 0.02f
+			path_result.fTotalEnergy += current.fEnergy * 0.02f;
 		}
 	}
 
@@ -276,7 +211,6 @@ void CPathTracingSystem::TraceSinglePath(Fvector start, Fvector initial_dir, SPa
 		path_result.fAverageDistance /= path_result.fTotalEnergy;
 		path_result.fTotalDelay /= path_result.fTotalEnergy;
 
-		// ДОПОЛНИТЕЛЬНОЕ ЗАТУХАНИЕ ДЛЯ ОТКРЫТЫХ ПРОСТРАНСТВ
 		if (path_result.fAverageDistance > 15.0f)
 		{
 			float open_space_reduction = 1.0f - ((path_result.fAverageDistance - 15.0f) / 85.0f);
@@ -314,7 +248,7 @@ void CPathTracingSystem::PerformPathTracingAnalysis(Fvector start_pos, SPathTrac
 			SPathTracingResult path_result;
 
 			Fvector varied_dir = initial_dir;
-			varied_dir.x += (rand() / (float)RAND_MAX - 0.5f) * 0.2f; // Увеличили вариативность
+			varied_dir.x += (rand() / (float)RAND_MAX - 0.5f) * 0.2f;
 			varied_dir.y += (rand() / (float)RAND_MAX - 0.5f) * 0.2f;
 			varied_dir.z += (rand() / (float)RAND_MAX - 0.5f) * 0.2f;
 			varied_dir.normalize_safe();
@@ -328,7 +262,7 @@ void CPathTracingSystem::PerformPathTracingAnalysis(Fvector start_pos, SPathTrac
 		}
 	}
 
-	// Агрегируем результаты
+	// Aggregate results
 	float total_energy = 0.0f;
 	float total_delay = 0.0f;
 	float total_distance = 0.0f;
@@ -354,7 +288,7 @@ void CPathTracingSystem::PerformPathTracingAnalysis(Fvector start_pos, SPathTrac
 		result.fAverageDistance = total_distance / valid_paths;
 		result.iNumBounces = total_bounces / valid_paths;
 
-		// Расчет распределения энергии
+		// Calculate energy distribution
 		float energy_variance = 0.0f;
 		for (u32 i = 0; i < path_results.size(); ++i)
 		{
@@ -370,24 +304,19 @@ void CPathTracingSystem::PerformPathTracingAnalysis(Fvector start_pos, SPathTrac
 	}
 	else
 	{
-		// СИЛЬНО УМЕНЬШАЕМ значения по умолчанию для открытых пространств
-		result.fTotalEnergy = 0.002f; // Уменьшили с 0.01f
-		result.fTotalDelay = 0.01f;	  // Уменьшили с 0.02f
+		result.fTotalEnergy = 0.002f;
+		result.fTotalDelay = 0.01f;
 		result.fAverageDistance = 50.0f;
 		result.iNumBounces = 0;
-		result.fEnergyDistribution = 0.05f; // Уменьшили с 0.1f
+		result.fEnergyDistribution = 0.05f;
 	}
 
-	// ДОПОЛНИТЕЛЬНОЕ ЗАТУХАНИЕ: уменьшаем общую энергию
-	result.fTotalEnergy *= 0.3f; // Глобальное уменьшение энергии
+	// Global energy reduction
+	result.fTotalEnergy *= 0.3f;
 
-	// Ограничиваем значения - СИЛЬНО УМЕНЬШАЕМ МАКСИМУМЫ
-	clamp(result.fTotalEnergy, 0.0f, 0.15f); // Уменьшили максимум с 1.0f до 0.15f
-	clamp(result.fTotalDelay, 0.005f, 0.1f); // Уменьшили максимум с 0.2f до 0.1f
+	// Clamp values
+	clamp(result.fTotalEnergy, 0.0f, 0.15f);
+	clamp(result.fTotalDelay, 0.005f, 0.1f);
 	clamp(result.fAverageDistance, 0.1f, 100.0f);
 	clamp(result.fEnergyDistribution, 0.0f, 1.0f);
-
-	// Логируем статистику
-	Msg("[PathTracing] Traced %d paths, %d had energy, AvgEnergy=%.4f", total_paths_traced, paths_with_energy,
-		result.fTotalEnergy);
 }

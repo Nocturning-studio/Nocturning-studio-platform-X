@@ -704,7 +704,6 @@ void CSoundRender_Core::i_eax_listener_set()
 	Msg("[EAX] Final: Room=%d, RoomHF=%d, Reflections=%d, Reverb=%d, Decay=%.2f", ep.lRoom, ep.lRoomHF, ep.lReflections,
 		ep.lReverb, ep.flDecayTime);
 
-	// ... существующий код применения параметров EAX
 	u32 deferred = bDeferredEAX ? DSPROPERTY_EAXLISTENER_DEFERRED : 0;
 
 	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ROOM, &ep.lRoom, sizeof(LONG));

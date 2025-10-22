@@ -1754,7 +1754,6 @@
     <ClInclude Include="Sound_environment_common.h" />
     <ClInclude Include="Sound_environment_geometry.h" />
     <ClInclude Include="Sound_environment_pathtracing.h" />
-    <ClInclude Include="Sound_environment_reflections.h" />
     <ClInclude Include="StatGraph.h" />
     <ClInclude Include="Stats.h" />
     <ClInclude Include="stdafx.h" />
@@ -2047,7 +2046,6 @@
     <ClCompile Include="Sound_environment.cpp" />
     <ClCompile Include="Sound_environment_geometry.cpp" />
     <ClCompile Include="Sound_environment_pathtracing.cpp" />
-    <ClCompile Include="Sound_environment_reflections.cpp" />
     <ClCompile Include="StatGraph.cpp" />
     <ClCompile Include="Stats.cpp" />
     <ClCompile Include="stdafx.cpp">
