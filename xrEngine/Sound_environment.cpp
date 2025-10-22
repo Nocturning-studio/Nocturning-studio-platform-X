@@ -43,21 +43,39 @@ float CSoundEnvironment::PerformDetailedRaycast(Fvector start, Fvector dir, floa
 
 	if (bHit && hit.range > 0.1f)
 	{
-		if (hit.range < 2.0f)
-			material_type = 1; // Very close - high reflectivity (concrete, metal)
-		else if (hit.range < 6.0f)
-			material_type = 2; // Close - medium reflectivity (wood, plaster)
-		else if (hit.range < 15.0f)
-			material_type = 3; // Medium - low reflectivity (fabric, vegetation)
-		else if (hit.range < 30.0f)
-			material_type = 4; // Far - very low reflectivity
+		// Попытка получить более точную информацию о материале
+		CDB::TRI* tri = g_pGameLevel->ObjectSpace.GetStaticTris() + hit.element;
+
+		// Здесь можно добавить получение реального материала из tri
+		// Пока используем улучшенную эвристику на основе расстояния и угла
+
+		Fvector hit_normal;
+		Fvector* verts = g_pGameLevel->ObjectSpace.GetStaticVerts();
+		hit_normal.mknormal(verts[tri->verts[0]], verts[tri->verts[1]], verts[tri->verts[2]]);
+
+		float cos_angle = fabs(dir.dotproduct(hit_normal));
+
+		// Классификация на основе расстояния и угла попадания
+		if (hit.range < 3.0f)
+		{
+			// Близкие поверхности - вероятно, стены
+			material_type = (cos_angle > 0.8f) ? 1 : 2; // Камень или металл
+		}
+		else if (hit.range < 10.0f)
+		{
+			// Средние расстояния
+			material_type = (cos_angle > 0.7f) ? 2 : 3; // Металл или дерево
+		}
 		else
-			material_type = 5; // Very far - minimal reflectivity
+		{
+			// Дальние поверхности
+			material_type = (cos_angle > 0.5f) ? 3 : 4; // Дерево или мягкие материалы
+		}
 
 		return hit.range;
 	}
 
-	material_type = 0; // Air/sky - no reflection
+	material_type = 0; // Воздух/небо - нет отражения
 	return max_dist;
 }
 

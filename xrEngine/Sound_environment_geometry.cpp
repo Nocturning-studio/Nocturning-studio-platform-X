@@ -49,98 +49,102 @@ void CGeometryAnalyzer::AnalyzeEnvironmentGeometry(Fvector start_pos, SGeometryA
 	std::vector<float> horizontal_distances;
 	std::vector<float> vertical_distances;
 
-	Fvector vUp = {0, 1, 0};
-	Fvector vDown = {0, -1, 0};
-
-	// Vertical tracing for height determination
-	collide::rq_result hit_up, hit_down;
-	CObject* ViewEntity = g_pGameLevel->CurrentViewEntity();
-
-	// Ray upwards for ceiling height
-	BOOL bHitUp = g_pGameLevel->ObjectSpace.RayPick(start_pos, vUp, 50.0f, collide::rqtStatic, hit_up, ViewEntity);
-	// Ray downwards for floor height
-	BOOL bHitDown =
-		g_pGameLevel->ObjectSpace.RayPick(start_pos, vDown, 10.0f, collide::rqtStatic, hit_down, ViewEntity);
-
-	float ceiling_height = bHitUp ? hit_up.range : 50.0f;
-	float floor_depth = bHitDown ? hit_down.range : 10.0f;
-
-	result.fAvgCeilingHeight = (ceiling_height + floor_depth) * 0.5f;
-
-	// Collect data in all directions
+	// Улучшенный анализ с большим количеством лучей
 	for (u32 i = 0; i < DETAILED_DIRECTIONS_COUNT; ++i)
 	{
 		Fvector ray_dir = DetailedSphereDirections[i];
 		collide::rq_result hit;
+		CObject* ViewEntity = g_pGameLevel->CurrentViewEntity();
 
-		BOOL bHit = g_pGameLevel->ObjectSpace.RayPick(start_pos, ray_dir, 100.0f, collide::rqtStatic, hit, ViewEntity);
+		BOOL bHit = g_pGameLevel->ObjectSpace.RayPick(start_pos, ray_dir, 200.0f, collide::rqtStatic, hit, ViewEntity);
 
-		if (bHit && hit.range > 0.1f)
+		if (bHit && hit.range > 0.1f && hit.range < 195.0f)
 		{
 			Fvector hit_point;
 			hit_point.mad(start_pos, ray_dir, hit.range);
 			hit_points.push_back(hit_point);
 
-			// Classify distances
-			if (fabs(ray_dir.y) < 0.3f) // Horizontal rays
+			// Классификация расстояний
+			if (fabs(ray_dir.y) < 0.3f)
 			{
 				horizontal_distances.push_back(hit.range);
 			}
-			else if (ray_dir.y > 0.7f) // Vertical rays upwards
+			else if (fabs(ray_dir.y) > 0.7f)
 			{
 				vertical_distances.push_back(hit.range);
 			}
 		}
 	}
 
-	// Calculate average distances
-	float total_horizontal = 0.0f;
-	for (u32 i = 0; i < horizontal_distances.size(); ++i)
+	// Улучшенный расчет объема и сложности
+	if (hit_points.size() > 15)
 	{
-		total_horizontal += horizontal_distances[i];
-	}
-	result.fAvgWallDistance = horizontal_distances.size() > 0 ? total_horizontal / horizontal_distances.size() : 10.0f;
+		// Расчет приблизительного объема через выпуклую оболочку
+		float min_x = 1e10f, max_x = -1e10f;
+		float min_y = 1e10f, max_y = -1e10f;
+		float min_z = 1e10f, max_z = -1e10f;
 
-	// Calculate geometry complexity
-	if (hit_points.size() > 10)
-	{
-		result.vMainAxis = EstimateMainAxis(hit_points);
-
-		// Simple volume estimation based on collected distances
-		float avg_distance = 0.0f;
-		for (u32 i = 0; i < hit_points.size(); ++i)
+		for (const Fvector& point : hit_points)
 		{
-			avg_distance += start_pos.distance_to(hit_points[i]);
+			min_x = _min(min_x, point.x);
+			max_x = _max(max_x, point.x);
+			min_y = _min(min_y, point.y);
+			max_y = _max(max_y, point.y);
+			min_z = _min(min_z, point.z);
+			max_z = _max(max_z, point.z);
+		}
+
+		float width = max_x - min_x;
+		float height = max_y - min_y;
+		float depth = max_z - min_z;
+
+		// Объем как произведение размеров
+		result.fApproxVolume = width * height * depth;
+
+		// Сложность геометрии на основе дисперсии расстояний
+		float avg_distance = 0.0f;
+		for (const Fvector& point : hit_points)
+		{
+			avg_distance += start_pos.distance_to(point);
 		}
 		avg_distance /= hit_points.size();
 
-		// Assume spherical shape for volume estimation
-		result.fApproxVolume = (4.0f / 3.0f) * PI * avg_distance * avg_distance * avg_distance;
-
-		// Complexity estimation based on distance variance
 		float variance = 0.0f;
-		for (u32 i = 0; i < hit_points.size(); ++i)
+		for (const Fvector& point : hit_points)
 		{
-			float dist = start_pos.distance_to(hit_points[i]);
-			float diff = dist - avg_distance;
-			variance += diff * diff;
+			float dist = start_pos.distance_to(point);
+			variance += (dist - avg_distance) * (dist - avg_distance);
 		}
 		variance /= hit_points.size();
 
-		result.fComplexity = _min(1.0f, variance / (avg_distance * 0.5f));
-		result.fVerticality =
-			vertical_distances.size() > 0 ? (result.fAvgCeilingHeight / (result.fAvgWallDistance + 0.1f)) : 0.5f;
-		clamp(result.fVerticality, 0.1f, 2.0f);
+		result.fComplexity = _min(1.0f, sqrtf(variance) / (avg_distance + 0.1f));
+
+		// Вертикальность
+		float avg_horizontal = 0.0f;
+		for (float dist : horizontal_distances)
+		{
+			avg_horizontal += dist;
+		}
+		avg_horizontal /= (horizontal_distances.size() + 0.001f);
+
+		float avg_vertical = 0.0f;
+		for (float dist : vertical_distances)
+		{
+			avg_vertical += dist;
+		}
+		avg_vertical /= (vertical_distances.size() + 0.001f);
+
+		result.fVerticality = avg_vertical / (avg_horizontal + 0.1f);
+		clamp(result.fVerticality, 0.1f, 3.0f);
 	}
 	else
 	{
-		// Open space
-		result.fApproxVolume = 10000.0f;
+		// Открытое пространство
+		result.fApproxVolume = 100000.0f;
 		result.fComplexity = 0.1f;
 		result.fVerticality = 1.0f;
-		result.fAvgWallDistance = 50.0f;
 	}
 
-	// Normalize volume for calculations
-	result.fApproxVolume = _min(result.fApproxVolume, 50000.0f);
+	// Ограничение объема
+	result.fApproxVolume = _min(result.fApproxVolume, 200000.0f);
 }
