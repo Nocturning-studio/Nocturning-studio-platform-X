@@ -195,14 +195,12 @@ void EnvironmentCalculations::CalculateReflectionParameters(EnvironmentContext& 
 	float base_reflection_intensity = context.PathTracingResult.fTotalEnergy * (0.4f + 0.6f * context.Reflectivity);
 
 	// Ключевое изменение: ИНВЕРСИЯ зависимости от объема
-	// В помещениях (малый объем) - сильные отражения, на открытых пространствах (большой объем) - слабые
 	float volume_correction = 1.0f - EnvironmentContext::SmoothStep(context.NormalizedVolume / 50.0f);
-	volume_correction = 0.3f + 0.7f * volume_correction; // Минимальный уровень 0.3
+	volume_correction = 0.3f + 0.7f * volume_correction;
 
-	// Усиление в замкнутых пространствах
 	float enclosed_boost = 1.0f + context.Enclosedness * 0.8f;
 
-	// Ослабление на открытых пространствах
+	// ОСЛАБЛЕНИЕ на открытых пространствах
 	float openness_reduction = 1.0f - context.Openness * 0.8f;
 
 	// Применение множителей
@@ -215,14 +213,23 @@ void EnvironmentCalculations::CalculateReflectionParameters(EnvironmentContext& 
 	float secondary_reflections = base_reflection_intensity * 0.3f * volume_correction * enclosed_boost *
 								  openness_reduction * context.ComplexityBoostFactor;
 
-	// Расчет задержки отражений - КОРОЧЕ в помещениях
+	// ДОПОЛНИТЕЛЬНОЕ ОСЛАБЛЕНИЕ ДЛЯ ОТКРЫТЫХ ПРОСТРАНСТВ
+	if (context.Openness > 0.7f)
+	{
+		float open_space_additional_reduction = 1.0f - (context.Openness - 0.7f) * 2.0f;
+		clamp(open_space_additional_reduction, 0.3f, 1.0f);
+
+		reflection_energy *= open_space_additional_reduction;
+		primary_reflections *= open_space_additional_reduction;
+		secondary_reflections *= open_space_additional_reduction;
+	}
+
+	// Расчет задержки отражений
 	float base_reflection_delay =
 		0.002f + 0.035f * EnvironmentContext::LogisticGrowth(context.NormalizedVolume, 0.2f, 15.0f);
-
-	// Корректировка: в помещениях уменьшаем задержку
 	float reflection_delay = base_reflection_delay * (0.5f + 0.5f * (1.0f - context.Enclosedness));
 
-	// ОГРАНИЧЕНИЯ: увеличены максимальные значения для помещений
+	// ОГРАНИЧЕНИЯ
 	clamp(reflection_energy, 0.01f, 0.8f);
 	clamp(primary_reflections, 0.005f, 0.6f);
 	clamp(secondary_reflections, 0.003f, 0.4f);
@@ -239,84 +246,128 @@ void EnvironmentCalculations::CalculateReflectionParameters(EnvironmentContext& 
 
 	Msg("[Reflection Analysis] Energy=%.4f, Primary=%.4f, Secondary=%.4f", reflection_energy, primary_reflections,
 		secondary_reflections);
-	Msg("[Reflection Analysis] Delay=%.4fs, Complexity=%.3f, Volume=%.1f", reflection_delay, context.SurfaceComplexity,
-		context.NormalizedVolume);
 }
 
 void EnvironmentCalculations::MapToEAXParameters(EnvironmentContext& context)
 {
-	// Ключевое изменение: ИНВЕРСИЯ параметров EAX
-	// В помещениях - менее отрицательные/положительные значения, на открытых пространствах - более отрицательные
-
-	// Room parameters - ЗАМКНУТЫЕ помещения имеют менее отрицательные значения
+	// Room parameters
 	float room_intensity = context.Enclosedness * (1.0f - context.Openness * 0.3f);
-	context.EAXData.lRoom =
-		(long)EnvironmentContext::InterpolateLinear(-1500, -50, room_intensity); // Менее отрицательные значения
+	context.EAXData.lRoom = (long)EnvironmentContext::InterpolateLinear(-1500, -50, room_intensity);
 
-	context.EAXData.lRoomHF = (long)EnvironmentContext::InterpolateLinear(-800, -10, context.Openness);
+	// RoomHF для помещений около -800, для открытых около -2500
+	context.EAXData.lRoomHF = (long)EnvironmentContext::InterpolateLinear(-800, -2500, context.Openness);
+
 	context.EAXData.flRoomRolloffFactor = 0.05f + 0.95f * context.Enclosedness;
 
-	// Decay parameters - ДЛИННЕЕ в помещениях
+	// Decay parameters
 	float decay_time = context.BaseReverb * (0.8f + 0.4f * context.Enclosedness);
-	clamp(decay_time, 0.4f, 15.0f); // Увеличен минимум
+
+	// Ограничение времени реверберации для очень маленьких помещений
+	if (context.NormalizedVolume < 1.0f)
+	{
+		float volume_factor = context.NormalizedVolume;
+		decay_time *= (0.3f + 0.7f * volume_factor);
+	}
+
+	// МАКСИМАЛЬНОЕ УКОРОЧЕНИЕ РЕВЕРБЕРАЦИИ ДЛЯ ОТКРЫТЫХ ПРОСТРАНСТВ
+	if (context.Openness > 0.7f)
+	{
+		// В открытых пространствах реверберация должна быть практически незаметной
+		decay_time = 0.05f + 0.05f * (context.NormalizedVolume / 50.0f); // От 0.05 до 0.1 секунды
+		clamp(decay_time, 0.05f, 0.1f);
+	}
+
+	clamp(decay_time, 0.01f, 15.0f);
 	context.EAXData.flDecayTime = decay_time;
 
+	// DecayHFRatio: в помещениях 0.1, в открытых 0.9
 	context.EAXData.flDecayHFRatio = 0.1f + 0.8f * context.Openness;
 
-	// Reflections parameters - СИЛЬНЕЕ в помещениях
+	// Reflections parameters - МАКСИМАЛЬНОЕ ОСЛАБЛЕНИЕ
 	float reflectionStrength = context.VolumeFactor * context.Reflectivity;
 
-	// ИНВЕРСИЯ: в помещениях менее отрицательные значения отражений
-	float reflections_min =
-		EnvironmentContext::InterpolateLinear(-800, -2000, context.Openness); // В помещениях: -800, на открытых: -2000
-	float reflections_max =
-		EnvironmentContext::InterpolateLinear(300, -800, context.Openness); // В помещениях: 300, на открытых: -800
+	// ДЛЯ ОТКРЫТЫХ ПРОСТРАНСТВ: ОЧЕНЬ слабые отражения
+	float reflections_min = EnvironmentContext::InterpolateLinear(-800, -2000, context.Openness);
+	float reflections_max = EnvironmentContext::InterpolateLinear(300, -1500, context.Openness);
 
 	context.EAXData.lReflections = (long)(reflections_min + (reflections_max - reflections_min) * reflectionStrength);
 
 	context.EAXData.flReflectionsDelay = context.EchoDelay;
 	clamp(context.EAXData.flReflectionsDelay, 0.002f, 0.2f);
 
-	// Reverb parameters - СИЛЬНЕЕ в помещениях
+	// Reverb parameters - МАКСИМАЛЬНОЕ ОСЛАБЛЕНИЕ
 	float reverbIntensity = context.VolumeFactor * context.Enclosedness;
 
-	// ИНВЕРСИЯ: в помещениях менее отрицательные значения реверберации
-	float reverb_min =
-		EnvironmentContext::InterpolateLinear(-800, -2000, context.Openness); // В помещениях: -800, на открытых: -2000
-	float reverb_max =
-		EnvironmentContext::InterpolateLinear(500, -500, context.Openness); // В помещениях: 500, на открытых: -500
+	// ДЛЯ ОТКРЫТЫХ ПРОСТРАНСТВ: ОЧЕНЬ слабая реверберация
+	float reverb_min = EnvironmentContext::InterpolateLinear(-800, -2500, context.Openness);
+	float reverb_max = EnvironmentContext::InterpolateLinear(500, -2000, context.Openness);
 
 	context.EAXData.lReverb = (long)(reverb_min + (reverb_max - reverb_min) * reverbIntensity);
 	context.EAXData.flReverbDelay = context.EchoDelay * 1.3f;
-	clamp(context.EAXData.flReverbDelay, 0.003f, 0.25f);
+	clamp(context.EAXData.flReverbDelay, 0.002f, 0.25f);
 
 	// Environment parameters
 	float environment_size = 5.0f + 95.0f * (1.0f - context.Enclosedness);
 	context.EAXData.flEnvironmentSize = environment_size;
 	clamp(context.EAXData.flEnvironmentSize, 5.0f, 100.0f);
 
+	// Диффузия: в помещениях 0.1, в открытых 0.9
 	context.EAXData.flEnvironmentDiffusion = 0.1f + 0.8f * context.Openness;
-	context.EAXData.flAirAbsorptionHF = -1.0f - 10.0f * context.Openness;
 
-	// Финальная корректировка для очень открытых пространств
-	if (context.Openness > 0.8f)
+	// AirAbsorptionHF: в помещениях -1.0, в открытых -16.0
+	context.EAXData.flAirAbsorptionHF = -1.0f - 15.0f * context.Openness;
+
+	// Корректировка для очень маленьких помещений (объем < 1.0)
+	if (context.NormalizedVolume < 1.0f)
 	{
-		float open_reduction = 1.0f - (context.Openness - 0.8f) * 5.0f;
-		clamp(open_reduction, 0.1f, 1.0f);
+		float small_room_factor = context.NormalizedVolume;
+		clamp(small_room_factor, 0.1f, 1.0f);
 
-		context.EAXData.lReflections = (long)(context.EAXData.lReflections * open_reduction);
-		context.EAXData.lReverb = (long)(context.EAXData.lReverb * open_reduction);
+		context.EAXData.flDecayTime *= (0.2f + 0.8f * small_room_factor);
+		context.EAXData.lReflections = (long)(context.EAXData.lReflections * (0.3f + 0.7f * small_room_factor));
+		context.EAXData.lReverb = (long)(context.EAXData.lReverb * (0.3f + 0.7f * small_room_factor));
+
+		context.EAXData.flEnvironmentDiffusion = 0.5f;
+	}
+
+	// МАКСИМАЛЬНАЯ КОРРЕКТИРОВКА ДЛЯ ОТКРЫТЫХ ПРОСТРАНСТВ
+	if (context.Openness > 0.7f)
+	{
+		// Сохраняем сильное высокочастотное затухание
+		context.EAXData.lRoomHF = -3000;
+		context.EAXData.flAirAbsorptionHF = -20.0f;
+		context.EAXData.flEnvironmentDiffusion = 1.0f;
+		context.EAXData.flDecayHFRatio = 0.95f;
+
+		// МАКСИМАЛЬНОЕ ОСЛАБЛЕНИЕ ОТРАЖЕНИЙ И РЕВЕРБЕРАЦИИ
+		float open_space_reduction = 0.1f + 0.9f * (1.0f - (context.Openness - 0.7f) / 0.3f);
+		clamp(open_space_reduction, 0.05f, 0.2f);
+
+		context.EAXData.lReflections = (long)(context.EAXData.lReflections * open_space_reduction);
+		context.EAXData.lReverb = (long)(context.EAXData.lReverb * open_space_reduction);
+
+		// Гарантируем ОЧЕНЬ короткое время реверберации
+		context.EAXData.flDecayTime = 0.08f;
+
+		// Дополнительное уменьшение задержек
+		context.EAXData.flReflectionsDelay *= 0.7f;
+		context.EAXData.flReverbDelay *= 0.7f;
 	}
 
 	// Мягкая валидация параметров
 	context.EAXData.lRoom = _max(context.EAXData.lRoom, -3000);
-	context.EAXData.lRoomHF = _max(context.EAXData.lRoomHF, -1500);
-	context.EAXData.lReflections = _min(_max(context.EAXData.lReflections, -3000), 1000);
-	context.EAXData.lReverb = _min(_max(context.EAXData.lReverb, -2500), 1000);
+	context.EAXData.lRoomHF = _max(context.EAXData.lRoomHF, -3500);
+	context.EAXData.lReflections = _min(_max(context.EAXData.lReflections, -3500), 1000);
+	context.EAXData.lReverb = _min(_max(context.EAXData.lReverb, -3500), 1000);
 
 	// Отладочный вывод
-	Msg("[EAX Final] Room=%d, Reflections=%d, Reverb=%d, Decay=%.2fs", context.EAXData.lRoom,
-		context.EAXData.lReflections, context.EAXData.lReverb, context.EAXData.flDecayTime);
+	Msg("[EAX Final] Room=%d, RoomHF=%d, Reflections=%d, Reverb=%d", context.EAXData.lRoom, context.EAXData.lRoomHF,
+		context.EAXData.lReflections, context.EAXData.lReverb);
+	Msg("[EAX Final] AirAbsorptionHF=%.1f, Diffusion=%.2f, DecayHF=%.2f, DecayTime=%.3fs",
+		context.EAXData.flAirAbsorptionHF, context.EAXData.flEnvironmentDiffusion, context.EAXData.flDecayHFRatio,
+		context.EAXData.flDecayTime);
+	Msg("[EAX Final] ReflectionsDelay=%.3fs, ReverbDelay=%.3fs", context.EAXData.flReflectionsDelay,
+		context.EAXData.flReverbDelay);
 	Msg("[EAX Final] Openness=%.2f, Enclosedness=%.2f, Volume=%.1f", context.Openness, context.Enclosedness,
 		context.NormalizedVolume);
 }
