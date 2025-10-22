@@ -19,9 +19,6 @@
     <Filter Include="Target">
       <UniqueIdentifier>{2780412f-6253-4fe0-a28a-f43fffe553a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Environment">
-      <UniqueIdentifier>{c6a345f8-9656-4162-b2f7-e748eee6da4a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Misc %28or old%29">
       <UniqueIdentifier>{0405cfd2-929c-4163-8263-68db3e941f48}</UniqueIdentifier>
     </Filter>
@@ -62,9 +59,6 @@
     </ClInclude>
     <ClInclude Include="SoundRender_TargetA.h">
       <Filter>Target</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundRender_Environment.h">
-      <Filter>Environment</Filter>
     </ClInclude>
     <ClInclude Include="MusicStream.h">
       <Filter>Misc %28or old%29</Filter>
@@ -131,9 +125,6 @@
     <ClCompile Include="SoundRender_TargetA.cpp">
       <Filter>Target</Filter>
     </ClCompile>
-    <ClCompile Include="SoundRender_Environment.cpp">
-      <Filter>Environment</Filter>
-    </ClCompile>
     <ClCompile Include="MusicStream.cpp">
       <Filter>Misc %28or old%29</Filter>
     </ClCompile>
@@ -145,6 +136,9 @@
     </ClCompile>
     <ClCompile Include="SoundRender_Cache.cpp">
       <Filter>Cache</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundRender_EAX.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

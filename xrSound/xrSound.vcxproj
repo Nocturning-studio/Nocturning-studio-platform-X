@@ -938,7 +938,6 @@ copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
     <ClInclude Include="SoundRender_Core.h" />
     <ClInclude Include="SoundRender_CoreA.h" />
     <ClInclude Include="SoundRender_Emitter.h" />
-    <ClInclude Include="SoundRender_Environment.h" />
     <ClInclude Include="SoundRender_Source.h" />
     <ClInclude Include="SoundRender_Target.h" />
     <ClInclude Include="SoundRender_TargetA.h" />
@@ -1001,6 +1000,7 @@ copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
     <ClCompile Include="SoundRender_Core_Processor.cpp" />
     <ClCompile Include="SoundRender_Core_SourceManager.cpp" />
     <ClCompile Include="SoundRender_Core_StartStop.cpp" />
+    <ClCompile Include="SoundRender_EAX.cpp" />
     <ClCompile Include="SoundRender_Emitter.cpp" />
     <ClCompile Include="SoundRender_Emitter_FSM.cpp" />
     <ClCompile Include="SoundRender_Emitter_StartStop.cpp" />
@@ -1010,7 +1010,6 @@ copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">AnySuitable</InlineFunctionExpansion>
       <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">AnySuitable</InlineFunctionExpansion>
     </ClCompile>
-    <ClCompile Include="SoundRender_Environment.cpp" />
     <ClCompile Include="SoundRender_Source.cpp" />
     <ClCompile Include="SoundRender_Source_loader.cpp" />
     <ClCompile Include="SoundRender_Target.cpp" />

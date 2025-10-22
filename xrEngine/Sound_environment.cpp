@@ -295,10 +295,7 @@ void CSoundEnvironment::CalculateEnvironmentData()
 
 	// Update sound system with EAX data
 	if (::Sound)
-	{
-		::Sound->set_environment_data(&m_CurrentData);
-		::Sound->set_need_update_environment(true);
-	}
+		::Sound->commit_eax(&m_CurrentData);
 }
 
 /**

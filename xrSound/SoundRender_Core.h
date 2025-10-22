@@ -3,9 +3,7 @@
 #pragma once
 
 #include "SoundRender.h"
-#include "SoundRender_Environment.h"
 #include "SoundRender_Cache.h"
-#include "soundrender_environment.h"
 #include "../xrEngine/Sound_environment_common.h"
 
 class CSoundRender_Core : public CSound_manager_interface
@@ -18,9 +16,6 @@ class CSoundRender_Core : public CSound_manager_interface
 
   protected:
 	BOOL bListenerMoved;
-
-	CSoundRender_Environment e_current;
-	CSoundRender_Environment e_target;
 
   public:
 	typedef std::pair<ref_sound_data_ptr, float> event;
@@ -51,7 +46,6 @@ class CSoundRender_Core : public CSound_manager_interface
 
 	CDB::MODEL* geom_SOM;
 	CDB::MODEL* geom_MODEL;
-	CDB::MODEL* geom_ENV;
 
 	// Containers
 	xr_vector<CSoundRender_Source*> s_sources;
@@ -60,8 +54,6 @@ class CSoundRender_Core : public CSound_manager_interface
 	xr_vector<CSoundRender_Target*> s_targets;
 	xr_vector<CSoundRender_Target*> s_targets_defer;
 	u32 s_targets_pu; // parameters update
-	SoundEnvironment_LIB* s_environment;
-	CSoundRender_Environment s_user_environment;
 
 	int m_iPauseCounter;
 
@@ -94,10 +86,8 @@ class CSoundRender_Core : public CSound_manager_interface
 
 	virtual void play(ref_sound& S, CObject* O, u32 flags = 0, float delay = 0.f);
 	virtual void play_at_pos(ref_sound& S, CObject* O, const Fvector& pos, u32 flags = 0, float delay = 0.f);
-	virtual void play_no_feedback(ref_sound& S, CObject* O, u32 flags = 0, float delay = 0.f, Fvector* pos = 0,
-								  float* vol = 0, float* freq = 0, Fvector2* range = 0);
+	virtual void play_no_feedback(ref_sound& S, CObject* O, u32 flags = 0, float delay = 0.f, Fvector* pos = 0, float* vol = 0, float* freq = 0, Fvector2* range = 0);
 	virtual void set_master_volume(float f) = 0;
-	virtual void set_geometry_env(IReader* I);
 	virtual void set_geometry_som(IReader* I);
 	virtual void set_geometry_occ(CDB::MODEL* M);
 	virtual void set_handler(sound_event* E);
@@ -106,14 +96,13 @@ class CSoundRender_Core : public CSound_manager_interface
 	virtual void update_events();
 	virtual void statistic(CSound_stats* dest, CSound_stats_ext* ext);
 
-	// listener
-	//	virtual const Fvector&				listener_position		( )=0;
+	void refresh_sources();
+
 	virtual void update_listener(const Fvector& P, const Fvector& D, const Fvector& N, float dt) = 0;
-	// eax listener
-	void i_eax_commit_setting();
-	void i_eax_listener_set(CSound_environment* E);
-	void i_eax_listener_set();
-	void i_eax_listener_get(CSound_environment* E);
+
+	void InitializeEAX();
+	void UpdateEAX();
+	void commit_eax(SEAXEnvironmentData* EAXEnvData);
 
   public:
 	CSoundRender_Source* i_create_source(LPCSTR name);
@@ -130,40 +119,15 @@ class CSoundRender_Core : public CSound_manager_interface
 
 	virtual void object_relcase(CObject* obj);
 
-	void set_user_env(CSound_environment* E);
-
-	void refresh_env_library();
-
-	void refresh_sources();
-
-	void set_environment_size(CSound_environment* src_env, CSound_environment** dst_env);
-
-	void set_environment(u32 id, CSound_environment** dst_env);
-
 	virtual float get_occlusion_to(const Fvector& hear_pt, const Fvector& snd_pt, float dispersion = 0.2f);
 	float get_occlusion(Fvector& P, float R, Fvector* occ);
-	CSoundRender_Environment* get_environment(const Fvector& P);
-
-	void env_load();
-	void env_unload();
-	void env_apply();
 
 	SEAXEnvironmentData m_EAXEnvData;
 	bool b_EAXUpdated;
 
-	void set_environment_data(SEAXEnvironmentData* EAXEnvData)
-	{
-		m_EAXEnvData = *EAXEnvData;
-	}
-
 	void set_device_pause_state(bool paused)
 	{
 		bDevicePaused = paused;
-	};
-
-	virtual void set_need_update_environment(bool needToUpdate)
-	{
-		bNeedToUpdateEnvironment = needToUpdate;
 	};
 };
 extern CSoundRender_Core* SoundRender;

@@ -10,7 +10,6 @@
 
 #define XRSOUND_EDITOR_API
 
-#define SNDENV_FILENAME "sEnvironment.xr"
 #define OGG_COMMENT_VERSION 0x0003
 
 // refs
@@ -19,7 +18,6 @@ class XRSOUND_API CSound_params;
 class XRSOUND_API CSound_source;
 class XRSOUND_API CSound_emitter;
 class XRSOUND_API CSound_stream_interface;
-class XRSOUND_API CSound_environment;
 
 XRSOUND_API extern u32 psSoundModel;
 XRSOUND_API extern float psSoundVEffects;
@@ -224,12 +222,6 @@ class XRSOUND_API CSound_source
 	virtual u32 length_ms() const = 0;
 };
 
-/// definition (Sound Source)
-class XRSOUND_API CSound_environment
-{
-  public:
-};
-
 /// definition (Sound Params)
 class XRSOUND_API CSound_params
 {
@@ -349,7 +341,6 @@ class XRSOUND_API CSound_manager_interface
 								  float* vol = 0, float* freq = 0, Fvector2* range = 0) = 0;
 
 	virtual void set_master_volume(float f = psSoundVFactor) = 0;
-	virtual void set_geometry_env(IReader* I) = 0;
 	virtual void set_geometry_som(IReader* I) = 0;
 	virtual void set_geometry_occ(CDB::MODEL* M) = 0;
 	virtual void set_handler(sound_event* E) = 0;
@@ -364,8 +355,7 @@ class XRSOUND_API CSound_manager_interface
 
 	virtual void set_device_pause_state(bool paused) = 0;
 
-	virtual void set_environment_data(SEAXEnvironmentData* EAXEnvData) = 0;
-	virtual void set_need_update_environment(bool needToUpdate) = 0;
+	virtual void commit_eax(SEAXEnvironmentData* EAXEnvData) = 0;
 };
 extern XRSOUND_API CSound_manager_interface* Sound;
 

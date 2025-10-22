@@ -13,12 +13,10 @@
 #define XRSOUND_EDITOR_API XRSOUND_API
 
 // editor only refs
-class XRSOUND_EDITOR_API SoundEnvironment_LIB;
 #else
 #define XRSOUND_EDITOR_API
 #endif
 
-#define SNDENV_FILENAME "sEnvironment.xr"
 #define OGG_COMMENT_VERSION 0x0003
 
 // refs
@@ -27,7 +25,6 @@ class XRSOUND_API CSound_params;
 class XRSOUND_API CSound_source;
 class XRSOUND_API CSound_emitter;
 class XRSOUND_API CSound_stream_interface;
-class XRSOUND_API CSound_environment;
 
 //
 XRSOUND_API extern u32 psSoundFreq;
@@ -246,12 +243,6 @@ class XRSOUND_API CSound_source
 	virtual LPCSTR file_name() = 0;
 };
 
-/// definition (Sound Source)
-class XRSOUND_API CSound_environment
-{
-  public:
-};
-
 /// definition (Sound Params)
 class XRSOUND_API CSound_params
 {
@@ -349,16 +340,14 @@ class XRSOUND_API CSound_manager_interface
 	virtual ~CSound_manager_interface()
 	{
 	}
-	//@{
+
 	/// General
 	static void _create(u64 window);
 	static void _destroy();
 
 	virtual void _restart() = 0;
 	virtual BOOL i_locked() = 0;
-	//@}
 
-	//@{
 	/// Sound interface
 	virtual void create(ref_sound& S, LPCSTR fName, esound_type sound_type, int game_type) = 0;
 	virtual void clone(ref_sound& S, const ref_sound& from, esound_type sound_type, int game_type) = 0;
@@ -372,11 +361,9 @@ class XRSOUND_API CSound_manager_interface
 								  float* vol = 0, float* freq = 0, Fvector2* range = 0) = 0;
 
 	virtual void set_master_volume(float f = psSoundVFactor) = 0;
-	virtual void set_geometry_env(IReader* I) = 0;
 	virtual void set_geometry_som(IReader* I) = 0;
 	virtual void set_geometry_occ(CDB::MODEL* M) = 0;
 	virtual void set_handler(sound_event* E) = 0;
-	//@}
 
 	virtual void update(const Fvector& P, const Fvector& D, const Fvector& N) = 0;
 	virtual void statistic(CSound_stats* s0, CSound_stats_ext* s1) = 0;
@@ -388,16 +375,11 @@ class XRSOUND_API CSound_manager_interface
 
 	virtual void set_device_pause_state(bool paused) = 0;
 
-	virtual void set_environment_data(SEAXEnvironmentData* EAXEnvData) = 0;
-	virtual void set_need_update_environment(bool needToUpdate) = 0;
+	virtual void commit_eax(SEAXEnvironmentData* EAXEnvData) = 0;
 
 #ifdef __BORLANDC__
-	virtual SoundEnvironment_LIB* get_env_library() = 0;
 	virtual void refresh_env_library() = 0;
-	virtual void set_user_env(CSound_environment* E) = 0;
 	virtual void refresh_sources() = 0;
-	virtual void set_environment(u32 id, CSound_environment** dst_env) = 0;
-	virtual void set_environment_size(CSound_environment* src_env, CSound_environment** dst_env) = 0;
 #endif
 };
 extern XRSOUND_API CSound_manager_interface* Sound;

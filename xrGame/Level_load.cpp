@@ -72,14 +72,6 @@ BOOL CLevel::Load_GameSpecific_After()
 		VERIFY(m_level_sound_manager);
 		m_level_sound_manager->Load();
 
-		// loading sound environment
-		if (FS.exist(fn_game, "$level$", "level.snd_env"))
-		{
-			g_pGamePersistent->LoadTitle("st_loading_sound_environment");
-			IReader* F = FS.r_open(fn_game);
-			::Sound->set_geometry_env(F);
-			FS.r_close(F);
-		}
 		// loading SOM
 		if (FS.exist(fn_game, "$level$", "level.som"))
 		{

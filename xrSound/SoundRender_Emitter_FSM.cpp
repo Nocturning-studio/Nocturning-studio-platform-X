@@ -59,7 +59,6 @@ void CSoundRender_Emitter::update(float dt)
 		smooth_volume = p_source.base_volume * p_source.volume *
 						(owner_data->s_type == st_Effect ? psSoundVEffects : psSoundVMusic) * psSoundVFactor *
 						psSoundVMaster * (b2D ? 1.f : occluder_volume);
-		e_current = e_target = *SoundRender->get_environment(p_source.position);
 
 		if (update_culling(dt))
 		{
@@ -91,7 +90,6 @@ void CSoundRender_Emitter::update(float dt)
 		smooth_volume = p_source.base_volume * p_source.volume *
 						(owner_data->s_type == st_Effect ? psSoundVEffects : psSoundVMusic) * psSoundVFactor *
 						psSoundVMaster * (b2D ? 1.f : occluder_volume);
-		e_current = e_target = *SoundRender->get_environment(p_source.position);
 
 		if (update_culling(dt))
 		{
@@ -135,7 +133,6 @@ void CSoundRender_Emitter::update(float dt)
 			else
 			{
 				// We are still playing
-				update_environment(dt);
 			}
 		}
 		break;
@@ -187,7 +184,6 @@ void CSoundRender_Emitter::update(float dt)
 		else
 		{
 			// We are still playing
-			update_environment(dt);
 		}
 		break;
 
@@ -326,11 +322,4 @@ float CSoundRender_Emitter::priority()
 	float att = p_source.min_distance / (psSoundRolloff * dist);
 	clamp(att, 0.f, 1.f);
 	return smooth_volume * att * priority_scale;
-}
-
-void CSoundRender_Emitter::update_environment(float dt)
-{
-	if (bMoved)
-		e_target = *SoundRender->get_environment(p_source.position);
-	e_current.lerp(e_current, e_target, dt);
 }

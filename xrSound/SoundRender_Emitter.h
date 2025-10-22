@@ -1,7 +1,6 @@
 #pragma once
 
 #include "soundrender.h"
-#include "soundrender_environment.h"
 
 class CSoundRender_Emitter : public CSound_emitter
 {
@@ -53,8 +52,6 @@ class CSoundRender_Emitter : public CSound_emitter
 	u32 m_cur_handle_cursor;
 
 	CSound_params p_source;
-	CSoundRender_Environment e_current;
-	CSoundRender_Environment e_target;
 
 	int iPaused;
 	BOOL bMoved;
@@ -124,7 +121,6 @@ class CSoundRender_Emitter : public CSound_emitter
 	void cancel(); // manager forces out of rendering
 	void update(float dt);
 	BOOL update_culling(float dt);
-	void update_environment(float dt);
 	void rewind();
 	virtual void stop(BOOL bDeffered);
 	void pause(BOOL bVal, int id);
