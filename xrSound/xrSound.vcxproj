@@ -407,6 +407,7 @@ copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <BrowseInformation />
       <WarningLevel>Level2</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <AdditionalDependencies>legacy_stdio_definitions.lib;vorbisfile_static.lib;ogg_static.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>

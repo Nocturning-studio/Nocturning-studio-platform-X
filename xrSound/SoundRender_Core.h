@@ -6,6 +6,7 @@
 #include "SoundRender_Environment.h"
 #include "SoundRender_Cache.h"
 #include "soundrender_environment.h"
+#include "../xrEngine/Sound_environment_common.h"
 
 class CSoundRender_Core : public CSound_manager_interface
 {
@@ -147,19 +148,17 @@ class CSoundRender_Core : public CSound_manager_interface
 	void env_unload();
 	void env_apply();
 
+	SEAXEnvironmentData m_EAXEnvData;
+	bool b_EAXUpdated;
+
+	void set_environment_data(SEAXEnvironmentData* EAXEnvData)
+	{
+		m_EAXEnvData = *EAXEnvData;
+	}
+
 	void set_device_pause_state(bool paused)
 	{
 		bDevicePaused = paused;
-	};
-
-	void set_environment_radius(float radius)
-	{
-		fEnvironmentRadius = radius;
-	};
-
-	virtual void set_environment_fog_density(float density)
-	{
-		fFogDensity = density;
 	};
 
 	virtual void set_need_update_environment(bool needToUpdate)

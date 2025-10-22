@@ -1,3 +1,4 @@
+#include "../xrEngine/Sound_environment_common.h"
 #ifndef SoundH
 #define SoundH
 #pragma once
@@ -387,8 +388,7 @@ class XRSOUND_API CSound_manager_interface
 
 	virtual void set_device_pause_state(bool paused) = 0;
 
-	virtual void set_environment_radius(float radius) = 0;
-	virtual void set_environment_fog_density(float density) = 0;
+	virtual void set_environment_data(SEAXEnvironmentData* EAXEnvData) = 0;
 	virtual void set_need_update_environment(bool needToUpdate) = 0;
 
 #ifdef __BORLANDC__

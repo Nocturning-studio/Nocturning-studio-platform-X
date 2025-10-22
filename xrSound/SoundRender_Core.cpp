@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #pragma hdrstop
 
 #include "soundrender_core.h"
@@ -70,6 +70,7 @@ CSoundRender_Core::CSoundRender_Core()
 	fFogDensity = 0.0f;
 	fEnvironmentRadius = 0.0f;
 	bNeedToUpdateEnvironment = FALSE;
+	b_EAXUpdated = false;
 }
 
 CSoundRender_Core::~CSoundRender_Core()
@@ -593,112 +594,141 @@ void CSoundRender_Core::i_eax_listener_set(CSound_environment* _E)
 }
 */
 
+#ifndef lerp
+#define lerp(a, b, t) ((a) + ((b) - (a)) * (t))
+#endif
+
 void CSoundRender_Core::i_eax_listener_set()
 {
-	//Msg("\nEnv radius - %f", fEnvironmentRadius);
+	if (b_EAXUpdated && !bNeedToUpdateEnvironment)
+		return;
 
-	float SaturatedEnvRadius = fEnvironmentRadius / 100.0f;
-	clamp(SaturatedEnvRadius, 0.0f, 1.0f);
+	b_EAXUpdated = true;
 
-	//Msg("SaturatedEnvRadius - %f", SaturatedEnvRadius);
+	const SEAXEnvironmentData& env = m_EAXEnvData;
 
-	//psSoundVAmbientDynamicMultiplier *= SaturatedEnvRadius;
+	float EchoStrength = env.sPhysicalData.fEchoStrength;
+	float ReverbTime = env.sPhysicalData.fReverbTime;
+	float AdjustedRadius = env.sPhysicalData.fAdjustedRadius;
 
-	float InvSaturatedEnvRadius = 1.0f - SaturatedEnvRadius;
-
-	//Msg("InvSaturatedEnvRadius - %f", InvSaturatedEnvRadius);
+	float Openness = env.fOpenness;
+	float Enclosedness = env.fEnclosedness;
 
 	EAXLISTENERPROPERTIES ep;
+	ZeroMemory(&ep, sizeof(ep));
 
-	// room effect level at low frequencies
-	long RoomFactor = (long)fEnvironmentRadius;
-	RoomFactor = RoomFactor * 75;
-	RoomFactor = -RoomFactor;
-	//clamp(RoomFactor, (long)EAXLISTENER_MINROOM, (long)EAXLISTENER_MAXROOM);
-	//Msg("Room factor - %f", (float)RoomFactor);
-	//RoomFactor = psDbgEAXRoom;
-	ep.lRoom = RoomFactor;
+	Msg("[EAX] Applying SUBTLE EAX parameters:");
+	Msg("[EAX] Radius: %.1f, Openness: %.3f, Enclosed: %.3f, Echo: %.4f", AdjustedRadius, Openness, Enclosedness,
+		EchoStrength);
 
-	// room effect high-frequency level re. low frequency level
-	float RoomHF = InvSaturatedEnvRadius;
-	RoomHF *= 5000.0f;
-	clamp(RoomHF, 2000.0f, 10000.0f);
-	RoomHF = -RoomHF;
-	//Msg("RoomHF - %f", RoomHF);
-	//RoomHF = (long)psDbgEAXRoomHF;
-	ep.lRoomHF = (long)RoomFactor; 
+	// СУБТИЛЬНЫЕ ПАРАМЕТРЫ EAX:
 
-	// like DS3D flRolloffFactor but for room effect
-	ep.flRoomRolloffFactor = psDbgEAXRoomRolloff;			
+	// Room - уменьшаем влияние
+	ep.lRoom = (long)lerp(-2000, -500, Enclosedness);
 
-	// reverberation decay time at low frequencies
-	float DecayTime = fEnvironmentRadius / 10.0f;
-	clamp(DecayTime, (float)EAXLISTENER_MINDECAYTIME, (float)EAXLISTENER_MAXDECAYTIME);
-	//Msg("DecayTime - %f", DecayTime);
-	//DecayTime = psDbgEAXDecayTime;
-	ep.flDecayTime = DecayTime;	// psDbgEAXDecayTime;	
+	// RoomHF - больше затухания высоких частот
+	ep.lRoomHF = (long)lerp(-1000, -100, Openness);
 
-	// high-frequency to low-frequency decay time ratio
-	float DecayHFRatio = SaturatedEnvRadius / 2.0f;
-	//Msg("DecayHFRatio - %f", DecayHFRatio);
-	//DecayHFRatio = psDbgEAXDecayHFRatio;
-	ep.flDecayHFRatio = DecayHFRatio;			 
+	// Room Rolloff Factor
+	ep.flRoomRolloffFactor = lerp(0.1f, 1.0f, Enclosedness);
 
-	// early reflections level relative to room effect
-	ep.lReflections = (long)psDbgEAXReflections;					 
+	// Decay Time
+	ep.flDecayTime = ReverbTime;
 
-	// initial reflection delay time
-	float ReflectionDelay = SaturatedEnvRadius / 2.5f;
-	clamp(ReflectionDelay, (float)EAXLISTENER_MINREFLECTIONSDELAY, (float)EAXLISTENER_MAXREFLECTIONSDELAY);
-	//Msg("ReflectionDelay - %f", ReflectionDelay);
-	//ReflectionDelay = psDbgEAXReflectionsDelay;
-	ep.flReflectionsDelay = ReflectionDelay;				
+	// Decay HF Ratio - больше затухания ВЧ
+	ep.flDecayHFRatio = lerp(0.1f, 0.6f, Openness);
 
-	// late reverberation level relative to room effect
-	ep.lReverb = (long)psDbgEAXReverb;
+	// REFLECTIONS - СИЛЬНО УМЕНЬШАЕМ
+	float reflectionStrength = env.sReflectionData.fReflectionEnergy * EchoStrength * 0.5f; // Уменьшили множитель
+	clamp(reflectionStrength, 0.0f, 1.0f);
 
-	// late reverberation delay time relative to initial reflection
-	float ReverbDelay = SaturatedEnvRadius / 10.0f;
-	clamp(ReverbDelay, (float)EAXLISTENER_MINREVERBDELAY, (float)EAXLISTENER_MAXREVERBDELAY);
-	//Msg("ReverbDelay - %f", ReverbDelay);
-	// ReverbDelay = psDbgEAXReverbDelay;
-	ep.flReverbDelay = ReverbDelay;
+	// ДИНАМИЧЕСКИЙ ДИАПАЗОН ДЛЯ REFLECTIONS
+	if (AdjustedRadius < 8.0f)
+	{
+		// Маленькие помещения: от -100 до 200
+		ep.lReflections = (long)lerp(-100, 200, reflectionStrength);
+	}
+	else if (AdjustedRadius < 25.0f)
+	{
+		// Средние помещения: от -300 до 100
+		ep.lReflections = (long)lerp(-300, 100, reflectionStrength);
+	}
+	else
+	{
+		// Большие помещения: от -800 до -200
+		ep.lReflections = (long)lerp(-800, -200, reflectionStrength);
+	}
 
-	// sets all listener properties
-	ep.dwEnvironment = EAXLISTENER_DEFAULTENVIRONMENT;	 
+	// Reflections Delay
+	ep.flReflectionsDelay = env.sReflectionData.fReflectionDelay * (0.3f + 0.7f * Enclosedness);
+	clamp(ep.flReflectionsDelay, 0.005f, 0.05f);
 
-	// environment size in meters
-	float EnvironmentSize = fEnvironmentRadius / 2.0f;
-	//EnvironmentSize = psDbgEAXEnvironmentSize; 
-	ep.flEnvironmentSize = EnvironmentSize;
+	// REVERB - СИЛЬНО УМЕНЬШАЕМ
+	ep.lReverb = (long)lerp(-800, 300, EchoStrength * Enclosedness * 0.5f);
 
-	// environment diffusion
-	float EnvironmentDiffusion = InvSaturatedEnvRadius;
-	//Msg("EnvironmentDiffusion - %f", EnvironmentDiffusion);
-	//EnvironmentDiffusion = psDbgEAXEnvironmentDiffusion; 
-	ep.flEnvironmentDiffusion = EnvironmentDiffusion;
+	// Reverb Delay
+	ep.flReverbDelay = lerp(0.005f, 0.03f, AdjustedRadius / 100.0f);
 
-	// change in level per meter at 5 kHz
-	float AirAbsorbtion = -fFogDensity * 100.0f;
-	ep.flAirAbsorptionHF = AirAbsorbtion;  
+	// Environment Size
+	ep.flEnvironmentSize = AdjustedRadius;
+	clamp(ep.flEnvironmentSize, 1.0f, 100.0f);
 
-	// modifies the behavior of properties
-	ep.dwFlags = EAXLISTENER_DEFAULTFLAGS;				 
+	// Environment Diffusion
+	ep.flEnvironmentDiffusion = lerp(0.2f, 0.8f, 1.0f - Openness);
 
+	// Air Absorption
+	ep.flAirAbsorptionHF = lerp(-0.5f, -8.0f, env.fFogDensity);
+
+	// АГРЕССИВНАЯ КОРРЕКЦИЯ ДЛЯ ОТКРЫТЫХ ПРОСТРАНСТВ
+	if (Openness > 0.3f)
+	{
+		float openFactor = (Openness - 0.3f) / 0.7f;
+
+		// СИЛЬНОЕ УМЕНЬШЕНИЕ ВСЕХ ЭФФЕКТОВ
+		ep.lReflections = (long)(ep.lReflections * (1.0f - openFactor * 0.9f));
+		ep.lReverb = (long)(ep.lReverb * (1.0f - openFactor));
+		ep.flDecayTime *= (1.0f - openFactor * 0.6f);
+		ep.flEnvironmentDiffusion = lerp(ep.flEnvironmentDiffusion, 0.95f, openFactor);
+
+		Msg("[EAX] Open space correction: factor=%.2f", openFactor);
+	}
+
+	// ФИНАЛЬНЫЕ ОГРАНИЧЕНИЯ
+	ep.lRoom = _max(ep.lRoom, -3000);
+	ep.lRoomHF = _max(ep.lRoomHF, -1500);
+	ep.lReflections = _max(ep.lReflections, -1500);
+	ep.lReverb = _min(_max(ep.lReverb, -1500), 500);
+	ep.flDecayTime = _min(ep.flDecayTime, 5.0f);
+
+	// Отладочный вывод
+	Msg("[EAX] Final: Room=%d, RoomHF=%d, Reflections=%d, Reverb=%d, Decay=%.2f", ep.lRoom, ep.lRoomHF, ep.lReflections,
+		ep.lReverb, ep.flDecayTime);
+
+	// ... существующий код применения параметров EAX
 	u32 deferred = bDeferredEAX ? DSPROPERTY_EAXLISTENER_DEFERRED : 0;
 
 	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ROOM, &ep.lRoom, sizeof(LONG));
 	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ROOMHF, &ep.lRoomHF, sizeof(LONG));
-	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR, &ep.flRoomRolloffFactor, sizeof(float));
-	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_DECAYTIME, &ep.flDecayTime, sizeof(float));
-	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_DECAYHFRATIO, &ep.flDecayHFRatio, sizeof(float));
-	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_REFLECTIONS, &ep.lReflections, sizeof(LONG));
-	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_REFLECTIONSDELAY, &ep.flReflectionsDelay, sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR,
+			  &ep.flRoomRolloffFactor, sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_DECAYTIME, &ep.flDecayTime,
+			  sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_DECAYHFRATIO, &ep.flDecayHFRatio,
+			  sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_REFLECTIONS, &ep.lReflections,
+			  sizeof(LONG));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_REFLECTIONSDELAY,
+			  &ep.flReflectionsDelay, sizeof(float));
 	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_REVERB, &ep.lReverb, sizeof(LONG));
-	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_REVERBDELAY, &ep.flReverbDelay, sizeof(float));
-	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ENVIRONMENTDIFFUSION, &ep.flEnvironmentDiffusion, sizeof(float));
-	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF, &ep.flAirAbsorptionHF, sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_REVERBDELAY, &ep.flReverbDelay,
+			  sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ENVIRONMENTDIFFUSION,
+			  &ep.flEnvironmentDiffusion, sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF,
+			  &ep.flAirAbsorptionHF, sizeof(float));
 	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_FLAGS, &ep.dwFlags, sizeof(DWORD));
+
+	Msg("[EAX] Subtle EAX parameters applied!");
 }
 
 void CSoundRender_Core::i_eax_listener_get(CSound_environment* _E)
