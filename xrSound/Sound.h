@@ -36,18 +36,6 @@ XRSOUND_API extern xr_token* snd_devices_token;
 XRSOUND_API extern u32 snd_device_id;
 XRSOUND_API extern float psTimeFactor;
 
-XRSOUND_API extern float psDbgEAXRoom;
-XRSOUND_API extern float psDbgEAXRoomHF;
-XRSOUND_API extern float psDbgEAXRoomRolloff;
-XRSOUND_API extern float psDbgEAXDecayTime;
-XRSOUND_API extern float psDbgEAXDecayHFRatio;
-XRSOUND_API extern float psDbgEAXReflections;
-XRSOUND_API extern float psDbgEAXReflectionsDelay;
-XRSOUND_API extern float psDbgEAXReverb;
-XRSOUND_API extern float psDbgEAXReverbDelay;
-XRSOUND_API extern float psDbgEAXEnvironmentSize;
-XRSOUND_API extern float psDbgEAXEnvironmentDiffusion;
-
 // Flags
 enum
 {

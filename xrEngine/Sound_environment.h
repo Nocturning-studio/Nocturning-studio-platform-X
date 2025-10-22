@@ -7,9 +7,12 @@
 #pragma once
 ///////////////////////////////////////////////////////////////////////////////////
 #include "Sound_environment_common.h"
+#include "Sound_environment_context.h"
 #include "Sound_environment_geometry.h"
 #include "Sound_environment_pathtracing.h"
+#include "Sound_environment_calculations.h"
 ///////////////////////////////////////////////////////////////////////////////////
+
 /**
  * @class CSoundEnvironment
  * @brief Main sound environment processor that analyzes 3D acoustic properties
@@ -23,14 +26,11 @@ class ENGINE_API CSoundEnvironment
 	static const u32 UPDATE_INTERVAL = 10; ///< Minimum frames between updates
 
 	class CGeometryAnalyzer m_GeometryAnalyzer; ///< Geometry analysis subsystem
-	SGeometryAnalysis m_CurrentGeometry;		///< Current geometry analysis results
-
-	class CPathTracingSystem m_PathTracer;	///< Path tracing subsystem
-	SPathTracingResult m_PathTracingResult; ///< Current path tracing results
+	class CPathTracingSystem m_PathTracer;		///< Path tracing subsystem
 
 	// Core analysis methods
 	float PerformDetailedRaycast(Fvector start, Fvector dir, float max_dist, u32& material_type);
-	void AnalyzeSpatialDistribution(Fvector center, std::vector<float>& distances, SEAXEnvironmentData& result);
+	void GatherRaycastData(EnvironmentContext& context);
 
 	// Update methods
 	bool NeedUpdate() const;

@@ -648,6 +648,12 @@
     <ClInclude Include="Sound_environment_pathtracing.h">
       <Filter>Game API\Sound Environment</Filter>
     </ClInclude>
+    <ClInclude Include="Sound_environment_context.h">
+      <Filter>Game API\Sound Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound_environment_calculations.h">
+      <Filter>Game API\Sound Environment</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IInputReceiver.cpp">
@@ -1131,6 +1137,9 @@
       <Filter>Game API\Sound Environment</Filter>
     </ClCompile>
     <ClCompile Include="Sound_environment_pathtracing.cpp">
+      <Filter>Game API\Sound Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound_environment_calculations.cpp">
       <Filter>Game API\Sound Environment</Filter>
     </ClCompile>
   </ItemGroup>

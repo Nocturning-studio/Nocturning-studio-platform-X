@@ -63,9 +63,11 @@ struct SPhysicalAcoustics
 	float fReverbTime;		 ///< Reverberation time in seconds for EAX
 	float fCriticalDistance; ///< Critical distance in meters
 	float fAdjustedRadius;	 ///< Adjusted radius accounting for openness for EAX
+	float fEchoDelay;		 ///< Echo delay time in seconds for EAX
 
 	SPhysicalAcoustics()
-		: fRoomVolume(100.0f), fEchoStrength(0.3f), fReverbTime(1.0f), fCriticalDistance(5.0f), fAdjustedRadius(10.0f)
+		: fRoomVolume(100.0f), fEchoStrength(0.3f), fReverbTime(1.0f), fCriticalDistance(5.0f), fAdjustedRadius(10.0f),
+		  fEchoDelay(0.02f)
 	{
 	}
 };
@@ -142,31 +144,28 @@ static const Fvector3 DetailedSphereDirections[] = {
 static const u32 DETAILED_DIRECTIONS_COUNT = sizeof(DetailedSphereDirections) / sizeof(Fvector3);
 
 /**
- * @brief Main EAX environment data structure
+ * @brief Pure EAX parameters structure - only what's needed for EAX API
  */
 struct SEAXEnvironmentData
 {
-	SReflectionAnalysis sReflectionData; ///< Reflection analysis results for EAX
-	SPhysicalAcoustics sPhysicalData;	 ///< Physical acoustic parameters for EAX
-
-	// Core geometric parameters
-	float fEnvironmentRadius;	///< Average environment radius in meters
-	float fEnvironmentVariance; ///< Distance variance (0-1)
-	float fEnvironmentDensity;	///< Environment density (0-1)
-
-	// Acoustic properties
-	float fFogDensity;	 ///< Fog/air density for EAX air absorption
-	float fRoomSize;	 ///< Normalized room size (0-1)
-	float fReflectivity; ///< Surface reflection coefficient (0-1)
-
-	// Derived parameters for EAX
-	float fOpenness;	 ///< Space openness degree (0-1) for EAX
-	float fEnclosedness; ///< Space enclosedness degree (0-1) for EAX
-	float fUniformity;	 ///< Surface distribution uniformity (0-1)
+	// Core EAX parameters (mapped directly to EAX properties)
+	LONG lRoom;
+	LONG lRoomHF;
+	float flRoomRolloffFactor;
+	float flDecayTime;
+	float flDecayHFRatio;
+	LONG lReflections;
+	float flReflectionsDelay;
+	LONG lReverb;
+	float flReverbDelay;
+	float flEnvironmentSize;
+	float flEnvironmentDiffusion;
+	float flAirAbsorptionHF;
+	DWORD dwFlags;
 
 	// Timestamps and validation
-	u32 dwFrameStamp; ///< Frame when data was updated
-	bool bDataValid;  ///< Data validity flag
+	u32 dwFrameStamp;
+	bool bDataValid;
 
 	/// Default constructor
 	SEAXEnvironmentData()
@@ -174,32 +173,22 @@ struct SEAXEnvironmentData
 		Reset();
 	}
 
-	/// Resets to default values optimized for EAX
+	/// Resets to default EAX values
 	void Reset()
 	{
-		fEnvironmentRadius = 10.0f;
-		fEnvironmentVariance = 0.5f;
-		fEnvironmentDensity = 0.5f;
-		fFogDensity = 0.0f;
-		fRoomSize = 0.5f;
-		fReflectivity = 0.5f;
-		fOpenness = 0.5f;
-		fEnclosedness = 0.5f;
-		fUniformity = 0.5f;
-
-		// Reset physical parameters for EAX
-		sPhysicalData.fRoomVolume = 100.0f;
-		sPhysicalData.fEchoStrength = 0.3f;
-		sPhysicalData.fReverbTime = 1.0f;
-		sPhysicalData.fCriticalDistance = 5.0f;
-		sPhysicalData.fAdjustedRadius = 10.0f;
-
-		// Reset reflection analysis for EAX
-		sReflectionData.fPrimaryReflections = 0.1f;
-		sReflectionData.fSecondaryReflections = 0.05f;
-		sReflectionData.fReflectionDelay = 0.02f;
-		sReflectionData.fReflectionEnergy = 0.1f;
-		sReflectionData.fSurfaceComplexity = 0.3f;
+		lRoom = -1000;
+		lRoomHF = -100;
+		flRoomRolloffFactor = 0.0f;
+		flDecayTime = 1.49f;
+		flDecayHFRatio = 0.83f;
+		lReflections = -2602;
+		flReflectionsDelay = 0.007f;
+		lReverb = 200;
+		flReverbDelay = 0.011f;
+		flEnvironmentSize = 7.5f;
+		flEnvironmentDiffusion = 1.0f;
+		flAirAbsorptionHF = -5.0f;
+		dwFlags = 0x3; // EAXLISTENERFLAGS_DECAYTIMESCALE | EAXLISTENERFLAGS_REFLECTIONSDELAYSCALE
 
 		dwFrameStamp = 0;
 		bDataValid = false;
@@ -208,29 +197,19 @@ struct SEAXEnvironmentData
 	/// Copies data from another instance
 	void CopyFrom(const SEAXEnvironmentData& other)
 	{
-		fEnvironmentRadius = other.fEnvironmentRadius;
-		fEnvironmentVariance = other.fEnvironmentVariance;
-		fEnvironmentDensity = other.fEnvironmentDensity;
-		fFogDensity = other.fFogDensity;
-		fRoomSize = other.fRoomSize;
-		fReflectivity = other.fReflectivity;
-		fOpenness = other.fOpenness;
-		fEnclosedness = other.fEnclosedness;
-		fUniformity = other.fUniformity;
-
-		// Copy physical parameters for EAX
-		sPhysicalData.fRoomVolume = other.sPhysicalData.fRoomVolume;
-		sPhysicalData.fEchoStrength = other.sPhysicalData.fEchoStrength;
-		sPhysicalData.fReverbTime = other.sPhysicalData.fReverbTime;
-		sPhysicalData.fCriticalDistance = other.sPhysicalData.fCriticalDistance;
-		sPhysicalData.fAdjustedRadius = other.sPhysicalData.fAdjustedRadius;
-
-		// Copy reflection analysis for EAX
-		sReflectionData.fPrimaryReflections = other.sReflectionData.fPrimaryReflections;
-		sReflectionData.fSecondaryReflections = other.sReflectionData.fSecondaryReflections;
-		sReflectionData.fReflectionDelay = other.sReflectionData.fReflectionDelay;
-		sReflectionData.fReflectionEnergy = other.sReflectionData.fReflectionEnergy;
-		sReflectionData.fSurfaceComplexity = other.sReflectionData.fSurfaceComplexity;
+		lRoom = other.lRoom;
+		lRoomHF = other.lRoomHF;
+		flRoomRolloffFactor = other.flRoomRolloffFactor;
+		flDecayTime = other.flDecayTime;
+		flDecayHFRatio = other.flDecayHFRatio;
+		lReflections = other.lReflections;
+		flReflectionsDelay = other.flReflectionsDelay;
+		lReverb = other.lReverb;
+		flReverbDelay = other.flReverbDelay;
+		flEnvironmentSize = other.flEnvironmentSize;
+		flEnvironmentDiffusion = other.flEnvironmentDiffusion;
+		flAirAbsorptionHF = other.flAirAbsorptionHF;
+		dwFlags = other.dwFlags;
 
 		dwFrameStamp = other.dwFrameStamp;
 		bDataValid = other.bDataValid;

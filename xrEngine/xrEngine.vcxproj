@@ -1751,7 +1751,9 @@
     <ClInclude Include="SkeletonMotions.h" />
     <ClInclude Include="SkeletonX.h" />
     <ClInclude Include="Sound_environment.h" />
+    <ClInclude Include="Sound_environment_calculations.h" />
     <ClInclude Include="Sound_environment_common.h" />
+    <ClInclude Include="Sound_environment_context.h" />
     <ClInclude Include="Sound_environment_geometry.h" />
     <ClInclude Include="Sound_environment_pathtracing.h" />
     <ClInclude Include="StatGraph.h" />
@@ -2044,6 +2046,7 @@
       <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release_All_To_All|x64'">All</AssemblerOutput>
     </ClCompile>
     <ClCompile Include="Sound_environment.cpp" />
+    <ClCompile Include="Sound_environment_calculations.cpp" />
     <ClCompile Include="Sound_environment_geometry.cpp" />
     <ClCompile Include="Sound_environment_pathtracing.cpp" />
     <ClCompile Include="StatGraph.cpp" />
