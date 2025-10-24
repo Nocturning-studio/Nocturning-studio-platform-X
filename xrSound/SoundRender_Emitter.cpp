@@ -4,7 +4,7 @@
 #include "soundrender_emitter.h"
 #include "soundrender_core.h"
 #include "soundrender_source.h"
-#include "soundrender_targetA.h"
+#include "soundrender_target.h"
 
 extern u32 psSoundModel;
 extern float psSoundVEffects;
@@ -132,7 +132,7 @@ void CSoundRender_Emitter::set_cursor(u32 p)
 			m_cur_handle_cursor = get_cursor(true);
 
 			if (target)
-				((CSoundRender_TargetA*)target)->source_changed();
+				((CSoundRender_Target*)target)->source_changed();
 		}
 	}
 }

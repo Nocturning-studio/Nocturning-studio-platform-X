@@ -1,15 +1,14 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include "SoundRender_CoreA.h"
+#include "SoundRender_Core.h"
 
 XRSOUND_API xr_token* snd_devices_token = NULL;
 XRSOUND_API u32 snd_device_id = u32(-1);
 
 void CSound_manager_interface::_create(u64 window)
 {
-	SoundRenderA = xr_new<CSoundRender_CoreA>();
-	SoundRender = SoundRenderA;
+	SoundRender = xr_new<CSoundRender_Core>();
 	Sound = SoundRender;
 
 	if (strstr(Core.Params, "-nosound"))

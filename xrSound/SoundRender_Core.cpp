@@ -11,7 +11,7 @@
 #pragma warning(pop)
 
 int psSoundTargets = 16;
-Flags32 psSoundFlags = { NULL };
+Flags32 psSoundFlags = {NULL};
 float psSoundOcclusionScale = 0.5f;
 float psSoundCull = 0.01f;
 float psSoundRolloff = 0.75f;
@@ -23,13 +23,11 @@ float psSoundVMaster = 1.0f;
 float psSoundVMusic = 0.7f;
 float psSoundVWeaponShooting = 0.7f;
 float psSoundVAmbient = 1.0f;
-//float psSoundVAmbientDynamicMultiplier = 1.0f;
 int psSoundCacheSizeMB = 16;
 
 float psTimeFactor = 1.0f;
 
 float psDbgEAXRoom = EAXLISTENER_DEFAULTROOM;
-//float psDbgEAXRoomHF = EAXLISTENER_DEFAULTROOMHF;
 float psDbgEAXRoomHF = -2000.0f;
 float psDbgEAXRoomRolloff = EAXLISTENER_DEFAULTROOMROLLOFFFACTOR;
 float psDbgEAXDecayTime = EAXLISTENER_DEFAULTDECAYTIME;
@@ -67,6 +65,12 @@ CSoundRender_Core::CSoundRender_Core()
 	fEnvironmentRadius = 0.0f;
 	bNeedToUpdateEnvironment = FALSE;
 	b_EAXUpdated = false;
+
+	pDevice = 0;
+	pDeviceList = 0;
+	pContext = 0;
+	eaxSet = 0;
+	eaxGet = 0;
 }
 
 CSoundRender_Core::~CSoundRender_Core()
@@ -74,19 +78,166 @@ CSoundRender_Core::~CSoundRender_Core()
 	xr_delete(geom_SOM);
 }
 
+BOOL CSoundRender_Core::EAXQuerySupport(BOOL bDeferred, const GUID* guid, u32 prop, void* val, u32 sz)
+{
+	if (AL_NO_ERROR != eaxGet(guid, prop, 0, val, sz))
+		return FALSE;
+
+	if (AL_NO_ERROR != eaxSet(guid, (bDeferred ? DSPROPERTY_EAXLISTENER_DEFERRED : 0) | prop, 0, val, sz))
+		return FALSE;
+
+	return TRUE;
+}
+
+BOOL CSoundRender_Core::EAXTestSupport(BOOL bDeferred)
+{
+	EAXLISTENERPROPERTIES ep;
+
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOM, &ep.lRoom,
+						 sizeof(LONG)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOMHF, &ep.lRoomHF,
+						 sizeof(LONG)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR,
+						 &ep.flRoomRolloffFactor, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_DECAYTIME,
+						 &ep.flDecayTime, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_DECAYHFRATIO,
+						 &ep.flDecayHFRatio, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REFLECTIONS,
+						 &ep.lReflections, sizeof(LONG)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REFLECTIONSDELAY,
+						 &ep.flReflectionsDelay, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REVERB, &ep.lReverb,
+						 sizeof(LONG)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REVERBDELAY,
+						 &ep.flReverbDelay, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ENVIRONMENTDIFFUSION,
+						 &ep.flEnvironmentDiffusion, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF,
+						 &ep.flAirAbsorptionHF, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_FLAGS, &ep.dwFlags,
+						 sizeof(DWORD)))
+		return FALSE;
+
+	return TRUE;
+}
+
 void CSoundRender_Core::_initialize(u64 window)
 {
+	Msg("\nStarting Sound Engine...");
+
+	bPresent = FALSE;
+
+	Msg("Initializing OpenAL...");
+	pDeviceList = xr_new<ALDeviceList>();
+
+	if (0 == pDeviceList->GetNumDevices())
+	{
+		Log("* OpenAL: Can't create sound device.");
+		xr_delete(pDeviceList);
+		return;
+	}
+
+	pDeviceList->SelectBestDevice();
+
+	R_ASSERT(snd_device_id >= 0 && snd_device_id < pDeviceList->GetNumDevices());
+	const ALDeviceDesc& deviceDesc = pDeviceList->GetDeviceDesc(snd_device_id);
+
+	pDevice = alcOpenDevice(deviceDesc.name.c_str());
+
+	if (!pDevice)
+	{
+		Log(" OpenAL: Failed to create device.");
+		bPresent = FALSE;
+		return;
+	}
+
+	const ALCchar* deviceSpecifier;
+	deviceSpecifier = alcGetString(pDevice, ALC_DEVICE_SPECIFIER);
+	Msg("* OpenAL: Required device: %s", deviceDesc.name.c_str());
+	Msg("* OpenAL: Created device: %s", deviceSpecifier);
+
+	pContext = alcCreateContext(pDevice, NULL);
+
+	if (!pContext)
+	{
+		Log(" OpenAL: Failed to create context.");
+		bPresent = FALSE;
+		alcCloseDevice(pDevice);
+		pDevice = 0;
+		return;
+	}
+
+	alGetError();
+	alcGetError(pDevice);
+
+	AC_CHK(alcMakeContextCurrent(pContext));
+
+	A_CHK(alListener3f(AL_POSITION, 0.f, 0.f, 0.f));
+	A_CHK(alListener3f(AL_VELOCITY, 0.f, 0.f, 0.f));
+	Fvector orient[2] = {{0.f, 0.f, 1.f}, {0.f, 1.f, 0.f}};
+	A_CHK(alListenerfv(AL_ORIENTATION, &orient[0].x));
+	A_CHK(alListenerf(AL_GAIN, 1.f));
+
+	bEAX = true;
+	eaxSet = (EAXSet)alGetProcAddress((const ALchar*)"EAXSet");
+	if (eaxSet == NULL)
+		bEAX = false;
+	eaxGet = (EAXGet)alGetProcAddress((const ALchar*)"EAXGet");
+	if (eaxGet == NULL)
+		bEAX = false;
+
+	if (bEAX)
+	{
+		bDeferredEAX = EAXTestSupport(TRUE);
+		bEAX = EAXTestSupport(FALSE);
+
+		if (bEAX)
+			Msg("-  OpenAL: EAX Supported");
+		else
+			Msg("!  OpenAL: EAX Unsupported");
+		if (bDeferredEAX)
+			Msg("!  OpenAL: EAX Deffered");
+	}
+
 	Log("* Sound: EAX 2.0 extension:", bEAX ? "present" : "absent");
 	Log("* Sound: EAX 2.0 deferred:", bDeferredEAX ? "present" : "absent");
 	Timer.Start();
 
 	bPresent = TRUE;
 
-	// Cache
 	cache_bytes_per_line = (sdef_target_block / 8) * 276400 / 1000;
 	cache.initialize(psSoundCacheSizeMB * 1024, cache_bytes_per_line);
 
 	bReady = TRUE;
+
+	CSoundRender_Target* T = nullptr;
+	for (u32 tit = 0; tit < u32(psSoundTargets); tit++)
+	{
+		T = xr_new<CSoundRender_Target>();
+		if (T->_initialize())
+		{
+			s_targets.push_back(T);
+		}
+		else
+		{
+			Log("!  OpenAL: Max targets - ", tit);
+			T->_destroy();
+			xr_delete(T);
+			break;
+		}
+	}
 }
 
 extern xr_vector<u8> g_target_temp_data;
@@ -96,19 +247,101 @@ void CSoundRender_Core::_clear()
 	bReady = FALSE;
 	cache.destroy();
 
-	// remove sources
 	for (u32 sit = 0; sit < s_sources.size(); sit++)
 		xr_delete(s_sources[sit]);
-
 	s_sources.clear();
 
-	// remove emmiters
 	for (u32 eit = 0; eit < s_emitters.size(); eit++)
 		xr_delete(s_emitters[eit]);
-
 	s_emitters.clear();
 
 	g_target_temp_data.clear();
+
+	CSoundRender_Target* T = 0;
+	for (u32 tit = 0; tit < s_targets.size(); tit++)
+	{
+		T = s_targets[tit];
+		T->_destroy();
+		xr_delete(T);
+	}
+
+	alcMakeContextCurrent(NULL);
+	alcDestroyContext(pContext);
+	pContext = 0;
+	alcCloseDevice(pDevice);
+	pDevice = 0;
+	xr_delete(pDeviceList);
+}
+
+void CSoundRender_Core::_restart()
+{
+	cache.destroy();
+	cache.initialize(psSoundCacheSizeMB * 1024, cache_bytes_per_line);
+}
+
+void CSoundRender_Core::set_master_volume(float f)
+{
+	if (bPresent)
+	{
+		A_CHK(alListenerf(AL_GAIN, f));
+	}
+}
+
+void CSoundRender_Core::update_listener(const Fvector& P, const Fvector& D, const Fvector& N, float dt)
+{
+	if (!Listener.position.similar(P))
+	{
+		Listener.position.set(P);
+		bListenerMoved = TRUE;
+	}
+	else
+	{
+		bListenerMoved = FALSE;
+	}
+
+	Listener.orientation[0].set(D.x, D.y, -D.z);
+	Listener.orientation[1].set(N.x, N.y, -N.z);
+
+	A_CHK(alListener3f(AL_POSITION, Listener.position.x, Listener.position.y, -Listener.position.z));
+	A_CHK(alListener3f(AL_VELOCITY, 0.f, 0.f, 0.f));
+	A_CHK(alListenerfv(AL_ORIENTATION, &Listener.orientation[0].x));
+
+	if (bEAX)
+	{
+		EAXLISTENERPROPERTIES ep;
+		ep.lRoom = DSPROPERTY_EAXLISTENER_ROOM;
+		ep.lRoomHF = DSPROPERTY_EAXLISTENER_ROOMHF;
+		ep.flRoomRolloffFactor = DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR;
+		ep.flDecayTime = DSPROPERTY_EAXLISTENER_DECAYTIME;
+		ep.flDecayHFRatio = DSPROPERTY_EAXLISTENER_DECAYHFRATIO;
+		ep.lReflections = DSPROPERTY_EAXLISTENER_REFLECTIONS;
+		ep.flReflectionsDelay = DSPROPERTY_EAXLISTENER_REFLECTIONSDELAY;
+		ep.lReverb = DSPROPERTY_EAXLISTENER_REVERB;
+		ep.flReverbDelay = DSPROPERTY_EAXLISTENER_REVERBDELAY;
+		ep.flEnvironmentDiffusion = DSPROPERTY_EAXLISTENER_ENVIRONMENTDIFFUSION;
+		ep.flAirAbsorptionHF = DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF;
+		ep.dwFlags = DSPROPERTY_EAXLISTENER_FLAGS;
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOM, &ep.lRoom, sizeof(LONG));
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOMHF, &ep.lRoomHF, sizeof(LONG));
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR,
+				  &ep.flRoomRolloffFactor, sizeof(float));
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_DECAYTIME, &ep.flDecayTime,
+				  sizeof(float));
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_DECAYHFRATIO, &ep.flDecayHFRatio,
+				  sizeof(float));
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REFLECTIONS, &ep.lReflections,
+				  sizeof(LONG));
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REFLECTIONSDELAY, &ep.flReflectionsDelay,
+				  sizeof(float));
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REVERB, &ep.lReverb, sizeof(LONG));
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REVERBDELAY, &ep.flReverbDelay,
+				  sizeof(float));
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ENVIRONMENTDIFFUSION,
+				  &ep.flEnvironmentDiffusion, sizeof(float));
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF, &ep.flAirAbsorptionHF,
+				  sizeof(float));
+		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_FLAGS, &ep.dwFlags, sizeof(DWORD));
+	}
 }
 
 void CSoundRender_Core::stop_emitters()
@@ -126,12 +359,6 @@ int CSoundRender_Core::pause_emitters(bool val)
 		((CSoundRender_Emitter*)s_emitters[it])->pause(val, val ? m_iPauseCounter : m_iPauseCounter + 1);
 
 	return m_iPauseCounter;
-}
-
-void CSoundRender_Core::_restart()
-{
-	cache.destroy();
-	cache.initialize(psSoundCacheSizeMB * 1024, cache_bytes_per_line);
 }
 
 void CSoundRender_Core::set_handler(sound_event* E)
@@ -377,10 +604,6 @@ void CSoundRender_Core::_destroy_data(ref_sound_data& S)
 	R_ASSERT(0 == S.feedback);
 	SoundRender->i_destroy_source((CSoundRender_Source*)S.handle);
 	S.handle = NULL;
-}
-
-void CSoundRender_Core::update_listener(const Fvector& P, const Fvector& D, const Fvector& N, float dt)
-{
 }
 
 void CSoundRender_Core::object_relcase(CObject* obj)

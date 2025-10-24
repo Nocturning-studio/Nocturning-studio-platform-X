@@ -3,6 +3,8 @@
 #pragma once
 
 #include "soundrender.h"
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
 
 class CSoundRender_Target
 {
@@ -10,16 +12,26 @@ class CSoundRender_Target
 	CSoundRender_Emitter* pEmitter;
 	BOOL rendering;
 
+	// OpenAL specific
+	ALuint pSource;
+	ALuint pBuffers[sdef_target_count];
+	float cache_gain;
+	float cache_pitch;
+	ALuint buf_block;
+
   public:
 	float priority;
 
   protected:
 	OggVorbis_File ovf;
 	IReader* wave;
-	void attach();
-	void dettach();
 
   public:
+	void attach();
+	void dettach();
+	void fill_block(ALuint BufferID);
+	void source_changed();
+
 	OggVorbis_File* get_data()
 	{
 		if (!wave)
@@ -40,14 +52,15 @@ class CSoundRender_Target
 		return rendering;
 	}
 
-	virtual BOOL _initialize() = 0;
-	virtual void _destroy() = 0;
+	BOOL _initialize();
+	void _destroy();
+	void _restart();
 
-	virtual void start(CSoundRender_Emitter* E) = 0;
-	virtual void render() = 0;
-	virtual void rewind() = 0;
-	virtual void stop() = 0;
-	virtual void update() = 0;
-	virtual void fill_parameters() = 0;
+	void start(CSoundRender_Emitter* E);
+	void render();
+	void rewind();
+	void stop();
+	void update();
+	void fill_parameters();
 };
 #endif
