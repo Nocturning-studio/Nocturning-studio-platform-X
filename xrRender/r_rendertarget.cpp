@@ -35,8 +35,7 @@ void CRenderTarget::create_textures()
 	if (!ps_r_shading_flags.test(RFLAG_ENABLE_PBR))
 	{
 		rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-		rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-		rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+		rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	}
 	else
 	{
