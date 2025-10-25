@@ -313,19 +313,37 @@ void CBlender_Compile::Stage_Constant(LPCSTR name)
 
 void CBlender_Compile::r_Define(string32 Name, int value)
 {
-	string32 Definition;
-	sprintf(Definition, "%d", value);
+	macros.add(Name, value);
+}
+
+void CBlender_Compile::r_Define(string32 Name, float value)
+{
+	macros.add(Name, value);
+}
+
+void CBlender_Compile::r_Define(string32 Name, u32 value)
+{
+	macros.add(Name, value);
+}
+
+void CBlender_Compile::r_Define(string32 Name, bool value)
+{
+	macros.add(Name, value);
+}
+
+void CBlender_Compile::r_Define(string32 Name)
+{
+	macros.add(Name, "1");
+}
+
+void CBlender_Compile::r_Define(string32 Name, string32 Definition)
+{
 	macros.add(Name, Definition);
 }
 
 void CBlender_Compile::r_Define(BOOL Enabled, string32 Name, string32 Definition)
 {
 	macros.add(Enabled, Name, Definition);
-}
-
-void CBlender_Compile::r_Define(string32 Name, string32 Definition)
-{
-	macros.add(Name, Definition);
 }
 
 void CBlender_Compile::r_Pass(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest, BOOL bZwrite, BOOL bABlend,

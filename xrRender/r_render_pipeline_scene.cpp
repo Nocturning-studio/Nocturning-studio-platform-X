@@ -60,10 +60,9 @@ void CRender::RenderScene()
 
 	HOM.Disable();
 
-	render_ambient_occlusion();
+	//render_bent_normals();
 
-	if (!is_dynamic_sun_enabled())
-		accumulate_sun_static();
+	render_ambient_occlusion();
 
 	combine_scene();
 

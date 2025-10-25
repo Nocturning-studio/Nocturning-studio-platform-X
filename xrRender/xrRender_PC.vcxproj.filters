@@ -76,9 +76,6 @@
     <Filter Include="Render pipeline\Blenders\Postprocess stage\Effectors">
       <UniqueIdentifier>{33a9d6a0-c2d2-43ab-8a47-46b0c89a5e66}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render pipeline\Blenders\Combine stage">
-      <UniqueIdentifier>{246dcf35-8bd7-4b95-ae7d-d98d9bd8eb12}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Render pipeline\Blenders\Overlays stage">
       <UniqueIdentifier>{c8fcd8cd-b4ea-45bc-bbbc-101a0f54cf62}</UniqueIdentifier>
     </Filter>
@@ -93,9 +90,6 @@
     </Filter>
     <Filter Include="Render pipeline\Blenders\Output to screen stage">
       <UniqueIdentifier>{ba8794b8-d398-4582-84a5-b2f9894a9c4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Ambient occlusion stage">
-      <UniqueIdentifier>{7c5ba608-773e-42cf-8f5f-5852122dcecc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Render pipeline\Core">
       <UniqueIdentifier>{fe8ea627-ce82-4380-8edb-1145c56ad896}</UniqueIdentifier>
@@ -267,9 +261,6 @@
     <ClInclude Include="Blender_terrain.h">
       <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
     </ClInclude>
-    <ClInclude Include="blender_combine.h">
-      <Filter>Render pipeline\Blenders\Combine stage</Filter>
-    </ClInclude>
     <ClInclude Include="Blender_frame_overlay.h">
       <Filter>Render pipeline\Blenders\Overlays stage</Filter>
     </ClInclude>
@@ -317,9 +308,6 @@
     </ClInclude>
     <ClInclude Include="blender_autoexposure.h">
       <Filter>Render pipeline\Blenders\Postprocess stage\Autoexposure</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_ambient_occlusion.h">
-      <Filter>Render pipeline\Blenders\Ambient occlusion stage</Filter>
     </ClInclude>
     <ClInclude Include="Blender_reflections.h">
       <Filter>Render pipeline\Blenders\Reflections stage</Filter>
@@ -374,6 +362,15 @@
     </ClInclude>
     <ClInclude Include="r_types.h">
       <Filter>Render pipeline\Rendertargets</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_ambient_occlusion.h">
+      <Filter>Render pipeline\Render stages\Stages\Ambient occlusion</Filter>
+    </ClInclude>
+    <ClInclude Include="blender_combine.h">
+      <Filter>Render pipeline\Render stages\Stages\Scene combine stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_bent_normals.h">
+      <Filter>Render pipeline\Blenders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -637,6 +634,9 @@
     </ClCompile>
     <ClCompile Include="r_render_stages.cpp">
       <Filter>Render pipeline\Render stages\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_bent_normals.cpp">
+      <Filter>Render pipeline\Render stages\Stages</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

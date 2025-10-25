@@ -1257,6 +1257,15 @@ class CCC_Spawn : public IConsole_Command
 			tpGame->alife().spawn_item(args, Actor()->Position(), Actor()->ai_location().level_vertex_id(),
 									   Actor()->ai_location().game_vertex_id(), ALife::_OBJECT_ID(-1));
 	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		for (auto sect : pSettings->sections())
+		{
+			if (sect->line_exist("class"))
+				tips.push_back(sect->Name.c_str());
+		}
+	}
 };
 
 class CCC_SpawnToInventory : public IConsole_Command
@@ -1298,6 +1307,15 @@ class CCC_SpawnToInventory : public IConsole_Command
 			packet.r_begin(dummy);
 			VERIFY(dummy == M_SPAWN);
 			tpGame->alife().server().Process_spawn(packet, clientID);
+		}
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		for (auto sect : pSettings->sections())
+		{
+			if (sect->line_exist("class"))
+				tips.push_back(sect->Name.c_str());
 		}
 	}
 };

@@ -627,9 +627,6 @@
     <ClInclude Include="R_Backend_Data_Streams.h">
       <Filter>Render\Backend</Filter>
     </ClInclude>
-    <ClInclude Include="R_Backend_hemi.h">
-      <Filter>Render\Backend</Filter>
-    </ClInclude>
     <ClInclude Include="R_Backend_Runtime.h">
       <Filter>Render\Backend</Filter>
     </ClInclude>
@@ -1119,9 +1116,6 @@
       <Filter>Render\Backend</Filter>
     </ClCompile>
     <ClCompile Include="R_Backend_DBG.cpp">
-      <Filter>Render\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="R_Backend_hemi.cpp">
       <Filter>Render\Backend</Filter>
     </ClCompile>
     <ClCompile Include="R_Backend_Runtime.cpp">

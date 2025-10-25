@@ -8,7 +8,10 @@
 
 // Light Accumulating
 #define r_RT_Light_Accumulator "$user$accumulator"
-#define r_RT_Shadow_Accumulator "$user$shadow_accumulator"
+
+#define r_RT_Volumetric_Sun "$user$Volumetric_Sun"
+
+#define r_RT_Bent_Normals "$user$bent_normals"
 
 // Environment
 #define r_T_envs0 "$user$env_s0"
@@ -122,8 +125,9 @@ const u32 LUMINANCE_size = 16;
 #define SE_SUN_NEAR 0
 #define SE_SUN_MIDDLE 1
 #define SE_SUN_FAR 2
-#define SE_ACCUMULATE_VOLUMETRIC 3
-#define SE_SUN_STATIC 4
+#define SE_SUN_VOL_NEAR 3
+#define SE_SUN_VOL_MIDDLE 4
+#define SE_SUN_VOL_FAR 5
 
 extern float ps_r_gloss_factor;
 

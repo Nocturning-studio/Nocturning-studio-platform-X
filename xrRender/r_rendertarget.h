@@ -33,6 +33,8 @@ class CRenderTarget : public IRender_Target
 	IBlender* b_reflections;
 	IBlender* b_effectors;
 	IBlender* b_output_to_screen;
+	IBlender* b_bent_normals;
+	ref_shader s_bent_normals;
 
 #ifdef DEBUG
 	struct dbg_line_t
@@ -54,9 +56,11 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_GBuffer_3;
 	ref_rt rt_GBuffer_4;
 
+	ref_rt rt_Bent_Normals;
+	ref_rt rt_Volumetric_Sun;
+
 	// Accumulation Buffer
 	ref_rt rt_Light_Accumulator;
-	ref_rt rt_Shadow_Accumulator;
 
 	ref_rt rt_Generic_0;
 	ref_rt rt_Generic_1;

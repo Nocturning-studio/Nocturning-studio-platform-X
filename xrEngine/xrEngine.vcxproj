@@ -1729,7 +1729,6 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="R_Backend.h" />
-    <ClInclude Include="R_Backend_hemi.h" />
     <ClInclude Include="R_Backend_Runtime.h" />
     <ClInclude Include="R_Backend_tree.h" />
     <ClInclude Include="R_Backend_xform.h" />
@@ -1983,7 +1982,6 @@
     <ClCompile Include="ResourceManager_Scripting.cpp" />
     <ClCompile Include="R_Backend.cpp" />
     <ClCompile Include="R_Backend_DBG.cpp" />
-    <ClCompile Include="R_Backend_hemi.cpp" />
     <ClCompile Include="R_Backend_Runtime.cpp" />
     <ClCompile Include="R_Backend_tree.cpp" />
     <ClCompile Include="R_Backend_xform.cpp">

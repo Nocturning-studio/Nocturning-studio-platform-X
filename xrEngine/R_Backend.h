@@ -13,7 +13,6 @@
 #include "R_Backend_Data_Streams.h"
 #include "r_constants_cache.h"
 #include "r_backend_xform.h"
-#include "r_backend_hemi.h"
 #include "r_backend_tree.h"
 #include "fvf.h"
 
@@ -54,12 +53,15 @@ class ENGINE_API CBackend
 	IDirect3DIndexBuffer9* QuadIB;
 	IDirect3DIndexBuffer9* old_QuadIB;
 	R_xforms xforms;
-	R_hemi hemi;
 	R_tree tree;
 
 	ref_geom g_viewport;
 
   private:
+	BOOL bBlend;
+	D3DBLEND srcBlend;
+	D3DBLEND dstBlend;
+
 	// Render-targets
 	IDirect3DSurface9* pRT[4];
 	IDirect3DSurface9* pZB;
@@ -416,6 +418,30 @@ class ENGINE_API CBackend
 	{
 		Invalidate();
 	};
+
+	void set_Blend(BOOL enable, D3DBLEND src = D3DBLEND_ONE, D3DBLEND dest = D3DBLEND_ZERO);
+	void set_Blend_Alpha();
+	void set_Blend_Add();
+	void set_Blend_Multiply();
+	void set_Blend_Default();
+	void set_Blend_Subtract();
+	void set_Blend_Screen();
+	void set_Blend_LightAdd();
+	void set_Blend_ColorAdd();
+	void set_BlendEx(BOOL enable, D3DBLEND src, D3DBLEND dest, D3DBLENDOP op = D3DBLENDOP_ADD);
+	// Getters for current state (optional, for debugging)
+	BOOL get_BlendState() const
+	{
+		return bBlend;
+	}
+	D3DBLEND get_SrcBlend() const
+	{
+		return srcBlend;
+	}
+	D3DBLEND get_DstBlend() const
+	{
+		return dstBlend;
+	}
 
 	void u_compute_texgen_screen(Fmatrix& dest);
 	void set_viewport_geometry(float w, float h, ref_geom geometry, u32& vOffset);

@@ -6,8 +6,7 @@ void CRender::set_light_accumulator()
 
 	if (dwAccumulatorClearMark == Device.dwFrame)
 	{
-		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Light_Accumulator,
-												RenderTarget->rt_Shadow_Accumulator);
+		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Light_Accumulator);
 
 		RenderBackend.set_Depth_Buffer(HW.pBaseZB);
 	}
@@ -15,8 +14,7 @@ void CRender::set_light_accumulator()
 	{
 		dwAccumulatorClearMark = Device.dwFrame;
 
-		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Light_Accumulator,
-												RenderTarget->rt_Shadow_Accumulator);
+		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_Light_Accumulator);
 
 		RenderBackend.set_Depth_Buffer(HW.pBaseZB);
 		dwLightMarkerID = 5; // start from 5, increment in 2 units

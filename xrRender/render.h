@@ -63,17 +63,6 @@ class CRender : public R_dsgraph_structure
 		bool use_atest_aa;
 	} o;
 
-	// string
-	string32 c_build_id;
-	string32 c_smapsize;
-	string32 c_vignette;
-	string32 c_aa_type;
-	string32 c_fxaa_quality;
-	string32 c_bloom_quality;
-	string32 c_material_quality;
-	string32 c_shadow_filter;
-	string32 c_sun_shafts_quality;
-
 	void CheckHWRenderSupporting();
 	void update_options();
 
@@ -312,7 +301,7 @@ class CRender : public R_dsgraph_structure
 	float hclip(float v, float dim);
 	void draw_volume(light* L);
 	void accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev, float fBias);
-	void accumulate_sun_static();
+	void accumulate_volumetric_sun(u32 sub_phase, Fmatrix m_shadow, Fvector L_dir);
 	void accumulate_point_lights(light* L);
 	void accumulate_spot_lights(light* L);
 	void clear_bloom();
@@ -370,6 +359,7 @@ class CRender : public R_dsgraph_structure
 	void render_sky_box();
 	void render_postprocess();
 	void render_stage_main_geometry();
+	void render_bent_normals();
 
 	virtual void Calculate();
 	virtual void Render();
@@ -380,6 +370,8 @@ class CRender : public R_dsgraph_structure
 	virtual void set_render_mode(int mode);
 
 	virtual bool is_dynamic_sun_enabled();
+
+	u32 render_phase;
 
 	// KD: need to know, what R2 phase is active now
 	virtual u32 active_phase()

@@ -35,21 +35,10 @@ static u16 facetable[16][3] =
 
 void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev, float fBias)
 {
-	// Choose normal code-path or filtered
-	set_light_accumulator();
+	OPTICK_EVENT("CRender::accumulate_sun");
 
 	// *** assume accumulator setted up ***
 	light* sun = (light*)RenderImplementation.Lights.sun_adapted._get();
-
-	// Common calc for quad-rendering
-	u32 Offset;
-	u32 C = color_rgba(255, 255, 255, 255);
-	float _w = float(Device.dwWidth);
-	float _h = float(Device.dwHeight);
-	Fvector2 p0, p1;
-	p0.set(.5f / _w, .5f / _h);
-	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
-	float d_Z = EPS_S, d_W = 1.f;
 
 	// Common constants (light-related)
 	Fvector L_dir, L_clr;
@@ -60,49 +49,33 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 	L_dir.normalize();
 
 	// Perform masking (only once - on the first/near phase)
-	RenderBackend.set_CullMode(CULL_NONE);
-	if (SE_SUN_NEAR == sub_phase) //.
+	if (SE_SUN_NEAR == sub_phase)
 	{
-		// Fill vertex buffer
-		FVF::TL* pv = (FVF::TL*)RenderBackend.Vertex.Lock(4, RenderBackend.g_viewport->vb_stride, Offset);
-		pv->set(EPS, float(_h + EPS), d_Z, d_W, C, p0.x, p1.y);
-		pv++;
-		pv->set(EPS, EPS, d_Z, d_W, C, p0.x, p0.y);
-		pv++;
-		pv->set(float(_w + EPS), float(_h + EPS), d_Z, d_W, C, p1.x, p1.y);
-		pv++;
-		pv->set(float(_w + EPS), EPS, d_Z, d_W, C, p1.x, p0.y);
-		pv++;
-		RenderBackend.Vertex.Unlock(4, RenderBackend.g_viewport->vb_stride);
-		RenderBackend.set_Geometry(RenderBackend.g_viewport);
+		set_light_accumulator();
+		RenderBackend.set_CullMode(CULL_NONE);
 
-		// setup
-		RenderBackend.set_Element(RenderTarget->s_accum_mask->E[SE_MASK_DIRECT]); // masker
+		// Use backend's viewport geometry setup
+		u32 Offset = 0;
+		RenderBackend.set_viewport_geometry(Offset);
+
+		// Setup shader
+		RenderBackend.set_Element(RenderTarget->s_accum_mask->E[SE_MASK_DIRECT]);
 		RenderBackend.set_Constant("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
 
-		// if (stencil>=1 && aref_pass)	stencil = light_id
+		// Stencil masking
 		RenderBackend.set_ColorWriteEnable(FALSE);
 		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0x01, 0xff, D3DSTENCILOP_KEEP, D3DSTENCILOP_REPLACE, D3DSTENCILOP_KEEP);
 		RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
 
-	// recalculate d_Z, to perform depth-clipping
-	Fvector center_pt;
-	center_pt.mad(Device.vCameraPosition, Device.vCameraDirection, ps_r_sun_near);
-	Device.mFullTransform.transform(center_pt);
-	d_Z = center_pt.z;
-
-	// Perform lighting
-	//******************************************************************
+	// Setup lighting pass
 	set_light_accumulator();
 	RenderBackend.set_CullMode(CULL_CCW);
 	RenderBackend.set_ColorWriteEnable();
 
-	// texture adjustment matrix
+	// Texture adjustment matrix
 	float fTexelOffs = (0.5f / float(RenderImplementation.o.smapsize));
-
 	float fRange = 0.0f;
-	fBias = 0.0f;
 
 	switch (sub_phase)
 	{
@@ -121,45 +94,43 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 	}
 
 	Fmatrix m_TexelAdjust = {0.5f,
-							0.0f,
-							0.0f,
-							0.0f,
-							0.0f,
-							-0.5f,
-							0.0f,
-							0.0f,
-							0.0f,
-							0.0f,
-							fRange,
-							0.0f,
-							0.5f + fTexelOffs,
-							0.5f + fTexelOffs,
-							fBias,
-							1.0f};
+							 0.0f,
+							 0.0f,
+							 0.0f,
+							 0.0f,
+							 -0.5f,
+							 0.0f,
+							 0.0f,
+							 0.0f,
+							 0.0f,
+							 fRange,
+							 0.0f,
+							 0.5f + fTexelOffs,
+							 0.5f + fTexelOffs,
+							 fBias,
+							 1.0f};
 
-	// compute xforms
+	// Compute shadow matrix
 	FPU::m64r();
 	Fmatrix xf_invview;
 	xf_invview.invert(Device.mView);
 
-	// shadow xform
 	Fmatrix m_shadow;
 	{
 		Fmatrix xf_project;
 		xf_project.mul(m_TexelAdjust, sun->X.D.combine);
 		m_shadow.mul(xf_project, xf_invview);
 
-		// tsm-bias
-		{
-			Fvector bias;
-			bias.mul(L_dir, ps_r_sun_tsm_bias);
-			Fmatrix bias_t;
-			bias_t.translate(bias);
-			m_shadow.mulB_44(bias_t);
-		}
-		FPU::m24r();
+		// TSM bias
+		Fvector bias;
+		bias.mul(L_dir, ps_r_sun_tsm_bias);
+		Fmatrix bias_t;
+		bias_t.translate(bias);
+		m_shadow.mulB_44(bias_t);
 	}
+	FPU::m24r();
 
+	// Setup texgen
 	Fmatrix m_Texgen;
 	m_Texgen.identity();
 	RenderBackend.xforms.set_W(m_Texgen);
@@ -167,19 +138,20 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 	RenderBackend.xforms.set_P(Device.mProject);
 	RenderBackend.u_compute_texgen_screen(m_Texgen);
 
-	// Fill vertex buffer
-	u32 i_offset;
+	// Setup geometry using backend
+	u32 i_offset, v_offset;
 	{
+		// Lock indices
 		u16* pib = RenderBackend.Index.Lock(sizeof(facetable) / sizeof(u16), i_offset);
-		CopyMemory(pib, &facetable, sizeof(facetable));
+		CopyMemory(pib, facetable, sizeof(facetable));
 		RenderBackend.Index.Unlock(sizeof(facetable) / sizeof(u16));
 
-		// corners
+		// Lock vertices
 		u32 ver_count = sizeof(corners) / sizeof(Fvector3);
-		FVF::L* pv = (FVF::L*)RenderBackend.Vertex.Lock(ver_count, RenderTarget->g_cuboid.stride(), Offset);
+		FVF::L* pv = (FVF::L*)RenderBackend.Vertex.Lock(ver_count, RenderTarget->g_cuboid.stride(), v_offset);
 
 		Fmatrix inv_XDcombine;
-		if ( sub_phase == SE_SUN_FAR)
+		if (sub_phase == SE_SUN_FAR)
 			inv_XDcombine.invert(xform_prev);
 		else
 			inv_XDcombine.invert(xform);
@@ -188,7 +160,7 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 		{
 			Fvector3 tmp_vec;
 			inv_XDcombine.transform(tmp_vec, corners[i]);
-			pv->set(tmp_vec, C);
+			pv->set(tmp_vec, color_rgba(255, 255, 255, 255));
 			pv++;
 		}
 		RenderBackend.Vertex.Unlock(ver_count, RenderTarget->g_cuboid.stride());
@@ -196,44 +168,14 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 
 	RenderBackend.set_Geometry(RenderTarget->g_cuboid);
 
-	// setup
+	// Setup shader and constants
 	RenderBackend.set_Element(RenderTarget->s_accum_direct_cascade->E[sub_phase]);
-
 	RenderBackend.set_Constant("m_texgen", m_Texgen);
 	RenderBackend.set_Constant("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
 	RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
 	RenderBackend.set_Constant("m_shadow", m_shadow);
 
-	// nv-DBT
-	float zMin, zMax;
-	if (SE_SUN_NEAR == sub_phase)
-	{
-		zMin = 0;
-		zMax = ps_r_sun_near;
-	}
-	else
-	{
-		extern float ps_r_sun_far;
-		zMin = ps_r_sun_near;
-		zMax = ps_r_sun_far;
-	}
-
-	center_pt.mad(Device.vCameraPosition, Device.vCameraDirection, zMin);
-	Device.mFullTransform.transform(center_pt);
-	zMin = center_pt.z;
-
-	center_pt.mad(Device.vCameraPosition, Device.vCameraDirection, zMax);
-	Device.mFullTransform.transform(center_pt);
-	zMax = center_pt.z;
-
-	if (0)//(u_DBT_enable(zMin, zMax))
-	{
-		// z-test always
-		HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-		HW.pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-	}
-
-	// Enable Z function only for near and middle cascades, the far one is restricted by only stencil.
+	// Setup depth testing
 	if ((SE_SUN_NEAR == sub_phase || SE_SUN_MIDDLE == sub_phase))
 		HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_GREATEREQUAL);
 	else if (!ps_r_lighting_flags.is(RFLAGEXT_SUN_ZCULLING))
@@ -241,20 +183,69 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 	else
 		HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
 
-	// setup stencil
+	// Setup stencil
 	if (SE_SUN_NEAR == sub_phase || sub_phase == SE_SUN_MIDDLE)
 		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0xFE, D3DSTENCILOP_KEEP, D3DSTENCILOP_ZERO, D3DSTENCILOP_KEEP);
 	else
 		RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, dwLightMarkerID, 0xff, 0x00);
 
-	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 8, 0, 16);
+	// Render
+	RenderBackend.Render(D3DPT_TRIANGLELIST, v_offset, 0, 8, i_offset, 16);
 
-	// disable depth bounds
-	u_DBT_disable();
+	// Render volumetric sun in separate pass
+	accumulate_volumetric_sun(sub_phase, m_shadow, L_dir);
 }
 
-void CRender::accumulate_sun_static()
+bool bVolumetricSunTextureCleared = false;
+void CRender::accumulate_volumetric_sun(u32 sub_phase, Fmatrix m_shadow, Fvector L_dir)
 {
-	RenderBackend.set_Element(RenderTarget->s_accum_direct_cascade->E[SE_SUN_STATIC]);
-	RenderBackend.RenderViewportSurface(Device.dwWidth, Device.dwHeight, RenderTarget->rt_Light_Accumulator, RenderTarget->rt_Shadow_Accumulator);
+	OPTICK_EVENT("CRender::accumulate_volumetric_sun");
+
+	if (!(g_pGamePersistent->Environment().CurrentEnv->m_fSunShaftsIntensity > 0.05f) ||
+		!ps_r_lighting_flags.test(RFLAG_SUN_SHAFTS))
+	{
+		if (!bVolumetricSunTextureCleared)
+		{
+			RenderBackend.ClearTexture(RenderTarget->rt_Volumetric_Sun, color_rgba(0, 0, 0, 0));
+			bVolumetricSunTextureCleared = true;
+		}
+		return;
+	}
+
+	if (!bVolumetricSunTextureCleared)
+		bVolumetricSunTextureCleared = true;
+
+	// Ключевое изменение: Убираем ВСЕ ограничения для объемного света
+	RenderBackend.set_Stencil(FALSE);
+	RenderBackend.set_CullMode(CULL_NONE);
+	RenderBackend.set_Depth_Buffer(NULL);
+	RenderBackend.set_ColorWriteEnable();
+
+	switch (sub_phase)
+	{
+	case SE_SUN_NEAR:
+		sub_phase = SE_SUN_VOL_NEAR;
+		break;
+	case SE_SUN_MIDDLE:
+		sub_phase = SE_SUN_VOL_MIDDLE;
+		break;
+	case SE_SUN_FAR:
+		sub_phase = SE_SUN_VOL_FAR;
+		break;
+	}
+
+	RenderBackend.set_Element(RenderTarget->s_accum_direct_cascade->E[sub_phase]);
+
+	// Pass necessary constants
+	float Weight = Device.dwWidth * 0.5f;
+	float Height = Device.dwHeight * 0.5f;
+
+	float sun_shafts_intensity = g_pGamePersistent->Environment().CurrentEnv->m_fSunShaftsIntensity;
+	RenderBackend.set_Constant("image_resolution", Weight, Height, 1.0f / Weight, 1.0f / Height);
+	RenderBackend.set_Constant("sun_shafts_intensity", sun_shafts_intensity, 0, 0, 0);
+	RenderBackend.set_Constant("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
+	RenderBackend.set_Constant("m_shadow", m_shadow);
+
+	// Рендерим полноэкранный квад - ВАЖНО: используем полное разрешение
+	RenderBackend.RenderViewportSurface(Weight, Height, RenderTarget->rt_Volumetric_Sun);
 }

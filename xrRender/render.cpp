@@ -220,13 +220,6 @@ void CRender::update_options()
 	o.nvdbt = HW.support((D3DFORMAT)MAKEFOURCC('N', 'V', 'D', 'B'), D3DRTYPE_SURFACE, 0);
 	if (o.nvdbt)
 		Msg("- Nvidia Depth Bounds supported");
-
-	sprintf(c_smapsize, "%d", o.smapsize);
-	sprintf(c_vignette, "%d", ps_vignette_mode);
-	sprintf(c_bloom_quality, "%d", ps_r_bloom_quality);
-	sprintf(c_shadow_filter, "%d", ps_r_shadow_filtering);
-	sprintf(c_material_quality, "%d", ps_r_material_quality);
-	sprintf(c_sun_shafts_quality, "%d", ps_r_sun_shafts_quality);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -246,17 +239,13 @@ CShaderMacros CRender::FetchShaderMacros()
 
 	macros.add(o.forceskinw, "SKIN_COLOR", "1");
 
-	macros.add("SMAP_SIZE", c_smapsize);
+	macros.add("SMAP_SIZE", (int)o.smapsize);
+	macros.add("MATERIAL_QUALITY", (int)ps_r_material_quality);
 
-	macros.add("MATERIAL_QUALITY", c_material_quality);
+	macros.add("SHADOW_FILTER_QUALITY", (int)ps_r_shadow_filtering);
+	macros.add("SUN_SHAFTS_QUALITY", (int)ps_r_sun_shafts_quality);
 
-	macros.add("SHADOW_FILTER_QUALITY", c_shadow_filter);
-
-	macros.add(ps_r_lighting_flags.test(RFLAG_SUN_SHAFTS), "SUN_SHAFTS_ENABLED", "1");
-
-	macros.add("SUN_SHAFTS_QUALITY", c_sun_shafts_quality);
-
-	macros.add(ps_r_shading_flags.test(RFLAG_ENABLE_PBR), "ENABLE_PBR", "1");
+	macros.add("ENABLE_PBR", ps_r_shading_flags.test(RFLAG_ENABLE_PBR));
 
 	return macros;
 }
@@ -317,7 +306,7 @@ void CRender::destroy()
 	xr_delete(RenderTarget);
 	PSLibrary.OnDestroy();
 	Device.seqFrame.Remove(this);
-	r_dsgraph_destroy(); // FIX BY IXRAY (THANKS BY NSDeathman)
+	r_dsgraph_destroy();
 }
 
 void CRender::reset_begin()

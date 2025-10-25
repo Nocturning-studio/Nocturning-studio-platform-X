@@ -21,6 +21,7 @@
 #include "blender_autoexposure.h"
 #include "blender_effectors.h"
 #include "blender_output_to_screen.h"
+#include "blender_bent_normals.h"
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::create_textures()
 {
@@ -41,12 +42,15 @@ void CRenderTarget::create_textures()
 	{
 		rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 		rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
-		rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
+		rt_GBuffer_3.create(r_RT_GBuffer_3, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 		rt_GBuffer_4.create(r_RT_GBuffer_4, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	}
 
+	rt_Bent_Normals.create(r_RT_Bent_Normals, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	
+	rt_Volumetric_Sun.create(r_RT_Volumetric_Sun, dwWidth * 0.5f, dwHeight * 0.5f, D3DFMT_A8);
+
 	rt_Light_Accumulator.create(r_RT_Light_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
-	rt_Shadow_Accumulator.create(r_RT_Shadow_Accumulator, dwWidth, dwHeight, D3DFMT_L8);
 
 	rt_Distortion_Mask.create(r_RT_distortion_mask, dwWidth, dwHeight, D3DFMT_G16R16F);
 
@@ -150,12 +154,16 @@ void CRenderTarget::create_blenders()
 
 	b_frame_overlay = xr_new<CBlender_frame_overlay>();
 	s_frame_overlay.create(b_frame_overlay);
+
+	b_bent_normals = xr_new<CBlender_bent_normals>();
+	s_bent_normals.create(b_bent_normals);
 }
 
 void CRenderTarget::delete_blenders()
 {
 	Msg("Deleting blenders");
 
+	xr_delete(b_bent_normals);
 	xr_delete(b_frame_overlay);
 	xr_delete(b_motion_blur);
 	xr_delete(b_dof);

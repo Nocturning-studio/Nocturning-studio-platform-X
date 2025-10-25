@@ -40,6 +40,8 @@ class CBlender_combine : public IBlender
 			C.r_Sampler("sky_s1", r_T_sky1, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
 			C.r_Sampler_clf("s_brdf_lut", "vfx\\vfx_brdf_lut");
 
+			C.r_Sampler_rtf("s_bent_normals", r_RT_Bent_Normals);
+
 			gbuffer(C);
 			jitter(C);
 			C.r_End();
@@ -59,6 +61,8 @@ class CBlender_combine : public IBlender
 			C.r_Sampler_rtf("s_image", r_RT_generic0);
 
 			C.r_Sampler_clf("s_reflections", r_RT_reflections);
+
+			C.r_Sampler_rtf("s_bent_normals", r_RT_Bent_Normals);
 
 			gbuffer(C);
 			jitter(C);
@@ -81,7 +85,7 @@ class CBlender_combine : public IBlender
 			C.r_Pass("screen_quad", "scene_combine_stage_apply_volumetric", FALSE, FALSE, FALSE);
 
 			C.r_Sampler_rtf("s_image", r_RT_generic1);
-			C.r_Sampler_rtf("s_light_accumulator", r_RT_Light_Accumulator);
+			C.r_Sampler_clf("s_volumetric_accumulator", r_RT_Volumetric_Sun);
 
 			jitter(C);
 			gbuffer(C);

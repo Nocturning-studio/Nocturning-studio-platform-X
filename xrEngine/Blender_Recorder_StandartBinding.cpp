@@ -63,26 +63,6 @@ class cl_invV : public R_constant_setup
 };
 static cl_invV binder_invv;
 
-class cl_hemi_cube_pos_faces : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RenderBackend.hemi.set_c_pos_faces(C);
-	}
-};
-
-static cl_hemi_cube_pos_faces binder_hemi_cube_pos_faces;
-
-class cl_hemi_cube_neg_faces : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RenderBackend.hemi.set_c_neg_faces(C);
-	}
-};
-
-static cl_hemi_cube_neg_faces binder_hemi_cube_neg_faces;
-
 class cl_texgen : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -252,16 +232,6 @@ static class cl_far_plane : public R_constant_setup
 		RenderBackend.set_Constant(C, fValue, fValue, fValue, 0);
 	}
 } binder_far_plane;
-
-static class cl_sun_shafts_intensity : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		CEnvDescriptor* E = g_pGamePersistent->Environment().CurrentEnv;
-		float fValue = E->m_fSunShaftsIntensity;
-		RenderBackend.set_Constant(C, fValue, fValue, fValue, 0);
-	}
-} binder_sun_shafts_intensity;
 
 static class cl_water_intensity : public R_constant_setup
 {
@@ -548,11 +518,6 @@ void CBlender_Compile::SetMapping()
 	r_Constant("wind_params", &binder_wind_params);
 	r_Constant("wind_turbulence", &binder_wind_turbulence);
 
-	// hemi cube
-	// r_Constant("L_material", &binder_material);
-	r_Constant("hemi_cube_pos_faces", &binder_hemi_cube_pos_faces);
-	r_Constant("hemi_cube_neg_faces", &binder_hemi_cube_neg_faces);
-
 	//	Igor	temp solution for the texgen functionality in the shader
 	r_Constant("m_texgen", &binder_texgen);
 	r_Constant("mVPTexgen", &binder_VPtexgen);
@@ -569,7 +534,6 @@ void CBlender_Compile::SetMapping()
 #endif
 
 	r_Constant("water_intensity", &binder_water_intensity);
-	r_Constant("sun_shafts_intensity", &binder_sun_shafts_intensity);
 	r_Constant("rain_density", &binder_rain_density);
 
 	r_Constant("sepia_params", &binder_sepia_params);

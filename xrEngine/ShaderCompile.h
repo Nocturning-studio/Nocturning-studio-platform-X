@@ -434,11 +434,9 @@ class CShaderIncluder : public ID3DXInclude
 		*pBytes = (UINT)strlen(data);
 
 #ifdef DEBUG_SHADER_COMPILATION
-		Msg("*   includer open: (id:%u): %s", counter, pName);
-		Msg("FILE BEGIN");
+		//Msg("*   includer open: (id:%u): %s", counter, pName);
 		Log(data);
-		Msg("FILE END");
-		Msg("*   guard                  _%s_included", hash);
+		//Msg("*   guard                  _%s_included", hash);
 #endif
 
 		counter++;
@@ -553,8 +551,7 @@ template <typename T> T* CResourceManager::CreateShader(const char* _name, CShad
 #endif
 
 	// compile and create
-	HRESULT _hr =
-		CompileShader(_name, ext, (LPCSTR)file->pointer(), file->length(), c_target, c_entry, macros, (T*&)sh);
+	HRESULT _hr = CompileShader(_name, ext, (LPCSTR)file->pointer(), file->length(), c_target, c_entry, macros, (T*&)sh);
 
 	FS.r_close(file);
 

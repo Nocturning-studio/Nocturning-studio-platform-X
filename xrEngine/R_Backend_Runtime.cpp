@@ -39,6 +39,10 @@ void CBackend::Invalidate()
 {
 	OPTICK_EVENT("CBackend::Invalidate");
 
+	bBlend = FALSE;
+	srcBlend = D3DBLEND_ONE;
+	dstBlend = D3DBLEND_ZERO;
+
 	pRT[0] = NULL;
 	pRT[1] = NULL;
 	pRT[2] = NULL;
@@ -254,6 +258,103 @@ void CBackend::set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, ID
 void CBackend::set_Depth_Buffer(IDirect3DSurface9* zb)
 {
 	RenderBackend.setDepthBuffer(zb);
+}
+
+void CBackend::set_Blend(BOOL enable, D3DBLEND src, D3DBLEND dest)
+{
+	OPTICK_EVENT("CBackend::set_Blend");
+
+	// Check if state actually changed to avoid redundant API calls
+	if (bBlend != enable || srcBlend != src || dstBlend != dest)
+	{
+		bBlend = enable;
+		srcBlend = src;
+		dstBlend = dest;
+
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, enable));
+
+		if (enable)
+		{
+			CHK_DX(HW.pDevice->SetRenderState(D3DRS_SRCBLEND, src));
+			CHK_DX(HW.pDevice->SetRenderState(D3DRS_DESTBLEND, dest));
+
+			// Также установим правильные состояния для альфа-тестинга если нужно
+			CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE));
+		}
+
+#ifdef DEBUG
+		stat.blend_changes++;
+#endif
+	}
+}
+
+void CBackend::set_Blend_Alpha()
+{
+	set_Blend(TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
+}
+
+void CBackend::set_Blend_Add()
+{
+	set_Blend(TRUE, D3DBLEND_ONE, D3DBLEND_ONE);
+}
+
+void CBackend::set_Blend_Multiply()
+{
+	set_Blend(TRUE, D3DBLEND_DESTCOLOR, D3DBLEND_ZERO);
+}
+
+void CBackend::set_Blend_Default()
+{
+	set_Blend(FALSE, D3DBLEND_ONE, D3DBLEND_ZERO);
+}
+
+// Также добавим методы для других распространенных blend режимов
+void CBackend::set_Blend_Subtract()
+{
+	set_Blend(TRUE, D3DBLEND_ONE, D3DBLEND_ONE);
+	CHK_DX(HW.pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_SUBTRACT));
+}
+
+void CBackend::set_Blend_Screen()
+{
+	set_Blend(TRUE, D3DBLEND_ONE, D3DBLEND_INVSRCCOLOR);
+}
+
+void CBackend::set_Blend_LightAdd()
+{
+	set_Blend(TRUE, D3DBLEND_ONE, D3DBLEND_ONE);
+}
+
+void CBackend::set_Blend_ColorAdd()
+{
+	set_Blend(TRUE, D3DBLEND_SRCCOLOR, D3DBLEND_ONE);
+}
+
+void CBackend::set_BlendEx(BOOL enable, D3DBLEND src, D3DBLEND dest, D3DBLENDOP op)
+{
+	OPTICK_EVENT("CBackend::set_BlendEx");
+
+	if (bBlend != enable || srcBlend != src || dstBlend != dest)
+	{
+		bBlend = enable;
+		srcBlend = src;
+		dstBlend = dest;
+
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, enable));
+
+		if (enable)
+		{
+			CHK_DX(HW.pDevice->SetRenderState(D3DRS_SRCBLEND, src));
+			CHK_DX(HW.pDevice->SetRenderState(D3DRS_DESTBLEND, dest));
+			CHK_DX(HW.pDevice->SetRenderState(D3DRS_BLENDOP, op));
+
+			CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE));
+		}
+
+#ifdef DEBUG
+		stat.blend_changes++;
+#endif
+	}
 }
 
 // 2D texgen (texture adjustment matrix)

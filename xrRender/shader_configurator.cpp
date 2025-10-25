@@ -361,6 +361,22 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	bool bUseCustomDisplacement = false;
 	string_path CustomDisplacementTexture;
 
+	// Get sheen intensity texture
+	bool bUseCustomSheenIntensity = false;
+	string_path CustomSheenIntensityTexture;
+
+	// Get sheen roughness texture
+	bool bUseCustomSheenRoughness = false;
+	string_path CustomSheenRoughnessTexture;
+
+	// Get coat intensity texture
+	bool bUseCustomCoatIntensity = false;
+	string_path CustomCoatIntensityTexture;
+
+	// Get coat roughness texture
+	bool bUseCustomCoatRoughness = false;
+	string_path CustomCoatRoughnessTexture;
+
 	if (!UseAlbedoOnly)
 	{
 		// Get detail texture
@@ -466,24 +482,51 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 				bUseCustomSubsurfacePower = CheckAndApplyManualTexturePath("material_configuration", "subsurface_power_path", CustomSubsurfacePowerTexture, MaterialConfiguration);
 				bUseCustomCavity = CheckAndApplyManualTexturePath("material_configuration", "cavity_path", CustomCavityTexture, MaterialConfiguration);
 				bUseCustomSpecularTint = CheckAndApplyManualTexturePath("material_configuration", "specular_tint_path", CustomSpecularTintTexture, MaterialConfiguration);
+				bUseCustomSheenIntensity = CheckAndApplyManualTexturePath("material_configuration", "sheen_intensity_path", CustomSheenIntensityTexture, MaterialConfiguration);
+				bUseCustomSheenRoughness = CheckAndApplyManualTexturePath("material_configuration", "sheen_roughness_path", CustomSheenRoughnessTexture, MaterialConfiguration);
+				bUseCustomCoatIntensity = CheckAndApplyManualTexturePath("material_configuration", "coat_intensity_path", CustomCoatIntensityTexture, MaterialConfiguration);
+				bUseCustomCoatRoughness = CheckAndApplyManualTexturePath("material_configuration", "coat_roughness_path", CustomCoatRoughnessTexture, MaterialConfiguration);
 			}
 
 			if (!bUseCustomNormal)
 				bUseCustomNormal = ConcatAndFindTexture(CustomNormalTexture, AlbedoTexture, "_normal");
 
+			C.r_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
+
 			if (!bUseCustomSubsurfacePower)
 				bUseCustomSubsurfacePower = ConcatAndFindTexture(CustomSubsurfacePowerTexture, AlbedoTexture, "_subsurface_power");
+
+			C.r_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
 
 			if (!bUseCustomCavity)
 				bUseCustomCavity = ConcatAndFindTexture(CustomCavityTexture, AlbedoTexture, "_cavity");
 
+			C.r_Define(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
+
 			if (!bUseCustomSpecularTint)
 				bUseCustomSpecularTint = ConcatAndFindTexture(CustomSpecularTintTexture, AlbedoTexture, "_specular_tint");
 
-			C.r_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
-			C.r_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
-			C.r_Define(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
 			C.r_Define(bUseCustomSpecularTint, "USE_CUSTOM_SPECULAR_TINT", "1");
+
+			if (!bUseCustomSheenIntensity)
+				bUseCustomSheenIntensity = ConcatAndFindTexture(CustomSheenIntensityTexture, AlbedoTexture, "_sheen_intensity");
+
+			C.r_Define(bUseCustomSheenIntensity, "USE_CUSTOM_SHEEN_INTENSITY", "1");
+
+			if (!bUseCustomSheenRoughness)
+				bUseCustomSheenRoughness = ConcatAndFindTexture(CustomSheenRoughnessTexture, AlbedoTexture, "_sheen_roughness");
+
+			C.r_Define(bUseCustomSheenRoughness, "USE_CUSTOM_SHEEN_ROUGHNESS", "1");
+
+			if (!bUseCustomCoatIntensity)
+				bUseCustomCoatIntensity = ConcatAndFindTexture(CustomCoatIntensityTexture, AlbedoTexture, "_coat_intensity");
+
+			C.r_Define(bUseCustomCoatIntensity, "USE_CUSTOM_COAT_INTENSITY", "1");
+
+			if (!bUseCustomCoatRoughness)
+				bUseCustomCoatRoughness = ConcatAndFindTexture(CustomCoatRoughnessTexture, AlbedoTexture, "_coat_roughness");
+
+			C.r_Define(bUseCustomCoatRoughness, "USE_CUSTOM_COAT_ROUGHNESS", "1");
 		}
 
 		if (bUseConfigurator)
@@ -613,6 +656,18 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 	if (bUseCustomSpecularTint)
 		C.r_Sampler("s_custom_specular_tint", CustomSpecularTintTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+
+	if (bUseCustomSheenIntensity)
+		C.r_Sampler("s_custom_sheen_intensity", CustomSheenIntensityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+
+	if (bUseCustomSheenRoughness)
+		C.r_Sampler("s_custom_sheen_roughness", CustomSheenRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+
+	if (bUseCustomCoatIntensity)
+		C.r_Sampler("s_custom_coat_intensity", CustomCoatIntensityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+
+	if (bUseCustomCoatRoughness)
+		C.r_Sampler("s_custom_coat_roughness", CustomCoatRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomWeight)
 		C.r_Sampler("s_custom_weight", CustomWeightTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
