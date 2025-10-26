@@ -342,6 +342,7 @@ class CRender : public R_dsgraph_structure
 	void render_main(Fmatrix& mCombined, bool _fportals);
 	void query_wait();
 	void render_lights(light_Package& LP);
+	void ProcessRemainingLightsOptimized(light_Package& LP);
 	void render_sun_cascade(u32 cascade_ind);
 	void init_cacades();
 	void render_sun_cascades();

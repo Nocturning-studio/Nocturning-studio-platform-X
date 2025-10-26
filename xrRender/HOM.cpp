@@ -13,16 +13,24 @@ void __stdcall CHOM::MT_RENDER()
 {
 	OPTICK_EVENT("CHOM::MT_RENDER");
 
-	MT.Enter();
+	// Быстрая проверка без блокировки
 	bool b_main_menu_is_active = (g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive());
-	if (MT_frame_rendered != Device.dwFrame && !b_main_menu_is_active)
+	if (MT_frame_rendered == Device.dwFrame || b_main_menu_is_active)
+		return;
+
+	// Попытка захвата мьютекса без блокировки
+	if (MT.TryEnter())
 	{
-		CFrustum ViewBase;
-		ViewBase.CreateFromMatrix(Device.mFullTransform, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
-		Enable();
-		Render(ViewBase);
+		// Двойная проверка после захвата мьютекса
+		if (MT_frame_rendered != Device.dwFrame && !b_main_menu_is_active)
+		{
+			CFrustum ViewBase;
+			ViewBase.CreateFromMatrix(Device.mFullTransform, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
+			Enable();
+			Render(ViewBase);
+		}
+		MT.Leave();
 	}
-	MT.Leave();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -164,6 +172,56 @@ class pred_fb
 	}
 };
 
+void CHOM::ProcessTriangle(CDB::RESULT* it, u32 _frame, const Fvector& COP, CFrustum& clip)
+{
+	// Локальные полигоны для каждого потока
+	sPoly src, dst;
+
+	// Control skipping
+	occTri& T = m_pTris[it->id];
+	u32 next = _frame + ::Random.randI(3, 10);
+
+	// Test for good occluder
+	if (!(T.flags || (T.plane.classify(COP) > 0)))
+	{
+		T.skip = next;
+		return;
+	}
+
+	// Access to triangle vertices
+	CDB::TRI& t = m_pModel->get_tris()[it->id];
+	Fvector* fvert = m_pModel->get_verts();
+	src.clear();
+	dst.clear();
+	src.push_back(fvert[t.verts[0]]);
+	src.push_back(fvert[t.verts[1]]);
+	src.push_back(fvert[t.verts[2]]);
+	sPoly* P = clip.ClipPoly(src, dst);
+	if (0 == P)
+	{
+		T.skip = next;
+		return;
+	}
+
+	// XForm and Rasterize
+#ifdef DEBUG
+	InterlockedIncrement(&tris_in_frame_visible);
+#endif
+	u32 pixels = 0;
+	int limit = int(P->size()) - 1;
+	for (int vert_it = 1; vert_it < limit; vert_it++)
+	{
+		m_xform.transform(T.raster[0], (*P)[0]);
+		m_xform.transform(T.raster[1], (*P)[vert_it + 0]);
+		m_xform.transform(T.raster[2], (*P)[vert_it + 1]);
+		pixels += Raster.rasterize(&T);
+	}
+	if (0 == pixels)
+	{
+		T.skip = next;
+	}
+}
+
 void CHOM::Render_DB(CFrustum& base)
 {
 	OPTICK_EVENT("CHOM::Render_DB");
@@ -179,9 +237,25 @@ void CHOM::Render_DB(CFrustum& base)
 	CDB::RESULT* end = xrc.r_end();
 
 	Fvector COP = Device.vCameraPosition;
-	end = std::remove_if(it, end, pred_fb(m_pTris));
-	concurrency::parallel_sort(it, end, pred_fb(m_pTris, COP));
 
+	// Удаление пропускаемых треугольников
+	end = std::remove_if(it, end, pred_fb(m_pTris));
+
+	if (it == end)
+		return;
+
+	// Сортировка
+	size_t element_count = std::distance(it, end);
+	if (element_count > 500)
+	{
+		concurrency::parallel_sort(it, end, pred_fb(m_pTris, COP));
+	}
+	else
+	{
+		std::sort(it, end, pred_fb(m_pTris, COP));
+	}
+
+	// Матрицы и подготовка (без изменений)
 	float view_dim = occ_dim_0;
 	Fmatrix m_viewport = {view_dim / 2.f, 0.0f, 0.0f, 0.0f, 0.0f, -view_dim / 2.f,		  0.0f,
 						  0.0f,			  0.0f, 0.0f, 1.0f, 0.0f, view_dim / 2.f + 0 + 0, view_dim / 2.f + 0 + 0,
@@ -192,62 +266,27 @@ void CHOM::Render_DB(CFrustum& base)
 	m_xform.mul(m_viewport, Device.mFullTransform);
 	m_xform_01.mul(m_viewport_01, Device.mFullTransform);
 
-	// Build frustum with near plane only
 	CFrustum clip;
 	clip.CreateFromMatrix(Device.mFullTransform, FRUSTUM_P_NEAR);
-	sPoly src, dst;
 	u32 _frame = Device.dwFrame;
 #ifdef DEBUG
 	tris_in_frame = xrc.r_count();
 	tris_in_frame_visible = 0;
 #endif
 
-	// Perfrom selection, sorting, culling
-	for (; it != end; it++)
+	// Параллельная обработка с использованием parallel_for
+	if (element_count > 200)
 	{
-		// Control skipping
-		occTri& T = m_pTris[it->id];
-		u32 next = _frame + ::Random.randI(3, 10);
-
-		// Test for good occluder - should be improved :)
-		if (!(T.flags || (T.plane.classify(COP) > 0)))
+		concurrency::parallel_for<size_t>(0, element_count, [&](size_t i) {
+			CDB::RESULT* current_it = it + i;
+			ProcessTriangle(current_it, _frame, COP, clip);
+		});
+	}
+	else
+	{
+		for (; it != end; it++)
 		{
-			T.skip = next;
-			continue;
-		}
-
-		// Access to triangle vertices
-		CDB::TRI& t = m_pModel->get_tris()[it->id];
-		Fvector* fvert = m_pModel->get_verts();
-		src.clear();
-		dst.clear();
-		src.push_back(fvert[t.verts[0]]);
-		src.push_back(fvert[t.verts[1]]);
-		src.push_back(fvert[t.verts[2]]);
-		sPoly* P = clip.ClipPoly(src, dst);
-		if (0 == P)
-		{
-			T.skip = next;
-			continue;
-		}
-
-		// XForm and Rasterize
-#ifdef DEBUG
-		tris_in_frame_visible++;
-#endif
-		u32 pixels = 0;
-		int limit = int(P->size()) - 1;
-		for (int vert_it = 1; vert_it < limit; vert_it++)
-		{
-			m_xform.transform(T.raster[0], (*P)[0]);
-			m_xform.transform(T.raster[1], (*P)[vert_it + 0]);
-			m_xform.transform(T.raster[2], (*P)[vert_it + 1]);
-			pixels += Raster.rasterize(&T);
-		}
-		if (0 == pixels)
-		{
-			T.skip = next;
-			continue;
+			ProcessTriangle(it, _frame, COP, clip);
 		}
 	}
 }

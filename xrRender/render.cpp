@@ -229,7 +229,6 @@ CShaderMacros CRender::FetchShaderMacros()
 
 	CShaderMacros macros;
 
-	// skinning
 	macros.add(m_skinning < 0, "SKIN_NONE", "1");
 	macros.add(0 == m_skinning, "SKIN_0", "1");
 	macros.add(1 == m_skinning, "SKIN_1", "1");
@@ -245,7 +244,7 @@ CShaderMacros CRender::FetchShaderMacros()
 	macros.add("SHADOW_FILTER_QUALITY", (int)ps_r_shadow_filtering);
 	macros.add("SUN_SHAFTS_QUALITY", (int)ps_r_sun_shafts_quality);
 
-	macros.add("ENABLE_PBR", ps_r_shading_flags.test(RFLAG_ENABLE_PBR));
+	macros.add(ps_r_shading_flags.test(RFLAG_ENABLE_PBR), "ENABLE_PBR", "1");
 
 	return macros;
 }

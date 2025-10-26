@@ -449,6 +449,7 @@ class ENGINE_API CBackend
 	void set_Render_Target_Surface(const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL);
 	void set_Render_Target_Surface(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2 = NULL, IDirect3DSurface9* _3 = NULL, IDirect3DSurface9* _4 = NULL);
 	void set_Depth_Buffer(IDirect3DSurface9* zb);
+	void clear_Depth_Buffer(IDirect3DSurface9* zb);
 
 	void set_viewport_geometry(float w, float h, u32& vOffset);
 	void set_viewport_geometry(ref_geom geometry, u32& vOffset);

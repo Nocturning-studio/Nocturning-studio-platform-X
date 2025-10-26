@@ -27,6 +27,8 @@ class CHOM
 	xrCriticalSection MT;
 	volatile u32 MT_frame_rendered;
 
+	void ProcessTriangle(CDB::RESULT* it, u32 _frame, const Fvector& COP, CFrustum& clip);
+
 	void Render_DB(CFrustum& base);
 
   public:
@@ -48,7 +50,11 @@ class CHOM
 		if (g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive())
 			return;
 
-		MT_RENDER();
+		// Áûסענאÿ ןנמגונךא ןונוה גûחמגמל MT_RENDER
+		if (MT_frame_rendered != Device.dwFrame)
+		{
+			MT_RENDER();
+		}
 	}
 
 	BOOL visible(vis_data& vis);

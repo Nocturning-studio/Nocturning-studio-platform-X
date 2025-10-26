@@ -206,23 +206,48 @@ void CRender::query_wait()
 
 void CRender::update_shadow_map_visibility()
 {
-	OPTICK_EVENT("CRender::update_shadow_map_visibility()");
+	OPTICK_EVENT("CRender::update_shadow_map_visibility");
 
-	u32 it = 0;
-	for (it = 0; it < Lights_LastFrame.size(); it++)
+	if (Lights_LastFrame.empty())
+		return;
+
+	// Параллельная обработка для большого количества источников
+	if (Lights_LastFrame.size() > 8)
 	{
-		if (0 == Lights_LastFrame[it])
-			continue;
-		try
+		concurrency::parallel_for_each(Lights_LastFrame.begin(), Lights_LastFrame.end(), [](light* L) {
+			if (L)
+			{
+				try
+				{
+					L->svis.flushoccq();
+				}
+				catch (...)
+				{
+					Msg("CRender::update_shadow_map_visibility - Lights_LastFrame.size() > 8 catched exeption");
+				}
+			}
+		});
+	}
+	else
+	{
+		// Последовательная обработка для малого количества
+		for (auto& L : Lights_LastFrame)
 		{
-			Lights_LastFrame[it]->svis.flushoccq();
-		}
-		catch (...)
-		{
-			Msg("! Failed to flush-OCCq on light [%d] %X", it, *(u32*)(&Lights_LastFrame[it]));
+			if (L)
+			{
+				try
+				{
+					L->svis.flushoccq();
+				}
+				catch (...)
+				{
+					Msg("! Failed to flush-OCCq on light %X", *(u32*)(&L));
+				}
+			}
 		}
 	}
-	Lights_LastFrame.clear();
+
+	Lights_LastFrame.clear_not_free(); // Более эффективная очистка
 }
 
 void CRender::render_depth_prepass()
@@ -395,54 +420,56 @@ void CRender::render_stage_occlusion_culling()
 	LP_pending.clear();
 
 	{
-		// perform tests
-		u32 count = 0;
+		OPTICK_EVENT("CRender::OcclusionCulling-Tests");
+
 		light_Package& LP = Lights.package;
 
-		// stats
+		// Быстрая статистика
 		stats.l_shadowed = LP.v_shadowed.size();
 		stats.l_unshadowed = LP.v_point.size() + LP.v_spot.size();
 		stats.l_total = stats.l_shadowed + stats.l_unshadowed;
 
-		// perform tests
-		count = _max(count, LP.v_point.size());
-		count = _max(count, LP.v_spot.size());
-		count = _max(count, LP.v_shadowed.size());
+		// ВОССТАНАВЛИВАЕМ ПОСЛЕДОВАТЕЛЬНУЮ ОБРАБОТКУ для vis_prepare
+		// т.к. vis_prepare работает с occlusion queries и не является потокобезопасной
+		auto process_lights_safe = [&](auto& light_array, auto& pending_array, auto& normal_array) {
+			const size_t count = light_array.size();
 
-		for (u32 it = 0; it < count; it++)
-		{
-			if (it < LP.v_point.size())
+			// ТОЛЬКО последовательная обработка для vis_prepare
+			for (size_t it = 0; it < count; it++)
 			{
-				light* L = LP.v_point[it];
-				L->vis_prepare();
+				light* L = light_array[it];
+				L->vis_prepare(); // Эта операция должна быть последовательной!
 				if (L->vis.pending)
-					LP_pending.v_point.push_back(L);
+					pending_array.push_back(L);
 				else
-					LP_normal.v_point.push_back(L);
+					normal_array.push_back(L);
 			}
-			if (it < LP.v_spot.size())
-			{
-				light* L = LP.v_spot[it];
-				L->vis_prepare();
-				if (L->vis.pending)
-					LP_pending.v_spot.push_back(L);
-				else
-					LP_normal.v_spot.push_back(L);
-			}
-			if (it < LP.v_shadowed.size())
-			{
-				light* L = LP.v_shadowed[it];
-				L->vis_prepare();
-				if (L->vis.pending)
-					LP_pending.v_shadowed.push_back(L);
-				else
-					LP_normal.v_shadowed.push_back(L);
-			}
-		}
+		};
+
+		// Обработка всех типов источников света (последовательно для безопасности)
+		process_lights_safe(LP.v_point, LP_pending.v_point, LP_normal.v_point);
+		process_lights_safe(LP.v_spot, LP_pending.v_spot, LP_normal.v_spot);
+		process_lights_safe(LP.v_shadowed, LP_pending.v_shadowed, LP_normal.v_shadowed);
 	}
 
-	LP_normal.sort();
-	LP_pending.sort();
+	// Оптимизированная сортировка (может остаться параллельной)
+	auto parallel_sort_if_large = [](auto& container) {
+		if (container.size() > 20)
+		{
+			concurrency::parallel_sort(container.begin(), container.end());
+		}
+		else
+		{
+			std::sort(container.begin(), container.end());
+		}
+	};
+
+	parallel_sort_if_large(LP_normal.v_point);
+	parallel_sort_if_large(LP_normal.v_spot);
+	parallel_sort_if_large(LP_normal.v_shadowed);
+	parallel_sort_if_large(LP_pending.v_point);
+	parallel_sort_if_large(LP_pending.v_spot);
+	parallel_sort_if_large(LP_pending.v_shadowed);
 }
 
 void CRender::render_sun()

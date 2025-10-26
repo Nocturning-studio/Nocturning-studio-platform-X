@@ -260,6 +260,12 @@ void CBackend::set_Depth_Buffer(IDirect3DSurface9* zb)
 	RenderBackend.setDepthBuffer(zb);
 }
 
+void CBackend::clear_Depth_Buffer(IDirect3DSurface9* zb)
+{
+	RenderBackend.setDepthBuffer(zb);
+	CHK_DX(HW.pDevice->Clear(0L, nullptr, D3DCLEAR_ZBUFFER, 0x0, 1.0f, 0L));
+}
+
 void CBackend::set_Blend(BOOL enable, D3DBLEND src, D3DBLEND dest)
 {
 	OPTICK_EVENT("CBackend::set_Blend");
