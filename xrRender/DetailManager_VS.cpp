@@ -114,12 +114,7 @@ void CDetailManager::hw_Load()
 	S.create("details\\set");
 	R_constant_table& T0 = *(S->E[0]->passes[0]->constants);
 	R_constant_table& T1 = *(S->E[1]->passes[0]->constants);
-	hwc_consts = T0.get("consts");
-	hwc_wave = T0.get("wave");
-	hwc_wind = T0.get("dir2D");
 	hwc_array = T0.get("array");
-	hwc_s_consts = T1.get("consts");
-	hwc_s_xform = T1.get("xform");
 	hwc_s_array = T1.get("array");
 
 	// Declare geometry
@@ -129,6 +124,9 @@ void CDetailManager::hw_Load()
 void CDetailManager::hw_Unload()
 {
 	OPTICK_EVENT("CDetailManager::hw_Unload");
+
+	hwc_array = nullptr;
+	hwc_s_array = nullptr;
 
 	// Destroy VS/VB/IB
 	hw_Geom.destroy();
@@ -140,34 +138,10 @@ void CDetailManager::hw_Render()
 {
 	OPTICK_EVENT("CDetailManager::hw_Render");
 
-	// Render-prepare
-	Fvector4 dir1, dir2;
-	float tm_rot1 = (PI_MUL_2 * Device.fTimeGlobal / swing_current.rot1);
-	float tm_rot2 = (PI_MUL_2 * Device.fTimeGlobal / swing_current.rot2);
-	dir1.set(_sin(tm_rot1), 0, _cos(tm_rot1), 0).normalize().mul(swing_current.amp1);
-	dir2.set(_sin(tm_rot2), 0, _cos(tm_rot2), 0).normalize().mul(swing_current.amp2);
-
 	// Setup geometry and DMA
 	RenderBackend.set_Geometry(hw_Geom);
-
-	// Wave0
-	float scale = 1.f / float(quant);
-	Fvector4 wave;
-	wave.set(1.f / 5.f, 1.f / 7.f, 1.f / 3.f, Device.fTimeGlobal * swing_current.speed);
-	RenderBackend.set_Constant(&*hwc_consts, scale, scale, ps_r_Detail_l_aniso, ps_r_Detail_l_ambient); // consts
-	RenderBackend.set_Constant(&*hwc_wave, wave.div(PI_MUL_2));											// wave
-	RenderBackend.set_Constant(&*hwc_wind, dir1);															// wind-dir
 	hw_Render_dump(&*hwc_array, 1, 0, c_hdr);
-
-	// Wave1
-	wave.set(1.f / 3.f, 1.f / 7.f, 1.f / 5.f, Device.fTimeGlobal * swing_current.speed);
-	RenderBackend.set_Constant(&*hwc_wave, wave.div(PI_MUL_2)); // wave
-	RenderBackend.set_Constant(&*hwc_wind, dir2);				  // wind-dir
 	hw_Render_dump(&*hwc_array, 2, 0, c_hdr);
-
-	// Still
-	RenderBackend.set_Constant(&*hwc_s_consts, scale, scale, scale, 1.f);
-	RenderBackend.set_Constant(&*hwc_s_xform, Device.mFullTransform);
 	hw_Render_dump(&*hwc_s_array, 0, 1, c_hdr);
 }
 

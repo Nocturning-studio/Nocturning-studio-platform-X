@@ -93,28 +93,11 @@ class CDetailManager
 
   public:
 	int dither[16][16];
-
-  public:
-	// swing values
-	struct SSwingValue
-	{
-		float rot1;
-		float rot2;
-		float amp1;
-		float amp2;
-		float speed;
-		void lerp(const SSwingValue& v1, const SSwingValue& v2, float factor);
-	};
-	SSwingValue swing_desc[2];
-	SSwingValue swing_current;
-
-  public:
 	IReader* dtFS;
 	DetailHeader dtH;
 	DetailSlot* dtSlots; // note: pointer into VFS
 	DetailSlot DS_empty;
 
-  public:
 	DetailVec objects;
 	vis_list m_visibles[3]; // 0=still, 1=Wave1, 2=Wave2
 
@@ -133,7 +116,6 @@ class CDetailManager
 	void UpdateVisibleM();
 	void UpdateVisibleS();
 
-  public:
 #ifdef _EDITOR
 	virtual ObjectList* GetSnapList() = 0;
 #endif
@@ -154,19 +136,13 @@ class CDetailManager
 	u32 hw_BatchSize;
 	IDirect3DVertexBuffer9* hw_VB;
 	IDirect3DIndexBuffer9* hw_IB;
-	ref_constant hwc_consts;
-	ref_constant hwc_wave;
-	ref_constant hwc_wind;
 	ref_constant hwc_array;
-	ref_constant hwc_s_consts;
-	ref_constant hwc_s_xform;
 	ref_constant hwc_s_array;
 	void hw_Load();
 	void hw_Unload();
 	void hw_Render();
 	void hw_Render_dump(ref_constant array, u32 var_id, u32 lod_id, u32 c_base);
 
-  public:
 	// get unpacked slot
 	DetailSlot& QueryDB(int sx, int sz);
 

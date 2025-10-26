@@ -398,15 +398,6 @@
     <ClCompile Include="DetailManager.cpp">
       <Filter>Core\Details</Filter>
     </ClCompile>
-    <ClCompile Include="DetailManager_CACHE.cpp">
-      <Filter>Core\Details</Filter>
-    </ClCompile>
-    <ClCompile Include="DetailManager_Decompress.cpp">
-      <Filter>Core\Details</Filter>
-    </ClCompile>
-    <ClCompile Include="DetailManager_soft.cpp">
-      <Filter>Core\Details</Filter>
-    </ClCompile>
     <ClCompile Include="DetailManager_VS.cpp">
       <Filter>Core\Details</Filter>
     </ClCompile>

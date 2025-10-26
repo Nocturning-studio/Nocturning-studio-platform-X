@@ -48,19 +48,6 @@ void bwdithermap(int levels, int magic[16][16])
 					magic[4 * k + i][4 * l + j] =
 						(int)(0.5 + magic4x4[i][j] * magicfact + (magic4x4[k][l] / 16.) * magicfact);
 }
-//--------------------------------------------------- Decompression
-
-void CDetailManager::SSwingValue::lerp(const SSwingValue& A, const SSwingValue& B, float f)
-{
-	float fi = 1.f - f;
-	amp1 = fi * A.amp1 + f * B.amp1;
-	amp2 = fi * A.amp2 + f * B.amp2;
-	rot1 = fi * A.rot1 + f * B.rot1;
-	rot2 = fi * A.rot2 + f * B.rot2;
-	speed = fi * A.speed + f * B.speed;
-}
-//---------------------------------------------------
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -69,7 +56,6 @@ CDetailManager::CDetailManager()
 {
 	dtFS = 0;
 	dtSlots = 0;
-	soft_Geom = 0;
 	hw_Geom = 0;
 	hw_BatchSize = 0;
 	hw_VB = 0;
@@ -79,19 +65,9 @@ CDetailManager::CDetailManager()
 CDetailManager::~CDetailManager()
 {
 }
-/*
- */
+
 #ifndef _EDITOR
 
-/*
-void dump	(CDetailManager::vis_list& lst)
-{
-	for (int i=0; i<lst.size(); i++)
-	{
-		Msg("%8x / %8x / %8x",	lst[i]._M_start, lst[i]._M_finish, lst[i]._M_end_of_storage._M_data);
-	}
-}
-*/
 void CDetailManager::Load()
 {
 	OPTICK_EVENT("CDetailManager::Load");
@@ -137,35 +113,14 @@ void CDetailManager::Load()
 	// Make dither matrix
 	bwdithermap(2, dither);
 
-	// Hardware specific optimizations
-	if (UseVS())
-		hw_Load();
-	else
-		soft_Load();
-
-	// swing desc
-	// normal
-	swing_desc[0].amp1 = pSettings->r_float("details", "swing_normal_amp1");
-	swing_desc[0].amp2 = pSettings->r_float("details", "swing_normal_amp2");
-	swing_desc[0].rot1 = pSettings->r_float("details", "swing_normal_rot1");
-	swing_desc[0].rot2 = pSettings->r_float("details", "swing_normal_rot2");
-	swing_desc[0].speed = pSettings->r_float("details", "swing_normal_speed");
-	// fast
-	swing_desc[1].amp1 = pSettings->r_float("details", "swing_fast_amp1");
-	swing_desc[1].amp2 = pSettings->r_float("details", "swing_fast_amp2");
-	swing_desc[1].rot1 = pSettings->r_float("details", "swing_fast_rot1");
-	swing_desc[1].rot2 = pSettings->r_float("details", "swing_fast_rot2");
-	swing_desc[1].speed = pSettings->r_float("details", "swing_fast_speed");
+	hw_Load();
 }
 #endif
 void CDetailManager::Unload()
 {
 	OPTICK_EVENT("CDetailManager::Unload");
 
-	if (UseVS())
-		hw_Unload();
-	else
-		soft_Unload();
+	hw_Unload();
 
 	for (DetailIt it = objects.begin(); it != objects.end(); it++)
 	{
@@ -305,20 +260,15 @@ void CDetailManager::Render()
 		return;
 #endif
 
-	// MT
 	MT_SYNC();
 
 	Device.Statistic->RenderDUMP_DT_Render.Begin();
 
-	float factor = g_pGamePersistent->Environment().wind_strength_factor;
-	swing_current.lerp(swing_desc[0], swing_desc[1], factor);
-
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_xform_world(Fidentity);
-	if (UseVS())
-		hw_Render();
-	else
-		soft_Render();
+
+	hw_Render();
+
 	RenderBackend.set_CullMode(CULL_CCW);
 	Device.Statistic->RenderDUMP_DT_Render.End();
 	m_frame_rendered = Device.dwFrame;
@@ -353,4 +303,478 @@ void __stdcall CDetailManager::MT_CALC()
 			m_frame_calc = Device.dwFrame;
 		}
 	MT.Leave();
+}
+
+void CDetailManager::cache_Initialize()
+{
+	OPTICK_EVENT("CDetailManager::cache_Initialize");
+
+	// Centroid
+	cache_cx = 0;
+	cache_cz = 0;
+
+	// Initialize cache-grid
+	Slot* slt = cache_pool;
+	for (u32 i = 0; i < dm_cache_line; i++)
+		for (u32 j = 0; j < dm_cache_line; j++, slt++)
+		{
+			cache[i][j] = slt;
+			cache_Task(j, i, slt);
+		}
+	VERIFY(cache_Validate());
+
+	for (int _mz1 = 0; _mz1 < dm_cache1_line; _mz1++)
+	{
+		for (int _mx1 = 0; _mx1 < dm_cache1_line; _mx1++)
+		{
+			CacheSlot1& MS = cache_level1[_mz1][_mx1];
+			for (int _z = 0; _z < dm_cache1_count; _z++)
+				for (int _x = 0; _x < dm_cache1_count; _x++)
+					MS.slots[_z * dm_cache1_count + _x] =
+						&cache[_mz1 * dm_cache1_count + _z][_mx1 * dm_cache1_count + _x];
+		}
+	}
+}
+
+CDetailManager::Slot* CDetailManager::cache_Query(int r_x, int r_z)
+{
+	OPTICK_EVENT("CDetailManager::cache_Query");
+
+	int gx = w2cg_X(r_x + cache_cx);
+	VERIFY(gx >= 0 && gx < dm_cache_line);
+	int gz = w2cg_Z(r_z + cache_cz);
+	VERIFY(gz >= 0 && gz < dm_cache_line);
+	return cache[gz][gx];
+}
+
+void CDetailManager::cache_Task(int gx, int gz, Slot* D)
+{
+	OPTICK_EVENT("CDetailManager::cache_Task");
+
+	int sx = cg2w_X(gx);
+	int sz = cg2w_Z(gz);
+	DetailSlot& DS = QueryDB(sx, sz);
+
+	D->empty = (DS.id0 == DetailSlot::ID_Empty) && (DS.id1 == DetailSlot::ID_Empty) &&
+			   (DS.id2 == DetailSlot::ID_Empty) && (DS.id3 == DetailSlot::ID_Empty);
+
+	// Unpacking
+	u32 old_type = D->type;
+	D->type = stPending;
+	D->sx = sx;
+	D->sz = sz;
+
+	D->vis.box.min.set(sx * dm_slot_size, DS.r_ybase(), sz * dm_slot_size);
+	D->vis.box.max.set(D->vis.box.min.x + dm_slot_size, DS.r_ybase() + DS.r_yheight(), D->vis.box.min.z + dm_slot_size);
+	D->vis.box.grow(EPS_L);
+
+	for (u32 i = 0; i < dm_obj_in_slot; i++)
+	{
+		D->G[i].id = DS.r_id(i);
+		for (u32 clr = 0; clr < D->G[i].items.size(); clr++)
+			poolSI.destroy(D->G[i].items[clr]);
+		D->G[i].items.clear();
+	}
+
+	if (old_type != stPending)
+	{
+		VERIFY(stPending == D->type);
+		cache_task.push_back(D);
+	}
+}
+
+BOOL CDetailManager::cache_Validate()
+{
+	OPTICK_EVENT("CDetailManager::cache_Validate");
+
+	for (int z = 0; z < dm_cache_line; z++)
+	{
+		for (int x = 0; x < dm_cache_line; x++)
+		{
+			int w_x = cg2w_X(x);
+			int w_z = cg2w_Z(z);
+			Slot* D = cache[z][x];
+
+			if (D->sx != w_x)
+				return FALSE;
+			if (D->sz != w_z)
+				return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
+{
+	OPTICK_EVENT("CDetailManager::cache_Update");
+
+	bool bNeedMegaUpdate = (cache_cx != v_x) || (cache_cz != v_z);
+	// *****	Cache shift
+	while (cache_cx != v_x)
+	{
+		if (v_x > cache_cx)
+		{
+			// shift matrix to left
+			cache_cx++;
+			for (int z = 0; z < dm_cache_line; z++)
+			{
+				Slot* S = cache[z][0];
+				for (int x = 1; x < dm_cache_line; x++)
+					cache[z][x - 1] = cache[z][x];
+				cache[z][dm_cache_line - 1] = S;
+				cache_Task(dm_cache_line - 1, z, S);
+			}
+			// R_ASSERT	(cache_Validate());
+		}
+		else
+		{
+			// shift matrix to right
+			cache_cx--;
+			for (int z = 0; z < dm_cache_line; z++)
+			{
+				Slot* S = cache[z][dm_cache_line - 1];
+				for (int x = dm_cache_line - 1; x > 0; x--)
+					cache[z][x] = cache[z][x - 1];
+				cache[z][0] = S;
+				cache_Task(0, z, S);
+			}
+			// R_ASSERT	(cache_Validate());
+		}
+	}
+	while (cache_cz != v_z)
+	{
+		if (v_z > cache_cz)
+		{
+			// shift matrix down a bit
+			cache_cz++;
+			for (int x = 0; x < dm_cache_line; x++)
+			{
+				Slot* S = cache[dm_cache_line - 1][x];
+				for (int z = dm_cache_line - 1; z > 0; z--)
+					cache[z][x] = cache[z - 1][x];
+				cache[0][x] = S;
+				cache_Task(x, 0, S);
+			}
+			// R_ASSERT	(cache_Validate());
+		}
+		else
+		{
+			// shift matrix up
+			cache_cz--;
+			for (int x = 0; x < dm_cache_line; x++)
+			{
+				Slot* S = cache[0][x];
+				for (int z = 1; z < dm_cache_line; z++)
+					cache[z - 1][x] = cache[z][x];
+				cache[dm_cache_line - 1][x] = S;
+				cache_Task(x, dm_cache_line - 1, S);
+			}
+			// R_ASSERT	(cache_Validate());
+		}
+	}
+
+	// Task performer
+	BOOL bFullUnpack = FALSE;
+	if (cache_task.size() == dm_cache_size)
+	{
+		limit = dm_cache_size;
+		bFullUnpack = TRUE;
+	}
+
+	for (int iteration = 0; cache_task.size() && (iteration < limit); iteration++)
+	{
+		u32 best_id = 0;
+		float best_dist = flt_max;
+
+		if (bFullUnpack)
+		{
+			best_id = cache_task.size() - 1;
+		}
+		else
+		{
+			for (u32 entry = 0; entry < cache_task.size(); entry++)
+			{
+				// Gain access to data
+				Slot* S = cache_task[entry];
+				VERIFY(stPending == S->type);
+
+				// Estimate
+				Fvector C;
+				S->vis.box.getcenter(C);
+				float D = view.distance_to_sqr(C);
+
+				// Select
+				if (D < best_dist)
+				{
+					best_dist = D;
+					best_id = entry;
+				}
+			}
+		}
+
+		// Decompress and remove task
+		cache_Decompress(cache_task[best_id]);
+		cache_task.erase(best_id);
+	}
+
+	if (bNeedMegaUpdate)
+	{
+		for (int _mz1 = 0; _mz1 < dm_cache1_line; _mz1++)
+		{
+			for (int _mx1 = 0; _mx1 < dm_cache1_line; _mx1++)
+			{
+				CacheSlot1& MS = cache_level1[_mz1][_mx1];
+				MS.empty = TRUE;
+				MS.vis.clear();
+				for (int _i = 0; _i < dm_cache1_count * dm_cache1_count; _i++)
+				{
+					Slot* PS = *MS.slots[_i];
+					Slot& S = *PS;
+					MS.vis.box.merge(S.vis.box);
+					if (!S.empty)
+						MS.empty = FALSE;
+				}
+				MS.vis.box.getsphere(MS.vis.sphere.P, MS.vis.sphere.R);
+			}
+		}
+	}
+}
+
+DetailSlot& CDetailManager::QueryDB(int sx, int sz)
+{
+	OPTICK_EVENT("CDetailManager::QueryDB");
+
+	int db_x = sx + dtH.offs_x;
+	int db_z = sz + dtH.offs_z;
+	if ((db_x >= 0) && (db_x < int(dtH.size_x)) && (db_z >= 0) && (db_z < int(dtH.size_z)))
+	{
+		u32 linear_id = db_z * dtH.size_x + db_x;
+		return dtSlots[linear_id];
+	}
+	else
+	{
+		// Empty slot
+		DS_empty.w_id(0, DetailSlot::ID_Empty);
+		DS_empty.w_id(1, DetailSlot::ID_Empty);
+		DS_empty.w_id(2, DetailSlot::ID_Empty);
+		DS_empty.w_id(3, DetailSlot::ID_Empty);
+		return DS_empty;
+	}
+}
+
+//--------------------------------------------------- Decompression
+IC float Interpolate(float* base, u32 x, u32 y, u32 size)
+{
+	float f = float(size);
+	float fx = float(x) / f;
+	float ifx = 1.f - fx;
+	float fy = float(y) / f;
+	float ify = 1.f - fy;
+
+	float c01 = base[0] * ifx + base[1] * fx;
+	float c23 = base[2] * ifx + base[3] * fx;
+	float c02 = base[0] * ify + base[2] * fy;
+	float c13 = base[1] * ify + base[3] * fy;
+
+	float cx = ify * c01 + fy * c23;
+	float cy = ifx * c02 + fx * c13;
+	return (cx + cy) / 2;
+}
+
+IC bool InterpolateAndDither(float* alpha255, u32 x, u32 y, u32 sx, u32 sy, u32 size, int dither[16][16])
+{
+	clamp(x, (u32)0, size - 1);
+	clamp(y, (u32)0, size - 1);
+	int c = iFloor(Interpolate(alpha255, x, y, size) + .5f);
+	clamp(c, 0, 255);
+
+	u32 row = (y + sy) % 16;
+	u32 col = (x + sx) % 16;
+	return c > dither[col][row];
+}
+
+void CDetailManager::cache_Decompress(Slot* S)
+{
+	OPTICK_EVENT("CDetailManager::cache_Decompress");
+
+	VERIFY(S);
+	Slot& D = *S;
+	D.type = stReady;
+	if (D.empty)
+		return;
+
+	DetailSlot& DS = QueryDB(D.sx, D.sz);
+
+	// Select polygons
+	Fvector bC, bD;
+	D.vis.box.get_CD(bC, bD);
+
+#ifdef _EDITOR
+	ETOOLS::box_options(CDB::OPT_FULL_TEST);
+	// Select polygons
+	SBoxPickInfoVec pinf;
+	Scene->BoxPickObjects(D.vis.box, pinf, GetSnapList());
+	u32 triCount = pinf.size();
+#else
+	xrc.box_options(CDB::OPT_FULL_TEST);
+	xrc.box_query(g_pGameLevel->ObjectSpace.GetStaticModel(), bC, bD);
+	u32 triCount = xrc.r_count();
+	CDB::TRI* tris = g_pGameLevel->ObjectSpace.GetStaticTris();
+	Fvector* verts = g_pGameLevel->ObjectSpace.GetStaticVerts();
+#endif
+
+	if (0 == triCount)
+		return;
+
+	// Build shading table
+	float alpha255[dm_obj_in_slot][4];
+	for (int i = 0; i < dm_obj_in_slot; i++)
+	{
+		alpha255[i][0] = 255.f * float(DS.palette[i].a0) / 15.f;
+		alpha255[i][1] = 255.f * float(DS.palette[i].a1) / 15.f;
+		alpha255[i][2] = 255.f * float(DS.palette[i].a2) / 15.f;
+		alpha255[i][3] = 255.f * float(DS.palette[i].a3) / 15.f;
+	}
+
+	// Prepare to selection
+	float density = ps_r_Detail_density;
+	float jitter = density / 1.7f;
+	u32 d_size = iCeil(dm_slot_size / density);
+	svector<int, dm_obj_in_slot> selected;
+
+	u32 p_rnd = D.sx * D.sz; // нужно для того чтобы убрать полосы(ряды)
+	CRandom r_selection(0x12071980 ^ p_rnd);
+	CRandom r_Jitter(0x12071980 ^ p_rnd);
+	CRandom r_yaw(0x12071980 ^ p_rnd);
+	CRandom r_scale(0x12071980 ^ p_rnd);
+
+	// Prepare to actual-bounds-calculations
+	Fbox Bounds;
+	Bounds.invalidate();
+
+	// Decompressing itself
+	for (u32 z = 0; z <= d_size; z++)
+	{
+		for (u32 x = 0; x <= d_size; x++)
+		{
+			// shift
+			u32 shift_x = r_Jitter.randI(16);
+			u32 shift_z = r_Jitter.randI(16);
+
+			// Iterpolate and dither palette
+			selected.clear();
+			if ((DS.id0 != DetailSlot::ID_Empty) &&
+				InterpolateAndDither(alpha255[0], x, z, shift_x, shift_z, d_size, dither))
+				selected.push_back(0);
+			if ((DS.id1 != DetailSlot::ID_Empty) &&
+				InterpolateAndDither(alpha255[1], x, z, shift_x, shift_z, d_size, dither))
+				selected.push_back(1);
+			if ((DS.id2 != DetailSlot::ID_Empty) &&
+				InterpolateAndDither(alpha255[2], x, z, shift_x, shift_z, d_size, dither))
+				selected.push_back(2);
+			if ((DS.id3 != DetailSlot::ID_Empty) &&
+				InterpolateAndDither(alpha255[3], x, z, shift_x, shift_z, d_size, dither))
+				selected.push_back(3);
+
+			// Select
+			if (selected.empty())
+				continue;
+			u32 index;
+			if (selected.size() == 1)
+				index = selected[0];
+			else
+				index = selected[r_selection.randI(selected.size())];
+
+			CDetail* Dobj = objects[DS.r_id(index)];
+			SlotItem* ItemP = poolSI.create();
+			SlotItem& Item = *ItemP;
+
+			// Position (XZ)
+			float rx = (float(x) / float(d_size)) * dm_slot_size + D.vis.box.min.x;
+			float rz = (float(z) / float(d_size)) * dm_slot_size + D.vis.box.min.z;
+			Fvector Item_P;
+			Item_P.set(rx + r_Jitter.randFs(jitter), D.vis.box.max.y, rz + r_Jitter.randFs(jitter));
+
+			// Position (Y)
+			float y = D.vis.box.min.y - 5;
+			Fvector dir;
+			dir.set(0, -1, 0);
+
+			float r_u, r_v, r_range;
+			for (u32 tid = 0; tid < triCount; tid++)
+			{
+#ifdef _EDITOR
+				Fvector verts[3];
+				SBoxPickInfo& I = pinf[tid];
+				for (int k = 0; k < (int)I.inf.size(); k++)
+				{
+					VERIFY(I.s_obj);
+					Device.Statistic->TEST0.Begin();
+					I.e_obj->GetFaceWorld(I.s_obj->_Transform(), I.e_mesh, I.inf[k].id, verts);
+					Device.Statistic->TEST0.End();
+					if (CDB::TestRayTri(Item_P, dir, verts, r_u, r_v, r_range, TRUE))
+					{
+						if (r_range >= 0)
+						{
+							float y_test = Item_P.y - r_range;
+							if (y_test > y)
+								y = y_test;
+						}
+					}
+				}
+#else
+				CDB::TRI& T = tris[xrc.r_begin()[tid].id];
+				Fvector Tv[3] = {verts[T.verts[0]], verts[T.verts[1]], verts[T.verts[2]]};
+				if (CDB::TestRayTri(Item_P, dir, Tv, r_u, r_v, r_range, TRUE))
+				{
+					if (r_range >= 0)
+					{
+						float y_test = Item_P.y - r_range;
+						if (y_test > y)
+							y = y_test;
+					}
+				}
+#endif
+			}
+			if (y < D.vis.box.min.y)
+				continue;
+			Item_P.y = y;
+
+			// Angles and scale
+			Item.scale = r_scale.randF(Dobj->m_fMinScale * 0.5f, Dobj->m_fMaxScale * 0.9f);
+
+			// X-Form BBox
+			Fmatrix mScale, mXform;
+			Fbox ItemBB;
+			Item.mRotY.rotateY(r_yaw.randF(0, PI_MUL_2));
+			Item.mRotY.translate_over(Item_P);
+			mScale.scale(Item.scale, Item.scale, Item.scale);
+			mXform.mul_43(Item.mRotY, mScale);
+			ItemBB.xform(Dobj->bv_bb, mXform);
+			Bounds.merge(ItemBB);
+
+			Item.c_hemi = DS.r_qclr(DS.c_hemi, 15);
+			Item.c_sun = DS.r_qclr(DS.c_dir, 15);
+
+			if (Dobj->m_Flags.is(DO_NO_WAVING))
+			{
+					Item.vis_ID = 0;
+			}	
+			else
+			{
+				if (::Random.randI(0, 3) == 0)
+					Item.vis_ID = 2; // Second wave
+				else
+					Item.vis_ID = 1; // First wave
+			}
+
+			// Save it
+			D.G[index].items.push_back(ItemP);
+		}
+	}
+
+	// Update bounds to more tight and real ones
+	D.vis.clear();
+	D.vis.box.set(Bounds);
+	D.vis.box.getsphere(D.vis.sphere.P, D.vis.sphere.R);
 }
