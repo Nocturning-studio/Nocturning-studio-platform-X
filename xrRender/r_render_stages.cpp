@@ -311,7 +311,7 @@ void CRender::render_gbuffer_primary()
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME));
 
-	r_dsgraph_render_graph(0);
+	//r_dsgraph_render_graph(0);
 
 	if (Details)
 	{
@@ -344,10 +344,10 @@ void CRender::render_gbuffer_secondary()
 
 	RenderBackend.set_ZWriteEnable(FALSE);
 
-	r_dsgraph_render_lods(true, true);
+	//r_dsgraph_render_lods(true, true);
 
-	set_active_phase(PHASE_HUD);
-	r_dsgraph_render_hud();
+	//set_active_phase(PHASE_HUD);
+	//r_dsgraph_render_hud();
 
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));

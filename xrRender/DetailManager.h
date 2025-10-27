@@ -16,8 +16,8 @@
 
 const int dm_size = 32;
 const int dm_max_decompress = 16;
-const int dm_cache1_count = 4;							  //
-const int dm_cache1_line = dm_size * 2 / dm_cache1_count; //! dm_size*2 must be div dm_cache1_count
+const int dm_cache1_count = 4;
+const int dm_cache1_line = dm_size * 2 / dm_cache1_count;
 const int dm_max_objects = 64;
 const int dm_obj_in_slot = 4;
 const int dm_cache_line = dm_size + 1 + dm_size;
@@ -29,39 +29,39 @@ class CDetailManager
 {
   public:
 	struct SlotItem
-	{ // один кустик
+	{
 		float scale;
 		float scale_calculated;
 		Fmatrix mRotY;
-		u32 vis_ID; // индекс в visibility списке он же тип [не качается, качается1, качается2]
+		u32 vis_ID;
 		float c_hemi;
 		float c_sun;
 	};
 	DEFINE_VECTOR(SlotItem*, SlotItemVec, SlotItemVecIt);
 	struct SlotPart
-	{							//
-		u32 id;					// ID модельки
-		SlotItemVec items;		// список кустиков
-		SlotItemVec r_items[3]; // список кустиков for render
+	{
+		u32 id;
+		SlotItemVec items;
+		SlotItemVec r_items[3];
 	};
 	enum SlotType
 	{
-		stReady = 0, // Ready to use
-		stPending,	 // Pending for decompression
+		stReady = 0,
+		stPending,
 
 		stFORCEDWORD = 0xffffffff
 	};
 	struct Slot
-	{ // распакованый слот размером DETAIL_SLOT_SIZE
+	{
 		struct
 		{
 			u32 empty : 1;
 			u32 type : 1;
 			u32 frame : 30;
 		};
-		int sx, sz;					// координаты слота X x Y
-		vis_data vis;				//
-		SlotPart G[dm_obj_in_slot]; //
+		int sx, sz;
+		vis_data vis;
+		SlotPart G[dm_obj_in_slot];
 
 		Slot()
 		{
@@ -84,6 +84,15 @@ class CDetailManager
 		}
 	};
 
+	// Instance data structure for vertex stream instancing
+	struct InstanceData
+	{
+		Fvector4 mat0;
+		Fvector4 mat1;
+		Fvector4 mat2;
+		Fvector4 color;
+	};
+
 	typedef xr_vector<xr_vector<SlotItemVec*>> vis_list;
 	typedef svector<CDetail*, dm_max_objects> DetailVec;
 	typedef DetailVec::iterator DetailIt;
@@ -93,23 +102,31 @@ class CDetailManager
 	int dither[16][16];
 	IReader* dtFS;
 	DetailHeader dtH;
-	DetailSlot* dtSlots; // note: pointer into VFS
+	DetailSlot* dtSlots;
 	DetailSlot DS_empty;
 
 	DetailVec objects;
-	vis_list m_visibles[3]; // 0=still, 1=Wave1, 2=Wave2
+	vis_list m_visibles[3];
 
 #ifndef _EDITOR
 	xrXRC xrc;
 #endif
 	CacheSlot1 cache_level1[dm_cache1_line][dm_cache1_line];
-	Slot* cache[dm_cache_line][dm_cache_line]; // grid-cache itself
-	svector<Slot*, dm_cache_size> cache_task;  // non-unpacked slots
-	Slot cache_pool[dm_cache_size];			   // just memory for slots
+	Slot* cache[dm_cache_line][dm_cache_line];
+	svector<Slot*, dm_cache_size> cache_task;
+	Slot cache_pool[dm_cache_size];
 	int cache_cx;
 	int cache_cz;
 
-	PSS poolSI; // pool из которого выделяются SlotItem
+	PSS poolSI;
+
+	// Hardware processor (instanced)
+	ref_geom hw_Geom;
+	ref_geom hw_Geom_Instanced;
+	u32 hw_BatchSize;
+	IDirect3DVertexBuffer9* hw_VB;
+	IDirect3DVertexBuffer9* hw_VB_Instances; // Instance data buffer
+	IDirect3DIndexBuffer9* hw_IB;
 
 	void UpdateVisibleM();
 	void UpdateVisibleS();
@@ -129,17 +146,11 @@ class CDetailManager
 	void soft_Unload();
 	void soft_Render();
 
-	// Hardware processor
-	ref_geom hw_Geom;
-	u32 hw_BatchSize;
-	IDirect3DVertexBuffer9* hw_VB;
-	IDirect3DIndexBuffer9* hw_IB;
-	ref_constant hwc_array;
-	ref_constant hwc_s_array;
+	// Hardware processor (instanced)
 	void hw_Load();
 	void hw_Unload();
 	void hw_Render();
-	void hw_Render_dump(ref_constant array, u32 var_id, u32 lod_id, u32 c_base);
+	void hw_Render_dump_instanced(u32 lod_id);
 
 	// get unpacked slot
 	DetailSlot& QueryDB(int sx, int sz);
@@ -172,6 +183,8 @@ class CDetailManager
 	void Load();
 	void Unload();
 	void Render();
+
+	void TestRenderWithoutInstancing();
 
 	/// MT stuff
 	xrCriticalSection MT;
