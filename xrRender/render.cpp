@@ -312,6 +312,8 @@ void CRender::reset_begin()
 {
 	OPTICK_EVENT("CRender::reset_begin");
 
+	Details->hw_Unload();
+
 	// Update incremental shadowmap-visibility solver
 	// BUG-ID: 10646
 	{
@@ -355,6 +357,8 @@ void CRender::reset_end()
 	// Set this flag true to skip the first render frame,
 	// that some data is not ready in the first frame (for example device camera position)
 	m_bFirstFrameAfterReset = true;
+
+	Details->hw_Load();
 }
 
 void CRender::OnFrame()

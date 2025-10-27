@@ -44,35 +44,61 @@ short QC(float v)
 	return short(t & 0xffff);
 }
 
+// Простая функция для получения параметров ветра
+Fvector4 GetWindParams()
+{
+	CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
+	float wind_dir = desc->wind_direction;
+	float wind_strength = desc->wind_strength;
+	float wind_gusting = desc->wind_gusting;
+
+	// Вектор направления ветра
+	float wind_dir_x = _cos(wind_dir);
+	float wind_dir_y = _sin(wind_dir);
+
+	return Fvector4().set(wind_dir_x, wind_dir_y, wind_gusting, wind_strength);
+}
+
+// Функция для получения параметров турбулентности
+Fvector4 GetWindTurbulence()
+{
+	CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
+	float turbulence = desc->wind_turbulence;
+	float turbulence_packed = clampr(turbulence, 0.0f, 1.0f);
+	float wind_speed = Device.fTimeGlobal * 2.5f * (1.0f + turbulence_packed);
+
+	return Fvector4().set(turbulence, turbulence_packed, wind_speed, 0);
+}
+
 void CDetailManager::hw_Load()
 {
-	hw_BatchSize = 256;
+	// УВЕЛИЧИМ размер батча для уменьшения количества вызовов
+	hw_BatchSize = 512;
 
-	// ИСПРАВЛЕНИЕ: убрать умножение на hw_BatchSize!
 	u32 dwVerts = 0;
 	u32 dwIndices = 0;
 	for (u32 o = 0; o < objects.size(); o++)
 	{
 		CDetail& D = *objects[o];
-		dwVerts += D.number_vertices;  // ← УБРАТЬ умножение на hw_BatchSize
-		dwIndices += D.number_indices; // ← УБРАТЬ умножение на hw_BatchSize
+		dwVerts += D.number_vertices;
+		dwIndices += D.number_indices;
 	}
 
 	u32 dwUsage = D3DUSAGE_WRITEONLY;
 
 	R_CHK(HW.pDevice->CreateVertexBuffer(dwVerts * sizeof(vertHW), dwUsage, 0, D3DPOOL_MANAGED, &hw_VB, 0));
 	R_CHK(HW.pDevice->CreateIndexBuffer(dwIndices * 2, dwUsage, D3DFMT_INDEX16, D3DPOOL_MANAGED, &hw_IB, 0));
+
+	// УВЕЛИЧИМ буфер инстансов для уменьшения блокировок
 	R_CHK(HW.pDevice->CreateVertexBuffer(hw_BatchSize * sizeof(InstanceData), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, 0,
 										 D3DPOOL_DEFAULT, &hw_VB_Instances, 0));
 
 	{
 		vertHW* pV;
 		R_CHK(hw_VB->Lock(0, 0, (void**)&pV, 0));
-		// ИСПРАВЛЕНИЕ: убрать цикл по батчам!
 		for (u32 o = 0; o < objects.size(); o++)
 		{
 			CDetail& D = *objects[o];
-			// ТОЛЬКО ОДНА КОПИЯ КАЖДОЙ МОДЕЛИ!
 			for (u32 v = 0; v < D.number_vertices; v++)
 			{
 				Fvector& vP = D.vertices[v].P;
@@ -92,11 +118,9 @@ void CDetailManager::hw_Load()
 	{
 		u16* pI;
 		R_CHK(hw_IB->Lock(0, 0, (void**)(&pI), 0));
-		// ИСПРАВЛЕНИЕ: убрать цикл по батчам!
 		for (u32 o = 0; o < objects.size(); o++)
 		{
 			CDetail& D = *objects[o];
-			// ТОЛЬКО ОДНА КОПИЯ КАЖДОЙ МОДЕЛИ!
 			for (u32 i = 0; i < u32(D.number_indices); i++)
 				*pI++ = u16(D.indices[i]);
 		}
@@ -123,54 +147,69 @@ void CDetailManager::hw_Render()
 
 	RenderBackend.set_Geometry(hw_Geom_Instanced);
 
-	hw_Render_dump_instanced(0);
-	hw_Render_dump_instanced(1);
-	hw_Render_dump_instanced(2);
+	// Рендерим отдельно анимированные и статичные детали
+	hw_Render_dump_instanced_combined();
 }
 
-void CDetailManager::hw_Render_dump_instanced(u32 lod_id)
+// Общая функция для рендеринга всех типов деталей
+void CDetailManager::hw_Render_dump_instanced_combined()
 {
 	Device.Statistic->RenderDUMP_DT_Count = 0;
-	vis_list& list = m_visibles[lod_id];
 
 	Fmatrix mWorld = RenderBackend.get_xform_world();
 	Fmatrix mView = Device.mView;
 	Fmatrix mProject = Device.mProject;
 	Fmatrix mFullTransform = Device.mFullTransform;
 
-	// ИСПРАВЛЕНИЕ: смещения без умножения на hw_BatchSize!
-	u32 vOffset = 0;
-	u32 iOffset = 0;
-
+	// ОСНОВНОЙ ЦИКЛ РЕНДЕРИНГА - обрабатываем каждый объект отдельно
 	for (u32 O = 0; O < objects.size(); O++)
 	{
 		CDetail& Object = *objects[O];
-		xr_vector<SlotItemVec*>& vis = list[O];
 
-		if (vis.empty())
+		// ВЫЧИСЛЯЕМ СМЕЩЕНИЯ ДЛЯ КАЖДОГО ОБЪЕКТА
+		u32 vOffset = 0;
+		u32 iOffset = 0;
+		for (u32 i = 0; i < O; i++)
 		{
-			// ИСПРАВЛЕНИЕ: увеличивать на обычное количество, не на hw_BatchSize!
-			vOffset += Object.number_vertices;
-			iOffset += Object.number_indices;
-			continue;
+			vOffset += objects[i]->number_vertices;
+			iOffset += objects[i]->number_indices;
 		}
 
-		int id = SE_DETAIL_NORMAL_STATIC;
+		// ИСПРАВЛЕНИЕ: правильное разделение на анимированные и статичные объекты
+		// Анимированные объекты (без флага DO_NO_WAVING) используют LOD 0 и 1
+		// Статичные объекты (с флагом DO_NO_WAVING) используют LOD 2
+		if (!Object.m_Flags.is(DO_NO_WAVING))
+		{
+			// Анимированные: LOD 0 и 1 (ближние и средние детали)
+			hw_Render_object_instances(O, Object, 0, 1, SE_DETAIL_NORMAL_ANIMATED, vOffset, iOffset, mWorld, mView,
+									   mProject, mFullTransform);
+		}
+		else
+		{
+			// Статичные: LOD 2 (дальние детали)
+			hw_Render_object_instances(O, Object, 2, 2, SE_DETAIL_NORMAL_STATIC, vOffset, iOffset, mWorld, mView,
+									   mProject, mFullTransform);
+		}
+	}
+}
 
-		if (!Object.shader || !Object.shader->E[id])
+// Универсальная функция рендеринга инстансов для объекта
+void CDetailManager::hw_Render_object_instances(u32 object_index, CDetail& Object, u32 start_lod, u32 end_lod,
+												int shader_id, u32 vOffset, u32 iOffset, Fmatrix& mWorld,
+												Fmatrix& mView, Fmatrix& mProject, Fmatrix& mFullTransform)
+{
+	// ВРЕМЕННЫЙ ВЕКТОР: создаем и сразу уничтожаем для каждого объекта
+	xr_vector<InstanceData> instances;
+	instances.reserve(1024);
+
+	// Собираем инстансы для указанного диапазона LOD
+	for (u32 current_lod_id = start_lod; current_lod_id <= end_lod; current_lod_id++)
+	{
+		vis_list& list = m_visibles[current_lod_id];
+		xr_vector<SlotItemVec*>& vis = list[object_index];
+
+		if (vis.empty())
 			continue;
-
-		RenderBackend.set_Element(Object.shader->E[id]);
-		RenderImplementation.apply_lmaterial();
-
-		RenderBackend.set_Constant("m_WorldView", mView);
-		RenderBackend.set_Constant("m_WorldViewProject", mFullTransform);
-		RenderBackend.set_Constant("m_World", mWorld);
-		RenderBackend.set_Constant("m_View", mView);
-		RenderBackend.set_Constant("m_Project", mProject);
-
-		xr_vector<InstanceData> instances;
-		instances.reserve(1024);
 
 		xr_vector<SlotItemVec*>::iterator _vI = vis.begin();
 		xr_vector<SlotItemVec*>::iterator _vE = vis.end();
@@ -187,63 +226,78 @@ void CDetailManager::hw_Render_dump_instanced(u32 lod_id)
 				float scale = Instance.scale_calculated;
 				Fmatrix& M = Instance.mRotY;
 
+				// ВАЖНОЕ ИСПРАВЛЕНИЕ: сохраняем оригинальную позицию Y в mat1.w для расчета ветра
 				inst.mat0.set(M._11 * scale, M._21 * scale, M._31 * scale, M._41);
-				inst.mat1.set(M._12 * scale, M._22 * scale, M._32 * scale, M._42);
+				inst.mat1.set(M._12 * scale, M._22 * scale, M._32 * scale, M._42); // M._42 содержит позицию Y
 				inst.mat2.set(M._13 * scale, M._23 * scale, M._33 * scale, M._43);
 
 				float h = Instance.c_hemi;
 				float s = Instance.c_sun;
 				inst.color.set(s, s, s, h);
+				inst.lod_id = (float)current_lod_id;
 
 				instances.push_back(inst);
 			}
 		}
 
-		if (!instances.empty())
-		{
-			u32 total_instances = instances.size();
-			u32 batch_count = (total_instances + hw_BatchSize - 1) / hw_BatchSize;
+		// Очищаем список видимости
+		vis.clear();
+	}
 
-			for (u32 batch = 0; batch < batch_count; batch++)
-			{
-				u32 start_instance = batch * hw_BatchSize;
-				u32 end_instance = std::min(start_instance + hw_BatchSize, total_instances);
-				u32 batch_instance_count = end_instance - start_instance;
+	if (instances.empty())
+		return;
 
-				InstanceData* pInstances;
-				R_CHK(hw_VB_Instances->Lock(0, batch_instance_count * sizeof(InstanceData), (void**)&pInstances,
-											D3DLOCK_DISCARD));
+	if (!Object.shader || !Object.shader->E[shader_id])
+		return;
 
-				CopyMemory(pInstances, &instances[start_instance], batch_instance_count * sizeof(InstanceData));
-				R_CHK(hw_VB_Instances->Unlock());
+	RenderBackend.set_Element(Object.shader->E[shader_id]);
+	RenderImplementation.apply_lmaterial();
 
-				HW.pDevice->SetStreamSource(0, hw_VB, 0, sizeof(vertHW));
-				HW.pDevice->SetStreamSource(1, hw_VB_Instances, 0, sizeof(InstanceData));
+	RenderBackend.set_Constant("m_WorldView", mView);
+	RenderBackend.set_Constant("m_WorldViewProject", mFullTransform);
+	RenderBackend.set_Constant("m_World", mWorld);
+	RenderBackend.set_Constant("m_View", mView);
+	RenderBackend.set_Constant("m_Project", mProject);
 
-				HW.pDevice->SetStreamSourceFreq(0, D3DSTREAMSOURCE_INDEXEDDATA | batch_instance_count);
-				HW.pDevice->SetStreamSourceFreq(1, D3DSTREAMSOURCE_INSTANCEDATA | 1ul);
+	// Для анимированных объектов устанавливаем константы ветра
+	if (!Object.m_Flags.is(DO_NO_WAVING))
+	{
+		Fvector4 wind_params = GetWindParams();
+		Fvector4 wind_turbulence = GetWindTurbulence();
 
-				// ИСПРАВЛЕНИЕ: использовать обычное количество вершин/индексов
-				HRESULT hr = HW.pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-															  vOffset, // Базовое смещение вершин
-															  0,	   // MinIndex
-															  Object.number_vertices, // NumVertices (ОДНА копия!)
-															  iOffset, // Базовое смещение индексов
-															  Object.number_indices / 3 // PrimitiveCount (ОДНА копия!)
-				);
+		RenderBackend.set_Constant("wind_params", wind_params);
+		RenderBackend.set_Constant("wind_turbulence", wind_turbulence);
+	}
 
-				HW.pDevice->SetStreamSourceFreq(0, 1);
-				HW.pDevice->SetStreamSourceFreq(1, 1);
+	u32 total_instances = instances.size();
+	u32 batch_count = (total_instances + hw_BatchSize - 1) / hw_BatchSize;
 
-				Device.Statistic->RenderDUMP_DT_Count += batch_instance_count;
-				RenderBackend.stat.r.s_details.add(Object.number_vertices * batch_instance_count);
-			}
+	for (u32 batch = 0; batch < batch_count; batch++)
+	{
+		u32 start_instance = batch * hw_BatchSize;
+		u32 end_instance = std::min(start_instance + hw_BatchSize, total_instances);
+		u32 batch_instance_count = end_instance - start_instance;
 
-			vis.clear();
-		}
+		InstanceData* pInstances;
+		R_CHK(hw_VB_Instances->Lock(0, batch_instance_count * sizeof(InstanceData), (void**)&pInstances,
+									D3DLOCK_DISCARD));
 
-		// ИСПРАВЛЕНИЕ: увеличивать на обычное количество, не на hw_BatchSize!
-		vOffset += Object.number_vertices;
-		iOffset += Object.number_indices;
+		CopyMemory(pInstances, &instances[start_instance], batch_instance_count * sizeof(InstanceData));
+		R_CHK(hw_VB_Instances->Unlock());
+
+		HW.pDevice->SetStreamSource(0, hw_VB, 0, sizeof(vertHW));
+		HW.pDevice->SetStreamSource(1, hw_VB_Instances, 0, sizeof(InstanceData));
+
+		HW.pDevice->SetStreamSourceFreq(0, D3DSTREAMSOURCE_INDEXEDDATA | batch_instance_count);
+		HW.pDevice->SetStreamSourceFreq(1, D3DSTREAMSOURCE_INSTANCEDATA | 1ul);
+
+		HRESULT hr = HW.pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, vOffset, 0, Object.number_vertices, iOffset,
+													  Object.number_indices / 3);
+
+		HW.pDevice->SetStreamSourceFreq(0, 1);
+		HW.pDevice->SetStreamSourceFreq(1, 1);
+
+		Device.Statistic->RenderDUMP_DT_Count += batch_instance_count;
+		RenderBackend.stat.r.s_details.add(Object.number_vertices * batch_instance_count);
 	}
 }

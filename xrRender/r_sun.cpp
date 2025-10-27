@@ -868,7 +868,7 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 
 		if (ps_r_lighting_flags.test(RFLAG_SUN_DETAILS))
 		{
-			Details->UpdateVisibleM();
+			//Details->UpdateVisibleM();
 			Details->Render();
 		}
 

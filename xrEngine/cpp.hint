@@ -2,3 +2,6 @@
 // (например, имена функций и макросов).
 // Дополнительные сведения: https://go.microsoft.com/fwlink/?linkid=865984
 #define ICF
+#define ENGINE_API
+#define ENGINE_API __declspec(dllexport)
+#define ENGINE_API __declspec(dllimport)

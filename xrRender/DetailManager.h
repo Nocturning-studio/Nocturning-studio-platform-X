@@ -14,7 +14,7 @@
 #include "ESceneClassList.h"
 #endif
 
-const int dm_size = 32;
+const int dm_size = 36;
 const int dm_max_decompress = 16;
 const int dm_cache1_count = 4;
 const int dm_cache1_line = dm_size * 2 / dm_cache1_count;
@@ -91,12 +91,21 @@ class CDetailManager
 		Fvector4 mat1;
 		Fvector4 mat2;
 		Fvector4 color;
+		float lod_id;
 	};
 
 	typedef xr_vector<xr_vector<SlotItemVec*>> vis_list;
 	typedef svector<CDetail*, dm_max_objects> DetailVec;
 	typedef DetailVec::iterator DetailIt;
 	typedef poolSS<SlotItem, 4096> PSS;
+
+	struct ObjectInstances : public xr_vector<InstanceData>
+	{
+		ObjectInstances()
+		{
+			reserve(1024);
+		}
+	};
 
   public:
 	int dither[16][16];
@@ -129,7 +138,6 @@ class CDetailManager
 	IDirect3DIndexBuffer9* hw_IB;
 
 	void UpdateVisibleM();
-	void UpdateVisibleS();
 
 #ifdef _EDITOR
 	virtual ObjectList* GetSnapList() = 0;
@@ -150,7 +158,11 @@ class CDetailManager
 	void hw_Load();
 	void hw_Unload();
 	void hw_Render();
-	void hw_Render_dump_instanced(u32 lod_id);
+	void hw_Render_dump_instanced_combined();
+	void hw_Render_dump_instanced();
+	void hw_Render_object_instances(u32 object_index, CDetail& Object, u32 start_lod, u32 end_lod, int shader_id,
+									u32 vOffset, u32 iOffset, Fmatrix& mWorld, Fmatrix& mView, Fmatrix& mProject,
+									Fmatrix& mFullTransform);
 
 	// get unpacked slot
 	DetailSlot& QueryDB(int sx, int sz);
@@ -183,8 +195,6 @@ class CDetailManager
 	void Load();
 	void Unload();
 	void Render();
-
-	void TestRenderWithoutInstancing();
 
 	/// MT stuff
 	xrCriticalSection MT;
