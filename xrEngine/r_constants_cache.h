@@ -3,7 +3,9 @@
 #pragma once
 
 #include "r_constants.h"
-#include "device.h" // Теперь Device доступен
+
+// Убираем зависимость от Device, используем упрощенную систему
+// #include "device.h" // ЗАКОММЕНТИРУЕМ эту строку
 
 template <class T, u32 limit> class R_constant_cache
 {
@@ -53,41 +55,36 @@ class ENGINE_API R_constant_array
 	BOOL b_dirty;
 
   private:
-	// ДОБАВЛЯЕМ: Dirty-система
-	u32 m_dirtyFrame;
-	u32 m_lastFlushFrame;
-
-	u32 getFrame();
+	// УПРОЩАЕМ: убираем сложную dirty-систему с зависимостью от Device
+	// Просто используем счетчик вместо фреймов
+	u32 m_dirtyCounter;
 
   public:
-	// ДОБАВЛЯЕМ: Конструктор для инициализации
-	R_constant_array() : b_dirty(FALSE), m_dirtyFrame(0), m_lastFlushFrame(0)
+	// Конструктор для инициализации
+	R_constant_array() : b_dirty(FALSE), m_dirtyCounter(0)
 	{
 	}
 
-	// ДОБАВЛЯЕМ: Dirty-методы
+	// УПРОЩЕННЫЕ Dirty-методы
 	ICF void mark_dirty()
 	{
-		m_dirtyFrame = getFrame();
+		m_dirtyCounter++;
 		b_dirty = TRUE;
 	}
 
 	ICF bool needs_flush() const
 	{
-		// ИСПРАВЛЕНИЕ: проверяем что dirty frame больше last flush frame
-		return b_dirty && (m_dirtyFrame > m_lastFlushFrame);
+		return b_dirty;
 	}
 
 	ICF void mark_flushed()
 	{
-		m_lastFlushFrame = getFrame();
 		b_dirty = FALSE;
 	}
 
 	ICF void reset_dirty()
 	{
-		m_dirtyFrame = 0;
-		m_lastFlushFrame = 0;
+		m_dirtyCounter = 0;
 		b_dirty = FALSE;
 	}
 
@@ -96,12 +93,17 @@ class ENGINE_API R_constant_array
 		mark_dirty();
 	}
 
+	ICF u32 get_dirty_count() const
+	{
+		return m_dirtyCounter;
+	}
+
 	t_f& get_array_f()
 	{
 		return c_f;
 	}
 
-	// МОДИФИЦИРУЕМ существующие методы - добавляем mark_dirty()
+	// Существующие методы с добавлением mark_dirty()
 	void set(R_constant* C, R_constant_load& L, const Fmatrix& A)
 	{
 		VERIFY(RC_float == C->type);
@@ -195,6 +197,65 @@ class ENGINE_API R_constant_array
 		c_f.dirty(base, base + 1);
 		mark_dirty();
 	}
+
+	// НОВЫЕ МЕТОДЫ для прямой установки по регистрам
+	void set_direct(u32 register_index, const Fmatrix& A)
+	{
+		if (register_index + 3 < 256) // 256 - размер массива констант
+		{
+			Fvector4* it = c_f.access(register_index);
+			it[0].set(A._11, A._21, A._31, A._41);
+			it[1].set(A._12, A._22, A._32, A._42);
+			it[2].set(A._13, A._23, A._33, A._43);
+			it[3].set(A._14, A._24, A._34, A._44);
+			c_f.dirty(register_index, register_index + 4);
+			mark_dirty();
+		}
+	}
+
+	void set_direct(u32 register_index, const Fvector4& A)
+	{
+		if (register_index < 256)
+		{
+			Fvector4* it = c_f.access(register_index);
+			it->set(A.x, A.y, A.z, A.w);
+			c_f.dirty(register_index, register_index + 1);
+			mark_dirty();
+		}
+	}
+
+	void seta_direct(u32 register_index, u32 count, const Fmatrix* A)
+	{
+		for (u32 i = 0; i < count; i++)
+		{
+			if (register_index + i * 4 + 3 < 256)
+			{
+				Fvector4* it = c_f.access(register_index + i * 4);
+				const Fmatrix& M = A[i];
+				it[0].set(M._11, M._21, M._31, M._41);
+				it[1].set(M._12, M._22, M._32, M._42);
+				it[2].set(M._13, M._23, M._33, M._43);
+				it[3].set(M._14, M._24, M._34, M._44);
+				c_f.dirty(register_index + i * 4, register_index + i * 4 + 4);
+			}
+		}
+		mark_dirty();
+	}
+
+	void seta_direct(u32 register_index, u32 count, const Fvector4* A)
+	{
+		for (u32 i = 0; i < count; i++)
+		{
+			if (register_index + i < 256)
+			{
+				Fvector4* it = c_f.access(register_index + i);
+				it->set(A[i].x, A[i].y, A[i].z, A[i].w);
+				c_f.dirty(register_index + i, register_index + i + 1);
+			}
+		}
+		mark_dirty();
+	}
+	u32 getFrame();
 };
 
 class ENGINE_API R_constants
@@ -203,26 +264,24 @@ class ENGINE_API R_constants
 	ALIGN(16) R_constant_array a_pixel;
 	ALIGN(16) R_constant_array a_vertex;
 
-	// ДОБАВЛЯЕМ: Конструктор
+  public:
 	R_constants()
 	{
 	}
 
 	void flush_cache();
 
-  public:
-	// ВРЕМЕННО ВОЗВРАЩАЕМ старую логику для отладки
+	// УПРОЩАЕМ: убираем дублирование установки b_dirty
+	// Методы set и seta уже вызывают mark_dirty() внутри R_constant_array
 	ICF void set(R_constant* C, const Fmatrix& A)
 	{
 		if (C->destination & 1)
 		{
 			a_pixel.set(C, C->ps, A);
-			a_pixel.b_dirty = TRUE; // ВРЕМЕННО ОСТАВЛЯЕМ
 		}
 		if (C->destination & 2)
 		{
 			a_vertex.set(C, C->vs, A);
-			a_vertex.b_dirty = TRUE; // ВРЕМЕННО ОСТАВЛЯЕМ
 		}
 	}
 
@@ -231,12 +290,10 @@ class ENGINE_API R_constants
 		if (C->destination & 1)
 		{
 			a_pixel.set(C, C->ps, A);
-			a_pixel.b_dirty = TRUE; // ВРЕМЕННО ОСТАВЛЯЕМ
 		}
 		if (C->destination & 2)
 		{
 			a_vertex.set(C, C->vs, A);
-			a_vertex.b_dirty = TRUE; // ВРЕМЕННО ОСТАВЛЯЕМ
 		}
 	}
 
@@ -252,12 +309,10 @@ class ENGINE_API R_constants
 		if (C->destination & 1)
 		{
 			a_pixel.seta(C, C->ps, e, A);
-			a_pixel.b_dirty = TRUE; // ВРЕМЕННО ОСТАВЛЯЕМ
 		}
 		if (C->destination & 2)
 		{
 			a_vertex.seta(C, C->vs, e, A);
-			a_vertex.b_dirty = TRUE; // ВРЕМЕННО ОСТАВЛЯЕМ
 		}
 	}
 
@@ -266,12 +321,10 @@ class ENGINE_API R_constants
 		if (C->destination & 1)
 		{
 			a_pixel.seta(C, C->ps, e, A);
-			a_pixel.b_dirty = TRUE; // ВРЕМЕННО ОСТАВЛЯЕМ
 		}
 		if (C->destination & 2)
 		{
 			a_vertex.seta(C, C->vs, e, A);
-			a_vertex.b_dirty = TRUE; // ВРЕМЕННО ОСТАВЛЯЕМ
 		}
 	}
 
@@ -280,6 +333,47 @@ class ENGINE_API R_constants
 		Fvector4 data;
 		data.set(x, y, z, w);
 		seta(C, e, data);
+	}
+
+	// Методы для прямой установки по регистрам
+	void set_vs_direct(u32 Register, const Fmatrix& A)
+	{
+		a_vertex.set_direct(Register, A);
+	}
+
+	void set_vs_direct(u32 Register, const Fvector4& A)
+	{
+		a_vertex.set_direct(Register, A);
+	}
+
+	void seta_vs_direct(u32 Register, u32 count, const Fmatrix* A)
+	{
+		a_vertex.seta_direct(Register, count, A);
+	}
+
+	void seta_vs_direct(u32 Register, u32 count, const Fvector4* A)
+	{
+		a_vertex.seta_direct(Register, count, A);
+	}
+
+	void set_ps_direct(u32 Register, const Fmatrix& A)
+	{
+		a_pixel.set_direct(Register, A);
+	}
+
+	void set_ps_direct(u32 Register, const Fvector4& A)
+	{
+		a_pixel.set_direct(Register, A);
+	}
+
+	void seta_ps_direct(u32 Register, u32 count, const Fmatrix* A)
+	{
+		a_pixel.seta_direct(Register, count, A);
+	}
+
+	void seta_ps_direct(u32 Register, u32 count, const Fvector4* A)
+	{
+		a_pixel.seta_direct(Register, count, A);
 	}
 
 	ICF void flush()

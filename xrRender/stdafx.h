@@ -32,7 +32,7 @@ IC	void	jitter(CBlender_Compile& C)
 {
 	C.r_Sampler("s_blue_noise", "noise\\blue_noise_texture", true, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
 	C.r_Sampler("s_perlin_noise", "noise\\perlin_noise_texture", true, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
-	C.r_Sampler("s_wave_map", "vfx\\vfx_wave_map");
+	C.r_Sampler("s_wave_map", "vfx\\vfx_wave_map", true, D3DTADDRESS_WRAP, D3DTEXF_LINEAR, D3DTEXF_LINEAR, D3DTEXF_LINEAR);
 }
 
 IC	void	gbuffer(CBlender_Compile& C)

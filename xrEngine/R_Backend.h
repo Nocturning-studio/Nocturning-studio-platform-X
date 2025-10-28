@@ -367,6 +367,62 @@ class ENGINE_API CBackend
 		if (ctable)
 			set_Array_Constant(&*ctable->get(n), e, x, y, z, w);
 	}
+	ICF void set_Constant_Register_VS(u32 Register, const Fmatrix& A)
+	{
+		constants.set_vs_direct(Register, A);
+	}
+
+	ICF void set_Constant_Register_VS(u32 Register, const Fvector4& A)
+	{
+		constants.set_vs_direct(Register, A);
+	}
+
+	ICF void set_Constant_Register_VS(u32 Register, float x, float y = 0.0f, float z = 0.0f, float w = 0.0f)
+	{
+		Fvector4 vec;
+		vec.set(x, y, z, w);
+		constants.set_vs_direct(Register, vec);
+	}
+
+	// Массивная установка матриц в vertex shader
+	ICF void set_Array_Constant_Register_VS(u32 Register, u32 count, const Fmatrix* A)
+	{
+		constants.seta_vs_direct(Register, count, A);
+	}
+
+	ICF void set_Array_Constant_Register_VS(u32 Register, u32 count, const Fvector4* A)
+	{
+		constants.seta_vs_direct(Register, count, A);
+	}
+
+	// Прямая установка матриц в pixel shader по номеру регистра
+	ICF void set_Constant_Register_PS(u32 Register, const Fmatrix& A)
+	{
+		constants.set_ps_direct(Register, A);
+	}
+
+	ICF void set_Constant_Register_PS(u32 Register, const Fvector4& A)
+	{
+		constants.set_ps_direct(Register, A);
+	}
+
+	ICF void set_Constant_Register_PS(u32 Register, float x, float y = 0.0f, float z = 0.0f, float w = 0.0f)
+	{
+		Fvector4 vec;
+		vec.set(x, y, z, w);
+		constants.set_ps_direct(Register, vec);
+	}
+
+	// Массивная установка матриц в pixel shader
+	ICF void set_Array_Constant_Register_PS(u32 Register, u32 count, const Fmatrix* A)
+	{
+		constants.seta_ps_direct(Register, count, A);
+	}
+
+	ICF void set_Array_Constant_Register_PS(u32 Register, u32 count, const Fvector4* A)
+	{
+		constants.seta_ps_direct(Register, count, A);
+	}
 
 	ICF void Render(D3DPRIMITIVETYPE T, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC);
 	ICF void Render(D3DPRIMITIVETYPE T, u32 startV, u32 PC);

@@ -48,13 +48,15 @@ class CBlender_detail_object : public IBlender
 		switch (C.iElement)
 		{
 		case SE_DETAIL_NORMAL_ANIMATED:
-			configure_shader_detail_object(C, false, "detail_object_animated", "detail_object", false);
+			C.r_Define("USE_DETAILWAVE", "1");
+			configure_shader_detail_object(C, false, "detail_object", "detail_object", false);
 			break;
 		case SE_DETAIL_NORMAL_STATIC:
 			configure_shader_detail_object(C, false, "detail_object", "detail_object", false);
 			break;
 		case SE_DETAIL_SHADOW_DEPTH_ANIMATED:
-			C.r_Pass("shadow_depth_stage_detail_object_animated", "shadow_depth_stage_detail_object", FALSE);
+			C.r_Define("USE_DETAILWAVE", "1");
+			C.r_Pass("shadow_depth_stage_detail_object", "shadow_depth_stage_detail_object", FALSE);
 			C.r_Sampler("s_base", C.L_textures[0]);
 			jitter(C);
 			C.r_End();
