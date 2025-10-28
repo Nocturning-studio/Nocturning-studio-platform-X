@@ -122,32 +122,20 @@ void CDetailManager::hw_Render()
 
 Fvector4 GetWindParams()
 {
-	CEnvDescriptor& env = *g_pGamePersistent->Environment().CurrentEnv;
-
-	float wind_dir = env.wind_direction;
-	float wind_strength = env.wind_strength;
-
-	float wind_dir_x = _cos(wind_dir);
-	float wind_dir_y = _sin(wind_dir);
-
-	Fvector4 result = Fvector4().set(wind_dir_x, wind_dir_y, 0.0f, wind_strength);
-
-	return result;
+	CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
+	float WindGusting = desc->wind_gusting;
+	float WindStrength = desc->wind_strength;
+	float WindDirectionX = cos(desc->wind_direction), WindDirectionY = sin(desc->wind_direction);
+	return Fvector4().set(WindDirectionX, WindDirectionY, WindGusting, WindStrength);
 }
 
 Fvector4 GetWindTurbulence()
 {
-	CEnvDescriptor& env = *g_pGamePersistent->Environment().CurrentEnv;
-	float turbulence = env.wind_turbulence;
-	float turbulence_packed = clampr(turbulence, 0.0f, 1.0f) + 1.0f;
-	float wind_dir = env.wind_direction;
-	float wind_dir_x = _cos(wind_dir);
-	float wind_dir_y = _sin(wind_dir);
-	float wind_speed = Device.fTimeGlobal * 2.5f * (1.0f + turbulence_packed) * env.wind_gusting;
-
-	Fvector4 result = Fvector4().set(turbulence, turbulence_packed, wind_speed * wind_dir_x, wind_speed * wind_dir_y);
-
-	return result;
+	CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
+	float Turbulence = desc->wind_turbulence;
+	float TurbulencePacked = std::max(std::min(Turbulence, 0.0f), 1.0f);
+	float WindSpeed = Device.fTimeGlobal * 2.5f * (1.0f + TurbulencePacked);
+	return Fvector4().set(Turbulence, TurbulencePacked, WindSpeed, 0);
 }
 
 void CDetailManager::hw_Render_dump_instanced_combined()
@@ -254,21 +242,15 @@ void CDetailManager::hw_Render_dump_instanced_combined()
 			RenderBackend.set_Element(Object.shader->E[shader_id]);
 
 			// Устанавливаем матрицы через регистры
-			RenderBackend.set_Constant("mat_WorldView", mWorldView);		  // c0-c2: WorldView (для view space)
-			RenderBackend.set_Constant("mat_WorldViewProject", mWorldViewProject); // c4-c7: WorldViewProject (для проекции)
+			RenderBackend.set_Constant("mat_WorldView", mWorldView);
+			RenderBackend.set_Constant("mat_WorldViewProject", mWorldViewProject);
 
 			// Константы ветра
-			RenderBackend.set_Constant_Register_VS(20, wind_turbulence);
-			RenderBackend.set_Constant_Register_VS(21, wind_params);
-
-			// Добавьте в код для отладки
-			Msg("[DETAILS] WorldView matrix:");
-			Msg("[DETAILS]   [%.3f, %.3f, %.3f, %.3f]", mWorldView._11, mWorldView._12, mWorldView._13, mWorldView._14);
-			Msg("[DETAILS]   [%.3f, %.3f, %.3f, %.3f]", mWorldView._21, mWorldView._22, mWorldView._23, mWorldView._24);
-			Msg("[DETAILS]   [%.3f, %.3f, %.3f, %.3f]", mWorldView._31, mWorldView._32, mWorldView._33, mWorldView._34);
-
-			Msg("[DETAILS] Wind: turbulence=%.3f, params=(%.3f,%.3f,%.3f,%.3f)", wind_turbulence.x, wind_params.x,
-				wind_params.y, wind_params.z, wind_params.w);
+			if (!Object.m_Flags.is(DO_NO_WAVING))
+			{
+				RenderBackend.set_Constant_Register_VS(20, wind_turbulence);
+				RenderBackend.set_Constant_Register_VS(21, wind_params);
+			}
 
 			u32 total_instances = instances.size();
 			u32 batch_count = (total_instances + hw_BatchSize - 1) / hw_BatchSize;
