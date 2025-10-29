@@ -154,12 +154,14 @@ class CDetailManager
 
 	// Threading and state
 	xrCriticalSection m_MT;
+	xrCriticalSection m_VisibleMT; // For visibility synchronization
 	volatile u32 m_frame_calc;
 	volatile u32 m_frame_rendered;
 	bool m_initialized;
 	bool m_loaded;
 	volatile BOOL m_bInLoad;
 	volatile BOOL m_bShuttingDown;
+	volatile LONG m_bUpdating; // Prevent concurrent updates
 	bool m_bRegisteredInParallel;
 
   public:
@@ -170,7 +172,7 @@ class CDetailManager
 	static float s_max_occlusion_distance;
 
   private:
-	// Метод для удаления из параллельных задач
+	// Unregister from parallel tasks
 	void UnregisterFromParallel();
 
 	// Internal methods
@@ -196,7 +198,7 @@ class CDetailManager
 
 	bool InterpolateAndDither(float* alpha255, u32 x, u32 y, u32 sx, u32 sy, u32 size);
 
-    float GetSlotYBase(const DetailSlot& DS) const
+	float GetSlotYBase(const DetailSlot& DS) const
 	{
 		return DS.r_ybase();
 	}
@@ -273,6 +275,7 @@ class CDetailManager
 	void Render();
 	void __stdcall Update();
 	void UpdateCache();
+	void SafeUpdate(); // Added for safe updates
 
 	// Device management
 	void OnDeviceResetBegin();

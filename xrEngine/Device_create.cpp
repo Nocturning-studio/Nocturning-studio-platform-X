@@ -27,7 +27,7 @@ void CRenderDevice::_SetupStates()
 		CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR));
 		CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR));
 	}
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_DITHERENABLE, TRUE));
+	CHK_DX(HW.pDevice->SetRenderState(D3DRS_DITHERENABLE, FALSE));
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_COLORVERTEX, TRUE));
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
 	CHK_DX(HW.pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD));

@@ -441,14 +441,14 @@ void CDetailManager::hw_Render_dump()
 			RenderBackend.set_Element(Object.shader->E[shader_id]);
 
 			// Устанавливаем константы для шейдера
-			RenderBackend.set_Constant("mat_WorldView", mWorldView);
-			RenderBackend.set_Constant("mat_WorldViewProject", mWorldViewProject);
+			RenderBackend.set_Constant_Register_VS(20, mWorldViewProject);
+			RenderBackend.set_Constant_Register_VS(24, mWorldView);
 
 			// Параметры ветра (только для анимированных объектов)
 			if (!Object.m_Flags.is(DO_NO_WAVING))
 			{
-				RenderBackend.set_Constant_Register_VS(20, wind_turbulence);
-				RenderBackend.set_Constant_Register_VS(21, wind_params);
+				RenderBackend.set_Constant_Register_VS(27, wind_turbulence);
+				RenderBackend.set_Constant_Register_VS(28, wind_params);
 			}
 
 			// Render in batches
