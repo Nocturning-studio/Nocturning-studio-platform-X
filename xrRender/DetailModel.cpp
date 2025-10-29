@@ -105,12 +105,12 @@ void CDetail::Load(IReader* S)
 	number_indices = S->r_u32();
 	R_ASSERT(0 == (number_indices % 3));
 
-	// Vertices
+	// Vertices - ПРОВЕРЬТЕ корректность данных
 	u32 size_vertices = number_vertices * sizeof(fvfVertexIn);
 	vertices = xr_alloc<CDetail::fvfVertexIn>(number_vertices);
 	S->r(vertices, size_vertices);
 
-	// Indices
+	// Indices - ПРОВЕРЬТЕ корректность данных
 	u32 size_indices = number_indices * sizeof(u16);
 	indices = xr_alloc<u16>(number_indices);
 	S->r(indices, size_indices);
@@ -118,7 +118,10 @@ void CDetail::Load(IReader* S)
 	// Validate indices
 #ifdef DEBUG
 	for (u32 idx = 0; idx < number_indices; idx++)
-		R_ASSERT(indices[idx] < (u16)number_vertices);
+	{
+		R_ASSERT2(indices[idx] < number_vertices,
+				  make_string("Invalid index: %d, max vertex: %d", indices[idx], number_vertices - 1).c_str());
+	}
 #endif
 
 	// Calc BB & SphereRadius

@@ -11,6 +11,7 @@
 
 #include "DetailManager.h"
 #include "cl_intersect.h"
+#include "..\xrEngine\xrXRC.h"
 
 #ifdef _EDITOR
 #include "ESceneClassList.h"
@@ -28,6 +29,38 @@ BOOL CDetailManager::s_use_hom_occlusion = FALSE;
 float CDetailManager::s_occlusion_padding_scale = 1.0f;
 float CDetailManager::s_max_occlusion_distance = 150.0f;
 BOOL CDetailManager::s_disable_hom = TRUE;
+const int magic4x4[4][4] = {{0, 14, 3, 13}, {11, 5, 8, 6}, {12, 2, 15, 1}, {7, 9, 4, 10}};
+
+
+IC float Interpolate(float* base, u32 x, u32 y, u32 size)
+{
+	float f = float(size);
+	float fx = float(x) / f;
+	float ifx = 1.f - fx;
+	float fy = float(y) / f;
+	float ify = 1.f - fy;
+
+	float c01 = base[0] * ifx + base[1] * fx;
+	float c23 = base[2] * ifx + base[3] * fx;
+	float c02 = base[0] * ify + base[2] * fy;
+	float c13 = base[1] * ify + base[3] * fy;
+
+	float cx = ify * c01 + fy * c23;
+	float cy = ifx * c02 + fx * c13;
+	return (cx + cy) / 2;
+}
+
+IC bool CDetailManager::InterpolateAndDither(float* alpha255, u32 x, u32 y, u32 sx, u32 sy, u32 size)
+{
+	clamp(x, (u32)0, size - 1);
+	clamp(y, (u32)0, size - 1);
+	int c = iFloor(Interpolate(alpha255, x, y, size) + .5f);
+	clamp(c, 0, 255);
+
+	u32 row = (y + sy) % 16;
+	u32 col = (x + sx) % 16;
+	return c > dither[col][row];
+}
 
 CDetailManager::CDetailManager()
 	: m_dtFS(nullptr), m_dtSlots(nullptr), m_hw_Geom(nullptr), m_hw_Geom_Instanced(nullptr), m_hw_BatchSize(0),
@@ -45,6 +78,9 @@ CDetailManager::CDetailManager()
 	ZeroMemory(m_cache, sizeof(m_cache));
 	ZeroMemory(m_cache_level1, sizeof(m_cache_level1));
 	ZeroMemory(m_cache_pool, sizeof(m_cache_pool));
+
+	// Initialize dither matrix
+	bwdithermap(2);
 }
 
 CDetailManager::~CDetailManager()
@@ -118,7 +154,9 @@ D3DVERTEXELEMENT9* CDetailManager::GetDetailsInstancedVertexDecl()
 
 short CDetailManager::QuantConstant(float v)
 {
-	int t = iFloor(v * float(16384)); // quant = 16384
+	// Quantize float to short in range [-32768, 32767]
+	// Scale factor 16384 gives good precision for UV coordinates in range [0, 2]
+	int t = iFloor(v * 16384.0f);
 	clamp(t, -32768, 32767);
 	return short(t & 0xffff);
 }
@@ -158,7 +196,6 @@ void CDetailManager::hw_Load()
 	// Create vertex buffer
 	HRESULT hr = HW.pDevice->CreateVertexBuffer(totalVertices * sizeof(vertHW), D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED,
 												&m_hw_VB, 0);
-
 	if (FAILED(hr))
 	{
 		Msg("![ERROR] CDetailManager::hw_Load() - Failed to create vertex buffer (HR: 0x%08X)", hr);
@@ -168,7 +205,6 @@ void CDetailManager::hw_Load()
 	// Create index buffer
 	hr = HW.pDevice->CreateIndexBuffer(totalIndices * sizeof(u16), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED,
 									   &m_hw_IB, 0);
-
 	if (FAILED(hr))
 	{
 		Msg("![ERROR] CDetailManager::hw_Load() - Failed to create index buffer (HR: 0x%08X)", hr);
@@ -176,12 +212,10 @@ void CDetailManager::hw_Load()
 		return;
 	}
 
-	// Create instance buffer (dynamic for frequent updates)
-	m_hw_BatchSize = 256; // Reasonable batch size
-
+	// Create instance buffer
+	m_hw_BatchSize = 256;
 	hr = HW.pDevice->CreateVertexBuffer(m_hw_BatchSize * sizeof(InstanceData), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, 0,
 										D3DPOOL_DEFAULT, &m_hw_VB_Instances, 0);
-
 	if (FAILED(hr))
 	{
 		Msg("![ERROR] CDetailManager::hw_Load() - Failed to create instance buffer (HR: 0x%08X)", hr);
@@ -190,7 +224,7 @@ void CDetailManager::hw_Load()
 		return;
 	}
 
-	// Fill vertex buffer
+	// Fill vertex buffer - ИСПРАВЛЕННАЯ ВЕРСИЯ
 	vertHW* pVerts = nullptr;
 	hr = m_hw_VB->Lock(0, 0, (void**)&pVerts, 0);
 	if (SUCCEEDED(hr) && pVerts)
@@ -199,19 +233,30 @@ void CDetailManager::hw_Load()
 		for (u32 o = 0; o < m_objects.size(); o++)
 		{
 			CDetail& D = *m_objects[o];
+
+			// Calculate texture scale for wind animation
 			float height_range = D.bv_bb.max.y - D.bv_bb.min.y;
 			float t_scale = (fis_zero(height_range)) ? 0.0f : 1.0f / height_range;
 
 			for (u32 v = 0; v < D.number_vertices; v++)
 			{
 				Fvector& vP = D.vertices[v].P;
+
+				// Position
 				pVerts->x = vP.x;
 				pVerts->y = vP.y;
 				pVerts->z = vP.z;
+
+				// UV coordinates - ИСПРАВЛЕНИЕ: правильное квантование
 				pVerts->u = QuantConstant(D.vertices[v].u);
 				pVerts->v = QuantConstant(D.vertices[v].v);
-				pVerts->t = QuantConstant(vP.y * t_scale);
+
+				// Wind animation parameter (normalized height)
+				pVerts->t = QuantConstant((vP.y - D.bv_bb.min.y) * t_scale);
+
+				// Material ID (set to 0 for now)
 				pVerts->mid = 0;
+
 				pVerts++;
 			}
 			vertexOffset += D.number_vertices;
@@ -223,20 +268,18 @@ void CDetailManager::hw_Load()
 		Msg("![ERROR] CDetailManager::hw_Load() - Failed to lock vertex buffer");
 	}
 
-	// Fill index buffer
+	// Fill index buffer - ИСПРАВЛЕННАЯ ВЕРСИЯ
 	u16* pIndices = nullptr;
 	hr = m_hw_IB->Lock(0, 0, (void**)&pIndices, 0);
 	if (SUCCEEDED(hr) && pIndices)
 	{
-		u32 vertexOffset = 0;
 		for (u32 o = 0; o < m_objects.size(); o++)
 		{
 			CDetail& D = *m_objects[o];
 			for (u32 i = 0; i < D.number_indices; i++)
 			{
-				*pIndices++ = u16(D.indices[i] + vertexOffset);
+				*pIndices++ = u16(D.indices[i]);
 			}
-			vertexOffset += D.number_vertices;
 		}
 		m_hw_IB->Unlock();
 	}
@@ -292,75 +335,72 @@ void CDetailManager::hw_Render()
 	}
 }
 
+Fvector4 GetWindParams()
+{
+	CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
+	float WindGusting = desc->wind_gusting;
+	float WindStrength = desc->wind_strength;
+	float WindDirectionX = cos(desc->wind_direction), WindDirectionY = sin(desc->wind_direction);
+	return Fvector4().set(WindDirectionX, WindDirectionY, WindGusting, WindStrength);
+}
+
+Fvector4 GetWindTurbulence()
+{
+	CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
+	float Turbulence = desc->wind_turbulence;
+	float TurbulencePacked = std::max(std::min(Turbulence, 0.0f), 1.0f);
+	float WindSpeed = Device.fTimeGlobal * 2.5f * (1.0f + TurbulencePacked);
+	return Fvector4().set(Turbulence, TurbulencePacked, WindSpeed, 0);
+}
+
 void CDetailManager::hw_Render_dump()
 {
-	if (m_objects.empty())
-		return;
-
-	if (m_objects.size() > dm_max_objects)
-	{
-		Msg("![ERROR] CDetailManager - too many objects: %d", m_objects.size());
-		return;
-	}
-
 	Device.Statistic->RenderDUMP_DT_Count = 0;
-	u32 total_instances_rendered = 0;
 
-	// Check if we have any visible instances
-	bool hasVisibleInstances = false;
-	for (u32 lod = 0; lod < 3 && !hasVisibleInstances; lod++)
+	// Устанавливаем глобальные константы один раз
+	Fmatrix mWorld = RenderBackend.get_xform_world();
+	Fmatrix mView = Device.mView;
+	Fmatrix mProject = Device.mProject;
+
+	Fvector4 wind_params = GetWindParams();
+	Fvector4 wind_turbulence = GetWindTurbulence();
+
+	// Правильные матрицы для инстансинга
+	Fmatrix mWorldView;
+	mWorldView.mul(mView, mWorld);
+
+	Fmatrix mWorldViewProject;
+	mWorldViewProject.mul(mProject, mWorldView);
+
+	// ОСНОВНОЙ ЦИКЛ РЕНДЕРИНГА
+	for (u32 O = 0; O < m_objects.size(); O++)
 	{
-		for (u32 obj = 0; obj < m_objects.size(); obj++)
+		CDetail& Object = *m_objects[O];
+
+		// ВЫЧИСЛЯЕМ СМЕЩЕНИЯ ДЛЯ КАЖДОГО ОБЪЕКТА
+		u32 vOffset = 0;
+		u32 iOffset = 0;
+		for (u32 i = 0; i < O; i++)
 		{
-			if (!m_render_visibles[lod][obj].empty())
-			{
-				hasVisibleInstances = true;
-				break;
-			}
+			vOffset += m_objects[i]->number_vertices;
+			iOffset += m_objects[i]->number_indices;
 		}
-	}
 
-	if (!hasVisibleInstances)
-		return;
-
-	// Calculate vertex and index offsets for each object
-	xr_vector<u32> vertexOffsets(m_objects.size());
-	xr_vector<u32> indexOffsets(m_objects.size());
-
-	u32 currentVertexOffset = 0;
-	u32 currentIndexOffset = 0;
-
-	for (u32 i = 0; i < m_objects.size(); i++)
-	{
-		vertexOffsets[i] = currentVertexOffset;
-		indexOffsets[i] = currentIndexOffset;
-
-		currentVertexOffset += m_objects[i]->number_vertices;
-		currentIndexOffset += m_objects[i]->number_indices;
-	}
-
-	// Render each object
-	for (u32 objIndex = 0; objIndex < m_objects.size(); objIndex++)
-	{
-		CDetail& Object = *m_objects[objIndex];
-		u32 vOffset = vertexOffsets[objIndex];
-		u32 iOffset = indexOffsets[objIndex];
-
-		// Render all LOD levels
+		// Рендерим все LOD уровни для этого объекта
 		for (u32 lod_id = 0; lod_id < 3; lod_id++)
 		{
-			xr_vector<SlotItemVec*>& vis = m_render_visibles[lod_id][objIndex];
+			xr_vector<SlotItemVec*>& vis = m_render_visibles[lod_id][O];
 
 			if (vis.empty())
 				continue;
 
-			// Select shader
+			// Выбираем правильный шейдер
 			int shader_id = Object.m_Flags.is(DO_NO_WAVING) ? SE_DETAIL_NORMAL_STATIC : SE_DETAIL_NORMAL_ANIMATED;
 
 			if (!Object.shader || !Object.shader->E[shader_id])
 				continue;
 
-			// Collect instances for this object and LOD
+			// Собираем инстансы
 			xr_vector<InstanceData> instances;
 			instances.reserve(512);
 
@@ -377,15 +417,16 @@ void CDetailManager::hw_Render_dump()
 					SlotItem& item = *item_ptr;
 					InstanceData inst;
 
-					// Transform matrix with scale
+					// Матрица уже содержит поворот и позицию
 					Fmatrix& M = item.mRotY;
 					float scale = item.scale_calculated;
 
+					// Устанавливаем матрицу 3x4
 					inst.mat0.set(M._11 * scale, M._21 * scale, M._31 * scale, M._41);
 					inst.mat1.set(M._12 * scale, M._22 * scale, M._32 * scale, M._42);
 					inst.mat2.set(M._13 * scale, M._23 * scale, M._33 * scale, M._43);
 
-					// Color and lighting
+					// Цвет и освещение
 					inst.color.set(item.c_sun, item.c_sun, item.c_sun, item.c_hemi);
 					inst.lod_id = (float)lod_id;
 
@@ -398,6 +439,17 @@ void CDetailManager::hw_Render_dump()
 
 			// Set shader
 			RenderBackend.set_Element(Object.shader->E[shader_id]);
+
+			// Устанавливаем константы для шейдера
+			RenderBackend.set_Constant("mat_WorldView", mWorldView);
+			RenderBackend.set_Constant("mat_WorldViewProject", mWorldViewProject);
+
+			// Параметры ветра (только для анимированных объектов)
+			if (!Object.m_Flags.is(DO_NO_WAVING))
+			{
+				RenderBackend.set_Constant_Register_VS(20, wind_turbulence);
+				RenderBackend.set_Constant_Register_VS(21, wind_params);
+			}
 
 			// Render in batches
 			u32 total_instances = instances.size();
@@ -427,18 +479,18 @@ void CDetailManager::hw_Render_dump()
 					HW.pDevice->SetStreamSourceFreq(0, D3DSTREAMSOURCE_INDEXEDDATA | batch_instance_count);
 					HW.pDevice->SetStreamSourceFreq(1, D3DSTREAMSOURCE_INSTANCEDATA | 1ul);
 
-					// Validate geometry data
-					if (Object.number_indices >= 3 && Object.number_vertices > 0)
-					{
-						// Draw instanced
-						hr = HW.pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, vOffset, 0, Object.number_vertices,
-															  iOffset, Object.number_indices / 3);
+					// Draw instanced - ИСПОЛЬЗУЕМ ПРАВИЛЬНЫЕ СМЕЩЕНИЯ!
+					hr = HW.pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
+														  vOffset, // BaseVertexIndex - смещение вершин
+														  0,	   // MinIndex
+														  Object.number_vertices, // NumVertices
+														  iOffset, // StartIndex - смещение индексов
+														  Object.number_indices / 3 // PrimitiveCount
+					);
 
-						if (SUCCEEDED(hr))
-						{
-							total_instances_rendered += batch_instance_count;
-							Device.Statistic->RenderDUMP_DT_Count += batch_instance_count;
-						}
+					if (SUCCEEDED(hr))
+					{
+						Device.Statistic->RenderDUMP_DT_Count += batch_instance_count;
 					}
 
 					// Restore stream frequencies
@@ -763,65 +815,86 @@ void CDetailManager::UpdateVisibleM()
 
 	ClearVisibleLists();
 
-	int center_x = iFloor(EYE.x / dm_slot_size);
-	int center_z = iFloor(EYE.z / dm_slot_size);
-
-	const int RENDER_RADIUS = 8;
-
-	for (int x = center_x - RENDER_RADIUS; x <= center_x + RENDER_RADIUS; x++)
+	// Use cache level1 for visibility testing
+	for (int _mz1 = 0; _mz1 < dm_cache1_line; _mz1++)
 	{
-		for (int z = center_z - RENDER_RADIUS; z <= center_z + RENDER_RADIUS; z++)
+		for (int _mx1 = 0; _mx1 < dm_cache1_line; _mx1++)
 		{
-			Slot* slot = cache_Query(x, z);
-			if (!slot || slot->empty)
+			CacheSlot1& MS = m_cache_level1[_mz1][_mx1];
+			if (MS.empty)
 				continue;
 
-			// Update slot if needed
-			if (Device.dwFrame > slot->frame)
+			// Simple visibility test using sphere
+			float dist_sq = EYE.distance_to_sqr(MS.vis.sphere.P);
+			float fade_limit = dm_fade * dm_fade;
+			if (dist_sq > fade_limit)
+				continue;
+
+			// Test individual slots in this cache1 cell
+			for (int _i = 0; _i < dm_cache1_count * dm_cache1_count; _i++)
 			{
-				slot->frame = Device.dwFrame + 30;
-
-				float dist_sq = EYE.distance_to_sqr(slot->vis.sphere.P);
-				float fade_limit = dm_fade * dm_fade;
-				float fade_start = 1.0f;
-				float fade_range = fade_limit - fade_start;
-
-				float alpha = (dist_sq < fade_start) ? 0.f : (dist_sq - fade_start) / fade_range;
-				float alpha_i = 1.f - alpha;
-
-				for (int sp_id = 0; sp_id < dm_obj_in_slot; sp_id++)
-				{
-					SlotPart& sp = slot->G[sp_id];
-					if (sp.id == DetailSlot::ID_Empty)
-						continue;
-
-					// Clear LOD items
-					for (int lod = 0; lod < 3; lod++)
-						sp.r_items[lod].clear();
-
-					// Distribute items to LOD levels - ALL in LOD 0 for now
-					for (auto& item_ptr : sp.items)
-					{
-						SlotItem& Item = *item_ptr;
-						Item.scale_calculated = Item.scale * alpha_i;
-						sp.r_items[0].push_back(item_ptr);
-					}
-				}
-			}
-
-			// Add objects from slot to visible lists
-			for (int sp_id = 0; sp_id < dm_obj_in_slot; sp_id++)
-			{
-				SlotPart& sp = slot->G[sp_id];
-				if (sp.id == DetailSlot::ID_Empty || sp.id >= m_objects.size())
+				// ДОБАВЬТЕ ПРОВЕРКУ!
+				if (MS.slots[_i] == nullptr)
 					continue;
 
-				// Add all LOD levels
-				for (int lod = 0; lod < 3; lod++)
+				Slot* PS = *MS.slots[_i];
+				if (!PS || PS->empty)
+					continue;
+
+				Slot& S = *PS;
+
+				// Distance-based fade
+				float dist_sq_slot = EYE.distance_to_sqr(S.vis.sphere.P);
+				if (dist_sq_slot > fade_limit)
+					continue;
+
+				// Update slot if needed
+				if (Device.dwFrame > S.frame)
 				{
-					if (!sp.r_items[lod].empty())
+					S.frame = Device.dwFrame + Random.randI(15, 30);
+
+					float fade_start = 1.0f;
+					float fade_start_sq = fade_start * fade_start;
+					float fade_range = fade_limit - fade_start_sq;
+
+					float alpha = (dist_sq_slot < fade_start_sq) ? 0.f : (dist_sq_slot - fade_start_sq) / fade_range;
+					float alpha_i = 1.f - alpha;
+
+					for (int sp_id = 0; sp_id < dm_obj_in_slot; sp_id++)
 					{
-						m_visibles[lod][sp.id].push_back(&sp.r_items[lod]);
+						SlotPart& sp = S.G[sp_id];
+						if (sp.id == DetailSlot::ID_Empty)
+							continue;
+
+						// Clear LOD items
+						for (int lod = 0; lod < 3; lod++)
+							sp.r_items[lod].clear();
+
+						// Distribute items to LOD levels
+						for (auto& item_ptr : sp.items)
+						{
+							SlotItem& Item = *item_ptr;
+							Item.scale_calculated = Item.scale * alpha_i;
+							// For now, put all in LOD 0
+							sp.r_items[0].push_back(item_ptr);
+						}
+					}
+				}
+
+				// Add objects from slot to visible lists
+				for (int sp_id = 0; sp_id < dm_obj_in_slot; sp_id++)
+				{
+					SlotPart& sp = S.G[sp_id];
+					if (sp.id == DetailSlot::ID_Empty || sp.id >= m_objects.size())
+						continue;
+
+					// Add all LOD levels that have items
+					for (int lod = 0; lod < 3; lod++)
+					{
+						if (!sp.r_items[lod].empty())
+						{
+							m_visibles[lod][sp.id].push_back(&sp.r_items[lod]);
+						}
 					}
 				}
 			}
@@ -984,22 +1057,41 @@ void CDetailManager::cache_Initialize()
 		}
 	}
 
-	// Initialize level 1 cache
+	// Initialize level 1 cache - CORRECT INITIALIZATION
 	for (int _mz1 = 0; _mz1 < dm_cache1_line; _mz1++)
 	{
 		for (int _mx1 = 0; _mx1 < dm_cache1_line; _mx1++)
 		{
 			CacheSlot1& MS = m_cache_level1[_mz1][_mx1];
+
+			// Initialize slots array
 			for (int _z = 0; _z < dm_cache1_count; _z++)
 			{
 				for (int _x = 0; _x < dm_cache1_count; _x++)
 				{
-					MS.slots[_z * dm_cache1_count + _x] =
-						&m_cache[_mz1 * dm_cache1_count + _z][_mx1 * dm_cache1_count + _x];
+					int cache_z = _mz1 * dm_cache1_count + _z;
+					int cache_x = _mx1 * dm_cache1_count + _x;
+
+					// Проверяем границы массива
+					if (cache_z >= 0 && cache_z < dm_cache_line && cache_x >= 0 && cache_x < dm_cache_line)
+					{
+						MS.slots[_z * dm_cache1_count + _x] = &m_cache[cache_z][cache_x];
+					}
+					else
+					{
+						MS.slots[_z * dm_cache1_count + _x] = nullptr;
+					}
 				}
 			}
+
+			// Initialize other fields
+			MS.empty = true;
+			MS.vis.clear();
 		}
 	}
+
+	// Initial bounds update
+	UpdateCacheLevel1Bounds();
 }
 
 CDetailManager::Slot* CDetailManager::cache_Query(int r_x, int r_z)
@@ -1029,7 +1121,7 @@ void CDetailManager::cache_Task(int gx, int gz, Slot* D)
 	BOOL slot_empty = TRUE;
 	for (u32 i = 0; i < dm_obj_in_slot; i++)
 	{
-		u32 detail_id = DS.r_id(i);
+		u32 detail_id = GetSlotID(DS, i);
 		if (detail_id != DetailSlot::ID_Empty)
 		{
 			slot_empty = FALSE;
@@ -1042,16 +1134,36 @@ void CDetailManager::cache_Task(int gx, int gz, Slot* D)
 	D->sx = sx;
 	D->sz = sz;
 
-	// Initialize bounding volume
-	D->vis.box.min.set(sx * dm_slot_size, 0, sz * dm_slot_size);
-	D->vis.box.max.set(D->vis.box.min.x + dm_slot_size, 10.0f, D->vis.box.min.z + dm_slot_size);
-	D->vis.box.grow(1.0f);
+	// Используем методы DetailSlot для высоты - FIXED
+	float ybase = DS.r_ybase();
+	float yheight = DS.r_yheight();
+
+	// Calculate world coordinates - FIXED
+	float world_x = sx * dm_slot_size;
+	float world_z = sz * dm_slot_size;
+
+	D->vis.box.min.set(world_x, ybase, world_z);
+	D->vis.box.max.set(world_x + dm_slot_size, ybase + yheight, world_z + dm_slot_size);
+	D->vis.box.grow(0.05f); // Небольшой зазор для стабильности
+
+	if (!D->vis.box.is_valid())
+	{
+		// Fallback bounds
+		D->vis.box.min.set(world_x, ybase, world_z);
+		D->vis.box.max.set(world_x + dm_slot_size, ybase + 1.0f, world_z + dm_slot_size);
+	}
+
 	D->vis.box.getsphere(D->vis.sphere.P, D->vis.sphere.R);
 
 	// Clear existing items and set object IDs
 	for (u32 i = 0; i < dm_obj_in_slot; i++)
 	{
-		D->G[i].id = DS.r_id(i);
+		D->G[i].id = GetSlotID(DS, i);
+		// Clear using pool to avoid memory leaks
+		for (auto& item : D->G[i].items)
+		{
+			m_poolSI.destroy(item);
+		}
 		D->G[i].items.clear();
 		for (int lod = 0; lod < 3; lod++)
 			D->G[i].r_items[lod].clear();
@@ -1060,7 +1172,12 @@ void CDetailManager::cache_Task(int gx, int gz, Slot* D)
 	// Add to decompression queue if not empty
 	if (!D->empty)
 	{
-		m_cache_task.push_back(D);
+		// Remove duplicates
+		auto it = std::find(m_cache_task.begin(), m_cache_task.end(), D);
+		if (it == m_cache_task.end())
+		{
+			m_cache_task.push_back(D);
+		}
 	}
 }
 
@@ -1080,6 +1197,79 @@ DetailSlot& CDetailManager::QueryDB(int sx, int sz)
 	}
 }
 
+void CDetailManager::UpdateCacheLevel1Bounds()
+{
+	Msg("CDetailManager::UpdateCacheLevel1Bounds() - Start");
+
+	for (int _mz1 = 0; _mz1 < dm_cache1_line; _mz1++)
+	{
+		for (int _mx1 = 0; _mx1 < dm_cache1_line; _mx1++)
+		{
+			CacheSlot1& MS = m_cache_level1[_mz1][_mx1];
+			MS.empty = true;
+			MS.vis.clear();
+			MS.vis.box.invalidate(); // Start with invalid box
+
+			int nullCount = 0;
+			int validCount = 0;
+
+			for (int _i = 0; _i < dm_cache1_count * dm_cache1_count; _i++)
+			{
+				// ДОБАВЬТЕ ПРОВЕРКУ НА nullptr!
+				if (MS.slots[_i] == nullptr)
+				{
+					nullCount++;
+					continue;
+				}
+
+				Slot* PS = *MS.slots[_i];
+				if (!PS)
+				{
+					nullCount++;
+					continue;
+				}
+
+				validCount++;
+				Slot& S = *PS;
+
+				// Merge bounding box
+				if (MS.vis.box.is_valid())
+				{
+					MS.vis.box.merge(S.vis.box);
+				}
+				else
+				{
+					MS.vis.box.set(S.vis.box);
+				}
+
+				if (!S.empty)
+					MS.empty = false;
+			}
+
+			if (nullCount > 0)
+			{
+				Msg("CacheLevel1[%d][%d]: %d null slots, %d valid slots", _mz1, _mx1, nullCount, validCount);
+			}
+
+			// Если bounding box остался невалидным, установите безопасные значения
+			if (!MS.vis.box.is_valid())
+			{
+				// Вычисляем мировые координаты для этого cache1 слота
+				int world_x = cg2w_X(_mx1 * dm_cache1_count);
+				int world_z = cg2w_Z(_mz1 * dm_cache1_count);
+
+				MS.vis.box.min.set(world_x, 0, world_z);
+				MS.vis.box.max.set(world_x + dm_slot_size * dm_cache1_count, 1.0f,
+								   world_z + dm_slot_size * dm_cache1_count);
+				MS.vis.box.grow(0.1f);
+			}
+
+			MS.vis.box.getsphere(MS.vis.sphere.P, MS.vis.sphere.R);
+		}
+	}
+	Msg("CDetailManager::UpdateCacheLevel1Bounds() - Completed");
+}
+
 void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 {
 	if (m_bShuttingDown || !m_loaded || !m_initialized)
@@ -1093,33 +1283,37 @@ void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 	int dx = v_x - m_cache_cx;
 	int dz = v_z - m_cache_cz;
 
-	// If offset is too large, just teleport cache
+	// If offset is too large, just teleport cache (как в старой системе)
 	if (abs(dx) >= dm_cache_line || abs(dz) >= dm_cache_line)
 	{
 		m_cache_cx = v_x;
 		m_cache_cz = v_z;
 
 		// Reinitialize all slots with pointer checks
+		Slot* slt = m_cache_pool;
 		for (u32 i = 0; i < dm_cache_line; i++)
 		{
-			for (u32 j = 0; j < dm_cache_line; j++)
+			for (u32 j = 0; j < dm_cache_line; j++, slt++)
 			{
-				Slot* slt = m_cache[i][j];
-				if (slt)
+				if (m_cache[i][j])
 				{
-					cache_Task(j, i, slt);
+					cache_Task(j, i, m_cache[i][j]);
 				}
 			}
 		}
 		m_cache_task.clear();
+
+		// Update level1 cache bounds
+		UpdateCacheLevel1Bounds();
 		return;
 	}
 
-	// GRADUALLY SHIFT CACHE
+	// GRADUALLY SHIFT CACHE - как в старой системе
 	while (m_cache_cx != v_x)
 	{
 		if (v_x > m_cache_cx)
 		{
+			// shift matrix to left
 			m_cache_cx++;
 			for (int z = 0; z < dm_cache_line; z++)
 			{
@@ -1129,8 +1323,7 @@ void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 
 				for (int x = 1; x < dm_cache_line; x++)
 				{
-					if (m_cache[z][x]) // Safety check
-						m_cache[z][x - 1] = m_cache[z][x];
+					m_cache[z][x - 1] = m_cache[z][x];
 				}
 				m_cache[z][dm_cache_line - 1] = S;
 				cache_Task(dm_cache_line - 1, z, S);
@@ -1138,6 +1331,7 @@ void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 		}
 		else
 		{
+			// shift matrix to right
 			m_cache_cx--;
 			for (int z = 0; z < dm_cache_line; z++)
 			{
@@ -1147,8 +1341,7 @@ void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 
 				for (int x = dm_cache_line - 1; x > 0; x--)
 				{
-					if (m_cache[z][x - 1]) // Safety check
-						m_cache[z][x] = m_cache[z][x - 1];
+					m_cache[z][x] = m_cache[z][x - 1];
 				}
 				m_cache[z][0] = S;
 				cache_Task(0, z, S);
@@ -1160,6 +1353,7 @@ void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 	{
 		if (v_z > m_cache_cz)
 		{
+			// shift matrix down
 			m_cache_cz++;
 			for (int x = 0; x < dm_cache_line; x++)
 			{
@@ -1169,8 +1363,7 @@ void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 
 				for (int z = dm_cache_line - 1; z > 0; z--)
 				{
-					if (m_cache[z - 1][x]) // Safety check
-						m_cache[z][x] = m_cache[z - 1][x];
+					m_cache[z][x] = m_cache[z - 1][x];
 				}
 				m_cache[0][x] = S;
 				cache_Task(x, 0, S);
@@ -1178,6 +1371,7 @@ void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 		}
 		else
 		{
+			// shift matrix up
 			m_cache_cz--;
 			for (int x = 0; x < dm_cache_line; x++)
 			{
@@ -1187,8 +1381,7 @@ void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 
 				for (int z = 1; z < dm_cache_line; z++)
 				{
-					if (m_cache[z][x]) // Safety check
-						m_cache[z - 1][x] = m_cache[z][x];
+					m_cache[z - 1][x] = m_cache[z][x];
 				}
 				m_cache[dm_cache_line - 1][x] = S;
 				cache_Task(x, dm_cache_line - 1, S);
@@ -1196,7 +1389,13 @@ void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 		}
 	}
 
-	// PROCESS DECOMPRESSION TASKS with safety checks
+	// Update level1 cache bounds after shifting
+	if (m_initialized)
+	{
+		UpdateCacheLevel1Bounds();
+	}
+
+	// PROCESS DECOMPRESSION TASKS
 	u32 tasks_to_process = std::min((u32)limit, (u32)m_cache_task.size());
 	for (u32 i = 0; i < tasks_to_process; i++)
 	{
@@ -1215,13 +1414,14 @@ void CDetailManager::cache_Update(int v_x, int v_z, Fvector& view, int limit)
 	}
 
 	// Remove processed tasks
-	if (m_cache_task.size() <= tasks_to_process)
+	if (tasks_to_process >= m_cache_task.size())
 	{
 		m_cache_task.clear();
 	}
 	else
 	{
-		m_cache_task.remove([&tasks_to_process, processed = 0](const Slot*) mutable { return ++processed <= tasks_to_process; });
+		// Remove first 'tasks_to_process' elements
+		m_cache_task.erase(m_cache_task.begin(), m_cache_task.begin() + tasks_to_process);
 	}
 }
 
@@ -1232,51 +1432,171 @@ void CDetailManager::cache_Decompress(Slot* S)
 
 	Slot& D = *S;
 	D.type = stReady;
-
-	// Check object validity
-	if (m_objects.empty())
+	if (D.empty)
 		return;
 
-	// Create test instances with safety checks
-	for (u32 i = 0; i < dm_obj_in_slot; i++)
+	DetailSlot& DS = QueryDB(D.sx, D.sz);
+
+	// Получаем bounding box для трассировки - FIXED
+	Fvector bC, bD;
+	D.vis.box.get_CD(bC, bD);
+
+	// Выполняем запрос к статической геометрии
+	m_xrc.box_options(CDB::OPT_FULL_TEST);
+	m_xrc.box_query(g_pGameLevel->ObjectSpace.GetStaticModel(), bC, bD);
+	u32 triCount = m_xrc.r_count();
+
+	if (0 == triCount)
+		return;
+
+	CDB::TRI* tris = g_pGameLevel->ObjectSpace.GetStaticTris();
+	Fvector* verts = g_pGameLevel->ObjectSpace.GetStaticVerts();
+
+	// Подготавливаем альфа-каналы для дизеринга
+	float alpha255[dm_obj_in_slot][4];
+	for (int i = 0; i < dm_obj_in_slot; i++)
 	{
-		if (D.G[i].id == DetailSlot::ID_Empty || D.G[i].id >= m_objects.size())
-			continue;
+		alpha255[i][0] = 255.f * float(DS.palette[i].a0) / 15.f;
+		alpha255[i][1] = 255.f * float(DS.palette[i].a1) / 15.f;
+		alpha255[i][2] = 255.f * float(DS.palette[i].a2) / 15.f;
+		alpha255[i][3] = 255.f * float(DS.palette[i].a3) / 15.f;
+	}
 
-		// Check object validity
-		if (!m_objects[D.G[i].id])
-			continue;
+	// Параметры плотности
+	float density = ps_r_Detail_density;
+	float jitter = density / 1.7f;
+	u32 d_size = iCeil(dm_slot_size / density);
 
-		// Create 4 test instances
-		for (int inst = 0; inst < 4; inst++)
+	svector<int, dm_obj_in_slot> selected;
+	u32 p_rnd = D.sx * D.sz;
+
+	CRandom r_selection(0x12071980 ^ p_rnd);
+	CRandom r_Jitter(0x12071980 ^ p_rnd);
+	CRandom r_yaw(0x12071980 ^ p_rnd);
+	CRandom r_scale(0x12071980 ^ p_rnd);
+
+	Fbox Bounds;
+	Bounds.invalidate();
+
+	// Проходим по всем точкам в слоте - FIXED DISTRIBUTION LOGIC
+	for (u32 z = 0; z <= d_size; z++)
+	{
+		for (u32 x = 0; x <= d_size; x++)
 		{
-			SlotItem* item = m_poolSI.create();
-			if (!item)
+			u32 shift_x = r_Jitter.randI(16);
+			u32 shift_z = r_Jitter.randI(16);
+
+			selected.clear();
+
+			// Проверяем какие объекты должны быть размещены в этой точке - FIXED SELECTION
+			for (u32 i = 0; i < dm_obj_in_slot; i++)
+			{
+				u32 detail_id = GetSlotID(DS, i);
+				if (detail_id != DetailSlot::ID_Empty &&
+					InterpolateAndDither(alpha255[i], x, z, shift_x, shift_z, d_size))
+				{
+					selected.push_back(i);
+				}
+			}
+
+			if (selected.empty())
 				continue;
 
-			// Simple position in slot center
-			float center_x = D.sx * dm_slot_size + dm_slot_size / 2;
-			float center_z = D.sz * dm_slot_size + dm_slot_size / 2;
+			// Выбираем случайный объект из подходящих
+			u32 index;
+			if (selected.size() == 1)
+				index = selected[0];
+			else
+				index = selected[r_selection.randI(selected.size())];
 
-			float rx = center_x + Random.randF(-2.0f, 2.0f);
-			float rz = center_z + Random.randF(-2.0f, 2.0f);
-			float ry = 0.0f;
+			u32 detail_id = GetSlotID(DS, index);
+			if (detail_id >= m_objects.size())
+				continue;
 
-			// Basic setup
-			item->scale = 1.0f;
-			item->scale_calculated = 1.0f;
-			item->mRotY.identity();
-			item->mRotY.rotateY(Random.randF(0, PI_MUL_2));
-			item->mRotY.translate_over(rx, ry, rz);
-			item->vis_ID = 0;
-			item->c_hemi = 1.0f;
-			item->c_sun = 1.0f;
+			CDetail* Dobj = m_objects[detail_id];
+			SlotItem* ItemP = m_poolSI.create();
+			SlotItem& Item = *ItemP;
 
-			D.G[i].items.push_back(item);
+			// Вычисляем позицию в мировых координатах - FIXED COORDINATES
+			float rx = (float(x) / float(d_size)) * dm_slot_size + D.vis.box.min.x;
+			float rz = (float(z) / float(d_size)) * dm_slot_size + D.vis.box.min.z;
+
+			Fvector Item_P;
+			Item_P.set(rx + r_Jitter.randFs(jitter), D.vis.box.max.y, rz + r_Jitter.randFs(jitter));
+
+			// Трассируем луч вниз для определения высоты
+			float y = D.vis.box.min.y - 5;
+			Fvector dir;
+			dir.set(0, -1, 0);
+
+			float r_u, r_v, r_range;
+			for (u32 tid = 0; tid < triCount; tid++)
+			{
+				CDB::TRI& T = tris[m_xrc.r_begin()[tid].id];
+				Fvector Tv[3] = {verts[T.verts[0]], verts[T.verts[1]], verts[T.verts[2]]};
+				if (CDB::TestRayTri(Item_P, dir, Tv, r_u, r_v, r_range, TRUE))
+				{
+					if (r_range >= 0)
+					{
+						float y_test = Item_P.y - r_range;
+						if (y_test > y)
+							y = y_test;
+					}
+				}
+			}
+
+			if (y < D.vis.box.min.y)
+			{
+				m_poolSI.destroy(ItemP);
+				continue;
+			}
+
+			Item_P.y = y;
+
+			// Устанавливаем параметры объекта
+			Item.scale = r_scale.randF(Dobj->m_fMinScale, Dobj->m_fMaxScale);
+			Item.scale_calculated = Item.scale;
+
+			// Создаем матрицу трансформации - FIXED ROTATION
+			Item.mRotY.identity();
+			Item.mRotY.rotateY(r_yaw.randF(0, PI_MUL_2));
+			Item.mRotY.translate_over(Item_P);
+
+			// Вычисляем bounding box для объединения
+			Fmatrix mScale, mXform;
+			Fbox ItemBB;
+			mScale.scale(Item.scale, Item.scale, Item.scale);
+			mXform.mul_43(Item.mRotY, mScale);
+			ItemBB.xform(Dobj->bv_bb, mXform);
+			Bounds.merge(ItemBB);
+
+			// Устанавливаем освещение
+			Item.c_hemi = GetSlotHemi(DS);
+			Item.c_sun = GetSlotSun(DS);
+			Item.vis_ID = 0;
+
+			D.G[index].items.push_back(ItemP);
 		}
 	}
 
-	D.empty = FALSE;
+	// Обновляем bounding volume слота
+	if (Bounds.is_valid())
+	{
+		D.vis.box.set(Bounds);
+		D.vis.box.grow(0.05f); // Небольшой зазор
+		D.vis.box.getsphere(D.vis.sphere.P, D.vis.sphere.R);
+	}
+
+	// Проверяем, остался ли слот пустым
+	D.empty = true;
+	for (u32 i = 0; i < dm_obj_in_slot; i++)
+	{
+		if (!D.G[i].items.empty())
+		{
+			D.empty = false;
+			break;
+		}
+	}
 }
 
 BOOL CDetailManager::cache_Validate()
@@ -1296,4 +1616,26 @@ BOOL CDetailManager::cache_Validate()
 		}
 	}
 	return TRUE;
+}
+
+void CDetailManager::bwdithermap(int levels)
+{
+	/* Get size of each step */
+	float N = 255.0f / (levels - 1);
+
+	float magicfact = (N - 1) / 16;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			for (int k = 0; k < 4; k++)
+			{
+				for (int l = 0; l < 4; l++)
+				{
+					dither[4 * k + i][4 * l + j] =
+						(int)(0.5 + magic4x4[i][j] * magicfact + (magic4x4[k][l] / 16.) * magicfact);
+				}
+			}
+		}
+	}
 }

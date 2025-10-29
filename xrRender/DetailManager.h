@@ -117,6 +117,8 @@ class CDetailManager
 	typedef poolSS<SlotItem, 4096> PSS;
 
   private:
+	int dither[16][16];
+
 	// Core data
 	IReader* m_dtFS;
 	DetailHeader m_dtH;
@@ -182,6 +184,7 @@ class CDetailManager
 	void CopyVisibleListsForRender();
 
 	// Cache system
+	void UpdateCacheLevel1Bounds();
 	void cache_Initialize();
 	void cache_Update(int sx, int sz, Fvector& view, int limit);
 	void cache_Task(int gx, int gz, Slot* D);
@@ -189,6 +192,34 @@ class CDetailManager
 	void cache_Decompress(Slot* D);
 	BOOL cache_Validate();
 	DetailSlot& QueryDB(int sx, int sz);
+	void bwdithermap(int levels);
+
+	bool InterpolateAndDither(float* alpha255, u32 x, u32 y, u32 sx, u32 sy, u32 size);
+
+    float GetSlotYBase(const DetailSlot& DS) const
+	{
+		return DS.r_ybase();
+	}
+
+	float GetSlotYHeight(const DetailSlot& DS) const
+	{
+		return DS.r_yheight();
+	}
+
+	float GetSlotHemi(const DetailSlot& DS) const
+	{
+		return DS.r_qclr(DS.c_hemi, 15);
+	}
+
+	float GetSlotSun(const DetailSlot& DS) const
+	{
+		return DS.r_qclr(DS.c_dir, 15);
+	}
+
+	u32 GetSlotID(const DetailSlot& DS, int i) const
+	{
+		return DS.r_id(i);
+	}
 
 	// Coordinate transformations
 	int cg2w_X(int x)
@@ -199,13 +230,14 @@ class CDetailManager
 	{
 		return m_cache_cz - dm_size + (dm_cache_line - 1 - z);
 	}
+
 	int w2cg_X(int x)
 	{
 		return x - m_cache_cx + dm_size;
 	}
 	int w2cg_Z(int z)
 	{
-		return m_cache_cz - dm_size + (dm_cache_line - 1 - z);
+		return (dm_cache_line - 1) - (z - m_cache_cz + dm_size);
 	}
 
 	// Hardware rendering methods

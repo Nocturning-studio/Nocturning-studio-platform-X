@@ -105,13 +105,17 @@ struct DetailSlot // was(4+4+3*4+2 = 22b), now(8+2*4=16b)
 		y_height = _height;
 	}
 
-	float r_ybase()
+	float r_ybase() const
 	{
 		return float(y_base) * .2f - 200.f;
 	}
-	float r_yheight()
+	float r_yheight() const
 	{
 		return float(y_height) * .1f;
+	}
+	float r_qclr(u32 v, u32 range) const
+	{
+		return float(v) / float(range);
 	}
 	u32 w_qclr(float v, u32 range)
 	{
@@ -119,12 +123,6 @@ struct DetailSlot // was(4+4+3*4+2 = 22b), now(8+2*4=16b)
 		clamp(_v, 0, s32(range));
 		return _v;
 	};
-	float r_qclr(u32 v, u32 range)
-	{
-		return float(v) / float(range);
-	}
-
-	//	static void		verify		()						{	VERIFY(16==sizeof(DetailSlot));	}
 	void color_editor()
 	{
 		c_dir = w_qclr(0.5f, 15);
@@ -133,7 +131,7 @@ struct DetailSlot // was(4+4+3*4+2 = 22b), now(8+2*4=16b)
 		c_g = w_qclr(0.f, 15);
 		c_b = w_qclr(0.f, 15);
 	}
-	u8 r_id(u32 idx)
+	u8 r_id(u32 idx) const
 	{
 		switch (idx)
 		{
