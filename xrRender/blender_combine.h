@@ -38,7 +38,7 @@ class CBlender_combine : public IBlender
 			C.r_Sampler("env_s1", r_T_envs1, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
 			C.r_Sampler("sky_s0", r_T_sky0, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
 			C.r_Sampler("sky_s1", r_T_sky1, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
-			C.r_Sampler_clf("s_brdf_lut", "vfx\\vfx_brdf_lut");
+			C.r_Sampler_rtf("s_brdf_lut", "vfx\\vfx_brdf_lut");
 
 			C.r_Sampler_rtf("s_bent_normals", r_RT_Bent_Normals);
 
@@ -56,7 +56,7 @@ class CBlender_combine : public IBlender
 			C.r_Sampler("sky_s0", r_T_sky0, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
 			C.r_Sampler("sky_s1", r_T_sky1, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
 
-			C.r_Sampler_clf("s_brdf_lut", "vfx\\vfx_brdf_lut");
+			C.r_Sampler_rtf("s_brdf_lut", "vfx\\vfx_brdf_lut");
 
 			C.r_Sampler_rtf("s_image", r_RT_generic0);
 

@@ -45,9 +45,9 @@ void CRender::render_ambient_occlusion()
 	RenderBackend.set_Constant("ao_params", ps_r_ao_bias, ps_r_ao_radius, negInvR2, RadiusPrecalc);
 	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_ao);
 
-	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[SE_AO_DENOISE]);
-	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
-	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_ao);
+	//RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[SE_AO_DENOISE]);
+	//RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
+	//RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_ao);
 
 	Device.Statistic->RenderCALC_AO.End();
 }

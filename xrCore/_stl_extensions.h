@@ -55,6 +55,11 @@ template <class T> class xr_vector : public std::vector<T>
 	{
 		erase(begin(), end());
 	}
+	template <typename TPredicate> void remove(const TPredicate& pred)
+	{
+		auto new_end = std::remove_if(begin(), end(), pred);
+		erase(new_end, end());
+	}
 	ICF const_reference operator[](size_type _Pos) const
 	{
 		{
@@ -227,6 +232,7 @@ template <typename T, typename allocator = xalloc<T>> class xr_vector : public s
 	explicit xr_vector(size_t _count) : inherited(_count)
 	{
 	}
+
 	u32 size() const
 	{
 		return (u32)inherited::size();
@@ -263,6 +269,12 @@ template <typename T, typename allocator = xalloc<T>> class xr_vector : public s
 		clear_not_free();
 	}
 #endif
+
+	template <typename TPredicate> void remove(const TPredicate& pred)
+	{
+		auto new_end = std::remove_if(begin(), end(), pred);
+		erase(new_end, end());
+	}
 
 	const_reference operator[](size_type _Pos) const
 	{

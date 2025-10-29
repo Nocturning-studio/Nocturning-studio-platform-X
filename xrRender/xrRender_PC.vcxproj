@@ -987,7 +987,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DetailManager.cpp" />
-    <ClCompile Include="DetailManager_VS.cpp" />
     <ClCompile Include="DetailModel.cpp" />
     <ClCompile Include="doug_lea_memory_allocator.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

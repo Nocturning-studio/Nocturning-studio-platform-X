@@ -130,6 +130,7 @@ class CRender : public R_dsgraph_structure
 	//Motion blur
 	Fmatrix m_saved_viewproj;
 	Fmatrix m_saved_invview;
+	bool m_bDestroyed;
 
   private:
 	// Loading / Unloading

@@ -291,6 +291,8 @@ void CRender::create()
 
 	xrRender_apply_tf();
 	::PortalTraverser.initialize();
+
+	m_bDestroyed = false;
 }
 
 void CRender::destroy()
@@ -306,13 +308,20 @@ void CRender::destroy()
 	PSLibrary.OnDestroy();
 	Device.seqFrame.Remove(this);
 	r_dsgraph_destroy();
+	if (Details)
+	{
+		Details->Shutdown();
+		xr_delete(Details);
+	}
+
+	m_bDestroyed = true;
 }
 
 void CRender::reset_begin()
 {
 	OPTICK_EVENT("CRender::reset_begin");
 
-	Details->hw_Unload();
+	Details->OnDeviceResetBegin();
 
 	// Update incremental shadowmap-visibility solver
 	// BUG-ID: 10646
@@ -358,7 +367,7 @@ void CRender::reset_end()
 	// that some data is not ready in the first frame (for example device camera position)
 	m_bFirstFrameAfterReset = true;
 
-	Details->hw_Load();
+	Details->OnDeviceResetEnd();
 }
 
 void CRender::OnFrame()
@@ -368,8 +377,12 @@ void CRender::OnFrame()
 	Models->DeleteQueue();
 	if (ps_render_flags.test(RFLAG_EXP_MT_CALC))
 	{
-		// MT-details (@front)
-		Device.seqParallel.insert(Device.seqParallel.begin(), fastdelegate::FastDelegate0<>(Details, &CDetailManager::MT_CALC));
+		// MT-details (@front) - добавляем безопасную проверку
+		if (Details && !Details->IsShuttingDown())
+		{
+			Device.seqParallel.insert(Device.seqParallel.begin(),
+									  fastdelegate::FastDelegate0<>(Details, &CDetailManager::Update));
+		}
 
 		// MT-HOM (@front)
 		Device.seqParallel.insert(Device.seqParallel.begin(), fastdelegate::FastDelegate0<>(&HOM, &CHOM::MT_RENDER));
@@ -719,7 +732,7 @@ void CRender::set_render_mode(int mode)
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-CRender::CRender() : m_bFirstFrameAfterReset(false)
+CRender::CRender() : m_bFirstFrameAfterReset(false), m_bDestroyed(true)
 {
 	OPTICK_EVENT("CRender::CRender");
 

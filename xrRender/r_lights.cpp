@@ -130,7 +130,7 @@ void CRender::render_lights(light_Package& LP)
 
 				if (ps_r_lighting_flags.test(RFLAG_SUN_DETAILS))
 				{
-					Details->UpdateVisibleM();
+					//Details->UpdateVisibleM();
 					Details->Render();
 				}
 

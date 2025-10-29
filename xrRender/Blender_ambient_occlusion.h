@@ -30,35 +30,32 @@ class CBlender_ambient_occlusion : public IBlender
 		{
 		case SE_AO_SSAO:
 			C.r_Pass("screen_quad", "ambient_occlusion_stage_pass_ssao", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_bent_normals", r_RT_Bent_Normals);
 			gbuffer(C);
 			jitter(C);
 			C.r_End();
 			break;
 		case SE_AO_MXAO:
 			C.r_Pass("screen_quad", "ambient_occlusion_stage_pass_mxao", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_bent_normals", r_RT_Bent_Normals);
 			gbuffer(C);
 			jitter(C);
 			C.r_End();
 			break;
 		case SE_AO_HBAO_PLUS:
 			C.r_Pass("screen_quad", "ambient_occlusion_stage_pass_hbao_plus", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_bent_normals", r_RT_Bent_Normals);
 			gbuffer(C);
 			jitter(C);
 			C.r_End();
 			break;
 		case SE_AO_SSAO_PATH_TRACE:
 			C.r_Pass("screen_quad", "ambient_occlusion_stage_pass_ssao_pt", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_bent_normals", r_RT_Bent_Normals);
 			gbuffer(C);
 			jitter(C);
 			C.r_End();
 			break;
 		case SE_AO_DENOISE:
 			C.r_Pass("screen_quad", "ambient_occlusion_blurring_stage_pass_bilinear_filter", FALSE, FALSE, FALSE);
-			C.r_Sampler("s_ao", r_RT_ao);
+			C.r_Sampler_clf("s_ao", r_RT_ao);
+			jitter(C);
 			C.r_End();
 			break;
 		}

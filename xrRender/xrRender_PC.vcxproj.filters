@@ -398,9 +398,6 @@
     <ClCompile Include="DetailManager.cpp">
       <Filter>Core\Details</Filter>
     </ClCompile>
-    <ClCompile Include="DetailManager_VS.cpp">
-      <Filter>Core\Details</Filter>
-    </ClCompile>
     <ClCompile Include="DetailModel.cpp">
       <Filter>Core\Details</Filter>
     </ClCompile>

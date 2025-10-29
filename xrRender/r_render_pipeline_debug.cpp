@@ -49,7 +49,7 @@ void CRender::render_stage_main_geometry()
 
 	if (Details)
 	{
-		Details->UpdateVisibleM();
+		//Details->UpdateVisibleM();
 		Details->Render();
 	}
 

@@ -38,6 +38,11 @@ class CHOM
 	void Render_ZB();
 	//	void					Debug		();
 
+	bool IsEnabled()
+	{
+		return bEnabled;
+	}
+
 	void occlude(Fbox2& space)
 	{
 	}
