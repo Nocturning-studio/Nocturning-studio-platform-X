@@ -30,6 +30,19 @@ const float dm_slot_size = DETAIL_SLOT_SIZE;
 // Forward declarations
 struct SlotItem;
 
+// Multi-method occlusion culling system
+enum EOcclusionMethod
+{
+	OCCLUSION_NONE = 0,
+	OCCLUSION_HOM,			  // Hardware Occlusion Mapping (если доступен)
+	OCCLUSION_HARDWARE_QUERY, // Hardware occlusion queries
+	OCCLUSION_GEOMETRY,		  // Geometry-based occlusion (статика)
+	OCCLUSION_PORTALS,		  // Portal-based occlusion
+	OCCLUSION_RASTER,		  // Software rasterizer
+	OCCLUSION_HYBRID,		  // Комбинированный подход
+	OCCLUSION_METHOD_COUNT
+};
+
 class CDetailManager
 {
   private:
@@ -67,6 +80,13 @@ class CDetailManager
 		vis_data vis;
 		SlotPart G[dm_obj_in_slot];
 
+		// Multi-method occlusion data
+		IDirect3DQuery9* occlusion_query;
+		u32 last_occlusion_test_frame;
+		u32 occlusion_visible_frames;
+		bool occlusion_visible;
+		float occlusion_confidence; // Уверенность в результате occlusion test
+
 		Slot()
 		{
 			frame = 0;
@@ -74,6 +94,11 @@ class CDetailManager
 			type = stReady;
 			sx = sz = 0;
 			vis.clear();
+			occlusion_query = nullptr;
+			last_occlusion_test_frame = 0;
+			occlusion_visible_frames = 0;
+			occlusion_visible = true;
+			occlusion_confidence = 1.0f;
 		}
 	};
 
@@ -83,11 +108,23 @@ class CDetailManager
 		vis_data vis;
 		Slot** slots[dm_cache1_count * dm_cache1_count];
 
+		// Multi-method occlusion data
+		IDirect3DQuery9* occlusion_query;
+		u32 last_occlusion_test_frame;
+		u32 occlusion_visible_frames;
+		bool occlusion_visible;
+		float occlusion_confidence;
+
 		CacheSlot1()
 		{
 			empty = 1;
 			vis.clear();
 			ZeroMemory(slots, sizeof(slots));
+			occlusion_query = nullptr;
+			last_occlusion_test_frame = 0;
+			occlusion_visible_frames = 0;
+			occlusion_visible = true;
+			occlusion_confidence = 1.0f;
 		}
 	};
 
@@ -123,6 +160,34 @@ class CDetailManager
 	};
 	Fplane m_frustum_planes[FRUSTUM_PLANES_COUNT];
 
+	// Multi-method occlusion culling system
+	struct OcclusionGeometry
+	{
+		Fvector* vertices;
+		u32 vertex_count;
+		u16* indices;
+		u32 index_count;
+		Fbox bounds;
+
+		OcclusionGeometry() : vertices(nullptr), vertex_count(0), indices(nullptr), index_count(0)
+		{
+			bounds.invalidate();
+		}
+	};
+
+	// Portal-based occlusion data
+	struct OcclusionPortal
+	{
+		Fvector center;
+		float radius;
+		xr_vector<Fvector> polygon; // Portal polygon
+		bool active;
+
+		OcclusionPortal() : active(false)
+		{
+		}
+	};
+
 	// Types
 	typedef xr_vector<xr_vector<SlotItemVec*>> vis_list;
 	typedef svector<CDetail*, dm_max_objects> DetailVec;
@@ -154,6 +219,28 @@ class CDetailManager
 	int m_cache_cx;
 	int m_cache_cz;
 
+	// Multi-method occlusion system
+	xr_vector<IDirect3DQuery9*> m_occlusion_queries;
+	xr_vector<Slot*> m_occlusion_test_slots;
+	xr_vector<CacheSlot1*> m_occlusion_test_cache1;
+	u32 m_occlusion_frame;
+	bool m_occlusion_enabled;
+	EOcclusionMethod m_primary_occlusion_method;
+	EOcclusionMethod m_fallback_occlusion_method;
+
+	// Geometry-based occlusion
+	xr_vector<OcclusionGeometry> m_occlusion_geometries;
+	xr_vector<Fvector> m_simple_occluders; // Упрощенные боксы для быстрой проверки
+
+	// Portal-based occlusion
+	xr_vector<OcclusionPortal> m_occlusion_portals;
+
+	// Software rasterizer data
+	u32* m_software_depth_buffer;
+	u32 m_software_depth_width;
+	u32 m_software_depth_height;
+	float m_software_depth_scale;
+
 	// Memory pool
 	PSS m_poolSI;
 
@@ -164,6 +251,11 @@ class CDetailManager
 	IDirect3DVertexBuffer9* m_hw_VB;
 	IDirect3DVertexBuffer9* m_hw_VB_Instances;
 	IDirect3DIndexBuffer9* m_hw_IB;
+
+	// Occlusion test geometry
+	ref_geom m_occlusion_geom;
+	IDirect3DVertexBuffer9* m_occlusion_vb;
+	IDirect3DIndexBuffer9* m_occlusion_ib;
 
 	// Threading and state
 	xrCriticalSection m_MT;
@@ -188,6 +280,11 @@ class CDetailManager
 	static BOOL s_use_hom_occlusion;
 	static float s_occlusion_padding_scale;
 	static float s_max_occlusion_distance;
+	static BOOL s_use_occlusion_culling;
+	static u32 s_occlusion_frame_interval;
+	static u32 s_occlusion_min_visible_frames;
+	static EOcclusionMethod s_preferred_occlusion_method;
+	static float s_occlusion_confidence_threshold;
 
   private:
 	// Unregister from parallel tasks
@@ -208,6 +305,50 @@ class CDetailManager
 	bool IsSphereInsideFrustum(const Fvector& center, float radius) const;
 	bool IsAABBInsideFrustum(const Fvector& min, const Fvector& max) const;
 	bool IsSlotVisible(const Slot* slot) const;
+
+	// Multi-method occlusion culling system
+	void InitializeOcclusionSystem();
+	void CleanupOcclusionSystem();
+	void DetectAvailableOcclusionMethods();
+	EOcclusionMethod SelectOcclusionMethod() const;
+
+	// Geometry-based occlusion methods
+	void LoadOcclusionGeometry();
+	void BuildSimpleOccluders();
+	bool TestGeometryOcclusion(const Fvector& test_point, float test_radius) const;
+	bool TestSimpleOccluders(const Fvector& test_point, float test_radius) const;
+
+	// Portal-based occlusion methods
+	void LoadOcclusionPortals();
+	bool TestPortalOcclusion(const Fvector& test_point, float test_radius) const;
+	bool IsPointBehindPortal(const Fvector& point, const OcclusionPortal& portal) const;
+
+	// Hardware query methods
+	void UpdateHardwareOcclusionTests();
+	void ProcessHardwareOcclusionResults();
+	bool IsSlotHardwareOccluded(Slot* slot);
+	bool IsCache1HardwareOccluded(CacheSlot1* cache1);
+	void RenderHardwareOcclusionTest(const Fvector& center, float radius);
+	void RenderHardwareOcclusionTest(const Fvector& min, const Fvector& max);
+
+	// Software rasterizer methods
+	void InitializeSoftwareRasterizer();
+	void CleanupSoftwareRasterizer();
+	void UpdateSoftwareDepthBuffer();
+	bool TestSoftwareOcclusion(const Fvector& test_point, float test_radius) const;
+	void RasterizeOcclusionGeometry();
+
+	// Hybrid occlusion testing
+	bool PerformOcclusionTest(Slot* slot);
+	bool PerformOcclusionTest(CacheSlot1* cache1);
+	float CalculateOcclusionConfidence(const Fvector& test_point, EOcclusionMethod method) const;
+
+	// Unified occlusion interface
+	bool IsSlotOccluded(Slot* slot);
+	bool IsCache1Occluded(CacheSlot1* cache1);
+	void UpdateOcclusionTests();
+	void ProcessOcclusionResults();
+	void RenderOcclusionQueries();
 
 	// Cache system
 	void UpdateCacheLevel1Bounds();
@@ -278,6 +419,9 @@ class CDetailManager
 	static D3DVERTEXELEMENT9* GetDetailsVertexDecl();
 	static D3DVERTEXELEMENT9* GetDetailsInstancedVertexDecl();
 
+	// Occlusion vertex format
+	static D3DVERTEXELEMENT9* GetOcclusionVertexDecl();
+
 	// Vertex structure
 #pragma pack(push, 1)
 	struct vertHW
@@ -301,7 +445,7 @@ class CDetailManager
 	void Render();
 	void __stdcall Update();
 	void UpdateCache();
-	void SafeUpdate(); // Added for safe updates
+	void SafeUpdate();
 
 	// Device management
 	void OnDeviceResetBegin();
@@ -320,6 +464,26 @@ class CDetailManager
 	{
 		return HW.Caps.geometry_major >= 1;
 	}
+
+	// Multi-method occlusion culling control
+	void EnableOcclusionCulling(bool enable)
+	{
+		m_occlusion_enabled = enable;
+	}
+	bool IsOcclusionCullingEnabled() const
+	{
+		return m_occlusion_enabled;
+	}
+	void SetOcclusionMethod(EOcclusionMethod method);
+	EOcclusionMethod GetCurrentOcclusionMethod() const
+	{
+		return m_primary_occlusion_method;
+	}
+
+	// Debug and statistics
+	u32 GetOccludedSlotCount() const;
+	u32 GetVisibleSlotCount() const;
+	void DumpOcclusionStats();
 
 #ifdef _EDITOR
 	virtual ObjectList* GetSnapList() = 0;
