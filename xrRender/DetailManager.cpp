@@ -62,6 +62,97 @@ IC bool CDetailManager::InterpolateAndDither(float* alpha255, u32 x, u32 y, u32 
 	return c > dither[col][row];
 }
 
+void CDetailManager::UpdateFrustumPlanes()
+{
+	Fmatrix& M = Device.mFullTransform;
+
+	// Left plane
+	m_frustum_planes[FRUSTUM_LEFT].n.x = M._14 + M._11;
+	m_frustum_planes[FRUSTUM_LEFT].n.y = M._24 + M._21;
+	m_frustum_planes[FRUSTUM_LEFT].n.z = M._34 + M._31;
+	m_frustum_planes[FRUSTUM_LEFT].d = M._44 + M._41;
+
+	// Right plane
+	m_frustum_planes[FRUSTUM_RIGHT].n.x = M._14 - M._11;
+	m_frustum_planes[FRUSTUM_RIGHT].n.y = M._24 - M._21;
+	m_frustum_planes[FRUSTUM_RIGHT].n.z = M._34 - M._31;
+	m_frustum_planes[FRUSTUM_RIGHT].d = M._44 - M._41;
+
+	// Top plane
+	m_frustum_planes[FRUSTUM_TOP].n.x = M._14 - M._12;
+	m_frustum_planes[FRUSTUM_TOP].n.y = M._24 - M._22;
+	m_frustum_planes[FRUSTUM_TOP].n.z = M._34 - M._32;
+	m_frustum_planes[FRUSTUM_TOP].d = M._44 - M._42;
+
+	// Bottom plane
+	m_frustum_planes[FRUSTUM_BOTTOM].n.x = M._14 + M._12;
+	m_frustum_planes[FRUSTUM_BOTTOM].n.y = M._24 + M._22;
+	m_frustum_planes[FRUSTUM_BOTTOM].n.z = M._34 + M._32;
+	m_frustum_planes[FRUSTUM_BOTTOM].d = M._44 + M._42;
+
+	// Near plane
+	m_frustum_planes[FRUSTUM_NEAR].n.x = M._13;
+	m_frustum_planes[FRUSTUM_NEAR].n.y = M._23;
+	m_frustum_planes[FRUSTUM_NEAR].n.z = M._33;
+	m_frustum_planes[FRUSTUM_NEAR].d = M._43;
+
+	// Far plane
+	m_frustum_planes[FRUSTUM_FAR].n.x = M._14 - M._13;
+	m_frustum_planes[FRUSTUM_FAR].n.y = M._24 - M._23;
+	m_frustum_planes[FRUSTUM_FAR].n.z = M._34 - M._33;
+	m_frustum_planes[FRUSTUM_FAR].d = M._44 - M._43;
+
+	// Normalize all planes
+	for (int i = 0; i < FRUSTUM_PLANES_COUNT; i++)
+	{
+		float length = 1.0f / m_frustum_planes[i].n.magnitude();
+		m_frustum_planes[i].n.x *= length;
+		m_frustum_planes[i].n.y *= length;
+		m_frustum_planes[i].n.z *= length;
+		m_frustum_planes[i].d *= length;
+	}
+}
+
+bool CDetailManager::IsSphereInsideFrustum(const Fvector& center, float radius) const
+{
+	for (int i = 0; i < FRUSTUM_PLANES_COUNT; i++)
+	{
+		float distance = m_frustum_planes[i].classify(center);
+		if (distance < -radius)
+			return false;
+	}
+	return true;
+}
+
+bool CDetailManager::IsAABBInsideFrustum(const Fvector& min, const Fvector& max) const
+{
+	for (int i = 0; i < FRUSTUM_PLANES_COUNT; i++)
+	{
+		// Check if AABB is completely outside any plane
+		Fvector positive;
+		positive.x = (m_frustum_planes[i].n.x > 0) ? max.x : min.x;
+		positive.y = (m_frustum_planes[i].n.y > 0) ? max.y : min.y;
+		positive.z = (m_frustum_planes[i].n.z > 0) ? max.z : min.z;
+
+		if (m_frustum_planes[i].classify(positive) < 0)
+			return false;
+	}
+	return true;
+}
+
+bool CDetailManager::IsSlotVisible(const Slot* slot) const
+{
+	if (!slot || slot->empty)
+		return false;
+
+	// First check with sphere (faster)
+	if (!IsSphereInsideFrustum(slot->vis.sphere.P, slot->vis.sphere.R))
+		return false;
+
+	// Then check with AABB (more precise)
+	return IsAABBInsideFrustum(slot->vis.box.min, slot->vis.box.max);
+}
+
 CDetailManager::CDetailManager()
 	: m_dtFS(nullptr), m_dtSlots(nullptr), m_hw_Geom(nullptr), m_hw_Geom_Instanced(nullptr), m_hw_BatchSize(0),
 	  m_hw_VB(nullptr), m_hw_VB_Instances(nullptr), m_hw_IB(nullptr), m_cache_cx(0), m_cache_cz(0), m_frame_calc(0),
@@ -78,6 +169,9 @@ CDetailManager::CDetailManager()
 	ZeroMemory(m_cache, sizeof(m_cache));
 	ZeroMemory(m_cache_level1, sizeof(m_cache_level1));
 	ZeroMemory(m_cache_pool, sizeof(m_cache_pool));
+
+	// Initialize frustum planes
+	ZeroMemory(m_frustum_planes, sizeof(m_frustum_planes));
 
 	// Initialize dither matrix
 	bwdithermap(2);
@@ -810,13 +904,20 @@ void CDetailManager::UpdateVisibleM()
 
 	ClearVisibleLists();
 
-	// Проходим по всем слотам в кэше и добавляем их в видимый список без проверок
+	// Update frustum planes for current frame
+	UpdateFrustumPlanes();
+
+	// Проходим по всем слотам в кэше и добавляем их в видимый список с проверкой Frustum Culling
 	for (int z = 0; z < dm_cache_line; z++)
 	{
 		for (int x = 0; x < dm_cache_line; x++)
 		{
 			Slot* S = m_cache[z][x];
 			if (!S || S->empty)
+				continue;
+
+			// Frustum Culling check - пропускаем невидимые слоты
+			if (!IsSlotVisible(S))
 				continue;
 
 			// Обновляем фрейм (чтобы не обновлять каждый кадр, но без проверок расстояния)

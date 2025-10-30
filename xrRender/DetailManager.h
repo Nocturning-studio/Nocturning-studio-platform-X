@@ -110,6 +110,19 @@ class CDetailManager
 		}
 	};
 
+	// Frustum planes for culling
+	enum EFrustumPlanes
+	{
+		FRUSTUM_LEFT = 0,
+		FRUSTUM_RIGHT,
+		FRUSTUM_TOP,
+		FRUSTUM_BOTTOM,
+		FRUSTUM_NEAR,
+		FRUSTUM_FAR,
+		FRUSTUM_PLANES_COUNT
+	};
+	Fplane m_frustum_planes[FRUSTUM_PLANES_COUNT];
+
 	// Types
 	typedef xr_vector<xr_vector<SlotItemVec*>> vis_list;
 	typedef svector<CDetail*, dm_max_objects> DetailVec;
@@ -189,6 +202,12 @@ class CDetailManager
 	void UpdateVisibleM();
 	void ClearVisibleLists();
 	void CopyVisibleListsForRender();
+
+	// Frustum culling methods
+	void UpdateFrustumPlanes();
+	bool IsSphereInsideFrustum(const Fvector& center, float radius) const;
+	bool IsAABBInsideFrustum(const Fvector& min, const Fvector& max) const;
+	bool IsSlotVisible(const Slot* slot) const;
 
 	// Cache system
 	void UpdateCacheLevel1Bounds();
