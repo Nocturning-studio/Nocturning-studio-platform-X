@@ -424,6 +424,11 @@ class ENGINE_API CBackend
 		constants.seta_ps_direct(Register, count, A);
 	}
 
+	ICF void flush()
+	{
+		constants.flush();
+	}
+
 	ICF void Render(D3DPRIMITIVETYPE T, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC);
 	ICF void Render(D3DPRIMITIVETYPE T, u32 startV, u32 PC);
 

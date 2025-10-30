@@ -16,10 +16,10 @@
 #include "ESceneClassList.h"
 #endif
 
-const int dm_size = 36;
-const int dm_max_decompress = 16;
-const int dm_cache1_count = 4;
-const int dm_cache1_line = dm_size * 2 / dm_cache1_count;
+const int dm_max_decompress = 7;
+const int dm_size = 24;									  //!
+const int dm_cache1_count = 4;							  //
+const int dm_cache1_line = dm_size * 2 / dm_cache1_count; //! dm_size*2 must be div dm_cache1_count
 const int dm_max_objects = 64;
 const int dm_obj_in_slot = 4;
 const int dm_cache_line = dm_size + 1 + dm_size;
@@ -164,6 +164,11 @@ class CDetailManager
 	volatile LONG m_bUpdating; // Prevent concurrent updates
 	bool m_bRegisteredInParallel;
 
+	Fmatrix m_currentView;
+	Fmatrix m_currentProject;
+	Fmatrix m_currentWorldViewProject;
+	void UpdateMatrices();
+
   public:
 	// Static configuration
 	static BOOL s_disable_hom;
@@ -228,6 +233,7 @@ class CDetailManager
 	{
 		return m_cache_cx - dm_size + x;
 	}
+
 	int cg2w_Z(int z)
 	{
 		return m_cache_cz - dm_size + (dm_cache_line - 1 - z);
@@ -237,6 +243,7 @@ class CDetailManager
 	{
 		return x - m_cache_cx + dm_size;
 	}
+
 	int w2cg_Z(int z)
 	{
 		return (dm_cache_line - 1) - (z - m_cache_cz + dm_size);
