@@ -369,6 +369,15 @@ bool CDetailManager::TestGeometryOcclusion(const Fvector& test_point, float test
 		return false;
 
 	Fvector camera_pos = Device.vCameraPosition;
+	float distance_to_test = camera_pos.distance_to(test_point);
+
+	// Быстрая проверка: если объект слишком близко, не occlusion'им
+	if (distance_to_test < 5.0f)
+		return false;
+
+	// Если объект слишком далеко, используем упрощенную проверку
+	if (distance_to_test > s_max_occlusion_distance)
+		return false;
 
 	// Проверяем простые occluders
 	for (size_t i = 0; i < m_simple_occluders.size(); i += 2)
@@ -376,32 +385,39 @@ bool CDetailManager::TestGeometryOcclusion(const Fvector& test_point, float test
 		const Fvector& min = m_simple_occluders[i];
 		const Fvector& max = m_simple_occluders[i + 1];
 
-		if (IsAABBInsideFrustum(min, max))
+		// Быстрая проверка расстояния до occluder'а
+		Fvector occluder_center;
+		occluder_center.add(min, max).mul(0.5f);
+		float distance_to_occluder = camera_pos.distance_to(occluder_center);
+
+		// Если occluder дальше тестовой точки, он не может occlusion'ить
+		if (distance_to_occluder > distance_to_test)
+			continue;
+
+		// Проверяем, находится ли тестовая точка за bounding box'ом occluder'а
+		if (test_point.x < min.x - test_radius && camera_pos.x > max.x + test_radius)
+			continue;
+		if (test_point.x > max.x + test_radius && camera_pos.x < min.x - test_radius)
+			continue;
+		if (test_point.z < min.z - test_radius && camera_pos.z > max.z + test_radius)
+			continue;
+		if (test_point.z > max.z + test_radius && camera_pos.z < min.z - test_radius)
+			continue;
+
+		// Более точная проверка с raycast
+		Fvector dir_to_test = Fvector().sub(test_point, camera_pos);
+		dir_to_test.normalize();
+
+		Fvector intersection;
+		Fbox occluder_box;
+		occluder_box.set(min, max);
+
+		if (Fbox::rpOriginOutside == occluder_box.Pick2(camera_pos, dir_to_test, intersection))
 		{
-			Fvector occluder_center;
-			occluder_center.add(min, max).mul(0.5f);
-
-			Fvector to_occluder = Fvector().sub(occluder_center, camera_pos);
-			Fvector to_test = Fvector().sub(test_point, camera_pos);
-
-			float dot_product = to_occluder.dotproduct(to_test);
-			if (dot_product > 0)
+			float intersection_dist = camera_pos.distance_to(intersection);
+			if (intersection_dist < distance_to_test - test_radius)
 			{
-				float occluder_dist = camera_pos.distance_to(occluder_center);
-				float test_dist = camera_pos.distance_to(test_point);
-
-				if (test_dist > occluder_dist + 5.0f)
-				{
-					collide::rq_result RQ;
-					if (g_pGameLevel->ObjectSpace.RayPick(camera_pos, to_test, test_dist, collide::rqtStatic, RQ,
-														  nullptr))
-					{
-						if (RQ.range < test_dist - test_radius)
-						{
-							return true;
-						}
-					}
-				}
+				return true;
 			}
 		}
 	}
@@ -470,22 +486,28 @@ bool CDetailManager::TestPortalOcclusion(const Fvector& test_point, float test_r
 		if (!portal.active)
 			continue;
 
+		// Быстрая проверка расстояния
+		float portal_dist = camera_pos.distance_to(portal.center);
+		float test_dist = camera_pos.distance_to(test_point);
+
+		// Если портал дальше тестовой точки, он не может occlusion'ить
+		if (portal_dist > test_dist)
+			continue;
+
 		bool camera_behind = IsPointBehindPortal(camera_pos, portal);
 		bool test_point_behind = IsPointBehindPortal(test_point, portal);
 
 		if (camera_behind != test_point_behind)
 		{
-			float portal_dist = camera_pos.distance_to(portal.center);
-			float test_dist = camera_pos.distance_to(test_point);
+			// Улучшенная проверка: учитываем размер портала и тестовой области
+			float angular_size = portal.radius / portal_dist;
+			float test_angular_size = test_radius / test_dist;
 
-			if (test_dist > portal_dist + test_radius)
-			{
-				float angular_size = portal.radius / portal_dist;
-				if (angular_size < 0.1f)
-				{
-					return true;
-				}
-			}
+			// Если портал значительно меньше тестового объекта, он не может его полностью occlusion'ить
+			if (angular_size < test_angular_size * 0.5f)
+				continue;
+
+			return true;
 		}
 	}
 
@@ -557,57 +579,31 @@ void CDetailManager::RasterizeOcclusionGeometry()
 
 bool CDetailManager::TestSoftwareOcclusion(const Fvector& test_point, float test_radius) const
 {
-	if (!m_software_depth_buffer)
-		return false;
+	// Простая реализация без сложного rasterizer'а
+	// Используем приближенную проверку глубины на основе расстояния
 
-	Fvector4 clip_pos;
-	Fvector view_pos;
+	Fvector camera_pos = Device.vCameraPosition;
+	float test_distance = camera_pos.distance_to(test_point);
 
-	// Прямое преобразование точки в view space (замена view_pos.transform(test_point, Device.mView))
+	// Для software метода используем упрощенную эвристику:
+	// Если объект находится за крупными статическими объектами, считаем его occlusion'нутым
+
+	// Проверяем, нет ли крупных объектов между камерой и тестовой точкой
+	collide::rq_result RQ;
+	Fvector dir_to_test = Fvector().sub(test_point, camera_pos);
+	float dir_length = dir_to_test.magnitude();
+	dir_to_test.normalize();
+
+	if (g_pGameLevel->ObjectSpace.RayPick(camera_pos, dir_to_test, dir_length, collide::rqtStatic, RQ, nullptr))
 	{
-		const Fmatrix& M = Device.mView;
-		const Fvector& v = test_point;
-
-		// Умножение вектора на матрицу вида (без перспективного деления)
-		view_pos.x = v.x * M._11 + v.y * M._21 + v.z * M._31 + M._41;
-		view_pos.y = v.x * M._12 + v.y * M._22 + v.z * M._32 + M._42;
-		view_pos.z = v.x * M._13 + v.y * M._23 + v.z * M._33 + M._43;
+		// Если столкновение произошло значительно ближе тестовой точки
+		if (RQ.range < test_distance - test_radius - 1.0f)
+		{
+			return true;
+		}
 	}
 
-	// Преобразование в clip space с помощью матрицы проекции
-	clip_pos.w = view_pos.x * Device.mProject._14 + view_pos.y * Device.mProject._24 +
-				 view_pos.z * Device.mProject._34 + Device.mProject._44;
-	clip_pos.x = view_pos.x * Device.mProject._11 + view_pos.y * Device.mProject._21 +
-				 view_pos.z * Device.mProject._31 + Device.mProject._41;
-	clip_pos.y = view_pos.x * Device.mProject._12 + view_pos.y * Device.mProject._22 +
-				 view_pos.z * Device.mProject._32 + Device.mProject._42;
-	clip_pos.z = view_pos.x * Device.mProject._13 + view_pos.y * Device.mProject._23 +
-				 view_pos.z * Device.mProject._33 + Device.mProject._43;
-
-	if (fabsf(clip_pos.w) < 0.0001f)
-		return false;
-
-	// Перспективное деление для получения NDC координат
-	clip_pos.x /= clip_pos.w;
-	clip_pos.y /= clip_pos.w;
-	clip_pos.z /= clip_pos.w;
-
-	// Преобразование NDC в координаты экрана
-	int screen_x = int((clip_pos.x * 0.5f + 0.5f) * m_software_depth_width);
-	int screen_y = int((0.5f - clip_pos.y * 0.5f) * m_software_depth_height);
-
-	if (screen_x < 0 || screen_x >= (int)m_software_depth_width || screen_y < 0 ||
-		screen_y >= (int)m_software_depth_height)
-	{
-		return true; // За пределами экрана - считаем occluded
-	}
-
-	// Проверка глубины
-	u32 buffer_index = screen_y * m_software_depth_width + screen_x;
-	u32 stored_depth = m_software_depth_buffer[buffer_index];
-	u32 test_depth = u32((clip_pos.z * 0.5f + 0.5f) * 0xFFFFFFFF);
-
-	return test_depth > stored_depth; // Если текущая глубина больше - объект occluded
+	return false;
 }
 
 bool CDetailManager::PerformOcclusionTest(Slot* slot)
@@ -618,54 +614,36 @@ bool CDetailManager::PerformOcclusionTest(Slot* slot)
 	Fvector test_point = slot->vis.sphere.P;
 	float test_radius = slot->vis.sphere.R * s_occlusion_padding_scale;
 
+	Fvector camera_pos = Device.vCameraPosition;
+	float distance = camera_pos.distance_to(test_point);
+
+	// Быстрые проверки
+	if (distance < 3.0f)
+		return false; // Слишком близко - не occlusion'им
+	if (distance > s_max_occlusion_distance)
+		return false; // Слишком далеко
+
 	bool occluded = false;
 	float confidence = 0.0f;
 
-	switch (m_primary_occlusion_method)
+	// Приоритет методов в зависимости от расстояния
+	if (distance < 30.0f)
 	{
-	case OCCLUSION_HOM:
-		confidence = 0.9f;
-		break;
-
-	case OCCLUSION_HARDWARE_QUERY:
-		return IsSlotHardwareOccluded(slot);
-
-	case OCCLUSION_GEOMETRY:
+		// Близкие объекты - точная геометрическая проверка
 		occluded = TestGeometryOcclusion(test_point, test_radius);
 		confidence = 0.8f;
-		break;
-
-	case OCCLUSION_PORTALS:
-		occluded = TestPortalOcclusion(test_point, test_radius);
+	}
+	else if (distance < 80.0f)
+	{
+		// Средняя дистанция - комбинированная проверка
+		occluded = TestGeometryOcclusion(test_point, test_radius) || TestSoftwareOcclusion(test_point, test_radius);
 		confidence = 0.7f;
-		break;
-
-	case OCCLUSION_RASTER:
+	}
+	else
+	{
+		// Дальние объекты - быстрая проверка
 		occluded = TestSoftwareOcclusion(test_point, test_radius);
 		confidence = 0.6f;
-		break;
-
-	case OCCLUSION_HYBRID:
-		if (TestGeometryOcclusion(test_point, test_radius))
-		{
-			occluded = true;
-			confidence = 0.85f;
-		}
-		else if (TestPortalOcclusion(test_point, test_radius))
-		{
-			occluded = true;
-			confidence = 0.75f;
-		}
-		else
-		{
-			occluded = TestSoftwareOcclusion(test_point, test_radius);
-			confidence = 0.65f;
-		}
-		break;
-
-	default:
-		occluded = false;
-		confidence = 0.5f;
 	}
 
 	slot->occlusion_confidence = confidence;
@@ -1212,94 +1190,25 @@ void CDetailManager::InitializeOcclusionSystem()
 		return;
 	}
 
-	Msg("CDetailManager::InitializeOcclusionSystem() - Starting multi-method occlusion system");
+	Msg("CDetailManager::InitializeOcclusionSystem() - Initializing software occlusion methods");
 
-	// Create occlusion test geometry
-	struct OcclusionVertex
-	{
-		float x, y, z;
-	};
-
-    OcclusionVertex box_vertices[8] = {{-0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f}, {0.5f, 0.5f, -0.5f},
-									   {-0.5f, 0.5f, -0.5f},  {-0.5f, -0.5f, 0.5f}, {0.5f, -0.5f, 0.5f},
-									   {0.5f, 0.5f, 0.5f},	  {-0.5f, 0.5f, 0.5f}};
-
-	u16 box_indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1, 5, 4, 7, 7, 6, 5,
-						   4, 0, 3, 3, 7, 4, 3, 2, 6, 6, 7, 3, 4, 5, 1, 1, 0, 4};
-
-	HRESULT hr = HW.pDevice->CreateVertexBuffer(sizeof(box_vertices), D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED,
-												&m_occlusion_vb, 0);
-	if (FAILED(hr))
-	{
-		Msg("![ERROR] Failed to create occlusion VB");
-		return;
-	}
-
-	OcclusionVertex* pVerts = nullptr;
-	hr = m_occlusion_vb->Lock(0, 0, (void**)&pVerts, 0);
-	if (SUCCEEDED(hr))
-	{
-		CopyMemory(pVerts, box_vertices, sizeof(box_vertices));
-		m_occlusion_vb->Unlock();
-	}
-
-	hr = HW.pDevice->CreateIndexBuffer(sizeof(box_indices), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED,
-									   &m_occlusion_ib, 0);
-	if (FAILED(hr))
-	{
-		Msg("![ERROR] Failed to create occlusion IB");
-		_RELEASE(m_occlusion_vb);
-		return;
-	}
-
-	u16* pIndices = nullptr;
-	hr = m_occlusion_ib->Lock(0, 0, (void**)&pIndices, 0);
-	if (SUCCEEDED(hr))
-	{
-		CopyMemory(pIndices, box_indices, sizeof(box_indices));
-		m_occlusion_ib->Unlock();
-	}
-
-	m_occlusion_geom.create(GetOcclusionVertexDecl(), m_occlusion_vb, m_occlusion_ib);
-
-	// Load occlusion data
+	// Загружаем только software методы
 	LoadOcclusionGeometry();
 	LoadOcclusionPortals();
-	InitializeSoftwareRasterizer();
 
-	// Create hardware queries if needed
-	if (m_primary_occlusion_method == OCCLUSION_HARDWARE_QUERY)
-	{
-		for (int z = 0; z < dm_cache1_line; z++)
-		{
-			for (int x = 0; x < dm_cache1_line; x++)
-			{
-				CacheSlot1& cache1 = m_cache_level1[z][x];
-				HW.pDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, &cache1.occlusion_query);
-			}
-		}
-
-		for (u32 i = 0; i < dm_cache_size; i++)
-		{
-			Slot& slot = m_cache_pool[i];
-			HW.pDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, &slot.occlusion_query);
-		}
-	}
-
+	// Не создаем hardware resources
 	DetectAvailableOcclusionMethods();
 
-	if (m_primary_occlusion_method == OCCLUSION_NONE)
+	// Принудительно устанавливаем software методы
+	if (m_primary_occlusion_method == OCCLUSION_HARDWARE_QUERY)
 	{
-		Msg("CDetailManager::InitializeOcclusionSystem() - No occlusion methods available, disabling");
-		m_occlusion_enabled = false;
-		return;
+		m_primary_occlusion_method = OCCLUSION_HYBRID;
 	}
 
 	m_occlusion_enabled = true;
 	m_occlusion_frame = 0;
 
-	Msg("CDetailManager::InitializeOcclusionSystem() - Multi-method occlusion system initialized");
-	Msg("CDetailManager::InitializeOcclusionSystem() - Using method: %d", m_primary_occlusion_method);
+	Msg("CDetailManager::InitializeOcclusionSystem() - Using occlusion method: %d", m_primary_occlusion_method);
 }
 
 void CDetailManager::CleanupOcclusionSystem()
