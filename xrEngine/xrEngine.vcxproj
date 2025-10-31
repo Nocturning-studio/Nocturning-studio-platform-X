@@ -2312,6 +2312,9 @@
     <Text Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\third-party\include\Imgui\Imgui.vcxproj">
+      <Project>{416e416c-4ce6-4163-888b-884d8ad77f7b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\xrDiscordAPI\xrDiscordAPI.vcxproj">
       <Project>{f4b26665-46b9-4e39-8c2c-d302b095ec14}</Project>
     </ProjectReference>
@@ -2326,6 +2329,9 @@
     <ProjectReference Include="..\xrLua\xrLua.vcxproj">
       <Project>{9ace5473-6d68-4b96-ac42-b39eaba0fe1f}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\xrNetServer\xrNetServer.vcxproj">
+      <Project>{435bac9a-b225-457d-ab40-c9bd0cc8838c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\xrParticles\xrParticles.vcxproj">
       <Project>{94a1c366-3d19-48e6-8170-4adc2e70df97}</Project>
