@@ -134,6 +134,8 @@ void CStats::Show()
 		RenderDUMP_WM.FrameEnd();
 		RenderDUMP_DT_VIS.FrameEnd();
 		RenderDUMP_DT_Render.FrameEnd();
+		RenderDUMP_DT_Update.FrameEnd();
+		RenderDUMP_DT_Occq.FrameEnd();
 		RenderDUMP_DT_Cache.FrameEnd();
 		RenderDUMP_Pcalc.FrameEnd();
 		RenderDUMP_Scalc.FrameEnd();
@@ -293,6 +295,8 @@ void CStats::Show()
 		F.OutNext("  Skinning:  %2.2fms", RenderDUMP_SKIN.result);
 		F.OutNext("  DT_Vis/Cnt:%2.2fms", RenderDUMP_DT_VIS.result, RenderDUMP_DT_Count);
 		F.OutNext("  DT_Render: %2.2fms", RenderDUMP_DT_Render.result);
+		F.OutNext("  DT_Update: %2.2fms", RenderDUMP_DT_Update.result);
+		F.OutNext("  DT_OCCQ: %2.2fms", RenderDUMP_DT_Occq.result);
 		F.OutNext("  DT_Cache:  %2.2fms", RenderDUMP_DT_Cache.result);
 		F.OutNext("  Wallmarks: %2.2fms, %d/%d - %d", RenderDUMP_WM.result, RenderDUMP_WMS_Count, RenderDUMP_WMD_Count, RenderDUMP_WMT_Count);
 		F.OutNext("  Glows:     %2.2fms", RenderDUMP_Glows.result);
@@ -461,6 +465,8 @@ void CStats::Show()
 		RenderDUMP_WM.FrameStart();
 		RenderDUMP_DT_VIS.FrameStart();
 		RenderDUMP_DT_Render.FrameStart();
+		RenderDUMP_DT_Update.FrameStart();
+		RenderDUMP_DT_Occq.FrameStart();
 		RenderDUMP_DT_Cache.FrameStart();
 		RenderDUMP_Pcalc.FrameStart();
 		RenderDUMP_Scalc.FrameStart();
