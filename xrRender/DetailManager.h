@@ -24,7 +24,7 @@
 
 // Константы системы деталей
 const int dm_max_decompress = 7; // Максимальное количество декомпрессий за кадр
-const int dm_size = 24;			 // Размер кэша в слотах
+const int dm_size = 64;			 // Размер кэша в слотах
 const int dm_cache1_count = 4;	 // Количество слотов в кэше первого уровня
 const int dm_cache1_line = dm_size * 2 / dm_cache1_count; // Линия кэша первого уровня
 const int dm_max_objects = 64; // Максимальное количество моделей травы
@@ -243,6 +243,43 @@ class CDetailManager
 	typedef DetailVec::iterator DetailIt;
 	typedef poolSS<SlotItem, 4096> PSS;
 
+	// Двойная буферизация для данных рендеринга
+	struct RenderFrameData
+	{
+		xr_vector<RenderBatch> renderBatches;
+		vis_list renderVisibles[3]; // vis_list = xr_vector<xr_vector<SlotItemVec*>>
+		u32 frameNumber;
+		bool valid;
+
+		RenderFrameData() : frameNumber(0), valid(false)
+		{
+		}
+
+		void Clear()
+		{
+			// Очищаем batches
+			renderBatches.clear();
+			renderBatches.shrink_to_fit();
+
+			// Очищаем видимые списки
+			for (int i = 0; i < 3; i++)
+			{
+				renderVisibles[i].clear();
+				renderVisibles[i].shrink_to_fit();
+			}
+
+			valid = false;
+			frameNumber = 0;
+		}
+	};
+
+	RenderFrameData m_renderFrames[2];
+	std::atomic<int> m_currentRenderFrame;
+	std::atomic<int> m_readyRenderFrame;
+
+	u32 m_consecutiveSkipFrames;
+	u32 m_maxConsecutiveSkips;
+
   private:
 	// Матрица дизеринга для распределения объектов
 	int dither[16][16];
@@ -326,6 +363,33 @@ class CDetailManager
 	bool m_bUseCustomMatrices;
 	bool m_bUpdateRequired;
 	xr_vector<RenderBatch> m_renderBatches;
+
+	// Асинхронная система
+	std::atomic<bool> m_bAsyncUpdateInProgress;
+	std::atomic<bool> m_bAsyncUpdateRequired;
+	std::thread m_UpdateThread;
+	std::mutex m_UpdateMutex;
+	std::condition_variable m_UpdateCondition;
+	std::atomic<bool> m_bUpdateThreadShouldExit;
+
+	// Данные для асинхронного обновления
+	Fmatrix m_AsyncView;
+	Fmatrix m_AsyncProject;
+	u32 m_AsyncFrame;
+
+	// Результаты асинхронного обновления
+	xr_vector<RenderBatch> m_AsyncRenderBatches;
+	vis_list m_AsyncVisibles[3];
+	std::mutex m_AsyncDataMutex;
+
+	// Добавляем счетчики для диагностики утечек
+	std::atomic<u32> m_slotItemsCreated;
+	std::atomic<u32> m_slotItemsDestroyed;
+	std::atomic<u32> m_currentSlotItems;
+
+	// Метод для диагностики
+	void DumpSlotItemStats(const char* location);
+	void DumpMemoryStats();
 
   public:
 	// Статическая конфигурация
@@ -460,8 +524,8 @@ class CDetailManager
 	// Аппаратный рендеринг
 	void hw_Load();
 	void hw_Unload();
-	void hw_Render();
-	void hw_Render_dump();
+	void hw_Render(const xr_vector<RenderBatch>& batches);
+	void hw_Render_dump(const xr_vector<RenderBatch>& batches);
 
 	// НОВОЕ: Управление матрицами и батчами
 	void UpdateMatrices();
@@ -483,6 +547,11 @@ class CDetailManager
 
 	// Вспомогательные методы
 	short QuantConstant(float v);
+
+	void AsyncUpdateThreadProc();
+	void Internal_AsyncUpdate();
+
+	void ClearRenderData();
 
   public:
 	// Публичный интерфейс
@@ -517,11 +586,18 @@ class CDetailManager
 		return m_bShuttingDown;
 	}
 
-	// Утилиты
-	IC bool UseVS()
+	// Асинхронное управление
+	void StartAsyncUpdate();
+	void WaitForAsyncUpdate();
+	bool IsAsyncUpdateComplete() const
 	{
-		return HW.Caps.geometry_major >= 1;
+		return !m_bAsyncUpdateInProgress;
 	}
+
+	bool NeedsPriorityUpdate() const;
+
+	void SwapRenderBuffers();
+	RenderFrameData* GetCurrentRenderData();
 
 	// Управление occlusion culling
 	void EnableOcclusionCulling(bool enable)

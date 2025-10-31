@@ -126,12 +126,15 @@ IC float Interpolate(float* base, u32 x, u32 y, u32 size)
 CDetailManager::CDetailManager()
 	: m_dtFS(nullptr), m_dtSlots(nullptr), m_hw_Geom(nullptr), m_hw_Geom_Instanced(nullptr), m_hw_BatchSize(0),
 	  m_hw_VB(nullptr), m_hw_VB_Instances(nullptr), m_hw_IB(nullptr), m_cache_cx(0), m_cache_cz(0), m_frame_calc(0),
-	  m_frame_rendered(0), m_initialized(false), m_loaded(false), m_bInLoad(FALSE), m_bShuttingDown(FALSE),
+	  m_frame_rendered(0), m_initialized(true), m_loaded(false), m_bInLoad(FALSE), m_bShuttingDown(FALSE),
 	  m_bRegisteredInParallel(false), m_occlusion_frame(0), m_occlusion_enabled(false),
 	  m_primary_occlusion_method(OCCLUSION_NONE), m_fallback_occlusion_method(OCCLUSION_NONE),
 	  m_software_depth_buffer(nullptr), m_software_depth_width(0), m_software_depth_height(0),
 	  m_software_depth_scale(1.0f), m_occlusion_geom(nullptr), m_occlusion_vb(nullptr), m_occlusion_ib(nullptr),
-	  m_bUseCustomMatrices(false), m_bUpdateRequired(false)
+	  m_bUseCustomMatrices(false), m_bUpdateRequired(false), m_bAsyncUpdateInProgress(false),
+	  m_bAsyncUpdateRequired(false), m_bUpdateThreadShouldExit(false), m_AsyncFrame(0), m_currentRenderFrame(0),
+	  m_readyRenderFrame(-1), m_consecutiveSkipFrames(0), m_maxConsecutiveSkips(2), m_slotItemsCreated(0),
+	  m_slotItemsDestroyed(0), m_currentSlotItems(0)
 {
 	Msg("CDetailManager::CDetailManager() - Initializing detail manager");
 
@@ -157,6 +160,16 @@ CDetailManager::CDetailManager()
 	m_currentProject.identity();
 	m_currentViewProject.identity();
 
+	// Инициализация буферов рендеринга
+	for (int i = 0; i < 2; i++)
+	{
+		// Не нужно предварительно резервировать - xr_vector сам управляет памятью
+		m_renderFrames[i].valid = false;
+	}
+
+	// Запускаем поток обновления
+	m_UpdateThread = std::thread(&CDetailManager::AsyncUpdateThreadProc, this);
+
 	Msg("CDetailManager::CDetailManager() - Initialization completed");
 }
 
@@ -166,7 +179,18 @@ CDetailManager::CDetailManager()
  */
 CDetailManager::~CDetailManager()
 {
-	Shutdown();
+	// Гарантируем вызов Shutdown даже если он не был вызван явно
+	if (!m_bShuttingDown)
+	{
+		Shutdown();
+	}
+
+	// Дополнительные проверки
+	if (m_hw_VB || m_hw_IB || m_hw_VB_Instances)
+	{
+		Msg("![WARNING] CDetailManager::~CDetailManager() - Hardware resources not properly released");
+		hw_Unload();
+	}
 }
 
 /**
@@ -180,14 +204,41 @@ void CDetailManager::Shutdown()
 
 	Msg("CDetailManager::Shutdown() - Starting shutdown sequence");
 
+	// Диагностика перед выгрузкой
+	DumpMemoryStats();
+
 	// Устанавливаем флаг завершения работы
 	m_bShuttingDown = TRUE;
 
-	// Удаляем из параллельных задач
-	UnregisterFromParallel();
+	// Останавливаем поток обновления
+	if (m_UpdateThread.joinable())
+	{
+		{
+			std::lock_guard<std::mutex> lock(m_UpdateMutex);
+			m_bUpdateThreadShouldExit = true;
+			m_bAsyncUpdateRequired = false;
+		}
+		m_UpdateCondition.notify_all();
+		m_UpdateThread.join();
+		Msg("CDetailManager::Shutdown() - Update thread stopped");
+	}
 
 	// Выгружаем ресурсы
 	Unload();
+
+	// Очищаем все контейнеры
+	ClearRenderData();
+
+	// Очищаем occlusion system
+	CleanupOcclusionSystem();
+
+	// Очищаем кэш
+	m_cache_task.clear();
+	ZeroMemory(m_cache, sizeof(m_cache));
+	ZeroMemory(m_cache_level1, sizeof(m_cache_level1));
+
+	// Финальная диагностика
+	DumpMemoryStats();
 
 	Msg("CDetailManager::Shutdown() - Shutdown completed");
 }
@@ -271,7 +322,19 @@ void CDetailManager::BuildRenderBatches()
 			RenderBatch batch;
 			batch.object_index = obj_index;
 			batch.lod_id = lod_id;
-			batch.instances.reserve(512); // Предварительное резервирование
+
+			// Предварительное резервирование
+			u32 estimated_instances = 0;
+			for (auto& slot_items : vis)
+			{
+				if (slot_items)
+					estimated_instances += slot_items->size();
+			}
+
+			if (estimated_instances == 0)
+				continue;
+
+			batch.instances.reserve(estimated_instances);
 
 			// Собираем все инстансы для этого объекта и LOD
 			for (auto& slot_items : vis)
@@ -310,8 +373,6 @@ void CDetailManager::BuildRenderBatches()
 			}
 		}
 	}
-
-	Msg("CDetailManager::BuildRenderBatches() - Built %d render batches", m_renderBatches.size());
 }
 
 // ===========================================================================
@@ -325,10 +386,18 @@ void CDetailManager::BuildRenderBatches()
 void __stdcall CDetailManager::Update()
 {
 	static volatile LONG updateGuard = 0;
+	static u32 lastDiagnosticFrame = 0;
 
 	// Проверка условий выполнения
-	if (m_bShuttingDown || !psDeviceFlags.is(rsDetails))
+	if (m_bShuttingDown || !psDeviceFlags.is(rsDetails) || !m_loaded || !m_initialized)
 		return;
+
+	// Периодическая диагностика (каждые 60 кадров)
+	//if (Device.dwFrame - lastDiagnosticFrame > 60)
+	//{
+		DumpMemoryStats();
+	//	lastDiagnosticFrame = Device.dwFrame;
+	//}
 
 	// Захват мьютекса обновления
 	if (InterlockedExchange(&updateGuard, 1) == 1)
@@ -412,6 +481,10 @@ void CDetailManager::Render(const Fmatrix& view, const Fmatrix& projection)
  * @brief Внутренний метод рендеринга
  * @note Выполняет фактический рендеринг с текущими матрицами
  */
+/**
+ * @brief Внутренний метод рендеринга
+ * @note Выполняет фактический рендеринг с текущими матрицами
+ */
 void CDetailManager::Internal_Render()
 {
 #ifndef _EDITOR
@@ -422,27 +495,41 @@ void CDetailManager::Internal_Render()
 		return;
 #endif
 
+	// Всегда пытаемся рендерить - используем данные из готового буфера
+	RenderFrameData* renderData = GetCurrentRenderData();
+
+	// Если данных нет, пытаемся использовать старые данные из предыдущего кадра
+	if (!renderData || !renderData->valid)
+	{
+		// Пытаемся найти любой валидный буфер
+		for (int i = 0; i < 2; i++)
+		{
+			if (m_renderFrames[i].valid)
+			{
+				renderData = &m_renderFrames[i];
+				break;
+			}
+		}
+
+		// Если все еще нет данных, пропускаем рендеринг
+		if (!renderData || !renderData->valid)
+		{
+			return;
+		}
+	}
+
 	m_MT.Enter();
 
 	__try
 	{
-		// Синхронное обновление если необходимо
-		if (m_frame_calc != Device.dwFrame)
-		{
-			Device.Statistic->RenderDUMP_DT_Update.Begin();
-			Update();
-			Device.Statistic->RenderDUMP_DT_Update.End();
-		}
-
-		// Начало рендеринга
 		Device.Statistic->RenderDUMP_DT_Render.Begin();
 
 		// Настройка состояний рендеринга
 		RenderBackend.set_CullMode(CULL_NONE);
 		RenderBackend.set_xform_world(Fidentity);
 
-		// Выполнение аппаратного рендеринга
-		hw_Render();
+		// Рендеринг с использованием данных из буфера
+		hw_Render(renderData->renderBatches);
 
 		// Восстановление состояний
 		RenderBackend.set_CullMode(CULL_CCW);
@@ -619,12 +706,41 @@ void CDetailManager::hw_Unload()
 {
 	Msg("CDetailManager::hw_Unload() - Unloading hardware resources");
 
+	if (m_hw_VB)
+	{
+		ULONG refCount = m_hw_VB->Release();
+		m_hw_VB = nullptr;
+		Msg("CDetailManager::hw_Unload() - Released VB, refCount: %d", refCount);
+	}
+	else
+	{
+		m_hw_VB = nullptr;
+	}
+
+	if (m_hw_IB)
+	{
+		ULONG refCount = m_hw_IB->Release();
+		m_hw_IB = nullptr;
+		Msg("CDetailManager::hw_Unload() - Released IB, refCount: %d", refCount);
+	}
+	else
+	{
+		m_hw_IB = nullptr;
+	}
+
+	if (m_hw_VB_Instances)
+	{
+		ULONG refCount = m_hw_VB_Instances->Release();
+		m_hw_VB_Instances = nullptr;
+		Msg("CDetailManager::hw_Unload() - Released VB_Instances, refCount: %d", refCount);
+	}
+	else
+	{
+		m_hw_VB_Instances = nullptr;
+	}
+
 	m_hw_Geom.destroy();
 	m_hw_Geom_Instanced.destroy();
-
-	_RELEASE(m_hw_VB_Instances);
-	_RELEASE(m_hw_IB);
-	_RELEASE(m_hw_VB);
 
 	m_hw_BatchSize = 0;
 
@@ -660,7 +776,7 @@ Fvector4 GetWindTurbulence()
 /**
  * @brief Основной метод аппаратного рендеринга
  */
-void CDetailManager::hw_Render()
+void CDetailManager::hw_Render(const xr_vector<RenderBatch>& batches)
 {
 	if (!psDeviceFlags.is(rsDetails))
 		return;
@@ -671,7 +787,7 @@ void CDetailManager::hw_Render()
 	try
 	{
 		RenderBackend.set_Geometry(m_hw_Geom_Instanced);
-		hw_Render_dump();
+		hw_Render_dump(batches);
 	}
 	catch (...)
 	{
@@ -683,9 +799,16 @@ void CDetailManager::hw_Render()
  * @brief Внутренний метод аппаратного рендеринга с инстансингом
  * @note Рендерит предварительно собранные пакеты с текущими матрицами
  */
-void CDetailManager::hw_Render_dump()
+/**
+ * @brief Внутренний метод аппаратного рендеринга с инстансингом
+ * @note Рендерит предварительно собранные пакеты с текущими матрицами
+ */
+void CDetailManager::hw_Render_dump(const xr_vector<RenderBatch>& batches)
 {
 	Device.Statistic->RenderDUMP_DT_Count = 0;
+
+	if (batches.empty())
+		return;
 
 	// Используем текущие матрицы (основной камеры или источника света)
 	Fmatrix mWorld = Fidentity;
@@ -704,7 +827,7 @@ void CDetailManager::hw_Render_dump()
 	RenderBackend.get_ConstantCache_Pixel().force_dirty();
 
 	// Рендеринг предварительно собранных пакетов
-	for (const auto& batch : m_renderBatches)
+	for (const auto& batch : batches)
 	{
 		u32 obj_index = batch.object_index;
 		u32 lod_id = batch.lod_id;
@@ -789,9 +912,6 @@ void CDetailManager::hw_Render_dump()
 			}
 		}
 	}
-
-	// Очистка пакетов после рендеринга
-	m_renderBatches.clear();
 }
 
 // ===========================================================================
@@ -837,6 +957,7 @@ void CDetailManager::Load()
 	{
 		Internal_Load();
 		m_loaded = true;
+		m_initialized = true;
 
 		// Регистрация в параллельных задачах если поддерживается многопоточность
 		if (!m_bRegisteredInParallel && ps_render_flags.test(RFLAG_EXP_MT_CALC))
@@ -868,6 +989,7 @@ void CDetailManager::Internal_Load()
 		return;
 
 	m_bInLoad = TRUE;
+	m_initialized = false;
 
 	// Проверка существования файла деталей уровня
 	if (!FS.exist("$level$", "level.details"))
@@ -1036,13 +1158,17 @@ void CDetailManager::Internal_Unload()
 {
 	Msg("CDetailManager::Internal_Unload() - Starting internal unloading");
 
+	// Останавливаем асинхронные операции
+	m_bAsyncUpdateInProgress = false;
+	m_bAsyncUpdateRequired = false;
+
 	// Очистка системы occlusion culling
 	CleanupOcclusionSystem();
 
 	// Выгрузка аппаратных ресурсов
 	hw_Unload();
 
-	// Очистка кэша слотов
+	// Очистка кэша слотов с правильным освобождением памяти
 	for (u32 i = 0; i < dm_cache_size; i++)
 	{
 		Slot& slot = m_cache_pool[i];
@@ -1051,18 +1177,24 @@ void CDetailManager::Internal_Unload()
 			SlotPart& sp = slot.G[j];
 
 			// Освобождение элементов слота
-			for (auto item : sp.items)
+			for (auto& item : sp.items)
 			{
 				if (item)
 				{
 					m_poolSI.destroy(item);
+					m_slotItemsDestroyed++;
+					m_currentSlotItems--;
+					item = nullptr;
 				}
 			}
+			// Для svector используем clear()
 			sp.items.clear();
 
 			// Очистка LOD массивов
 			for (int lod = 0; lod < 3; lod++)
+			{
 				sp.r_items[lod].clear();
+			}
 		}
 	}
 
@@ -1075,17 +1207,15 @@ void CDetailManager::Internal_Unload()
 			xr_delete(*it);
 		}
 	}
+	// Для svector используем clear() вместо swap
 	m_objects.clear();
 
-	// Очистка систем видимости
-	for (u32 i = 0; i < 3; ++i)
-	{
-		m_visibles[i].clear();
-		m_render_visibles[i].clear();
-	}
+	// Очистка данных рендеринга
+	ClearRenderData();
 
-	// Очистка задач кэширования
+	// Очищаем задачи кэширования (xr_vector можно очищать через clear + shrink)
 	m_cache_task.clear();
+	m_cache_task.shrink_to_fit(); // Освобождаем память
 
 	// Закрытие файлового потока
 	if (m_dtFS)
@@ -1094,8 +1224,15 @@ void CDetailManager::Internal_Unload()
 		m_dtFS = nullptr;
 	}
 
-	// Очистка пакетов рендеринга
-	m_renderBatches.clear();
+	// Освобождаем слоты
+	if (m_dtSlots)
+	{
+		xr_free(m_dtSlots);
+		m_dtSlots = nullptr;
+	}
+
+	m_initialized = false;
+	m_loaded = false;
 
 	Msg("CDetailManager::Internal_Unload() - Internal unloading completed");
 }
@@ -1414,6 +1551,8 @@ void CDetailManager::cache_Task(int grid_x, int grid_z, Slot* slot)
 			if (item)
 			{
 				m_poolSI.destroy(item);
+				m_slotItemsDestroyed++;
+				m_currentSlotItems--;
 			}
 		}
 		slot->G[i].items.clear();
@@ -1482,7 +1621,11 @@ void CDetailManager::cache_Decompress(Slot* slot)
 	u32 triangle_count = m_xrc.r_count();
 
 	if (0 == triangle_count)
+	{
+		// ВАЖНО: Если нет треугольников, слот должен быть помечен как пустой
+		decompressing_slot.empty = true;
 		return;
+	}
 
 	CDB::TRI* triangles = g_pGameLevel->ObjectSpace.GetStaticTris();
 	Fvector* vertices = g_pGameLevel->ObjectSpace.GetStaticVerts();
@@ -1514,11 +1657,24 @@ void CDetailManager::cache_Decompress(Slot* slot)
 	Fbox objects_bounds;
 	objects_bounds.invalidate();
 
+	// ВАЖНО: Временный список для созданных объектов
+	xr_vector<SlotItem*> newly_created_items;
+
+	// ОГРАНИЧЕНИЕ: Максимальное количество объектов на слот
+	const u32 MAX_OBJECTS_PER_SLOT = 1000;
+	u32 objects_created = 0;
+
 	// Распределение объектов по сетке
 	for (u32 z = 0; z <= distribution_size; z++)
 	{
 		for (u32 x = 0; x <= distribution_size; x++)
 		{
+			if (objects_created >= MAX_OBJECTS_PER_SLOT)
+			{
+				Msg("CDetailManager::cache_Decompress() - Reached object limit for slot");
+				break;
+			}
+
 			u32 shift_x = jitter_rng.randI(16);
 			u32 shift_z = jitter_rng.randI(16);
 
@@ -1551,6 +1707,16 @@ void CDetailManager::cache_Decompress(Slot* slot)
 
 			CDetail* detail_object = m_objects[detail_id];
 			SlotItem* new_item = m_poolSI.create();
+			if (!new_item)
+			{
+				Msg("![ERROR] CDetailManager::cache_Decompress() - Failed to create SlotItem");
+				continue;
+			}
+
+			newly_created_items.push_back(new_item); // Запоминаем для отката
+			m_slotItemsCreated++;
+			m_currentSlotItems++;
+
 			SlotItem& item = *new_item;
 
 			// Вычисление позиции с дизерингом
@@ -1567,6 +1733,8 @@ void CDetailManager::cache_Decompress(Slot* slot)
 			ray_direction.set(0, -1, 0);
 
 			float hit_u, hit_v, hit_range;
+			bool surface_found = false;
+
 			for (u32 tid = 0; tid < triangle_count; tid++)
 			{
 				CDB::TRI& triangle = triangles[m_xrc.r_begin()[tid].id];
@@ -1579,15 +1747,21 @@ void CDetailManager::cache_Decompress(Slot* slot)
 					{
 						float test_y = item_position.y - hit_range;
 						if (test_y > surface_y)
+						{
 							surface_y = test_y;
+							surface_found = true;
+						}
 					}
 				}
 			}
 
 			// Проверка валидности позиции
-			if (surface_y < decompressing_slot.vis.box.min.y)
+			if (!surface_found || surface_y < decompressing_slot.vis.box.min.y)
 			{
 				m_poolSI.destroy(new_item);
+				m_slotItemsDestroyed++;
+				m_currentSlotItems--;
+				newly_created_items.pop_back(); // Удаляем из списка созданных
 				continue;
 			}
 
@@ -1616,7 +1790,10 @@ void CDetailManager::cache_Decompress(Slot* slot)
 
 			// Добавление объекта в слот
 			decompressing_slot.G[selected_index].items.push_back(new_item);
+			objects_created++;
 		}
+		if (objects_created >= MAX_OBJECTS_PER_SLOT)
+			break;
 	}
 
 	// Обновление bounding volume слота если были добавлены объекты
@@ -1637,6 +1814,12 @@ void CDetailManager::cache_Decompress(Slot* slot)
 			break;
 		}
 	}
+
+	// Диагностика
+	if (!newly_created_items.empty())
+	{
+		DumpSlotItemStats("After cache_Decompress");
+	}
 }
 
 /**
@@ -1648,48 +1831,60 @@ void CDetailManager::UpdateCache()
 	if (m_bShuttingDown || !m_loaded || !m_initialized || m_bInLoad)
 		return;
 
-	Fvector camera_position;
-
-	if (g_pGamePersistent)
-		camera_position = Device.vCameraPosition;
-	else
+	// ЗАЩИТА: Проверяем, не выполняется ли уже обновление кэша
+	static volatile LONG cacheUpdateGuard = 0;
+	if (InterlockedExchange(&cacheUpdateGuard, 1) == 1)
 		return;
-
-	// Проверка валидности позиции камеры
-	if (!std::isfinite(camera_position.x) || !std::isfinite(camera_position.y) || !std::isfinite(camera_position.z) ||
-		camera_position.square_magnitude() < 0.01f)
-		return;
-
-	// Вычисление координат в системе слотов
-	int slot_x, slot_z;
-	__try
-	{
-		slot_x = iFloor(camera_position.x / dm_slot_size + .5f);
-		slot_z = iFloor(camera_position.z / dm_slot_size + .5f);
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER)
-	{
-		return;
-	}
-
-	// Ограничение координат
-	slot_x = std::max(-1024, std::min(1024, slot_x));
-	slot_z = std::max(-1024, std::min(1024, slot_z));
-
-	if (Device.Statistic)
-		Device.Statistic->RenderDUMP_DT_Cache.Begin();
 
 	__try
 	{
+		Fvector camera_position;
+
+		if (g_pGamePersistent)
+			camera_position = Device.vCameraPosition;
+		else
+		{
+			InterlockedExchange(&cacheUpdateGuard, 0);
+			return;
+		}
+
+		// Проверка валидности позиции камеры
+		if (!std::isfinite(camera_position.x) || !std::isfinite(camera_position.y) ||
+			!std::isfinite(camera_position.z) || camera_position.square_magnitude() < 0.01f)
+		{
+			InterlockedExchange(&cacheUpdateGuard, 0);
+			return;
+		}
+
+		// Вычисление координат в системе слотов
+		int slot_x, slot_z;
+		__try
+		{
+			slot_x = iFloor(camera_position.x / dm_slot_size + .5f);
+			slot_z = iFloor(camera_position.z / dm_slot_size + .5f);
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			InterlockedExchange(&cacheUpdateGuard, 0);
+			return;
+		}
+
+		// Ограничение координат
+		slot_x = std::max(-1024, std::min(1024, slot_x));
+		slot_z = std::max(-1024, std::min(1024, slot_z));
+
+		if (Device.Statistic)
+			Device.Statistic->RenderDUMP_DT_Cache.Begin();
+
 		cache_Update(slot_x, slot_z, camera_position, dm_max_decompress);
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER)
-	{
-		Msg("![ERROR] CDetailManager::UpdateCache() - Exception in cache_Update");
-	}
 
-	if (Device.Statistic)
-		Device.Statistic->RenderDUMP_DT_Cache.End();
+		if (Device.Statistic)
+			Device.Statistic->RenderDUMP_DT_Cache.End();
+	}
+	__finally
+	{
+		InterlockedExchange(&cacheUpdateGuard, 0);
+	}
 }
 
 /**
@@ -1703,143 +1898,162 @@ void CDetailManager::cache_Update(int target_x, int target_z, Fvector& view, int
 	if (m_bShuttingDown || !m_loaded || !m_initialized)
 		return;
 
-	// Ограничение координат
-	target_x = std::max(-1024, std::min(1024, target_x));
-	target_z = std::max(-1024, std::min(1024, target_z));
+	// ЗАЩИТА: Захватываем мьютекс для операций с кэшем
+	m_MT.Enter();
 
-	// Вычисление смещения камеры
-	int delta_x = target_x - m_cache_cx;
-	int delta_z = target_z - m_cache_cz;
-
-	// Полная перестройка кэша при большом смещении
-	if (abs(delta_x) >= dm_cache_line || abs(delta_z) >= dm_cache_line)
+	__try
 	{
-		m_cache_cx = target_x;
-		m_cache_cz = target_z;
+		// Ограничение координат
+		target_x = std::max(-1024, std::min(1024, target_x));
+		target_z = std::max(-1024, std::min(1024, target_z));
 
-		Slot* slot_ptr = m_cache_pool;
-		for (u32 i = 0; i < dm_cache_line; i++)
+		// Вычисление смещения камеры
+		int delta_x = target_x - m_cache_cx;
+		int delta_z = target_z - m_cache_cz;
+
+		// Полная перестройка кэша при большом смещении
+		if (abs(delta_x) >= dm_cache_line || abs(delta_z) >= dm_cache_line)
 		{
-			for (u32 j = 0; j < dm_cache_line; j++, slot_ptr++)
+			m_cache_cx = target_x;
+			m_cache_cz = target_z;
+
+			// ОЧИСТКА: Перед перестройкой очищаем задачи
+			m_cache_task.clear();
+
+			Slot* slot_ptr = m_cache_pool;
+			for (u32 i = 0; i < dm_cache_line; i++)
 			{
-				if (m_cache[i][j])
+				for (u32 j = 0; j < dm_cache_line; j++, slot_ptr++)
 				{
-					cache_Task(j, i, m_cache[i][j]);
+					if (m_cache[i][j])
+					{
+						cache_Task(j, i, m_cache[i][j]);
+					}
+				}
+			}
+
+			UpdateCacheLevel1Bounds();
+			m_MT.Leave();
+			return;
+		}
+
+		// Постепенное обновление кэша по осям
+		while (m_cache_cx != target_x)
+		{
+			if (target_x > m_cache_cx)
+			{
+				m_cache_cx++;
+				// Сдвиг кэша вправо
+				for (int z = 0; z < dm_cache_line; z++)
+				{
+					Slot* first_slot = m_cache[z][0];
+					if (!first_slot)
+						continue;
+
+					for (int x = 1; x < dm_cache_line; x++)
+					{
+						m_cache[z][x - 1] = m_cache[z][x];
+					}
+					m_cache[z][dm_cache_line - 1] = first_slot;
+					cache_Task(dm_cache_line - 1, z, first_slot);
+				}
+			}
+			else
+			{
+				m_cache_cx--;
+				// Сдвиг кэша влево
+				for (int z = 0; z < dm_cache_line; z++)
+				{
+					Slot* last_slot = m_cache[z][dm_cache_line - 1];
+					if (!last_slot)
+						continue;
+
+					for (int x = dm_cache_line - 1; x > 0; x--)
+					{
+						m_cache[z][x] = m_cache[z][x - 1];
+					}
+					m_cache[z][0] = last_slot;
+					cache_Task(0, z, last_slot);
 				}
 			}
 		}
-		m_cache_task.clear();
 
-		UpdateCacheLevel1Bounds();
-		return;
-	}
-
-	// Постепенное обновление кэша по осям
-	while (m_cache_cx != target_x)
-	{
-		if (target_x > m_cache_cx)
+		while (m_cache_cz != target_z)
 		{
-			m_cache_cx++;
-			// Сдвиг кэша вправо
-			for (int z = 0; z < dm_cache_line; z++)
+			if (target_z > m_cache_cz)
 			{
-				Slot* first_slot = m_cache[z][0];
-				if (!first_slot)
-					continue;
-
-				for (int x = 1; x < dm_cache_line; x++)
+				m_cache_cz++;
+				// Сдвиг кэша вниз
+				for (int x = 0; x < dm_cache_line; x++)
 				{
-					m_cache[z][x - 1] = m_cache[z][x];
-				}
-				m_cache[z][dm_cache_line - 1] = first_slot;
-				cache_Task(dm_cache_line - 1, z, first_slot);
-			}
-		}
-		else
-		{
-			m_cache_cx--;
-			// Сдвиг кэша влево
-			for (int z = 0; z < dm_cache_line; z++)
-			{
-				Slot* last_slot = m_cache[z][dm_cache_line - 1];
-				if (!last_slot)
-					continue;
+					Slot* bottom_slot = m_cache[dm_cache_line - 1][x];
+					if (!bottom_slot)
+						continue;
 
-				for (int x = dm_cache_line - 1; x > 0; x--)
+					for (int z = dm_cache_line - 1; z > 0; z--)
+					{
+						m_cache[z][x] = m_cache[z - 1][x];
+					}
+					m_cache[0][x] = bottom_slot;
+					cache_Task(x, 0, bottom_slot);
+				}
+			}
+			else
+			{
+				m_cache_cz--;
+				// Сдвиг кэша вверх
+				for (int x = 0; x < dm_cache_line; x++)
 				{
-					m_cache[z][x] = m_cache[z][x - 1];
+					Slot* top_slot = m_cache[0][x];
+					if (!top_slot)
+						continue;
+
+					for (int z = 1; z < dm_cache_line; z++)
+					{
+						m_cache[z - 1][x] = m_cache[z][x];
+					}
+					m_cache[dm_cache_line - 1][x] = top_slot;
+					cache_Task(x, dm_cache_line - 1, top_slot);
 				}
-				m_cache[z][0] = last_slot;
-				cache_Task(0, z, last_slot);
 			}
 		}
-	}
 
-	while (m_cache_cz != target_z)
-	{
-		if (target_z > m_cache_cz)
+		// Обновление границ кэша первого уровня
+		if (m_initialized)
 		{
-			m_cache_cz++;
-			// Сдвиг кэша вниз
-			for (int x = 0; x < dm_cache_line; x++)
-			{
-				Slot* bottom_slot = m_cache[dm_cache_line - 1][x];
-				if (!bottom_slot)
-					continue;
+			UpdateCacheLevel1Bounds();
+		}
 
-				for (int z = dm_cache_line - 1; z > 0; z--)
+		// Ограничение количества обрабатываемых задач за один кадр
+		u32 max_tasks_per_frame = 5; // Ограничиваем чтобы не перегружать систему
+		u32 tasks_to_process = std::min(m_cache_task.size(), max_tasks_per_frame);
+
+		for (u32 i = 0; i < tasks_to_process; i++)
+		{
+			Slot* task_slot = m_cache_task[i];
+			if (task_slot)
+			{
+				__try
 				{
-					m_cache[z][x] = m_cache[z - 1][x];
+					cache_Decompress(task_slot);
 				}
-				m_cache[0][x] = bottom_slot;
-				cache_Task(x, 0, bottom_slot);
-			}
-		}
-		else
-		{
-			m_cache_cz--;
-			// Сдвиг кэша вверх
-			for (int x = 0; x < dm_cache_line; x++)
-			{
-				Slot* top_slot = m_cache[0][x];
-				if (!top_slot)
-					continue;
-
-				for (int z = 1; z < dm_cache_line; z++)
+				__except (EXCEPTION_EXECUTE_HANDLER)
 				{
-					m_cache[z - 1][x] = m_cache[z][x];
+					Msg("![ERROR] CDetailManager::cache_Update() - cache_Decompress failed for slot");
 				}
-				m_cache[dm_cache_line - 1][x] = top_slot;
-				cache_Task(x, dm_cache_line - 1, top_slot);
 			}
 		}
-	}
 
-	// Обновление границ кэша первого уровня
-	if (m_initialized)
-	{
-		UpdateCacheLevel1Bounds();
-	}
-
-	// Обработка задач декомпрессии
-	u32 tasks_to_process = m_cache_task.size();
-	for (u32 i = 0; i < tasks_to_process; i++)
-	{
-		Slot* task_slot = m_cache_task[i];
-		if (task_slot)
+		// Удаляем обработанные задачи
+		if (tasks_to_process > 0)
 		{
-			__try
-			{
-				cache_Decompress(task_slot);
-			}
-			__except (EXCEPTION_EXECUTE_HANDLER)
-			{
-				Msg("![ERROR] CDetailManager::cache_Update() - cache_Decompress failed for slot");
-			}
+			m_cache_task.erase(m_cache_task.begin(), m_cache_task.begin() + tasks_to_process);
 		}
 	}
-
-	m_cache_task.clear();
+	__finally
+	{
+		m_MT.Leave();
+	}
 }
 
 /**
@@ -2035,23 +2249,76 @@ void CDetailManager::SafeUpdate()
 void CDetailManager::OnDeviceResetBegin()
 {
 	Msg("CDetailManager::OnDeviceResetBegin()");
-	m_MT.Enter();
-	hw_Unload();
-	CleanupOcclusionSystem();
+
+	// Быстрая проверка без блокировки
+	if (m_bShuttingDown || !m_initialized || !m_loaded)
+	{
+		Msg("CDetailManager::OnDeviceResetBegin() - Skipping, not initialized/loaded or shutting down");
+		return;
+	}
+
+	// Стандартный Enter с обработкой исключений
+	__try
+	{
+		m_MT.Enter();
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		Msg("![ERROR] CDetailManager::OnDeviceResetBegin() - Exception entering critical section");
+		return;
+	}
+
+	__try
+	{
+		hw_Unload();
+		CleanupOcclusionSystem();
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		Msg("![ERROR] CDetailManager::OnDeviceResetBegin() - Exception during device reset begin");
+	}
 }
 
 void CDetailManager::OnDeviceResetEnd()
 {
 	Msg("CDetailManager::OnDeviceResetEnd()");
-	if (m_loaded && !m_bShuttingDown)
+
+	// Проверяем, можно ли выполнять операции
+	if (m_bShuttingDown || !m_initialized)
 	{
-		hw_Load();
-		if (s_use_occlusion_culling)
+		Msg("CDetailManager::OnDeviceResetEnd() - Skipping, manager not initialized or shutting down");
+		return;
+	}
+
+	__try
+	{
+		if (m_loaded && !m_bShuttingDown)
 		{
-			InitializeOcclusionSystem();
+			hw_Load();
+			if (s_use_occlusion_culling)
+			{
+				InitializeOcclusionSystem();
+			}
+		}
+		else
+		{
+			Msg("CDetailManager::OnDeviceResetEnd() - Resources not loaded or shutting down, skipping load");
 		}
 	}
-	m_MT.Leave();
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		Msg("![ERROR] CDetailManager::OnDeviceResetEnd() - Exception during device reset end");
+	}
+
+	// Всегда пытаемся выйти из критической секции
+	__try
+	{
+		m_MT.Leave();
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		Msg("![ERROR] CDetailManager::OnDeviceResetEnd() - Exception leaving critical section");
+	}
 }
 
 // ===========================================================================
@@ -2105,31 +2372,63 @@ void CDetailManager::CleanupOcclusionSystem()
 		for (int x = 0; x < dm_cache1_line; x++)
 		{
 			CacheSlot1& cache1 = m_cache_level1[z][x];
-			_RELEASE(cache1.occlusion_query);
+			if (cache1.occlusion_query)
+			{
+				ULONG refCount = cache1.occlusion_query->Release();
+				cache1.occlusion_query = nullptr;
+				Msg("CDetailManager::CleanupOcclusionSystem() - Released cache1 occlusion query, refCount: %d",
+					refCount);
+			}
 		}
 	}
 
 	for (u32 i = 0; i < dm_cache_size; i++)
 	{
 		Slot& slot = m_cache_pool[i];
-		_RELEASE(slot.occlusion_query);
+		if (slot.occlusion_query)
+		{
+			ULONG refCount = slot.occlusion_query->Release();
+			slot.occlusion_query = nullptr;
+		}
 	}
+
+	// Освобождаем общие queries
+	for (auto& query : m_occlusion_queries)
+	{
+		if (query)
+		{
+			ULONG refCount = query->Release();
+			query = nullptr;
+		}
+	}
+	m_occlusion_queries.clear();
+
+	// Очищаем тестовые слоты
+	m_occlusion_test_slots.clear();
+	m_occlusion_test_cache1.clear();
 
 	// Очищаем программный растеризатор
 	CleanupSoftwareRasterizer();
 
 	// Освобождаем геометрию occlusion тестов
 	m_occlusion_geom.destroy();
-	_RELEASE(m_occlusion_ib);
-	_RELEASE(m_occlusion_vb);
+
+	if (m_occlusion_vb)
+	{
+		ULONG refCount = m_occlusion_vb->Release();
+		m_occlusion_vb = nullptr;
+	}
+
+	if (m_occlusion_ib)
+	{
+		ULONG refCount = m_occlusion_ib->Release();
+		m_occlusion_ib = nullptr;
+	}
 
 	// Очищаем данные occlusion системы
 	m_occlusion_geometries.clear();
 	m_simple_occluders.clear();
 	m_occlusion_portals.clear();
-	m_occlusion_queries.clear();
-	m_occlusion_test_slots.clear();
-	m_occlusion_test_cache1.clear();
 
 	m_occlusion_enabled = false;
 
@@ -2678,3 +2977,286 @@ void CDetailManager::SetOcclusionMethod(EOcclusionMethod method)
 		InitializeOcclusionSystem();
 	}
 }
+
+// ===========================================================================
+// Асинхронная система обновления
+// ===========================================================================
+void CDetailManager::StartAsyncUpdate()
+{
+	if (m_bShuttingDown || !psDeviceFlags.is(rsDetails) || !m_loaded)
+		return;
+
+	// ЗАЩИТА: Ограничиваем частоту обновления (не чаще чем каждый 2 кадр)
+	static u32 lastUpdateFrame = 0;
+	if (Device.dwFrame - lastUpdateFrame < 2)
+		return;
+
+	// Если обновление уже выполняется, не запускаем новое
+	if (m_bAsyncUpdateInProgress.exchange(true))
+		return;
+
+	lastUpdateFrame = Device.dwFrame;
+
+	// Сохраняем данные для асинхронного обновления
+	{
+		std::lock_guard<std::mutex> lock(m_AsyncDataMutex);
+		m_AsyncView = Device.mView;
+		m_AsyncProject = Device.mProject;
+		m_AsyncFrame = Device.dwFrame;
+	}
+
+	// Запускаем обновление в отдельном потоке
+	m_bAsyncUpdateRequired = true;
+	m_UpdateCondition.notify_one();
+}
+
+void CDetailManager::WaitForAsyncUpdate()
+{
+	if (m_bAsyncUpdateInProgress)
+	{
+		// Ждем завершения с таймаутом (на случай проблем)
+		auto start_time = std::chrono::steady_clock::now();
+		while (m_bAsyncUpdateInProgress)
+		{
+			auto current_time = std::chrono::steady_clock::now();
+			auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time);
+
+			if (elapsed.count() > 100) // 100ms таймаут
+			{
+				// Принудительно сбрасываем флаг в случае таймаута
+				m_bAsyncUpdateInProgress = false;
+				break;
+			}
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+	}
+}
+
+void CDetailManager::AsyncUpdateThreadProc()
+{
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_BELOW_NORMAL); // ПОНИЖАЕМ приоритет
+
+	while (!m_bUpdateThreadShouldExit)
+	{
+		std::unique_lock<std::mutex> lock(m_UpdateMutex);
+
+		// Ждем с таймаутом, чтобы не блокировать shutdown
+		bool updateRequested =
+			m_UpdateCondition.wait_for(lock, std::chrono::milliseconds(33), [this]() { // 30 FPS максимум
+				return m_bUpdateThreadShouldExit || m_bAsyncUpdateRequired;
+			});
+
+		if (m_bUpdateThreadShouldExit)
+			break;
+
+		if (updateRequested && m_bAsyncUpdateRequired)
+		{
+			m_bAsyncUpdateRequired = false;
+			lock.unlock();
+
+			// Добавляем задержку для снижения нагрузки
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+			// Высокоприоритетное обновление
+			Internal_AsyncUpdate();
+
+			// Сразу обновляем буферы для рендеринга
+			SwapRenderBuffers();
+		}
+	}
+}
+
+void CDetailManager::Internal_AsyncUpdate()
+{
+	if (m_bShuttingDown || !m_loaded || !m_initialized)
+	{
+		m_bAsyncUpdateInProgress = false;
+		return;
+	}
+
+	// ЗАЩИТА: Проверяем, не обновляется ли уже кэш в другом потоке
+	static volatile LONG asyncUpdateGuard = 0;
+
+	__try
+	{
+		if (InterlockedExchange(&asyncUpdateGuard, 1) == 1)
+		{
+			m_bAsyncUpdateInProgress = false;
+			return;
+		}
+
+		// Основные вычисления с защитой от повторного входа
+		UpdateCache();
+		UpdateVisibleM();
+
+		// Копируем данные для рендеринга
+		std::lock_guard<std::mutex> lock(m_AsyncDataMutex);
+		CopyVisibleListsForRender();
+		BuildRenderBatches();
+
+		m_frame_calc = m_AsyncFrame;
+		m_bUpdateRequired = true;
+
+		InterlockedExchange(&asyncUpdateGuard, 0);
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		Msg("![ERROR] CDetailManager::Internal_AsyncUpdate() - Exception during async update");
+		// Сбрасываем guard в случае исключения
+		InterlockedExchange(&asyncUpdateGuard, 0);
+	}
+
+	m_bAsyncUpdateInProgress = false;
+}
+
+bool CDetailManager::NeedsPriorityUpdate() const
+{
+	// Если пропустили слишком много кадров подряд
+	if (m_consecutiveSkipFrames >= m_maxConsecutiveSkips)
+	{
+		return true;
+	}
+
+	// Если данные устарели больше чем на N кадров
+	if (Device.dwFrame - m_frame_calc > 2)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+// ===========================================================================
+// Двойная буфферизация
+// ===========================================================================
+
+void CDetailManager::SwapRenderBuffers()
+{
+	if (m_bUpdateRequired)
+	{
+		int current = m_currentRenderFrame.load();
+		int next = 1 - current;
+
+		// Очищаем старый буфер перед копированием новых данных
+		m_renderFrames[next].Clear();
+
+		// Копируем данные в следующий буфер
+		{
+			std::lock_guard<std::mutex> lock(m_AsyncDataMutex);
+			m_renderFrames[next].renderBatches = m_renderBatches;
+			for (int i = 0; i < 3; i++)
+			{
+				m_renderFrames[next].renderVisibles[i] = m_render_visibles[i];
+			}
+			m_renderFrames[next].frameNumber = m_frame_calc;
+			m_renderFrames[next].valid = true;
+		}
+
+		m_readyRenderFrame = next;
+		m_currentRenderFrame = next;
+		m_bUpdateRequired = false;
+
+		// Очищаем исходные данные для следующего обновления
+		m_renderBatches.clear();
+
+		for (int i = 0; i < 3; i++)
+		{
+			m_render_visibles[i].clear();
+		}
+	}
+}
+
+CDetailManager::RenderFrameData* CDetailManager::GetCurrentRenderData()
+{
+	int frameIndex = m_readyRenderFrame.load();
+	if (frameIndex >= 0 && frameIndex < 2 && m_renderFrames[frameIndex].valid)
+	{
+		return &m_renderFrames[frameIndex];
+	}
+	return nullptr;
+}
+
+/**
+ * @brief Очистка данных рендеринга
+ * @note Вызывается только когда уверены, что данные больше не нужны
+ */
+void CDetailManager::ClearRenderData()
+{
+	m_MT.Enter();
+
+	// Очищаем основные данные рендеринга
+	m_renderBatches.clear();
+	m_renderBatches.shrink_to_fit(); // Освобождаем память
+
+	for (int i = 0; i < 3; i++)
+	{
+		// Для xr_vector используем clear + shrink
+		m_render_visibles[i].clear();
+		m_render_visibles[i].shrink_to_fit();
+
+		m_visibles[i].clear();
+		m_visibles[i].shrink_to_fit();
+	}
+
+	// Очищаем буферы рендеринга
+	for (int i = 0; i < 2; i++)
+	{
+		m_renderFrames[i].Clear();
+	}
+
+	// Принудительно освобождаем память в батчах
+	for (auto& batch : m_renderBatches)
+	{
+		batch.instances.clear();
+		batch.instances.shrink_to_fit();
+	}
+
+	m_bUpdateRequired = false;
+
+	m_MT.Leave();
+
+	Msg("CDetailManager::ClearRenderData() - Render data cleared");
+}
+
+void CDetailManager::DumpSlotItemStats(const char* location)
+{
+	u32 created = m_slotItemsCreated.load();
+	u32 destroyed = m_slotItemsDestroyed.load();
+	u32 current = m_currentSlotItems.load();
+
+	Msg("CDetailManager::SlotItemStats [%s]: Created=%u, Destroyed=%u, Current=%u, Leak=%d", location, created,
+		destroyed, current, (created - destroyed - current));
+}
+
+void CDetailManager::DumpMemoryStats()
+{
+	u32 total_slot_items = 0;
+	u32 total_objects_in_slots = 0;
+
+	for (u32 i = 0; i < dm_cache_size; i++)
+	{
+		Slot& slot = m_cache_pool[i];
+		for (u32 j = 0; j < dm_obj_in_slot; j++)
+		{
+			total_objects_in_slots += slot.G[j].items.size();
+		}
+	}
+
+	u32 created = m_slotItemsCreated.load();
+	u32 destroyed = m_slotItemsDestroyed.load();
+	u32 current = m_currentSlotItems.load();
+
+	Msg("=== CDetailManager Memory Diagnostics ===");
+	Msg("SlotItem Statistics:");
+	Msg("  Created: %u", created);
+	Msg("  Destroyed: %u", destroyed);
+	Msg("  Current (tracked): %u", current);
+	Msg("  Objects in slots: %u", total_objects_in_slots);
+	Msg("  Estimated leak: %d", (created - destroyed - total_objects_in_slots));
+	Msg("Cache Statistics:");
+	Msg("  Total slots: %u", dm_cache_size);
+	Msg("  Cache tasks: %u", m_cache_task.size());
+	Msg("=========================================");
+}
+
