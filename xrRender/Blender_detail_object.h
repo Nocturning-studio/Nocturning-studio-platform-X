@@ -48,7 +48,8 @@ class CBlender_detail_object : public IBlender
 		switch (C.iElement)
 		{
 		case SE_DETAIL_NORMAL_ANIMATED:
-			configure_shader_detail_object(C, false, "detail_object_animated", "detail_object", false);
+			C.r_Define("USE_DETAILWAVE", "1");
+			configure_shader_detail_object(C, false, "detail_object", "detail_object", false);
 			break;
 		case SE_DETAIL_NORMAL_STATIC:
 			configure_shader_detail_object(C, false, "detail_object", "detail_object", false);

@@ -129,10 +129,7 @@ void CRender::render_lights(light_Package& LP)
 				RenderBackend.set_xform_project(L->X.S.project);
 
 				if (ps_r_lighting_flags.test(RFLAG_SUN_DETAILS))
-				{
-					Details->UpdateVisibleM();
 					Details->Render();
-				}
 
 				r_dsgraph_render_graph(0);
 				L->X.S.transluent = FALSE;

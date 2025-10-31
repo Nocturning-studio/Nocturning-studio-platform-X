@@ -867,10 +867,7 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 		RenderBackend.set_xform_project(sun->X.D.combine);
 
 		if (ps_r_lighting_flags.test(RFLAG_SUN_DETAILS))
-		{
-			Details->UpdateVisibleM();
 			Details->Render();
-		}
 
 		r_dsgraph_render_graph(0);
 

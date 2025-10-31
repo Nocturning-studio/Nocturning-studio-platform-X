@@ -174,27 +174,11 @@ void CDetailManager::hw_Render_dump(ref_constant x_array, u32 var_id, u32 lod_id
 			// Setup matrices + colors (and flush it as nesessary)
 			int id = 0;
 
-			//switch (RenderImplementation.phase)
-			//{
-			//case CRender::PHASE_NORMAL:
-				if(lod_id == 0)
-					id = SE_DETAIL_NORMAL_ANIMATED;
-				else
-					id = SE_DETAIL_NORMAL_STATIC;
-			//	break;
-			//case CRender::PHASE_SHADOW_DEPTH:
-			//	if (lod_id == 0)
-			//		id = SE_DETAIL_SHADOW_DEPTH_ANIMATED;
-			//	else
-			//		id = SE_DETAIL_SHADOW_DEPTH_STATIC;
-			//	break;
-			//case CRender::PHASE_DEPTH_PREPASS:
-			//	if (lod_id == 0)
-			//		id = SE_DETAIL_DEPTH_PREPASS_ANIMATED;
-			//	else
-			//		id = SE_DETAIL_DEPTH_PREPASS_STATIC;
-			//	break;
-			//}
+			// Ваш код выбора шейдера...
+			if (lod_id == 0)
+				id = SE_DETAIL_NORMAL_ANIMATED;
+			else
+				id = SE_DETAIL_NORMAL_STATIC;
 
 			RenderBackend.set_Element(Object.shader->E[id]);
 
@@ -255,8 +239,6 @@ void CDetailManager::hw_Render_dump(ref_constant x_array, u32 var_id, u32 lod_id
 				RenderBackend.Render(D3DPT_TRIANGLELIST, vOffset, 0, dwCNT_verts, iOffset, dwCNT_prims);
 				RenderBackend.stat.r.s_details.add(dwCNT_verts);
 			}
-			// Clean up
-			vis.clear_not_free();
 		}
 		vOffset += hw_BatchSize * Object.number_vertices;
 		iOffset += hw_BatchSize * Object.number_indices;

@@ -276,7 +276,7 @@ void CRender::render_depth_prepass()
 
 	r_dsgraph_render_graph(0);
 
-	r_dsgraph_render_lods(true, true);
+	//r_dsgraph_render_lods(true, true);
 
 	RenderBackend.disable_anisotropy_filtering();
 
@@ -314,10 +314,7 @@ void CRender::render_gbuffer_primary()
 	r_dsgraph_render_graph(0);
 
 	if (Details)
-	{
-		// Details->UpdateVisibleM();
 		Details->Render();
-	}
 
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
@@ -497,9 +494,10 @@ void CRender::render_lights()
 	// Update incremental shadowmap-visibility solver
 	update_shadow_map_visibility();
 
-	// Lighting, non dependant on OCCQ
+	// Set render targets
 	set_light_accumulator();
 
+	// Lighting, non dependant on OCCQ
 	render_lights(LP_normal);
 
 	// Lighting, dependant on OCCQ
@@ -510,9 +508,12 @@ void CRender::render_lights()
 
 void CRender::combine_scene()
 {
-	precombine_scene();
+	if (ps_r_shading_flags.test(RFLAG_ENABLE_PBR) && ps_r_postprocess_flags.test(RFLAG_REFLECTIONS))
+	{
+		precombine_scene();
 
-	render_screen_space_reflections();
+		render_screen_space_reflections();
+	}
 
 	render_skybox();
 
@@ -520,7 +521,8 @@ void CRender::combine_scene()
 
 	render_stage_forward();
 
-	combine_sun_shafts();
+	if (ps_r_lighting_flags.test(RFLAG_SUN_SHAFTS))
+		combine_sun_shafts();
 }
 
 void CRender::render_postprocess()

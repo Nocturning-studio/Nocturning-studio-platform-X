@@ -75,5 +75,7 @@ void CRender::RenderScene()
 
 	m_saved_viewproj.set(Device.mFullTransform);
 	m_saved_invview.invert(Device.mView);
+
+	Details->ClearVisible();
 }
 ////////////////////////////////////////////////////////////////////////////////

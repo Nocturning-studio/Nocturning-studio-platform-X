@@ -778,3 +778,17 @@ void CDetailManager::cache_Decompress(Slot* S)
 	D.vis.box.set(Bounds);
 	D.vis.box.getsphere(D.vis.sphere.P, D.vis.sphere.R);
 }
+
+void CDetailManager::ClearVisible()
+{
+	OPTICK_EVENT("CDetailManager::ClearVisible");
+
+	for (u32 i = 0; i < 3; ++i)
+	{
+		for (u32 j = 0; j < m_visibles[i].size(); ++j)
+		{
+			m_visibles[i][j].clear_not_free();
+		}
+	}
+	m_frame_rendered = Device.dwFrame;
+}

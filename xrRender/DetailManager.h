@@ -172,6 +172,7 @@ class CDetailManager
 	void Load();
 	void Unload();
 	void Render();
+	void ClearVisible();
 
 	/// MT stuff
 	xrCriticalSection MT;

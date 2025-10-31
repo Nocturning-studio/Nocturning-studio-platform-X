@@ -11,8 +11,7 @@ void CRender::clear_gbuffer()
 
 	if (!ps_r_shading_flags.test(RFLAG_ENABLE_PBR))
 		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_GBuffer_1, 
-												RenderTarget->rt_GBuffer_2, 
-												RenderTarget->rt_GBuffer_3);
+												RenderTarget->rt_GBuffer_2);
 	else
 		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_GBuffer_1, 
 												RenderTarget->rt_GBuffer_2, 
@@ -30,8 +29,7 @@ void CRender::set_gbuffer()
 
 	if (!ps_r_shading_flags.test(RFLAG_ENABLE_PBR))
 		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_GBuffer_1, 
-												RenderTarget->rt_GBuffer_2, 
-												RenderTarget->rt_GBuffer_3);
+												RenderTarget->rt_GBuffer_2);
 	else
 		RenderBackend.set_Render_Target_Surface(RenderTarget->rt_GBuffer_1, 
 												RenderTarget->rt_GBuffer_2, 
