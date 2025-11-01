@@ -127,7 +127,7 @@ void CEnvDescriptor::load(CEnvironment& environment, CInifile& config)
 	strconcat(sizeof(st_env), st_env, st, "#small");
 	sky_texture_name = st;
 	sky_texture_env_name = st_env;
-	clouds_texture_name = GetStringIfExist("clouds_texture", "sky\sky_oblaka", config);
+	clouds_texture_name = GetStringIfExist("clouds_texture", "sky\\sky_oblaka", config);
 	LPCSTR cldclr = GetStringIfExist("clouds_color", "0, 0, 0, 0", config);
 
 	lut_texture_name = GetStringIfExist("lut_texture", "lut\\lut_neutral", config);
