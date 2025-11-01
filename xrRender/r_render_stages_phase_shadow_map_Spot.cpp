@@ -30,7 +30,7 @@ void CRender::render_shadow_map_spot(light* L)
 
 void CRender::render_shadow_map_spot_transluent(light* L)
 {
-	VERIFY(RenderImplementation.o.Tshadows);
+	//VERIFY(RenderImplementation.o.Tshadows);
 	RenderBackend.set_ColorWriteEnable();
 	if (IRender_Light::OMNIPART == L->flags.type)
 	{

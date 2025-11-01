@@ -7,7 +7,7 @@
 #include "Render.h"
 #include "CameraManager.h"
 #include "Benchmark.h"
-#include <demo_common.h>
+#include "demo_common.h"
 #include "gamefont.h"
 #include "x_ray.h"
 #include "xr_input.h"
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////
 CDemoPlay::CDemoPlay(const char* name, float ms, u32 cycles, float life_time): CEffectorCam(cefDemo, life_time)
 {
-	// Есть ли файл
+	// Р•СЃС‚СЊ Р»Рё С„Р°Р№Р»
 	if (!FS.exist(name))
 	{
 		Msg("Can't find file: %s", name);
@@ -35,7 +35,7 @@ CDemoPlay::CDemoPlay(const char* name, float ms, u32 cycles, float life_time): C
 	m_frames_count = TotalFramesCount;
 	Log("~ Total key-frames: ", m_frames_count);
 
-	// Защита на случай если файл пришел пустым
+	// Р—Р°С‰РёС‚Р° РЅР° СЃР»СѓС‡Р°Р№ РµСЃР»Рё С„Р°Р№Р» РїСЂРёС€РµР» РїСѓСЃС‚С‹Рј
 	if (m_frames_count == NULL)
 	{
 		Msg("File corrupted: frames count is zero");
@@ -43,60 +43,60 @@ CDemoPlay::CDemoPlay(const char* name, float ms, u32 cycles, float life_time): C
 		return;
 	}
 
-	// Захват инпута с клавиатуры и мыши
+	// Р—Р°С…РІР°С‚ РёРЅРїСѓС‚Р° СЃ РєР»Р°РІРёР°С‚СѓСЂС‹ Рё РјС‹С€Рё
 	IR_Capture();
 
-	// Отключение лишнего
+	// РћС‚РєР»СЋС‡РµРЅРёРµ Р»РёС€РЅРµРіРѕ
 	m_bGlobalHudDraw = psHUD_Flags.test(HUD_DRAW);
 	psHUD_Flags.set(HUD_DRAW, false);
 
 	m_bGlobalCrosshairDraw = psHUD_Flags.test(HUD_CROSSHAIR);
 	psHUD_Flags.set(HUD_CROSSHAIR, false);
 
-	// Скорость и количество повторов демо
+	// РЎРєРѕСЂРѕСЃС‚СЊ Рё РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРІС‚РѕСЂРѕРІ РґРµРјРѕ
 	fSpeed = ms;
 	dwCyclesLeft = cycles ? cycles : 1;
 
 	if (strstr(Core.Params, "-loop_demo"))
 		dwCyclesLeft = 999;
 
-	// Запущен ли сбор общей статистики (для бенчмарка)
+	// Р—Р°РїСѓС‰РµРЅ Р»Рё СЃР±РѕСЂ РѕР±С‰РµР№ СЃС‚Р°С‚РёСЃС‚РёРєРё (РґР»СЏ Р±РµРЅС‡РјР°СЂРєР°)
 	stat_started = FALSE;
 
-	// Прекеш
+	// РџСЂРµРєРµС€
 	Device.PreCache(50);
 
-	// Сет дефолтных значений параметров, которые будут читаться из секции кадра
+	// РЎРµС‚ РґРµС„РѕР»С‚РЅС‹С… Р·РЅР°С‡РµРЅРёР№ РїР°СЂР°РјРµС‚СЂРѕРІ, РєРѕС‚РѕСЂС‹Рµ Р±СѓРґСѓС‚ С‡РёС‚Р°С‚СЊСЃСЏ РёР· СЃРµРєС†РёРё РєР°РґСЂР°
 	SetDefaultParameters();
 
-	// Переменные для окна конца бенчмарка
+	// РџРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ РѕРєРЅР° РєРѕРЅС†Р° Р±РµРЅС‡РјР°СЂРєР°
 	bNeedDrawResults = false;
 	bNeedToTakeStatsResoultScreenShot = false;
 	uTimeToQuit = uTimeToScreenShot = NULL;
 
-	// Переменные для сбора общей и покадровой статистики
+	// РџРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ СЃР±РѕСЂР° РѕР±С‰РµР№ Рё РїРѕРєР°РґСЂРѕРІРѕР№ СЃС‚Р°С‚РёСЃС‚РёРєРё
 	ResetPerFrameStatistic();
 
-	// Флаг, для того чтобы на первом кадре
-	// поставить камеру на нужное место
-	// чтобы не сломались транформы
+	// Р¤Р»Р°Рі, РґР»СЏ С‚РѕРіРѕ С‡С‚РѕР±С‹ РЅР° РїРµСЂРІРѕРј РєР°РґСЂРµ
+	// РїРѕСЃС‚Р°РІРёС‚СЊ РєР°РјРµСЂСѓ РЅР° РЅСѓР¶РЅРѕРµ РјРµСЃС‚Рѕ
+	// С‡С‚РѕР±С‹ РЅРµ СЃР»РѕРјР°Р»РёСЃСЊ С‚СЂР°РЅС„РѕСЂРјС‹
 	m_bIsFirstFrame = true;
 }
 
 CDemoPlay::~CDemoPlay()
 {
-	// Отпускаем инпут
+	// РћС‚РїСѓСЃРєР°РµРј РёРЅРїСѓС‚
 	IR_Release();
 
-	// Возвращаем индикаторы обратно
+	// Р’РѕР·РІСЂР°С‰Р°РµРј РёРЅРґРёРєР°С‚РѕСЂС‹ РѕР±СЂР°С‚РЅРѕ
 	psHUD_Flags.set(HUD_DRAW, m_bGlobalHudDraw);
 	psHUD_Flags.set(HUD_CROSSHAIR, m_bGlobalCrosshairDraw);
 
-	// Сет дефолтных значений параметров, которые установлены из секции кадра
+	// РЎРµС‚ РґРµС„РѕР»С‚РЅС‹С… Р·РЅР°С‡РµРЅРёР№ РїР°СЂР°РјРµС‚СЂРѕРІ, РєРѕС‚РѕСЂС‹Рµ СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹ РёР· СЃРµРєС†РёРё РєР°РґСЂР°
 	ResetParameters();
 }
 
-// Оригинальная формула для интерполяции между кадрами
+// РћСЂРёРіРёРЅР°Р»СЊРЅР°СЏ С„РѕСЂРјСѓР»Р° РґР»СЏ РёРЅС‚РµСЂРїРѕР»СЏС†РёРё РјРµР¶РґСѓ РєР°РґСЂР°РјРё
 // t: A parameter between 0 and 1 representing the interpolation factor.
 // p: An array of three Fvector points that serve as control points for the spline.
 // ret: A pointer to an Fvector where the result will be stored.
@@ -188,7 +188,7 @@ void CDemoPlay::MoveCameraLinear(float InterpolationFactor, int frame0, int fram
 	}
 }
 
-// Движение камеры между кадрами
+// Р”РІРёР¶РµРЅРёРµ РєР°РјРµСЂС‹ РјРµР¶РґСѓ РєР°РґСЂР°РјРё
 void CDemoPlay::MoveCamera(u32 frame, float interpolation_factor, int interpolation_type)
 {
 	int f1 = frame;
@@ -216,7 +216,7 @@ void CDemoPlay::MoveCamera(u32 frame, float interpolation_factor, int interpolat
 	}
 }
 
-// Апдейт камеры
+// РђРїРґРµР№С‚ РєР°РјРµСЂС‹
 void CDemoPlay::Update(SCamEffectorInfo& info)
 {
 #ifdef BENCHMARK_BUILD
@@ -232,20 +232,19 @@ void CDemoPlay::Update(SCamEffectorInfo& info)
 	float p = fStartTime / fSpeed;
 	float InterpolationFactor = modff(p, &ip);
 	int Frame = iFloor(ip);
-	VERIFY(t >= 0);
 
-	// Отслеживаем подошли ли мы к последним кадрам демо
-	// чтобы засетить в это время вывод статистики
+	// РћС‚СЃР»РµР¶РёРІР°РµРј РїРѕРґРѕС€Р»Рё Р»Рё РјС‹ Рє РїРѕСЃР»РµРґРЅРёРј РєР°РґСЂР°Рј РґРµРјРѕ
+	// С‡С‚РѕР±С‹ Р·Р°СЃРµС‚РёС‚СЊ РІ СЌС‚Рѕ РІСЂРµРјСЏ РІС‹РІРѕРґ СЃС‚Р°С‚РёСЃС‚РёРєРё
 #ifdef BENCHMARK_BUILD
 	if (Frame == (m_frames_count - 10))
 		EnableBenchmarkResultPrint();
 #endif
 
-	// Что делать если мы подошли к концу демо
+	// Р§С‚Рѕ РґРµР»Р°С‚СЊ РµСЃР»Рё РјС‹ РїРѕРґРѕС€Р»Рё Рє РєРѕРЅС†Сѓ РґРµРјРѕ
 	if (Frame >= m_frames_count)
 	{
 #ifdef BENCHMARK_BUILD
-		// Закольцовываем демо в себе
+		// Р—Р°РєРѕР»СЊС†РѕРІС‹РІР°РµРј РґРµРјРѕ РІ СЃРµР±Рµ
 		if (strstr(Core.Params, "-loop_demo"))
 		{
 			ResetPerFrameStatistic();
@@ -265,25 +264,25 @@ void CDemoPlay::Update(SCamEffectorInfo& info)
 #endif
 	}
 
-	// Берем номер ключевого кадра и читаем соотвтетствующую ему секцию
-	// после чего сетим постпроцесс из ее параметров c интерполяцией
+	// Р‘РµСЂРµРј РЅРѕРјРµСЂ РєР»СЋС‡РµРІРѕРіРѕ РєР°РґСЂР° Рё С‡РёС‚Р°РµРј СЃРѕРѕС‚РІС‚РµС‚СЃС‚РІСѓСЋС‰СѓСЋ РµРјСѓ СЃРµРєС†РёСЋ
+	// РїРѕСЃР»Рµ С‡РµРіРѕ СЃРµС‚РёРј РїРѕСЃС‚РїСЂРѕС†РµСЃСЃ РёР· РµРµ РїР°СЂР°РјРµС‚СЂРѕРІ c РёРЅС‚РµСЂРїРѕР»СЏС†РёРµР№
 	ApplyFrameParameters(Frame, InterpolationFactor);
 
-	// Move обновляет view матрицу при помощи нужного типа интерполяции
-	// Проверка на m_bIsFirstFrame нужна чтобы телепортировать камеру на стартовую точку
-	// чтобы трансформы не сломались
+	// Move РѕР±РЅРѕРІР»СЏРµС‚ view РјР°С‚СЂРёС†Сѓ РїСЂРё РїРѕРјРѕС‰Рё РЅСѓР¶РЅРѕРіРѕ С‚РёРїР° РёРЅС‚РµСЂРїРѕР»СЏС†РёРё
+	// РџСЂРѕРІРµСЂРєР° РЅР° m_bIsFirstFrame РЅСѓР¶РЅР° С‡С‚РѕР±С‹ С‚РµР»РµРїРѕСЂС‚РёСЂРѕРІР°С‚СЊ РєР°РјРµСЂСѓ РЅР° СЃС‚Р°СЂС‚РѕРІСѓСЋ С‚РѕС‡РєСѓ
+	// С‡С‚РѕР±С‹ С‚СЂР°РЅСЃС„РѕСЂРјС‹ РЅРµ СЃР»РѕРјР°Р»РёСЃСЊ
 	if (NeedInterpolation(Frame) && (Frame != m_frames_count) && !m_bIsFirstFrame)
 	{
 		MoveCamera(Frame, InterpolationFactor, GetInterpolationType(Frame));
 	}
 	else
 	{
-		// Телепортируем камеру на нужную точку и сразу же начинаем оттуда же уже с интерполяцией
+		// РўРµР»РµРїРѕСЂС‚РёСЂСѓРµРј РєР°РјРµСЂСѓ РЅР° РЅСѓР¶РЅСѓСЋ С‚РѕС‡РєСѓ Рё СЃСЂР°Р·Сѓ Р¶Рµ РЅР°С‡РёРЅР°РµРј РѕС‚С‚СѓРґР° Р¶Рµ СѓР¶Рµ СЃ РёРЅС‚РµСЂРїРѕР»СЏС†РёРµР№
 		MoveCamera(Frame, InterpolationFactor, DISABLE_INTERPOLATION);
 		MoveCamera(Frame, InterpolationFactor, GetInterpolationType(Frame + 1));
 	}
 
-	// Применяем view матрицу для трансформации нормали, направления и позиции
+	// РџСЂРёРјРµРЅСЏРµРј view РјР°С‚СЂРёС†Сѓ РґР»СЏ С‚СЂР°РЅСЃС„РѕСЂРјР°С†РёРё РЅРѕСЂРјР°Р»Рё, РЅР°РїСЂР°РІР»РµРЅРёСЏ Рё РїРѕР·РёС†РёРё
 	info.n.set(m_Camera.j);
 	info.d.set(m_Camera.k);
 	info.p.set(m_Camera.c);
@@ -291,7 +290,7 @@ void CDemoPlay::Update(SCamEffectorInfo& info)
 
 	fLifeTime -= Device.fTimeDelta;
 
-	// Короткая демонстрация результатов бенчмарка со скриншотом и завершением работы
+	// РљРѕСЂРѕС‚РєР°СЏ РґРµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ Р±РµРЅС‡РјР°СЂРєР° СЃРѕ СЃРєСЂРёРЅС€РѕС‚РѕРј Рё Р·Р°РІРµСЂС€РµРЅРёРµРј СЂР°Р±РѕС‚С‹
 #ifdef BENCHMARK_BUILD
 	if (!bNeedDrawResults)
 		return;
@@ -313,7 +312,7 @@ BOOL CDemoPlay::ProcessCam(SCamEffectorInfo& info)
 	if (Device.dwPrecacheFrame)
 		return TRUE;
 
-	// Защита на случай если файл придет пустой
+	// Р—Р°С‰РёС‚Р° РЅР° СЃР»СѓС‡Р°Р№ РµСЃР»Рё С„Р°Р№Р» РїСЂРёРґРµС‚ РїСѓСЃС‚РѕР№
 	if (m_frames_count == NULL)
 		Close();
 
@@ -344,7 +343,7 @@ void CDemoPlay::Close()
 	fLifeTime = -1;
 }
 
-// Обработчик нажатий клавиш клавиатуры
+// РћР±СЂР°Р±РѕС‚С‡РёРє РЅР°Р¶Р°С‚РёР№ РєР»Р°РІРёС€ РєР»Р°РІРёР°С‚СѓСЂС‹
 void CDemoPlay::IR_OnKeyboardPress(int dik)
 {
 #ifdef BENCHMARK_BUILD
@@ -364,10 +363,10 @@ void CDemoPlay::IR_OnKeyboardPress(int dik)
 
 void CDemoPlay::PrintSummaryBanchmarkStatistic()
 {
-	// Выравниваем надпись по левому краю строки
+	// Р’С‹СЂР°РІРЅРёРІР°РµРј РЅР°РґРїРёСЃСЊ РїРѕ Р»РµРІРѕРјСѓ РєСЂР°СЋ СЃС‚СЂРѕРєРё
 	pApp->pFontSystem->SetAligment(CGameFont::alCenter);
 
-	// Сетим надписи в центре экрана
+	// РЎРµС‚РёРј РЅР°РґРїРёСЃРё РІ С†РµРЅС‚СЂРµ СЌРєСЂР°РЅР°
 	pApp->pFontSystem->OutSetI(0.0, -0.2f);
 
 	pApp->pFontSystem->OutNext("Benchmark results");
@@ -398,10 +397,10 @@ void CDemoPlay::ResetPerFrameStatistic()
 	stat_Timer_total.Start();
 }
 
-// Разные цвета для разных значений кадров в секунду
-// Зеленый если больше 50
-// Желтый если меньше 50
-// Красный если меньше 24
+// Р Р°Р·РЅС‹Рµ С†РІРµС‚Р° РґР»СЏ СЂР°Р·РЅС‹С… Р·РЅР°С‡РµРЅРёР№ РєР°РґСЂРѕРІ РІ СЃРµРєСѓРЅРґСѓ
+// Р—РµР»РµРЅС‹Р№ РµСЃР»Рё Р±РѕР»СЊС€Рµ 50
+// Р–РµР»С‚С‹Р№ РµСЃР»Рё РјРµРЅСЊС€Рµ 50
+// РљСЂР°СЃРЅС‹Р№ РµСЃР»Рё РјРµРЅСЊС€Рµ 24
 void CDemoPlay::ChooseTextColor(float FPSValue)
 {
 	if (fFPS > 50.0f)
@@ -412,38 +411,38 @@ void CDemoPlay::ChooseTextColor(float FPSValue)
 		pApp->pFontSystem->SetColor(color_rgba(255, 59, 0, 200));
 }
 
-// Статистика в левом верхнем углу экрана
+// РЎС‚Р°С‚РёСЃС‚РёРєР° РІ Р»РµРІРѕРј РІРµСЂС…РЅРµРј СѓРіР»Сѓ СЌРєСЂР°РЅР°
 void CDemoPlay::ShowPerFrameStatistic()
 {
-	// Считаем время кадра
+	// РЎС‡РёС‚Р°РµРј РІСЂРµРјСЏ РєР°РґСЂР°
 	float fps = 1.f / Device.fTimeDelta;
 	float fOne = 0.3f;
 	float fInv = 1.f - fOne;
 	fFPS = fInv * fFPS + fOne * fps;
 
-	// Средний FPS
+	// РЎСЂРµРґРЅРёР№ FPS
 	float stat_total = stat_Timer_total.GetElapsed_sec();
 	u32 dwFramesTotal = Device.dwFrame - stat_StartFrame;
 	fFPS_avg = float(dwFramesTotal) / stat_total;
 
-	// При alt + tab бывает скачок количества кадров
-	// попытка убавить значение до среднего чтобы в
-	// следующем вызове он выравнялся до нормального
+	// РџСЂРё alt + tab Р±С‹РІР°РµС‚ СЃРєР°С‡РѕРє РєРѕР»РёС‡РµСЃС‚РІР° РєР°РґСЂРѕРІ
+	// РїРѕРїС‹С‚РєР° СѓР±Р°РІРёС‚СЊ Р·РЅР°С‡РµРЅРёРµ РґРѕ СЃСЂРµРґРЅРµРіРѕ С‡С‚РѕР±С‹ РІ
+	// СЃР»РµРґСѓСЋС‰РµРј РІС‹Р·РѕРІРµ РѕРЅ РІС‹СЂР°РІРЅСЏР»СЃСЏ РґРѕ РЅРѕСЂРјР°Р»СЊРЅРѕРіРѕ
 	if (fFPS_max > 256.0f)
 		fFPS_max = 60.0f;
 
-	// Если актуальное значение меньше чем у прошлого кадра
-	// то приравниваем его
+	// Р•СЃР»Рё Р°РєС‚СѓР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РјРµРЅСЊС€Рµ С‡РµРј Сѓ РїСЂРѕС€Р»РѕРіРѕ РєР°РґСЂР°
+	// С‚Рѕ РїСЂРёСЂР°РІРЅРёРІР°РµРј РµРіРѕ
 	if (fFPS < fFPS_min)
 		fFPS_min = fFPS;
 
-	// Если актуальное значение больше чем у прошлого кадра
-	// то приравниваем его
+	// Р•СЃР»Рё Р°РєС‚СѓР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ Р±РѕР»СЊС€Рµ С‡РµРј Сѓ РїСЂРѕС€Р»РѕРіРѕ РєР°РґСЂР°
+	// С‚Рѕ РїСЂРёСЂР°РІРЅРёРІР°РµРј РµРіРѕ
 	if (fFPS > fFPS_max)
 		fFPS_max = fFPS;
 
-	// FPS средний не может быть FPS максимального, 
-	// перезапускаем отсчет
+	// FPS СЃСЂРµРґРЅРёР№ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ FPS РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ, 
+	// РїРµСЂРµР·Р°РїСѓСЃРєР°РµРј РѕС‚СЃС‡РµС‚
 	if (fFPS_avg > fFPS_max)
 	{
 		fFPS_avg = fFPS_max;
@@ -451,10 +450,10 @@ void CDemoPlay::ShowPerFrameStatistic()
 		stat_Timer_total.Start();
 	}
 
-	// Выравниваем надпись по левому краю строки
+	// Р’С‹СЂР°РІРЅРёРІР°РµРј РЅР°РґРїРёСЃСЊ РїРѕ Р»РµРІРѕРјСѓ РєСЂР°СЋ СЃС‚СЂРѕРєРё
 	pApp->pFontSystem->SetAligment(CGameFont::alLeft);
 
-	// Сетим надписи в левом верхнем углу
+	// РЎРµС‚РёРј РЅР°РґРїРёСЃРё РІ Р»РµРІРѕРј РІРµСЂС…РЅРµРј СѓРіР»Сѓ
 	if (g_bBordersEnabled)
 		pApp->pFontSystem->OutSetI(-1.0, -0.8f);
 	else

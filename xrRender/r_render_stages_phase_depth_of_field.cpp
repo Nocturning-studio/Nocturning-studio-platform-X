@@ -3,7 +3,7 @@
 // Nocturning studio for NS Platform X
 ///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include <Blender_depth_of_field.h>
+#include "Blender_depth_of_field.h"
 ///////////////////////////////////////////////////////////////////////////////////
 constexpr double x = 43.266615300557; // Diagonal measurement for a 'normal' 35mm lens
 constexpr float FocalDepthMultiplier = 1000.0f;
