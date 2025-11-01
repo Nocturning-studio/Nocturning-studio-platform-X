@@ -13,15 +13,15 @@ void __stdcall CHOM::MT_RENDER()
 {
 	OPTICK_EVENT("CHOM::MT_RENDER");
 
-	// Áûñòðàÿ ïðîâåðêà áåç áëîêèðîâêè
+	// Ð‘Ñ‹ÑÑ‚Ñ€Ð°Ñ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð±ÐµÐ· Ð±Ð»Ð¾ÐºÐ¸Ñ€Ð¾Ð²ÐºÐ¸
 	bool b_main_menu_is_active = (g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive());
 	if (MT_frame_rendered == Device.dwFrame || b_main_menu_is_active)
 		return;
 
-	// Ïîïûòêà çàõâàòà ìüþòåêñà áåç áëîêèðîâêè
+	// ÐŸÐ¾Ð¿Ñ‹Ñ‚ÐºÐ° Ð·Ð°Ñ…Ð²Ð°Ñ‚Ð° Ð¼ÑŒÑŽÑ‚ÐµÐºÑÐ° Ð±ÐµÐ· Ð±Ð»Ð¾ÐºÐ¸Ñ€Ð¾Ð²ÐºÐ¸
 	if (MT.TryEnter())
 	{
-		// Äâîéíàÿ ïðîâåðêà ïîñëå çàõâàòà ìüþòåêñà
+		// Ð”Ð²Ð¾Ð¹Ð½Ð°Ñ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð¿Ð¾ÑÐ»Ðµ Ð·Ð°Ñ…Ð²Ð°Ñ‚Ð° Ð¼ÑŒÑŽÑ‚ÐµÐºÑÐ°
 		if (MT_frame_rendered != Device.dwFrame && !b_main_menu_is_active)
 		{
 			CFrustum ViewBase;
@@ -174,7 +174,7 @@ class pred_fb
 
 void CHOM::ProcessTriangle(CDB::RESULT* it, u32 _frame, const Fvector& COP, CFrustum& clip)
 {
-	// Ëîêàëüíûå ïîëèãîíû äëÿ êàæäîãî ïîòîêà
+	// Ð›Ð¾ÐºÐ°Ð»ÑŒÐ½Ñ‹Ðµ Ð¿Ð¾Ð»Ð¸Ð³Ð¾Ð½Ñ‹ Ð´Ð»Ñ ÐºÐ°Ð¶Ð´Ð¾Ð³Ð¾ Ð¿Ð¾Ñ‚Ð¾ÐºÐ°
 	sPoly src, dst;
 
 	// Control skipping
@@ -238,13 +238,13 @@ void CHOM::Render_DB(CFrustum& base)
 
 	Fvector COP = Device.vCameraPosition;
 
-	// Óäàëåíèå ïðîïóñêàåìûõ òðåóãîëüíèêîâ
+	// Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ Ð¿Ñ€Ð¾Ð¿ÑƒÑÐºÐ°ÐµÐ¼Ñ‹Ñ… Ñ‚Ñ€ÐµÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ¾Ð²
 	end = std::remove_if(it, end, pred_fb(m_pTris));
 
 	if (it == end)
 		return;
 
-	// Ñîðòèðîâêà
+	// Ð¡Ð¾Ñ€Ñ‚Ð¸Ñ€Ð¾Ð²ÐºÐ°
 	size_t element_count = std::distance(it, end);
 	if (element_count > 500)
 	{
@@ -255,7 +255,7 @@ void CHOM::Render_DB(CFrustum& base)
 		std::sort(it, end, pred_fb(m_pTris, COP));
 	}
 
-	// Ìàòðèöû è ïîäãîòîâêà (áåç èçìåíåíèé)
+	// ÐœÐ°Ñ‚Ñ€Ð¸Ñ†Ñ‹ Ð¸ Ð¿Ð¾Ð´Ð³Ð¾Ñ‚Ð¾Ð²ÐºÐ° (Ð±ÐµÐ· Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¹)
 	float view_dim = occ_dim_0;
 	Fmatrix m_viewport = {view_dim / 2.f, 0.0f, 0.0f, 0.0f, 0.0f, -view_dim / 2.f,		  0.0f,
 						  0.0f,			  0.0f, 0.0f, 1.0f, 0.0f, view_dim / 2.f + 0 + 0, view_dim / 2.f + 0 + 0,
@@ -274,7 +274,7 @@ void CHOM::Render_DB(CFrustum& base)
 	tris_in_frame_visible = 0;
 #endif
 
-	// Ïàðàëëåëüíàÿ îáðàáîòêà ñ èñïîëüçîâàíèåì parallel_for
+	// ÐŸÐ°Ñ€Ð°Ð»Ð»ÐµÐ»ÑŒÐ½Ð°Ñ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ° Ñ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½Ð¸ÐµÐ¼ parallel_for
 	if (element_count > 200)
 	{
 		concurrency::parallel_for<size_t>(0, element_count, [&](size_t i) {
@@ -495,7 +495,7 @@ void CHOM::OnRender()
 			// draw wire
 			if (bDebug)
 			{
-				RenderImplementation.set_render_mode(MODE_NEAR);
+				RenderImplementation.set_render_mode(IRender_interface::MODE_NEAR);
 			}
 			else
 			{
@@ -505,7 +505,7 @@ void CHOM::OnRender()
 			RenderBackend.dbg_Draw(D3DPT_LINELIST, &*line.begin(), line.size() / 2);
 			if (bDebug)
 			{
-				RenderImplementation.set_render_mode(MODE_NORMAL);
+				RenderImplementation.set_render_mode(IRender_interface::MODE_NORMAL);
 			}
 			else
 			{

@@ -209,7 +209,7 @@ IC bool CLevelGraph::inside(const u32 vertex_id, const Fvector2& position) const
 	return (b);
 }
 
-IC float CLevelGraph::vertex_plane_y(const CLevelGraph::CVertex& vertex, const float X, const float Z) const
+IC float CLevelGraph::vertex_plane_y(const CLevelGraph::CVertex& vertex, const float inX, const float inZ) const
 {
 	Fvector DUP, normal, v, v1, P;
 	Fplane PL;
@@ -218,7 +218,7 @@ IC float CLevelGraph::vertex_plane_y(const CLevelGraph::CVertex& vertex, const f
 	pvDecompress(normal, vertex.plane());
 	vertex_position(P, vertex.position());
 	PL.build(P, normal);
-	v.set(X, P.y, Z);
+	v.set(inX, P.y, inZ);
 	PL.intersectRayPoint(v, DUP, v1);
 	return (v1.y);
 }
@@ -230,9 +230,9 @@ IC float CLevelGraph::vertex_plane_y(const CLevelGraph::CVertex& vertex) const
 	return (vertex_plane_y(vertex, x, z));
 }
 
-IC float CLevelGraph::vertex_plane_y(const CLevelGraph::CVertex* vertex, const float X, const float Z) const
+IC float CLevelGraph::vertex_plane_y(const CLevelGraph::CVertex* vertex, const float inX, const float inZ) const
 {
-	return (vertex_plane_y(*vertex, X, Z));
+	return (vertex_plane_y(*vertex, inX, inZ));
 }
 
 IC float CLevelGraph::vertex_plane_y(const CLevelGraph::CVertex* vertex) const
@@ -240,9 +240,9 @@ IC float CLevelGraph::vertex_plane_y(const CLevelGraph::CVertex* vertex) const
 	return (vertex_plane_y(*vertex));
 }
 
-IC float CLevelGraph::vertex_plane_y(const u32 vertex_id, const float X, const float Z) const
+IC float CLevelGraph::vertex_plane_y(const u32 vertex_id, const float inX, const float inZ) const
 {
-	return (vertex_plane_y(vertex(vertex_id), X, Z));
+	return (vertex_plane_y(vertex(vertex_id), inX, inZ));
 }
 
 IC float CLevelGraph::vertex_plane_y(const u32 vertex_id) const

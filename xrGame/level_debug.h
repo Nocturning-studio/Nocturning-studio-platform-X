@@ -19,7 +19,7 @@ class CLevelDebug
 			remove_text_pred(LPCSTR t) : text(t)
 			{
 			}
-			bool operator()(const T& item)
+			bool operator()(const T& item) const
 			{
 				return (item.text == text);
 			}
@@ -31,7 +31,7 @@ class CLevelDebug
 			remove_id_pred(u32 i) : id(i)
 			{
 			}
-			bool operator()(const T& item)
+			bool operator()(const T& item) const
 			{
 				return (item.id == id);
 			}
@@ -39,7 +39,7 @@ class CLevelDebug
 
 		struct sort_id_pred
 		{
-			bool operator()(const T& item1, const T& item2)
+			bool operator()(const T& item1, const T& item2) const
 			{
 				return (item1.id < item2.id);
 			}

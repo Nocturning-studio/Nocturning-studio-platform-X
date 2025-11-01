@@ -65,7 +65,7 @@ float CAI_Stalker::GetWeaponAccuracy() const
 {
 	float base = PI / 180.f;
 
-	// âëèÿíèå ðàíãà íà ìåòêîñòü
+	// Ð²Ð»Ð¸ÑÐ½Ð¸Ðµ Ñ€Ð°Ð½Ð³Ð° Ð½Ð° Ð¼ÐµÑ‚ÐºÐ¾ÑÑ‚ÑŒ
 	base *= m_fRankDisperison;
 
 	if (!movement().path_completed())
@@ -197,7 +197,7 @@ void CAI_Stalker::Hit(SHit* pHDS)
 
 	//	pHDS->power						*= .1f;
 
-	// õèò ìîæåò ìåíÿòüñÿ â çàâèñèìîñòè îò ðàíãà (íîâè÷êè ïîëó÷àþò áîëüøå õèòà, ÷åì âåòåðàíû)
+	// Ñ…Ð¸Ñ‚ Ð¼Ð¾Ð¶ÐµÑ‚ Ð¼ÐµÐ½ÑÑ‚ÑŒÑÑ Ð² Ð·Ð°Ð²Ð¸ÑÐ¸Ð¼Ð¾ÑÑ‚Ð¸ Ð¾Ñ‚ Ñ€Ð°Ð½Ð³Ð° (Ð½Ð¾Ð²Ð¸Ñ‡ÐºÐ¸ Ð¿Ð¾Ð»ÑƒÑ‡Ð°ÑŽÑ‚ Ð±Ð¾Ð»ÑŒÑˆÐµ Ñ…Ð¸Ñ‚Ð°, Ñ‡ÐµÐ¼ Ð²ÐµÑ‚ÐµÑ€Ð°Ð½Ñ‹)
 	SHit HDS = *pHDS;
 	HDS.power *= m_fRankImmunity;
 	if (m_boneHitProtection && HDS.hit_type == ALife::eHitTypeFireWound)
@@ -507,6 +507,8 @@ bool CAI_Stalker::ready_to_detour()
 	return (weapon->GetAmmoElapsed() > weapon->GetAmmoMagSize() / 2);
 }
 
+namespace xray
+{
 class ray_query_param
 {
   public:
@@ -528,10 +530,11 @@ class ray_query_param
 		m_pick_distance = distance;
 	}
 };
+}
 
 IC BOOL ray_query_callback(collide::rq_result& result, LPVOID params)
 {
-	ray_query_param* param = (ray_query_param*)params;
+	xray::ray_query_param* param = (xray::ray_query_param*)params;
 	float power = param->m_holder->feel_vision_mtl_transp(result.O, result.element);
 	param->m_power *= power;
 
@@ -576,12 +579,12 @@ void CAI_Stalker::can_kill_entity(const Fvector& position, const Fvector& direct
 	collide::ray_defs ray_defs(position, direction, distance, CDB::OPT_CULL, collide::rqtBoth);
 	VERIFY(!fis_zero(ray_defs.dir.square_magnitude()));
 
-	ray_query_param params(this, memory().visual().transparency_threshold(), distance);
+	xray::ray_query_param params(this, memory().visual().transparency_threshold(), distance);
 
 	Level().ObjectSpace.RayQuery(rq_storage, ray_defs, ray_query_callback, &params, NULL, this);
 	m_can_kill_enemy = m_can_kill_enemy || params.m_can_kill_enemy;
 	m_can_kill_member = m_can_kill_member || params.m_can_kill_member;
-	m_pick_distance = _max(m_pick_distance, params.m_pick_distance);
+	m_pick_distance = std::max(m_pick_distance, params.m_pick_distance);
 }
 
 void CAI_Stalker::can_kill_entity_from(const Fvector& position, Fvector direction, float distance)

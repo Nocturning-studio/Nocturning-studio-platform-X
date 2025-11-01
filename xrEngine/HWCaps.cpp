@@ -7,9 +7,6 @@
 #ifndef _EDITOR
 #include "NVAPI/nvapi.h"
 #include "ATI/atimgpud.h"
-
-#pragma comment(lib, "nvapi")
-#pragma comment(lib, "atimgpud_mtdll_x86")
 #endif
 
 namespace

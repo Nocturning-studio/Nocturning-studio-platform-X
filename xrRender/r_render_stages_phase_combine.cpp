@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "..\xrEngine\igame_persistent.h"
 #include "..\xrEngine\environment.h"
-#include <blender_combine.h>
+#include "blender_combine.h"
 ///////////////////////////////////////////////////////////////////////////////////
 void CRender::combine_additional_postprocess()
 {
@@ -101,54 +101,54 @@ void CRender::combine_scene_lighting()
 	// stencil should be >= 1, we don't touch sky pixels
 	RenderBackend.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1, HW.pBaseZB);
-
-#ifdef DEBUG
-	RenderBackend.set_CullMode(CULL_CCW);
-	static xr_vector<Fplane> saved_dbg_planes;
-	if (bDebug)
-		saved_dbg_planes = dbg_planes;
-	else
-		dbg_planes = saved_dbg_planes;
-	if (1)
-		for (u32 it = 0; it < dbg_planes.size(); it++)
-		{
-			Fplane& P = dbg_planes[it];
-			Fvector zero;
-			zero.mul(P.n, P.d);
-
-			Fvector L_dir, L_up = P.n, L_right;
-			L_dir.set(0, 0, 1);
-			if (_abs(L_up.dotproduct(L_dir)) > .99f)
-				L_dir.set(1, 0, 0);
-			L_right.crossproduct(L_up, L_dir);
-			L_right.normalize();
-			L_dir.crossproduct(L_right, L_up);
-			L_dir.normalize();
-
-			Fvector p0, p1, p2, p3;
-			float sz = 100.f;
-			p0.mad(zero, L_right, sz).mad(L_dir, sz);
-			p1.mad(zero, L_right, sz).mad(L_dir, -sz);
-			p2.mad(zero, L_right, -sz).mad(L_dir, -sz);
-			p3.mad(zero, L_right, -sz).mad(L_dir, +sz);
-			RenderBackend.dbg_DrawTRI(Fidentity, p0, p1, p2, 0xffffffff);
-			RenderBackend.dbg_DrawTRI(Fidentity, p2, p3, p0, 0xffffffff);
-		}
-
-	static xr_vector<dbg_line_t> saved_dbg_lines;
-	if (bDebug)
-		saved_dbg_lines = dbg_lines;
-	else
-		dbg_lines = saved_dbg_lines;
-	if (1)
-		for (u32 it = 0; it < dbg_lines.size(); it++)
-		{
-			RenderBackend.dbg_DrawLINE(Fidentity, dbg_lines[it].P0, dbg_lines[it].P1, dbg_lines[it].color);
-		}
-
-	dbg_spheres.clear();
-	dbg_lines.clear();
-	dbg_planes.clear();
-#endif
+//
+//#ifdef DEBUG
+//	RenderBackend.set_CullMode(CULL_CCW);
+//	static xr_vector<Fplane> saved_dbg_planes;
+//	if (bDebug)
+//		saved_dbg_planes = dbg_planes;
+//	else
+//		dbg_planes = saved_dbg_planes;
+//	if (1)
+//		for (u32 it = 0; it < dbg_planes.size(); it++)
+//		{
+//			Fplane& P = dbg_planes[it];
+//			Fvector zero;
+//			zero.mul(P.n, P.d);
+//
+//			Fvector L_dir, L_up = P.n, L_right;
+//			L_dir.set(0, 0, 1);
+//			if (_abs(L_up.dotproduct(L_dir)) > .99f)
+//				L_dir.set(1, 0, 0);
+//			L_right.crossproduct(L_up, L_dir);
+//			L_right.normalize();
+//			L_dir.crossproduct(L_right, L_up);
+//			L_dir.normalize();
+//
+//			Fvector p0, p1, p2, p3;
+//			float sz = 100.f;
+//			p0.mad(zero, L_right, sz).mad(L_dir, sz);
+//			p1.mad(zero, L_right, sz).mad(L_dir, -sz);
+//			p2.mad(zero, L_right, -sz).mad(L_dir, -sz);
+//			p3.mad(zero, L_right, -sz).mad(L_dir, +sz);
+//			RenderBackend.dbg_DrawTRI(Fidentity, p0, p1, p2, 0xffffffff);
+//			RenderBackend.dbg_DrawTRI(Fidentity, p2, p3, p0, 0xffffffff);
+//		}
+//
+//	static xr_vector<dbg_line_t> saved_dbg_lines;
+//	if (bDebug)
+//		saved_dbg_lines = dbg_lines;
+//	else
+//		dbg_lines = saved_dbg_lines;
+//	if (1)
+//		for (u32 it = 0; it < dbg_lines.size(); it++)
+//		{
+//			RenderBackend.dbg_DrawLINE(Fidentity, dbg_lines[it].P0, dbg_lines[it].P1, dbg_lines[it].color);
+//		}
+//
+//	dbg_spheres.clear();
+//	dbg_lines.clear();
+//	dbg_planes.clear();
+//#endif
 }
 ///////////////////////////////////////////////////////////////////////////////////

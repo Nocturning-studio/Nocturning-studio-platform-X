@@ -82,8 +82,8 @@ void CLevelGraph::draw_nodes()
 	RenderBackend.set_Shader(sh_debug);
 	F->SetColor(color_rgba(255, 255, 255, 255));
 
-	// åñëè âêëþ÷¸í ai_dbg_frustum ðàñêðàñèòü íîäû ïî light
-	// èíà÷å ðàñêðàøèâàòü ïî cover
+	// ÐµÑÐ»Ð¸ Ð²ÐºÐ»ÑŽÑ‡Ñ‘Ð½ ai_dbg_frustum Ñ€Ð°ÑÐºÑ€Ð°ÑÐ¸Ñ‚ÑŒ Ð½Ð¾Ð´Ñ‹ Ð¿Ð¾ light
+	// Ð¸Ð½Ð°Ñ‡Ðµ Ñ€Ð°ÑÐºÑ€Ð°ÑˆÐ¸Ð²Ð°Ñ‚ÑŒ Ð¿Ð¾ cover
 	bool b_light = false;
 
 	//////////////////////////////////////////////////////////////////////////
@@ -273,8 +273,8 @@ void CLevelGraph::draw_covers()
 		CVertex* v = vertex((*I)->level_vertex_id());
 		Fvector direction;
 		float best_value = -1.f;
-
-		for (u32 i = 0, j = 0; i < 36; ++i)
+		u32 i = 0, j = 0;
+		for (i = 0, j = 0; i < 36; ++i)
 		{
 			float value = cover_in_direction(float(10 * i) / 180.f * PI, v);
 			direction.setHP(float(10 * i) / 180.f * PI, 0);

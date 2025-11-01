@@ -8,11 +8,16 @@
 
 #pragma once
 
-// #include "script_game_object.h"
-class CScriptGameObject;
+#include "script_game_object.h"
 
 #define TEMPLATE_SPECIALIZATION                                                                                        \
-	template <typename _object_type, template <typename _base_object_type> class ancestor, typename _base_object_type>
+	template <\
+		typename _object_type,\
+		template <typename _base_object_type> class ancestor,\
+		typename _base_object_type\
+	>
+namespace xrServerObjectsScript
+{
 #define CWrapper CWrapperAbstract<_object_type, ancestor, _base_object_type>
 #define CWrapper2 CWrapperAbstract2<_object_type, ancestor, _base_object_type>
 
@@ -63,7 +68,7 @@ IC _object_type& CWrapper::object() const
 	VERIFY(m_object);
 	return (*m_object);
 }
-
+}
 //////////////////////////////////////////////////////////////////////////
 // CWrapperAbstract2
 //////////////////////////////////////////////////////////////////////////
@@ -134,7 +139,6 @@ void CWrapper2::setup(CScriptGameObject* object, CPropertyStorage* storage)
 	inherited::setup(object, storage);
 	m_object = smart_cast<_object_type*>(&object->object());
 	VERIFY(m_object);
-}
-
+} 
 #undef TEMPLATE_SPECIALIZATION
 #undef CWrapper

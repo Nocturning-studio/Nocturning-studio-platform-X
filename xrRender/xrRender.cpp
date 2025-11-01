@@ -3,8 +3,6 @@
 #include "stdafx.h"
 #include "xrRender_console.h"
 
-#pragma comment(lib, "xrEngine")
-
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
 	switch (ul_reason_for_call)

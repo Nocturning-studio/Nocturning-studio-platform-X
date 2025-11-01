@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "..\xrEngine\igame_persistent.h"
 #include "..\xrEngine\environment.h"
-#include <blender_effectors.h>
+#include "blender_effectors.h"
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::u_calc_tc_duality_ss(Fvector2& r0, Fvector2& r1, Fvector2& l0, Fvector2& l1)
 {
