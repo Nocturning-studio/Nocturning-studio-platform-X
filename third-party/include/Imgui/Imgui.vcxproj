@@ -145,7 +145,7 @@
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
     <IncludePath>$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)\Third-Party\lib\x86\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>$(SolutionDir)\Third-Party\Libraries\x86\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -156,7 +156,7 @@
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
     <IncludePath>$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)\Third-Party\lib\x86\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>$(SolutionDir)\Third-Party\Libraries\x86\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -176,7 +176,7 @@
     <TargetExt>.dll</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\Third-Party\lib\x86\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\Third-Party\Libraries\x86\;$(LibraryPath)</LibraryPath>
@@ -249,7 +249,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ImportLibrary>$(SolutionDir)\Third-Party\lib\x86\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
     </Link>
@@ -278,7 +278,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ImportLibrary>$(SolutionDir)\Third-Party\lib\x86\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
     </Link>
@@ -320,7 +320,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <ImportLibrary>$(SolutionDir)\Third-Party\lib\x86\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
     </Link>

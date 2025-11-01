@@ -216,7 +216,7 @@
     <_ProjectFileVersion>17.0.32203.90</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
@@ -238,7 +238,7 @@
     <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(SolutionDir)third-party\lib\x86\;$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
-    <OutDir>$(SolutionDir)..\binaries-benchmark\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\DXSDK\;$(SolutionDir)xrEngine\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
@@ -252,7 +252,7 @@
     <LibraryPath>$(WindowsSDK_LibraryPath_x86);$(SolutionDir)third-party\lib\x86\;$(SolutionDir)..\libraries\$(Configuration)-$(Platform)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\DXSDK\;$(SolutionDir)xrEngine\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
@@ -296,7 +296,7 @@
     <LibraryPath>$(SolutionDir)third-party\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)third-party\include\DXSDK\;$(SolutionDir)xrEngine\;$(SolutionDir)xrCore\;$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
@@ -346,7 +346,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
+      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
 copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -432,7 +432,7 @@ copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
+      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
 copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -478,7 +478,7 @@ copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
+      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
 copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -524,7 +524,7 @@ copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
+      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
 copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -571,7 +571,7 @@ copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
+      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
 copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -617,7 +617,7 @@ copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
+      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
 copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -894,7 +894,7 @@ copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
+      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
 copy /Y "$(SolutionDir)\third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
