@@ -28,19 +28,11 @@ static BOOL bException = TRUE;
 static BOOL bException = FALSE;
 #endif
 
-#ifndef _M_AMD64
-#ifndef __BORLANDC__
-#pragma comment(lib, "dxerr.lib")
-#endif
-#endif
-
 #include <dbghelp.h> // MiniDump flags
 
 #ifdef USE_BUG_TRAP
 #include "../bugtrap/bugtrap.h" // for BugTrap functionality
-#ifndef __BORLANDC__
-#pragma comment(lib, "BugTrap.lib") // Link to ANSI DLL
-#else
+#ifdef __BORLANDC__
 #pragma comment(lib, "BugTrapB.lib") // Link to ANSI DLL
 #endif
 #endif // USE_BUG_TRAP

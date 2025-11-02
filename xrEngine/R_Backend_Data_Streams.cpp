@@ -39,7 +39,7 @@ void* VertexStream::Lock(u32 vl_Count, u32 Stride, u32& vOffset)
 	OPTICK_EVENT("VertexStream::Lock");
 
 #ifdef DEBUG
-	OPTICK_EVENT("PGO:VB_LOCK:%d", vl_Count));
+	OPTICK_EVENT("PGO:VB_LOCK:%d", vl_Count);
 	VERIFY(0 == dbg_lock);
 	dbg_lock++;
 #endif

@@ -31,12 +31,6 @@ USE_BUGSLAYERUTIL - If defined, the class will have another
 #include "imagehlp.h"
 #include <tchar.h>
 
-// Include these in case the user forgets to link against them.
-#ifndef _EDITOR
-#pragma comment(lib, "dbghelp.lib")
-#pragma comment(lib, "version.lib")
-#endif // _EDITOR
-
 // The great Bugslayer idea of creating wrapper classes on structures
 // that have size fields came from fellow MSJ columnist, Paul DiLascia.
 // Thanks, Paul!

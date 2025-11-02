@@ -26,8 +26,6 @@
 #include "render.h"
 #include "r_color_converting.h"
 
-#pragma comment(lib, "d3dx9.lib")
-
 IC	void	jitter(CBlender_Compile& C)
 {
 	C.r_Sampler("s_blue_noise", "noise\\blue_noise_texture", true, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);

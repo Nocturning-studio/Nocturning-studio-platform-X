@@ -284,13 +284,9 @@ void CBackend::set_Blend(BOOL enable, D3DBLEND src, D3DBLEND dest)
 			CHK_DX(HW.pDevice->SetRenderState(D3DRS_SRCBLEND, src));
 			CHK_DX(HW.pDevice->SetRenderState(D3DRS_DESTBLEND, dest));
 
-			// Òàêæå óñòàíîâèì ïðàâèëüíûå ñîñòîÿíèÿ äëÿ àëüôà-òåñòèíãà åñëè íóæíî
+			// Ð¢Ð°ÐºÐ¶Ðµ ÑƒÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ð¼ Ð¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ‹Ðµ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ñ Ð´Ð»Ñ Ð°Ð»ÑŒÑ„Ð°-Ñ‚ÐµÑÑ‚Ð¸Ð½Ð³Ð° ÐµÑÐ»Ð¸ Ð½ÑƒÐ¶Ð½Ð¾
 			CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE));
 		}
-
-#ifdef DEBUG
-		stat.blend_changes++;
-#endif
 	}
 }
 
@@ -314,7 +310,7 @@ void CBackend::set_Blend_Default()
 	set_Blend(FALSE, D3DBLEND_ONE, D3DBLEND_ZERO);
 }
 
-// Òàêæå äîáàâèì ìåòîäû äëÿ äðóãèõ ðàñïðîñòðàíåííûõ blend ðåæèìîâ
+// Ð¢Ð°ÐºÐ¶Ðµ Ð´Ð¾Ð±Ð°Ð²Ð¸Ð¼ Ð¼ÐµÑ‚Ð¾Ð´Ñ‹ Ð´Ð»Ñ Ð´Ñ€ÑƒÐ³Ð¸Ñ… Ñ€Ð°ÑÐ¿Ñ€Ð¾ÑÑ‚Ñ€Ð°Ð½ÐµÐ½Ð½Ñ‹Ñ… blend Ñ€ÐµÐ¶Ð¸Ð¼Ð¾Ð²
 void CBackend::set_Blend_Subtract()
 {
 	set_Blend(TRUE, D3DBLEND_ONE, D3DBLEND_ONE);
@@ -356,10 +352,6 @@ void CBackend::set_BlendEx(BOOL enable, D3DBLEND src, D3DBLEND dest, D3DBLENDOP 
 
 			CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE));
 		}
-
-#ifdef DEBUG
-		stat.blend_changes++;
-#endif
 	}
 }
 
