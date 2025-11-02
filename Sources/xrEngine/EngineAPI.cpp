@@ -32,7 +32,7 @@ void CEngineAPI::Initialize(void)
 
 	// render
 	Msg("Initializing Renderer...");
-	LPCSTR render_name = "xrRender_PC.dll";
+	LPCSTR render_name = "xrRender.dll";
 	Log("Loading DLL:", render_name);
 	hRender = LoadLibrary(render_name);
 	R_ASSERT2(hRender, "! Can't load renderer");
