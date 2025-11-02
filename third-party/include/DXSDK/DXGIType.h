@@ -5,6 +5,7 @@
 
 #include "dxgiformat.h"
 
+/*
 #define _FACDXGI    0x87a
 #define MAKE_DXGI_HRESULT(code) MAKE_HRESULT(1, _FACDXGI, code)
 #define MAKE_DXGI_STATUS(code)  MAKE_HRESULT(0, _FACDXGI, code)
@@ -49,6 +50,8 @@
 #define DXGI_USAGE_READ_ONLY                    ( 1L << (4 + 4) )
 #define DXGI_USAGE_DISCARD_ON_PRESENT           ( 1L << (5 + 4) )
 #define DXGI_USAGE_UNORDERED_ACCESS             ( 1L << (6 + 4) )
+
+*/
 
 typedef struct DXGI_RGB
 {
