@@ -598,7 +598,7 @@ CODE
                            - ImGuiKey_ModAlt   and ImGuiModFlags_Alt   -> ImGuiMod_Alt
                            - ImGuiKey_ModSuper and ImGuiModFlags_Super -> ImGuiMod_Super
                          the ImGuiKey_ModXXX were introduced in 1.87 and mostly used by backends.
-                         the ImGuiModFlags_XXX have been exposed in imgui.h but not really used by any public api only by third-party extensions.
+                         the ImGuiModFlags_XXX have been exposed in imgui.h but not really used by any public api only by Third-party extensions.
                          exceptionally commenting out the older ImGuiKeyModFlags_XXX names ahead of obsolescence schedule to reduce confusion and because they were not meant to be used anyway.
  - 2022/09/20 (1.89)   - ImGuiKey is now a typed enum, allowing ImGuiKey_XXX symbols to be named in debuggers.
                          this will require uses of legacy backend-dependent indices to be casted, e.g.

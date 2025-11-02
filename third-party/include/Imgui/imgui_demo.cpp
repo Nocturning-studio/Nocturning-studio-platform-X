@@ -2015,7 +2015,7 @@ static void ShowDemoWindowWidgets(ImGuiDemoWindowData* demo_data)
     }
 
     // Plot/Graph widgets are not very good.
-    // Consider using a third-party library such as ImPlot: https://github.com/epezent/implot
+    // Consider using a Third-party library such as ImPlot: https://github.com/epezent/implot
     // (see others https://github.com/ocornut/imgui/wiki/Useful-Extensions)
     IMGUI_DEMO_MARKER("Widgets/Plotting");
     if (ImGui::TreeNode("Plotting"))
@@ -5125,7 +5125,7 @@ struct MyItem
     int         Quantity;
 
     // We have a problem which is affecting _only this demo_ and should not affect your code:
-    // As we don't rely on std:: or other third-party library to compile dear imgui, we only have reliable access to qsort(),
+    // As we don't rely on std:: or other Third-party library to compile dear imgui, we only have reliable access to qsort(),
     // however qsort doesn't allow passing user data to comparing function.
     // As a workaround, we are storing the sort specs in a static/global for the comparing function to access.
     // In your own use case you would probably pass the sort specs to your sorting/comparing functions directly and not use a global.

@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36623.8 d17.14
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32228.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{89F6A7EE-3BBE-45D3-A8A8-5D9366CD987B}"
 EndProject
@@ -8,42 +8,40 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dedicated", "dedicated", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3rd party", "3rd party", "{2BFC806B-CE92-4EA4-8FE8-5F2EA54BA348}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrEngine", "xrEngine\xrEngine.vcxproj", "{2578C6D8-660D-48AE-9322-7422F8664F06}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrEngine", "Sources\xrEngine\xrEngine.vcxproj", "{2578C6D8-660D-48AE-9322-7422F8664F06}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F4B26665-46B9-4E39-8C2C-D302B095EC14} = {F4B26665-46B9-4E39-8C2C-D302B095EC14}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrSound", "xrSound\xrSound.vcxproj", "{CCCA7859-EB86-493E-9B53-C4235F45B3C5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrSound", "Sources\xrSound\xrSound.vcxproj", "{CCCA7859-EB86-493E-9B53-C4235F45B3C5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrCore", "xrCore\xrCore.vcxproj", "{A0F7D1FB-59A7-4717-A7E4-96F37E91998E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrCore", "Sources\xrCore\xrCore.vcxproj", "{A0F7D1FB-59A7-4717-A7E4-96F37E91998E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrCDB", "xrCDB\xrCDB.vcxproj", "{A19B1DF2-82EC-4364-8BDF-85D13A1C89B5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrCDB", "Sources\xrCDB\xrCDB.vcxproj", "{A19B1DF2-82EC-4364-8BDF-85D13A1C89B5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrXMLParser", "xrXMLParser\xrXMLParser.vcxproj", "{94A1C366-3D19-48E6-8170-4ADC2E70DF98}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrXMLParser", "Sources\xrXMLParser\xrXMLParser.vcxproj", "{94A1C366-3D19-48E6-8170-4ADC2E70DF98}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ode", "xrODE\contrib\msvc7\ode_default\default.vcxproj", "{1BF75FEB-87DD-486C-880B-227987D191C2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ode", "Sources\xrODE\contrib\msvc7\ode_default\default.vcxproj", "{1BF75FEB-87DD-486C-880B-227987D191C2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrParticles", "xrParticles\xrParticles.vcxproj", "{94A1C366-3D19-48E6-8170-4ADC2E70DF97}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrParticles", "Sources\xrParticles\xrParticles.vcxproj", "{94A1C366-3D19-48E6-8170-4ADC2E70DF97}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrNetServer", "xrNetServer\xrNetServer.vcxproj", "{435BAC9A-B225-457D-AB40-C9BD0CC8838C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrNetServer", "Sources\xrNetServer\xrNetServer.vcxproj", "{435BAC9A-B225-457D-AB40-C9BD0CC8838C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrSE_Factory", "xrSE_Factory\xrSE_Factory.vcxproj", "{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrSE_Factory", "Sources\xrSE_Factory\xrSE_Factory.vcxproj", "{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrCompress", "xrCompress\xrCompress.vcxproj", "{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrStatisticConvert", "Sources\xrEngine\xrStatisticConvert\xrStatisticConvert.vcxproj", "{2EA2CBBA-16BD-4B97-80B3-3F824CFBD4F1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrStatisticConvert", "xrEngine\xrStatisticConvert\xrStatisticConvert.vcxproj", "{2EA2CBBA-16BD-4B97-80B3-3F824CFBD4F1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrLUA", "Sources\xrLua\xrLua.vcxproj", "{9ACE5473-6D68-4B96-AC42-B39EABA0FE1F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrLUA", "xrLua\xrLua.vcxproj", "{9ACE5473-6D68-4B96-AC42-B39EABA0FE1F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openal32", "Sources\xrOpenAL\OpenAL-Windows\Router\Router.vcxproj", "{566551F4-4EF1-4CB4-A131-F982E7606907}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openal32", "xrOpenAL\OpenAL-Windows\Router\Router.vcxproj", "{566551F4-4EF1-4CB4-A131-F982E7606907}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BugTrap", "Sources\BugTrap\BugTrap.vcxproj", "{E8CF1ADA-264A-4127-86C2-FD7057D3792C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BugTrap", "BugTrap\BugTrap.vcxproj", "{E8CF1ADA-264A-4127-86C2-FD7057D3792C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minizip", "Third-party\include\minizip\minizip.vcxproj", "{893279CB-0805-405F-B484-9BB728A18261}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minizip", "third-party\include\minizip\minizip.vcxproj", "{893279CB-0805-405F-B484-9BB728A18261}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrCoreStatic", "Sources\xrCore\xrCoreStatic.vcxproj", "{F1066EAC-EE25-4C7A-9023-5957A6F7BA27}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrCoreStatic", "xrCore\xrCoreStatic.vcxproj", "{F1066EAC-EE25-4C7A-9023-5957A6F7BA27}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrGame", "xrGame\xrGame.vcxproj", "{200652A6-043E-4634-8837-87983B3BD5E0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrGame", "Sources\xrGame\xrGame.vcxproj", "{200652A6-043E-4634-8837-87983B3BD5E0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{94A1C366-3D19-48E6-8170-4ADC2E70DF98} = {94A1C366-3D19-48E6-8170-4ADC2E70DF98}
 		{9ACE5473-6D68-4B96-AC42-B39EABA0FE1F} = {9ACE5473-6D68-4B96-AC42-B39EABA0FE1F}
@@ -55,19 +53,19 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrGame", "xrGame\xrGame.vcx
 		{A0F7D1FB-59A7-4717-A7E4-96F37E91998E} = {A0F7D1FB-59A7-4717-A7E4-96F37E91998E}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrD3D9-Null", "xrD3D9-Null\xrD3D9-Null.vcxproj", "{0899B131-F1D4-4876-9BA1-67AC821DB9E1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrD3D9-Null", "Sources\xrD3D9-Null\xrD3D9-Null.vcxproj", "{0899B131-F1D4-4876-9BA1-67AC821DB9E1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrGameSpy", "xrGameSpy\xrGameSpy.vcxproj", "{5535F6B4-7AE6-4B66-8AEA-CC31C14D7AB7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrGameSpy", "Sources\xrGameSpy\xrGameSpy.vcxproj", "{5535F6B4-7AE6-4B66-8AEA-CC31C14D7AB7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrRender_PC", "xrRender\xrRender_PC.vcxproj", "{963BA4E5-499A-454D-B002-1D5ECE0527A6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrRender_PC", "Sources\xrRender\xrRender_PC.vcxproj", "{963BA4E5-499A-454D-B002-1D5ECE0527A6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrDiscordAPI", "xrDiscordAPI\xrDiscordAPI.vcxproj", "{F4B26665-46B9-4E39-8C2C-D302B095EC14}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrDiscordAPI", "Sources\xrDiscordAPI\xrDiscordAPI.vcxproj", "{F4B26665-46B9-4E39-8C2C-D302B095EC14}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "third-party\include\zlib\zlib.vcxproj", "{CA2604CA-A2AC-49A1-A468-8AB5A2E6CBC9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "Third-party\include\zlib\zlib.vcxproj", "{CA2604CA-A2AC-49A1-A468-8AB5A2E6CBC9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OptickCore", "third-party\include\optick\OptickCore.vcxproj", "{830934D9-6F6C-C37D-18F2-FB3304348F00}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OptickCore", "Third-party\include\optick\OptickCore.vcxproj", "{830934D9-6F6C-C37D-18F2-FB3304348F00}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Imgui", "third-party\include\Imgui\Imgui.vcxproj", "{416E416C-4CE6-4163-888B-884D8AD77F7B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Imgui", "Third-party\include\Imgui\Imgui.vcxproj", "{416E416C-4CE6-4163-888B-884D8AD77F7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -386,39 +384,6 @@ Global
 		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}.Release|Win32.ActiveCfg = Release|Win32
 		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}.Release|x64.ActiveCfg = Release|x64
 		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}.Release|x64.Build.0 = Release|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Benchmark|Win32.ActiveCfg = Benchmark|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Benchmark|Win32.Build.0 = Benchmark|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Benchmark|x64.ActiveCfg = Benchmark|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Benchmark|x64.Build.0 = Benchmark|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug_Dedicated|Win32.ActiveCfg = Debug|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug_Dedicated|x64.ActiveCfg = Debug|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug_Dedicated|x64.Build.0 = Debug|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug|Win32.ActiveCfg = Debug|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug|Win32.Build.0 = Debug|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug|x64.ActiveCfg = Debug|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug|x64.Build.0 = Debug|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Mixed_Dedicated|Win32.ActiveCfg = Mixed|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Mixed_Dedicated|x64.ActiveCfg = Mixed|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Mixed_Dedicated|x64.Build.0 = Mixed|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Mixed|Win32.ActiveCfg = Mixed|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Mixed|Win32.Build.0 = Mixed|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Mixed|x64.ActiveCfg = Mixed|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Mixed|x64.Build.0 = Mixed|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release Master Gold|Win32.ActiveCfg = Release Master Gold|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release Master Gold|Win32.Build.0 = Release Master Gold|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release Master Gold|x64.ActiveCfg = Release Master Gold|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release Master Gold|x64.Build.0 = Release Master Gold|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release profiling|Win32.ActiveCfg = Release profiling|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release profiling|Win32.Build.0 = Release profiling|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release profiling|x64.ActiveCfg = Release profiling|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release profiling|x64.Build.0 = Release profiling|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release_Dedicated|Win32.ActiveCfg = Release|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release_Dedicated|x64.ActiveCfg = Release_Demo|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release_Dedicated|x64.Build.0 = Release_Demo|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release|Win32.ActiveCfg = Release|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release|Win32.Build.0 = Release|Win32
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release|x64.ActiveCfg = Release|x64
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Release|x64.Build.0 = Release|x64
 		{2EA2CBBA-16BD-4B97-80B3-3F824CFBD4F1}.Benchmark|Win32.ActiveCfg = Benchmark|Win32
 		{2EA2CBBA-16BD-4B97-80B3-3F824CFBD4F1}.Benchmark|Win32.Build.0 = Benchmark|Win32
 		{2EA2CBBA-16BD-4B97-80B3-3F824CFBD4F1}.Benchmark|x64.ActiveCfg = Benchmark|x64
@@ -911,7 +876,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1BF75FEB-87DD-486C-880B-227987D191C2} = {2BFC806B-CE92-4EA4-8FE8-5F2EA54BA348}
 		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61} = {89F6A7EE-3BBE-45D3-A8A8-5D9366CD987B}
-		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B} = {89F6A7EE-3BBE-45D3-A8A8-5D9366CD987B}
 		{2EA2CBBA-16BD-4B97-80B3-3F824CFBD4F1} = {89F6A7EE-3BBE-45D3-A8A8-5D9366CD987B}
 		{566551F4-4EF1-4CB4-A131-F982E7606907} = {2BFC806B-CE92-4EA4-8FE8-5F2EA54BA348}
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {2BFC806B-CE92-4EA4-8FE8-5F2EA54BA348}

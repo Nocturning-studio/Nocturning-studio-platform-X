@@ -420,7 +420,7 @@ void    ImGui_ImplWin32_NewFrame()
 }
 
 // Map VK_xxx to ImGuiKey_xxx.
-// Not static to allow third-party code to use that if they want to (but undocumented)
+// Not static to allow Third-party code to use that if they want to (but undocumented)
 ImGuiKey ImGui_ImplWin32_KeyEventToImGuiKey(WPARAM wParam, LPARAM lParam);
 ImGuiKey ImGui_ImplWin32_KeyEventToImGuiKey(WPARAM wParam, LPARAM lParam)
 {
