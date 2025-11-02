@@ -19,9 +19,7 @@ XRay.code-workspace
 
 # Build results
 obj/
-lib/
-bin/
-build*/
+Build*/
 intermediate/
 libraries/
 binaries/
