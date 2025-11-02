@@ -3,6 +3,8 @@
 
 #pragma once
 
+#define WIN32_LEAN_AND_MEAN
+
 #ifdef _EDITOR
 #include "..\editors\ECore\stdafx.h"
 #else
