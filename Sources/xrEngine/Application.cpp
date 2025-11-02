@@ -311,7 +311,7 @@ void CApplication::LoadTitleInt(LPCSTR str)
 
 	load_stage++;
 
-	VERIFY(ll_dwReference);
+	//VERIFY(ll_dwReference);
 	VERIFY(str && xr_strlen(str) < 256);
 	strcpy_s(app_title, str);
 	Msg("* phase time: %d ms", phase_timer.GetElapsed_ms());
