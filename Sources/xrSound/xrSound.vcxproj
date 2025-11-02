@@ -945,7 +945,6 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="cl_intersect.h" />
     <ClInclude Include="OpenALDeviceList.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundRender.h" />
