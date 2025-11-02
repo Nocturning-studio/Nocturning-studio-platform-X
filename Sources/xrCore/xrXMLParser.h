@@ -2,12 +2,6 @@
 #define xrXMLParserH
 #pragma once
 
-#ifdef XRXMLPARSER_EXPORTS
-#define XRXMLPARSER_API __declspec(dllexport)
-#else
-#define XRXMLPARSER_API __declspec(dllimport)
-#endif
-
 const LPCSTR GAMEDATA_PATH = "$game_data$";
 const LPCSTR CONFIG_PATH = "$game_config$";
 const LPCSTR UI_PATH = "ui";
@@ -19,7 +13,7 @@ const LPCSTR STRING_TABLE_PATH = "text";
 typedef TiXmlNode XML_NODE;
 typedef TiXmlAttribute XML_ATTRIBUTE;
 
-class XRXMLPARSER_API CXml
+class XRCORE_API CXml
 {
   public:
 	string_path m_xml_file_name;

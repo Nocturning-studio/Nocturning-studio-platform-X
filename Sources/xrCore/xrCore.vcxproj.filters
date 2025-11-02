@@ -85,6 +85,15 @@
     <Filter Include="Common">
       <UniqueIdentifier>{ef73910a-9734-4697-9879-8f5109a89733}</UniqueIdentifier>
     </Filter>
+    <Filter Include="XML">
+      <UniqueIdentifier>{76e931d9-b8b5-4581-9f96-85dee6f0ef81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XML\TinyXML">
+      <UniqueIdentifier>{a88bb7f5-43b1-4f17-8808-0d58e36b5d35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Critical section">
+      <UniqueIdentifier>{87cb3ad6-e742-46af-a03c-4344b964cb2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FTimer.cpp">
@@ -264,7 +273,6 @@
     <ClCompile Include="rt_lzo_init.cpp">
       <Filter>Compression\lzo</Filter>
     </ClCompile>
-    <ClCompile Include="xrSyncronize.cpp" />
     <ClCompile Include="os_clipboard.cpp">
       <Filter>Clipboard</Filter>
     </ClCompile>
@@ -288,6 +296,24 @@
     </ClCompile>
     <ClCompile Include="ThreadUtil.cpp">
       <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="xrXMLParser.cpp">
+      <Filter>XML</Filter>
+    </ClCompile>
+    <ClCompile Include="tinystr.cpp">
+      <Filter>XML\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml.cpp">
+      <Filter>XML\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxmlerror.cpp">
+      <Filter>XML\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxmlparser.cpp">
+      <Filter>XML\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="xrSyncronize.cpp">
+      <Filter>Critical section</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -558,7 +584,6 @@
     <ClInclude Include="rt_miniacc.h">
       <Filter>Compression\lzo</Filter>
     </ClInclude>
-    <ClInclude Include="xrSyncronize.h" />
     <ClInclude Include="os_clipboard.h">
       <Filter>Clipboard</Filter>
     </ClInclude>
@@ -607,6 +632,18 @@
     <ClInclude Include="Threading.h">
       <Filter>Threading</Filter>
     </ClInclude>
+    <ClInclude Include="xrXMLParser.h">
+      <Filter>XML</Filter>
+    </ClInclude>
+    <ClInclude Include="tinystr.h">
+      <Filter>XML\TinyXML</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml.h">
+      <Filter>XML\TinyXML</Filter>
+    </ClInclude>
+    <ClInclude Include="xrSyncronize.h">
+      <Filter>Critical section</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xrCore.rc">
@@ -620,8 +657,5 @@
     <CustomBuild Include="LocatorAPI_Notifications.h">
       <Filter>FS</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

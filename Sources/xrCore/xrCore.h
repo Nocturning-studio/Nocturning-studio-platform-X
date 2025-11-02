@@ -182,7 +182,7 @@
 #include "vector.h"
 
 #include "clsid.h"
-#include "../xrCore/xrSyncronize.h"
+#include "xrSyncronize.h"
 #include "xrMemory.h"
 #include "xrDebug.h"
 
