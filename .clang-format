@@ -1,0 +1,10 @@
+﻿---
+BasedOnStyle: Microsoft
+Language: Cpp
+PointerAlignment: Left
+SortIncludes: 'false'
+SortUsingDeclarations: 'false'
+SpaceAfterCStyleCast: 'false'
+UseTab: Always
+
+...
