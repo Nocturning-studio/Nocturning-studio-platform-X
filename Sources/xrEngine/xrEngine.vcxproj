@@ -2347,9 +2347,6 @@
     <Text Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Third-party\include\Imgui\Imgui.vcxproj">
-      <Project>{416e416c-4ce6-4163-888b-884d8ad77f7b}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\xrDiscordAPI\xrDiscordAPI.vcxproj">
       <Project>{f4b26665-46b9-4e39-8c2c-d302b095ec14}</Project>
     </ProjectReference>
