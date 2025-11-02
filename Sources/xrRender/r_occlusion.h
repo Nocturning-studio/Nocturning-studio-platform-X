@@ -29,6 +29,16 @@ class R_occlusion
 	R_occlusion();
 	~R_occlusion();
 
+	IDirect3DQuery9* GetUsedQueryByID(u32 ID)
+	{
+		return used[ID].Q;
+	}
+
+	u32 GetQuerySize()
+	{
+		return used.size();
+	}
+
 	void occq_create(u32 limit);
 	void occq_destroy();
 	u32 occq_begin(u32& ID); // returns 'order'

@@ -11,6 +11,12 @@ void CRender::render_lights(light_Package& LP)
 {
 	OPTICK_EVENT("CRender::render_lights");
 
+	// Фильтрация нулевых указателей
+    LP.v_shadowed.erase(
+        std::remove_if(LP.v_shadowed.begin(), LP.v_shadowed.end(),
+                       [](light* L) { return L == nullptr; }),
+        LP.v_shadowed.end());
+
 	//////////////////////////////////////////////////////////////////////////
 	// 1. Оптимизированная фильтрация и подготовка теневых источников
 	{

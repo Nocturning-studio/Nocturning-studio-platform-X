@@ -122,14 +122,24 @@ void light::get_sectors()
 
 void light::set_active(bool a)
 {
+	// ƒобавл€ем простую блокировку дл€ потокобезопасности
+	static std::mutex active_mutex;
+	std::lock_guard<std::mutex> lock(active_mutex);
+
 	if (a)
 	{
 		if (flags.bActive)
 			return;
 		flags.bActive = true;
+
+		// ѕровер€ем, что свет правильно инициализирован
+		if (spatial.sector == nullptr)
+		{
+			spatial_updatesector();
+		}
+
 		spatial_register();
 		spatial_move();
-		// Msg								("!!! L-register: %X",u32(this));
 
 #ifdef DEBUG
 		Fvector zero = {0, -1000, 0};
@@ -146,7 +156,6 @@ void light::set_active(bool a)
 		flags.bActive = false;
 		spatial_move();
 		spatial_unregister();
-		// Msg								("!!! L-unregister: %X",u32(this));
 	}
 }
 

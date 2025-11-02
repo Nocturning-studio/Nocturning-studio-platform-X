@@ -77,26 +77,52 @@ u32 R_occlusion::occq_begin(u32& ID)
 		return 0;
 
 	RenderImplementation.stats.o_queries++;
+
+	// Проверяем, что pool не пуст
+	if (pool.empty())
+	{
+		Msg("! R_occlusion::occq_begin: No available queries in pool");
+		ID = 0;
+		return 0;
+	}
+
 	if (!fids.empty())
 	{
 		ID = fids.back();
 		fids.pop_back();
-		VERIFY(pool.size());
-		used[ID] = pool.back();
+
+		// Проверяем валидность ID
+		if (ID >= used.size() || used[ID].Q != nullptr)
+		{
+			Msg("! R_occlusion::occq_begin: Invalid ID from fids [ID:%d]", ID);
+			// Создаем новый ID
+			ID = used.size();
+			used.push_back(pool.back());
+		}
+		else
+		{
+			used[ID] = pool.back();
+		}
 	}
 	else
 	{
 		ID = used.size();
-		VERIFY(pool.size());
 		used.push_back(pool.back());
 	}
+
 	pool.pop_back();
+
+	// Проверяем, что query валиден
+	if (used[ID].Q == nullptr)
+	{
+		Msg("! R_occlusion::occq_begin: Null query pointer [ID:%d]", ID);
+		return 0;
+	}
+
 	CHK_DX(used[ID].Q->Issue(D3DISSUE_BEGIN));
-
-	// Msg				("begin: [%2d] - %d", used[ID].order, ID);
-
 	return used[ID].order;
 }
+
 void R_occlusion::occq_end(u32& ID)
 {
 	OPTICK_EVENT("R_occlusion::occq_end");
@@ -115,10 +141,14 @@ u32 R_occlusion::occq_get(u32& ID)
 	if (!enabled)
 		return 0xffffffff;
 
+	if (ID >= used.size() || used[ID].Q == nullptr)
+	{
+		Msg("! R_occlusion::occq_get: Invalid ID or null query pointer [ID:%d, used.size:%d]", ID, used.size());
+		return 0xffffffff;
+	}
+
 	DWORD fragments = 0;
 	HRESULT hr;
-	// CHK_DX		(used[ID].Q->GetData(&fragments,sizeof(fragments),D3DGETDATA_FLUSH));
-	// Msg			("get  : [%2d] - %d => %d", used[ID].order, ID, fragments);
 	CTimer T;
 	T.Start();
 	Device.Statistic->RenderDUMP_Wait.Begin();

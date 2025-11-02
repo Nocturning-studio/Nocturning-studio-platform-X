@@ -81,10 +81,19 @@ void smapvis::flushoccq()
 	if (testQ_frame != Device.dwFrame)
 		return;
 
+	// Проверяем, что query ID валиден
+	if (testQ_id >= RenderImplementation.HWOCC.GetQuerySize() || RenderImplementation.HWOCC.GetUsedQueryByID(testQ_id) == nullptr)
+	{
+		Msg("! smapvis::flushoccq: Invalid query ID");
+		testQ_V = nullptr;
+		return;
+	}
+
 	u32 fragments = RenderImplementation.occq_get(testQ_id);
 	if (0 == fragments)
 	{
-		invisible.push_back(testQ_V);
+		if (testQ_V) // Проверяем, что указатель валиден
+			invisible.push_back(testQ_V);
 		test_count--;
 	}
 	else
@@ -94,7 +103,6 @@ void smapvis::flushoccq()
 
 	testQ_V = nullptr;
 
-	// Быстрая проверка завершения
 	if (test_current >= test_count && state == state_working)
 	{
 		state = state_usingTC;
