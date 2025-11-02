@@ -130,6 +130,16 @@ void light::set_active(bool a)
 	{
 		if (flags.bActive)
 			return;
+
+		// Проверка валидности позиции
+		Fvector zero = {0, -1000, 0};
+		if (position.similar(zero, EPS_L))
+		{
+			Msg("! [Warning] Trying to activate light with uninitialized position.");
+			flags.bActive = false;
+			return;
+		}
+
 		flags.bActive = true;
 
 		// Проверяем, что свет правильно инициализирован
@@ -140,14 +150,6 @@ void light::set_active(bool a)
 
 		spatial_register();
 		spatial_move();
-
-#ifdef DEBUG
-		Fvector zero = {0, -1000, 0};
-		if (position.similar(zero))
-		{
-			Msg("- Uninitialized light position.");
-		}
-#endif // DEBUG
 	}
 	else
 	{
@@ -196,6 +198,14 @@ void light::set_rotation(const Fvector& D, const Fvector& R)
 
 void light::spatial_move()
 {
+	// Проверка валидности позиции перед обновлением
+	Fvector zero = {0, -1000, 0};
+	if (position.similar(zero, EPS_L))
+	{
+		Msg("! [Warning] light::spatial_move called with uninitialized position");
+		return;
+	}
+
 	if (RenderImplementation.Sectors.size() > 1)
 		get_sectors();
 
@@ -368,8 +378,8 @@ void light::_export(light_Package& package)
 				L->set_range(range);
 				L->set_color(color);
 				L->spatial.sector = spatial.sector; //. dangerous?
-				L->s_spot = s_spot;
-				L->s_point = s_point;
+				L->get_shader_spot() = s_spot;
+				L->get_shader_point() = s_point;
 				package.v_shadowed.push_back(L);
 			}
 		}

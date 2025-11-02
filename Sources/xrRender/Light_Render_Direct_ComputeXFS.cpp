@@ -5,13 +5,13 @@ void CLight_Compute_XFORM_and_VIS::compute_xf_spot(light* L)
 {
 	// Build EYE-space xform
 	Fvector L_dir, L_up, L_right, L_pos;
-	L_dir.set(L->direction);
+	L_dir.set(L->get_direction());
 	L_dir.normalize();
 
-	if (L->right.square_magnitude() > EPS)
+	if (L->get_right().square_magnitude() > EPS)
 	{
 		// use specified 'up' and 'right', just enshure ortho-normalization
-		L_right.set(L->right);
+		L_right.set(L->get_right());
 		L_right.normalize();
 		L_up.crossproduct(L_dir, L_right);
 		L_up.normalize();
@@ -29,7 +29,7 @@ void CLight_Compute_XFORM_and_VIS::compute_xf_spot(light* L)
 		L_up.crossproduct(L_dir, L_right);
 		L_up.normalize();
 	}
-	L_pos.set(L->position);
+	L_pos.set(L->get_position());
 
 	//
 	int _cached_size = L->X.S.size;
@@ -42,21 +42,21 @@ void CLight_Compute_XFORM_and_VIS::compute_xf_spot(light* L)
 	float dist = Device.vCameraPosition.distance_to(L->spatial.sphere.P) - L->spatial.sphere.R;
 	if (dist < 0)
 		dist = 0;
-	float ssa = clampr(L->range * L->range / (1.f + dist * dist), 0.f, 1.f);
+	float ssa = clampr(L->get_range() * L->get_range() / (1.f + dist * dist), 0.f, 1.f);
 
 	// compute intensity
-	float intensity0 = (L->color.r + L->color.g + L->color.b) / 3.f;
-	float intensity1 = (L->color.r * 0.2125f + L->color.g * 0.7154f + L->color.b * 0.0721f);
+	float intensity0 = (L->get_color().r + L->get_color().g + L->get_color().b) / 3.f;
+	float intensity1 = (L->get_color().r * 0.2125f + L->get_color().g * 0.7154f + L->get_color().b * 0.0721f);
 	float intensity = (intensity0 + intensity1) / 2.f; // intensity1 tends to underestimate...
 
 	// compute how much duelling frusta occurs	[-1..1]-> 1 + [-0.5 .. +0.5]
 	float duel_dot = 1.f - 0.5f * Device.vCameraDirection.dotproduct(L_dir);
 
 	// compute how large the light is - give more texels to larger lights, assume 8m as being optimal radius
-	float sizefactor = L->range / 8.f; // 4m = .5, 8m=1.f, 16m=2.f, 32m=4.f
+	float sizefactor = L->get_range() / 8.f; // 4m = .5, 8m=1.f, 16m=2.f, 32m=4.f
 
 	// compute how wide the light frustum is - assume 90deg as being optimal
-	float widefactor = L->cone / deg2rad(90.f); //
+	float widefactor = L->get_cone() / deg2rad(90.f); //
 
 	// factors
 	float factor0 = powf(ssa, 1.f / 2.f);		 // ssa is quadratic
@@ -80,15 +80,15 @@ void CLight_Compute_XFORM_and_VIS::compute_xf_spot(light* L)
 	L->X.S.view.build_camera_dir(L_pos, L_dir, L_up);
 	// float	n			= 2.f						;
 	// float	x			= float(L->X.S.size)		;
-	// float	alpha		= L->cone/2					;
+	// float	alpha		= L->get_cone()/2					;
 	// float	tan_beta	= (x+2*n)*tanf(alpha) / x	;
 	// float	g_alpha		= 2*rad2deg		(alpha);
 	// float	g_beta		= 2*rad2deg		(atanf(tan_beta));
 	// Msg				("x(%f) : a(%f), b(%f)",x,g_alpha,g_beta);
 
-	// _min(L->cone + deg2rad(4.5f), PI*0.98f) - Here, it is needed to enlarge the shadow map frustum to include also
+	// _min(L->get_cone() + deg2rad(4.5f), PI*0.98f) - Here, it is needed to enlarge the shadow map frustum to include also
 	// displaced pixels and the pixels neighbor to the examining one.
-	L->X.S.project.build_projection(_min(L->cone + deg2rad(5.f), PI * 0.98f), 1.f, SMAP_near_plane, L->range + EPS_S);
+	L->X.S.project.build_projection(_min(L->get_cone() + deg2rad(5.f), PI * 0.98f), 1.f, SMAP_near_plane, L->get_range() + EPS_S);
 
 	L->X.S.combine.mul(L->X.S.project, L->X.S.view);
 }

@@ -41,7 +41,7 @@ void CRender::render_shadow_map_spot_transluent(light* L)
 	{
 		// real-spot
 		// Select color-mask
-		ref_shader shader = L->s_spot;
+		ref_shader shader = L->get_shader_spot();
 		if (!shader)
 			shader = RenderTarget->s_accum_spot;
 		RenderBackend.set_Element(shader->E[SE_L_FILL]);

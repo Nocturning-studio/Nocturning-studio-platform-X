@@ -22,7 +22,7 @@ IC bool pred_light_cmp(light* _1, light* _2)
 		if (_2->vis.pending)
 			return true; // _1 should be first
 		else
-			return _1->range > _2->range; // sort by range
+			return _1->get_range() > _2->get_range(); // sort by range
 	}
 }
 

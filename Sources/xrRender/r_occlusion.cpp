@@ -78,30 +78,30 @@ u32 R_occlusion::occq_begin(u32& ID)
 
 	RenderImplementation.stats.o_queries++;
 
-	// Проверяем, что pool не пуст
 	if (pool.empty())
 	{
 		Msg("! R_occlusion::occq_begin: No available queries in pool");
-		ID = 0;
+		ID = 0xffffffff; // Используем специальное значение для невалидного ID
 		return 0;
 	}
 
+	// Безопасное получение ID
 	if (!fids.empty())
 	{
 		ID = fids.back();
 		fids.pop_back();
 
-		// Проверяем валидность ID
-		if (ID >= used.size() || used[ID].Q != nullptr)
+		// Проверка границ
+		if (ID >= used.size())
 		{
-			Msg("! R_occlusion::occq_begin: Invalid ID from fids [ID:%d]", ID);
-			// Создаем новый ID
-			ID = used.size();
-			used.push_back(pool.back());
+			// Расширяем used vector если нужно
+			used.resize(ID + 1);
 		}
-		else
+
+		if (used[ID].Q != nullptr)
 		{
-			used[ID] = pool.back();
+			// Освобождаем существующий query
+			_RELEASE(used[ID].Q);
 		}
 	}
 	else
@@ -110,16 +110,23 @@ u32 R_occlusion::occq_begin(u32& ID)
 		used.push_back(pool.back());
 	}
 
-	pool.pop_back();
-
-	// Проверяем, что query валиден
-	if (used[ID].Q == nullptr)
+	// Проверка валидности query
+	if (pool.back().Q == nullptr)
 	{
-		Msg("! R_occlusion::occq_begin: Null query pointer [ID:%d]", ID);
+		Msg("! R_occlusion::occq_begin: Null query in pool");
 		return 0;
 	}
 
-	CHK_DX(used[ID].Q->Issue(D3DISSUE_BEGIN));
+	used[ID] = pool.back();
+	pool.pop_back();
+
+	HRESULT hr = used[ID].Q->Issue(D3DISSUE_BEGIN);
+	if (FAILED(hr))
+	{
+		Msg("! R_occlusion::occq_begin: Failed to issue query [HR:0x%08X]", hr);
+		return 0;
+	}
+
 	return used[ID].order;
 }
 
@@ -127,11 +134,14 @@ void R_occlusion::occq_end(u32& ID)
 {
 	OPTICK_EVENT("R_occlusion::occq_end");
 
-	if (!enabled)
+	if (!enabled || ID == 0xffffffff || ID >= used.size() || used[ID].Q == nullptr)
 		return;
 
-	// Msg				("end  : [%2d] - %d", used[ID].order, ID);
-	CHK_DX(used[ID].Q->Issue(D3DISSUE_END));
+	HRESULT hr = used[ID].Q->Issue(D3DISSUE_END);
+	if (FAILED(hr))
+	{
+		Msg("! R_occlusion::occq_end: Failed to end query [ID:%u, HR:0x%08X]", ID, hr);
+	}
 }
 
 u32 R_occlusion::occq_get(u32& ID)

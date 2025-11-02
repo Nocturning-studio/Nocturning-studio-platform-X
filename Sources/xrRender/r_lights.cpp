@@ -11,11 +11,32 @@ void CRender::render_lights(light_Package& LP)
 {
 	OPTICK_EVENT("CRender::render_lights");
 
-	// Фильтрация нулевых указателей
-    LP.v_shadowed.erase(
-        std::remove_if(LP.v_shadowed.begin(), LP.v_shadowed.end(),
-                       [](light* L) { return L == nullptr; }),
-        LP.v_shadowed.end());
+    // Фильтрация нулевых указателей и невалидных источников
+	auto is_valid_light = [](light* L) {
+		if (L == nullptr)
+			return false;
+
+		// Проверка валидности позиции
+		Fvector zero = {0, -1000, 0};
+		if (L->get_position().similar(zero, EPS_L))
+		{
+			Msg("! [Warning] Found light with uninitialized position in render_lights");
+			return false;
+		}
+
+		return true;
+	};
+
+	// Фильтрация для всех типов источников
+	LP.v_shadowed.erase(
+		std::remove_if(LP.v_shadowed.begin(), LP.v_shadowed.end(), [&](light* L) { return !is_valid_light(L); }),
+		LP.v_shadowed.end());
+
+	LP.v_point.erase(std::remove_if(LP.v_point.begin(), LP.v_point.end(), [&](light* L) { return !is_valid_light(L); }),
+					 LP.v_point.end());
+
+	LP.v_spot.erase(std::remove_if(LP.v_spot.begin(), LP.v_spot.end(), [&](light* L) { return !is_valid_light(L); }),
+					LP.v_spot.end());
 
 	//////////////////////////////////////////////////////////////////////////
 	// 1. Оптимизированная фильтрация и подготовка теневых источников
@@ -120,8 +141,8 @@ void CRender::render_lights(light_Package& LP)
 
 		for (light* L : current_batch)
 		{
-			L->svis.begin();
-			r_dsgraph_render_subspace(L->spatial.sector, L->X.S.combine, L->position, TRUE);
+			L->get_smapvis().begin();
+			r_dsgraph_render_subspace(L->spatial.sector, L->X.S.combine, L->get_position(), TRUE);
 
 			bool bNormal = mapNormal[0].size() || mapMatrix[0].size();
 			bool bSpecial = mapNormal[1].size() || mapMatrix[1].size() || mapSorted.size();
@@ -153,7 +174,7 @@ void CRender::render_lights(light_Package& LP)
 				stats.s_finalclip++;
 			}
 
-			L->svis.end();
+			L->get_smapvis().end();
 		}
 
 		r_pmask(true, false);

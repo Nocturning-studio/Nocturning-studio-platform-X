@@ -5,22 +5,22 @@ void CRender::accumulate_point_lights(light* L)
 	set_light_accumulator();
 	RenderImplementation.stats.l_visible++;
 
-	ref_shader shader = L->s_point;
+	ref_shader shader = L->get_shader_point();
 	if (!shader)
 		shader = RenderTarget->s_accum_point;
 
 	// Common
 	Fvector L_pos;
 	float L_spec;
-	float L_R = L->range;
+	float L_R = L->get_range();
 	Fvector L_clr;
-	L_clr.set(L->color.r, L->color.g, L->color.b);
+	L_clr.set(L->get_color().r, L->get_color().g, L->get_color().b);
 	L_spec = u_diffuse2s(L_clr);
-	Device.mView.transform_tiny(L_pos, L->position);
+	Device.mView.transform_tiny(L_pos, L->get_position());
 
 	// Xforms
 	L->xform_calc();
-	RenderBackend.set_xform_world(L->m_xform);
+	RenderBackend.set_xform_world(L->get_xform());
 	RenderBackend.set_xform_view(Device.mView);
 	RenderBackend.set_xform_project(Device.mProject);
 	enable_scissor(L);

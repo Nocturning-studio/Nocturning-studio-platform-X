@@ -15,7 +15,7 @@ IC bool pred_sp_sort(ISpatial* _1, ISpatial* _2)
 
 bool CRender::need_render_sun()
 {
-	Fcolor sun_color = ((light*)Lights.sun_adapted._get())->color;
+	Fcolor sun_color = ((light*)Lights.sun_adapted._get())->get_color();
 	return ps_r_lighting_flags.test(RFLAG_SUN) && (u_diffuse2s(sun_color.r, sun_color.g, sun_color.b) > EPS);
 }
 
@@ -211,43 +211,27 @@ void CRender::update_shadow_map_visibility()
 	if (Lights_LastFrame.empty())
 		return;
 
-	// Параллельная обработка для большого количества источников
-	if (Lights_LastFrame.size() > 8)
+	// Безопасная обработка с проверкой валидности
+	for (auto it = Lights_LastFrame.begin(); it != Lights_LastFrame.end();)
 	{
-		concurrency::parallel_for_each(Lights_LastFrame.begin(), Lights_LastFrame.end(), [](light* L) {
-			if (L)
-			{
-				try
-				{
-					L->svis.flushoccq();
-				}
-				catch (...)
-				{
-					Msg("CRender::update_shadow_map_visibility - Lights_LastFrame.size() > 8 catched exeption");
-				}
-			}
-		});
-	}
-	else
-	{
-		// Последовательная обработка для малого количества
-		for (auto& L : Lights_LastFrame)
+		light* L = *it;
+		if (L == nullptr)
 		{
-			if (L)
-			{
-				try
-				{
-					L->svis.flushoccq();
-				}
-				catch (...)
-				{
-					Msg("! Failed to flush-OCCq on light %X", *(u32*)(&L));
-				}
-			}
+			it = Lights_LastFrame.erase(it);
+			continue;
+		}
+
+		try
+		{
+			L->get_smapvis().flushoccq();
+			++it;
+		}
+		catch (...)
+		{
+			Msg("! Failed to flush-OCCq on light %p", L);
+			it = Lights_LastFrame.erase(it);
 		}
 	}
-
-	Lights_LastFrame.clear_not_free(); // Более эффективная очистка
 }
 
 void CRender::render_depth_prepass()

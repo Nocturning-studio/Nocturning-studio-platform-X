@@ -112,7 +112,7 @@ void CROS_impl::update(IRenderable* O)
 		{
 			result_sun += ::Random.randI(lt_hemisamples / 4, lt_hemisamples / 2);
 			Fvector sun_direction;
-			sun_direction.set(sun->direction).invert().normalize();
+			sun_direction.set(sun->get_direction()).invert().normalize();
 			sun_value = !(g_pGameLevel->ObjectSpace.RayTest(position, sun_direction, 500.f, collide::rqtBoth,
 															&cache_sun, _object))
 					? 1.f
@@ -177,8 +177,8 @@ void CROS_impl::update(IRenderable* O)
 			ISpatial* spatial = RenderImplementation.lstSpatial[o_it];
 			light* source = (light*)(spatial->dcast_Light());
 			VERIFY(source); // sanity check
-			float R = radius + source->range;
-			if (position.distance_to(source->position) < R)
+			float R = radius + source->get_range();
+			if (position.distance_to(source->get_position()) < R)
 				add(source);
 		}
 
@@ -200,7 +200,7 @@ void CROS_impl::update(IRenderable* O)
 			Fvector P, D;
 			float amount = 0;
 			light* xrL = I->source;
-			Fvector& LP = xrL->position;
+			Fvector& LP = xrL->get_position();
 			P.mad(position, P.random_dir(), traceR); // Random point inside range
 
 			// point/spot
@@ -214,14 +214,14 @@ void CROS_impl::update(IRenderable* O)
 			I->energy = .9f * I->energy + .1f * I->test;
 
 			//
-			float E = I->energy * xrL->color.intensity();
+			float E = I->energy * xrL->get_color().intensity();
 			if (E > EPS)
 			{
 				// Select light
 				lights.push_back(CROS_impl::Light());
 				CROS_impl::Light& L = lights.back();
 				L.source = xrL;
-				L.color.mul_rgb(xrL->color, I->energy / 2);
+				L.color.mul_rgb(xrL->get_color(), I->energy / 2);
 				L.energy = I->energy / 2;
 				if (!xrL->flags.bStatic)
 				{
@@ -232,14 +232,14 @@ void CROS_impl::update(IRenderable* O)
 		}
 
 		// Sun
-		float E = sun_smooth * sun->color.intensity();
+		float E = sun_smooth * sun->get_color().intensity();
 		if (E > EPS)
 		{
 			// Select light
 			lights.push_back(CROS_impl::Light());
 			CROS_impl::Light& L = lights.back();
 			L.source = sun;
-			L.color.mul_rgb(sun->color, sun_smooth / 2);
+			L.color.mul_rgb(sun->get_color(), sun_smooth / 2);
 			L.energy = sun_smooth;
 		}
 
@@ -268,8 +268,8 @@ void CROS_impl::update(IRenderable* O)
 		Fvector lacc = {0, 0, 0};
 		for (u32 lit = 0; lit < lights.size(); lit++)
 		{
-			float d = lights[lit].source->position.distance_to(position);
-			float r = lights[lit].source->range;
+			float d = lights[lit].source->get_position().distance_to(position);
+			float r = lights[lit].source->get_range();
 			float a = clampr(1.f - d / (r + EPS), 0.f, 1.f) * (lights[lit].source->flags.bStatic ? 1.f : 2.f);
 			lacc.x += lights[lit].color.r * a;
 			lacc.y += lights[lit].color.g * a;

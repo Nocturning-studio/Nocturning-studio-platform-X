@@ -98,9 +98,9 @@ light* CLight_DB::Create()
 
 void CLight_DB::add_light(light* L)
 {
-	if (Device.dwFrame == L->frame_render)
+	if (Device.dwFrame == L->get_frame_render())
 		return;
-	L->frame_render = Device.dwFrame;
+	L->set_frame_render(Device.dwFrame);
 	if (RenderImplementation.o.noshadows)
 		L->flags.bShadow = FALSE;
 	if (L->flags.bStatic && !ps_r_lighting_flags.test(RFLAG_R1LIGHTS))
@@ -151,11 +151,11 @@ void CLight_DB::Update()
 		}
 		AD.normalize();
 		AP.mad(Device.vCameraPosition, AD, -500.f);
-		sun_original->set_rotation(OD, _sun_original->right);
+		sun_original->set_rotation(OD, _sun_original->get_right());
 		sun_original->set_position(OP);
 		sun_original->set_color(E->sun_color.x, E->sun_color.y, E->sun_color.z);
 		sun_original->set_range(600.f);
-		sun_adapted->set_rotation(OD, _sun_adapted->right);
+		sun_adapted->set_rotation(OD, _sun_adapted->get_right());
 		sun_adapted->set_position(OP);
 		sun_adapted->set_color(E->sun_color.x * ps_r_sun_lumscale, E->sun_color.y * ps_r_sun_lumscale,
 							   E->sun_color.z * ps_r_sun_lumscale);

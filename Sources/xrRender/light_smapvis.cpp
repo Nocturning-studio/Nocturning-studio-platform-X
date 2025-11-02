@@ -81,24 +81,33 @@ void smapvis::flushoccq()
 	if (testQ_frame != Device.dwFrame)
 		return;
 
-	// Проверяем, что query ID валиден
-	if (testQ_id >= RenderImplementation.HWOCC.GetQuerySize() || RenderImplementation.HWOCC.GetUsedQueryByID(testQ_id) == nullptr)
+	// Проверка валидности query
+	if (testQ_id >= RenderImplementation.HWOCC.GetQuerySize() || testQ_id == 0xffffffff ||
+		RenderImplementation.HWOCC.GetUsedQueryByID(testQ_id) == nullptr)
 	{
-		Msg("! smapvis::flushoccq: Invalid query ID");
+		Msg("! smapvis::flushoccq: Invalid query ID [%u]", testQ_id);
 		testQ_V = nullptr;
 		return;
 	}
 
-	u32 fragments = RenderImplementation.occq_get(testQ_id);
-	if (0 == fragments)
+	try
 	{
-		if (testQ_V) // Проверяем, что указатель валиден
-			invisible.push_back(testQ_V);
-		test_count--;
+		u32 fragments = RenderImplementation.occq_get(testQ_id);
+		if (0 == fragments)
+		{
+			if (testQ_V && std::find(invisible.begin(), invisible.end(), testQ_V) == invisible.end())
+				invisible.push_back(testQ_V);
+			if (test_count > 0)
+				test_count--;
+		}
+		else
+		{
+			test_current++;
+		}
 	}
-	else
+	catch (...)
 	{
-		test_current++;
+		Msg("! smapvis::flushoccq: Exception during occq_get");
 	}
 
 	testQ_V = nullptr;

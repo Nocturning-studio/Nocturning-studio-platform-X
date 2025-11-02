@@ -43,9 +43,9 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 	// Common constants (light-related)
 	Fvector L_dir, L_clr;
 	float L_spec;
-	L_clr.set(sun->color.r, sun->color.g, sun->color.b);
+	L_clr.set(sun->get_color().r, sun->get_color().g, sun->get_color().b);
 	L_spec = u_diffuse2s(L_clr);
-	Device.mView.transform_dir(L_dir, sun->direction);
+	Device.mView.transform_dir(L_dir, sun->get_direction());
 	L_dir.normalize();
 
 	// Perform masking (only once - on the first/near phase)

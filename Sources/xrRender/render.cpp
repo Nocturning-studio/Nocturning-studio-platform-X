@@ -123,7 +123,7 @@ static class cl_sun_dir : public R_constant_setup
 		light* sun = (light*)RenderImplementation.Lights.sun_adapted._get();
 
 		Fvector L_dir;
-		Device.mView.transform_dir(L_dir, sun->direction);
+		Device.mView.transform_dir(L_dir, sun->get_direction());
 		L_dir.normalize();
 
 		RenderBackend.set_Constant(C, L_dir.x, L_dir.y, L_dir.z, 0);
@@ -151,7 +151,7 @@ static class cl_sun_color : public R_constant_setup
 	virtual void setup(R_constant* C)
 	{
 		light* sun = (light*)RenderImplementation.Lights.sun_adapted._get();
-		RenderBackend.set_Constant(C, sRgbToLinear(sun->color.r), sRgbToLinear(sun->color.g), sRgbToLinear(sun->color.b), 0);
+		RenderBackend.set_Constant(C, sRgbToLinear(sun->get_color().r), sRgbToLinear(sun->get_color().g), sRgbToLinear(sun->get_color().b), 0);
 	}
 } binder_sun_color;
 //////////////////////////////////////////////////////////////////////////
@@ -322,7 +322,7 @@ void CRender::reset_begin()
 				continue;
 			try
 			{
-				Lights_LastFrame[it]->svis.resetoccq();
+				Lights_LastFrame[it]->get_smapvis().resetoccq();
 			}
 			catch (...)
 			{
@@ -376,7 +376,7 @@ BOOL CRender::is_sun()
 {
 	OPTICK_EVENT("CRender::is_sun");
 
-	Fcolor sun_color = ((light*)Lights.sun_adapted._get())->color;
+	Fcolor sun_color = ((light*)Lights.sun_adapted._get())->get_color();
 	return (ps_r_lighting_flags.test(RFLAG_SUN) && (u_diffuse2s(sun_color.r, sun_color.g, sun_color.b) > EPS));
 }
 

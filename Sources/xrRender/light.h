@@ -6,14 +6,7 @@
 
 class light : public IRender_Light, public ISpatial
 {
-  public:
-	struct
-	{
-		u32 type : 4;
-		u32 bStatic : 1;
-		u32 bActive : 1;
-		u32 bShadow : 1;
-	} flags;
+  private:
 	Fvector position;
 	Fvector direction;
 	Fvector right;
@@ -36,6 +29,7 @@ class light : public IRender_Light, public ISpatial
 	u32 m_xform_frame;
 	Fmatrix m_xform;
 
+  public:
 	struct _vis
 	{
 		u32 frame2test;	 // frame the test is sheduled to
@@ -73,7 +67,28 @@ class light : public IRender_Light, public ISpatial
 		} S;
 	} X;
 
-  public:
+	struct
+	{
+		u32 type : 4;
+		u32 bStatic : 1;
+		u32 bActive : 1;
+		u32 bShadow : 1;
+	} flags;
+
+	Fvector get_position(){return position;}
+	Fvector get_direction(){return direction;}
+	Fvector get_right(){return right;}
+	float get_range(){return range;}
+	float get_cone(){return cone;}
+	Fcolor get_color(){return color;}
+	u32 get_frame_render(){return frame_render;}
+	ref_shader get_shader_spot(){return s_spot;}
+	ref_shader get_shader_point(){return s_point;}
+	u32 get_xform_frame(){return m_xform_frame;}
+	Fmatrix get_xform(){return m_xform;}
+	smapvis get_smapvis(){return svis;}
+	virtual vis_data& get_homdata();
+
 	virtual void set_type(LT type)
 	{
 		flags.type = type;
@@ -84,7 +99,6 @@ class light : public IRender_Light, public ISpatial
 	{
 		return flags.bActive;
 	}
-	virtual vis_data& get_homdata();
 	virtual void set_shadow(bool b);
 	virtual void set_position(const Fvector& P);
 	virtual void set_rotation(const Fvector& D, const Fvector& R);
@@ -104,6 +118,11 @@ class light : public IRender_Light, public ISpatial
 	virtual void spatial_move();
 	virtual Fvector spatial_sector_point();
 
+	void set_frame_render(u32 frame)
+	{
+		frame_render = frame;
+	}
+
 	virtual IRender_Light* dcast_Light()
 	{
 		return this;
@@ -113,7 +132,6 @@ class light : public IRender_Light, public ISpatial
 	void vis_prepare();
 	void vis_update();
 	void _export(light_Package& dest);
-
 
 	float get_LOD();
 

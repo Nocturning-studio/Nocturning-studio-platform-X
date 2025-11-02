@@ -670,7 +670,7 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 		cull_sector = largest_sector;
 
 		// COP - 100 km away
-		cull_COP.mad(Device.vCameraPosition, sun->direction, -tweak_COP_initial_offs);
+		cull_COP.mad(Device.vCameraPosition, sun->get_direction(), -tweak_COP_initial_offs);
 
 		// Create frustum for query
 		cull_frustum._clear();
@@ -681,8 +681,8 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 		// view: auto find 'up' and 'right' vectors
 		Fmatrix mdir_View, mdir_Project;
 		Fvector L_dir, L_up, L_right, L_pos;
-		L_pos.set(sun->position);
-		L_dir.set(sun->direction).normalize();
+		L_pos.set(sun->get_position());
+		L_dir.set(sun->get_direction()).normalize();
 		L_right.set(1, 0, 0);
 		if (_abs(L_right.dotproduct(L_dir)) > .99f)
 			L_right.set(0, 0, 1);

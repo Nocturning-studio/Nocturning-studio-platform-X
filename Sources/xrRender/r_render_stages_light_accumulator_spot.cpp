@@ -12,13 +12,13 @@ void CRender::accumulate_spot_lights(light* L)
 	ref_shader shader;
 	if (IRender_Light::OMNIPART == L->flags.type)
 	{
-		shader = L->s_point;
+		shader = L->get_shader_point();
 		if (!shader)
 			shader = RenderTarget->s_accum_point;
 	}
 	else
 	{
-		shader = L->s_spot;
+		shader = L->get_shader_spot();
 		if (!shader)
 			shader = RenderTarget->s_accum_spot;
 	}
@@ -27,7 +27,7 @@ void CRender::accumulate_spot_lights(light* L)
 	{
 		// setup xform
 		L->xform_calc();
-		RenderBackend.set_xform_world(L->m_xform);
+		RenderBackend.set_xform_world(L->get_xform());
 		RenderBackend.set_xform_view(Device.mView);
 		RenderBackend.set_xform_project(Device.mProject);
 		bIntersect = enable_scissor(L);
@@ -125,11 +125,11 @@ void CRender::accumulate_spot_lights(light* L)
 	// Common constants
 	Fvector L_dir, L_clr, L_pos;
 	float L_spec;
-	L_clr.set(L->color.r, L->color.g, L->color.b);
+	L_clr.set(L->get_color().r, L->get_color().g, L->get_color().b);
 	L_clr.mul(L->get_LOD());
 	L_spec = u_diffuse2s(L_clr);
-	Device.mView.transform_tiny(L_pos, L->position);
-	Device.mView.transform_dir(L_dir, L->direction);
+	Device.mView.transform_tiny(L_pos, L->get_position());
+	Device.mView.transform_dir(L_dir, L->get_direction());
 	L_dir.normalize();
 
 	// Draw volume with projective texgen
@@ -154,11 +154,11 @@ void CRender::accumulate_spot_lights(light* L)
 		RenderBackend.set_Element(shader->E[_id]);
 
 		// Constants
-		float att_R = L->range * .95f;
+		float att_R = L->get_range() * .95f;
 		float att_factor = 1.f / (att_R * att_R); 
 		
 		// Получаем параметры spot света
-		float spot_cutoff = L->cone; // внешний угол (в радианах)
+		float spot_cutoff = L->get_cone(); // внешний угол (в радианах)
 
 		// Вычисляем внутренний и внешний углы
 		// Обычно внутренний угол составляет 80-90% от внешнего
@@ -169,7 +169,7 @@ void CRender::accumulate_spot_lights(light* L)
 		float cos_inner = cosf(spot_inner_angle);
 		float cos_outer = cosf(spot_outer_angle);
 
-		float LightSourceRangeSqr = L->range * L->range;
+		float LightSourceRangeSqr = L->get_range() * L->get_range();
 
 		RenderBackend.set_Constant("Ldynamic_pos", L_pos.x, L_pos.y, L_pos.z, att_factor);
 		RenderBackend.set_Constant("Ldynamic_spot_att", cos_inner, cos_outer, LightSourceRangeSqr, 0);
