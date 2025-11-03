@@ -143,56 +143,10 @@ const char* advancedSpecularPixelShader =
 	"    return float4(prefilteredColor, 1.0); \n"
 	"} \n";
 
-// Продвинутый шейдер для Irradiance IBL со сферическими гармониками и Disney диффузом
+// Улучшенный шейдер для Irradiance IBL только с методом Монте-Карло и Disney диффузом
 const char* advancedIrradiancePixelShader =
 	"#define PI 3.14159265359 \n"
-	"#define SAMPLE_COUNT 2048 \n"
-	" \n"
-	"// Коэффициенты сферических гармоник (SH) \n"
-	"float3 SHCoeffs[9]; \n"
-	" \n"
-	"// Функция для проекции на SH базис \n"
-	"void projectToSH(float3 direction, float3 color, inout float3 coeffs[9]) { \n"
-	"    float x = direction.x, y = direction.y, z = direction.z; \n"
-	"    \n"
-	"    // Band 0 \n"
-	"    coeffs[0] += 0.282095 * color; \n"
-	"    \n"
-	"    // Band 1 \n"
-	"    coeffs[1] += 0.488603 * color * y; \n"
-	"    coeffs[2] += 0.488603 * color * z; \n"
-	"    coeffs[3] += 0.488603 * color * x; \n"
-	"    \n"
-	"    // Band 2 \n"
-	"    coeffs[4] += 1.092548 * color * x * y; \n"
-	"    coeffs[5] += 1.092548 * color * y * z; \n"
-	"    coeffs[6] += 0.315392 * color * (3.0 * z * z - 1.0); \n"
-	"    coeffs[7] += 1.092548 * color * x * z; \n"
-	"    coeffs[8] += 0.546274 * color * (x * x - y * y); \n"
-	"} \n"
-	" \n"
-	"// Функция для реконструкции из SH \n"
-	"float3 evaluateSH(float3 direction, float3 coeffs[9]) { \n"
-	"    float x = direction.x, y = direction.y, z = direction.z; \n"
-	"    \n"
-	"    float3 result = \n"
-	"        // Band 0 \n"
-	"        0.282095 * coeffs[0] + \n"
-	"        \n"
-	"        // Band 1 \n"
-	"        0.488603 * y * coeffs[1] + \n"
-	"        0.488603 * z * coeffs[2] + \n"
-	"        0.488603 * x * coeffs[3] + \n"
-	"        \n"
-	"        // Band 2 \n"
-	"        1.092548 * x * y * coeffs[4] + \n"
-	"        1.092548 * y * z * coeffs[5] + \n"
-	"        0.315392 * (3.0 * z * z - 1.0) * coeffs[6] + \n"
-	"        1.092548 * x * z * coeffs[7] + \n"
-	"        0.546274 * (x * x - y * y) * coeffs[8]; \n"
-	"    \n"
-	"    return max(result, 0.0); \n"
-	"} \n"
+	"#define SAMPLE_COUNT 8192 \n"
 	" \n"
 	"// Disney diffuse BRDF \n"
 	"float disneyDiffuse(float NdotV, float NdotL, float LdotH, float roughness) { \n"
@@ -202,23 +156,31 @@ const char* advancedIrradiancePixelShader =
 	"    return FdV * FdL / PI; \n"
 	"} \n"
 	" \n"
+	"// Функция Hammersley для квази-случайных последовательностей \n"
+	"float2 hammersley(uint i, uint N) { \n"
+	"    uint bits = (i << 16u) | (i >> 16u); \n"
+	"    bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u); \n"
+	"    bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u); \n"
+	"    bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u); \n"
+	"    bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u); \n"
+	"    return float2(float(i) / float(N), float(bits) * 2.3283064365386963e-10); \n"
+	"} \n"
+	" \n"
 	"float4 main(float3 worldPos : TEXCOORD0, float3 normal : TEXCOORD1) : COLOR { \n"
 	"    float3 N = normalize(normal); \n"
+	"    float3 V = normalize(worldPos); \n"
 	"    \n"
-	"    // Метод 1: Сферические гармоники \n"
-	"    float3 shColor = evaluateSH(N, SHCoeffs); \n"
-	"    \n"
-	"    // Метод 2: Monte Carlo интеграция с Disney диффузом \n"
+	"    // Monte Carlo интеграция с Disney диффузом \n"
 	"    float3 mcColor = float3(0.0, 0.0, 0.0); \n"
 	"    float totalWeight = 0.0; \n"
 	"    \n"
 	"    for(uint i = 0u; i < SAMPLE_COUNT; i++) { \n"
-	"        // Квази-случайное направление \n"
-	"        float r1 = float(i) / float(SAMPLE_COUNT); \n"
-	"        float r2 = frac(float(i) * 0.618033988749895); \n"
+	"        // Используем Hammersley для квази-случайных последовательностей \n"
+	"        float2 Xi = hammersley(i, SAMPLE_COUNT); \n"
 	"        \n"
-	"        float phi = 2.0 * PI * r1; \n"
-	"        float cosTheta = 1.0 - r2; \n"
+	"        // Importance sampling с косинусным распределением \n"
+	"        float phi = 2.0 * PI * Xi.x; \n"
+	"        float cosTheta = sqrt(Xi.y);  // Косинусное распределение для лучшей сходимости\n"
 	"        float sinTheta = sqrt(1.0 - cosTheta * cosTheta); \n"
 	"        \n"
 	"        float3 L = float3(cos(phi) * sinTheta, sin(phi) * sinTheta, cosTheta); \n"
@@ -230,8 +192,8 @@ const char* advancedIrradiancePixelShader =
 	"        L = tangent * L.x + bitangent * L.y + N * L.z; \n"
 	"        \n"
 	"        float NdotL = max(dot(N, L), 0.0); \n"
-	"        float NdotV = max(dot(N, normalize(worldPos)), 0.0); \n"
-	"        float LdotH = max(dot(L, normalize(L + normalize(worldPos))), 0.0); \n"
+	"        float NdotV = max(dot(N, V), 0.0); \n"
+	"        float LdotH = max(dot(L, normalize(L + V)), 0.0); \n"
 	"        \n"
 	"        if(NdotL > 0.0) { \n"
 	"            float3 sampleColor = texCUBE(s0, L).rgb; \n"
@@ -242,12 +204,9 @@ const char* advancedIrradiancePixelShader =
 	"        } \n"
 	"    } \n"
 	"    \n"
-	"    mcColor = mcColor / totalWeight; \n"
+	"    mcColor = totalWeight > 0.0 ? mcColor / totalWeight : float3(0.0, 0.0, 0.0); \n"
 	"    \n"
-	"    // Комбинируем оба метода \n"
-	"    float3 finalColor = 0.7 * shColor + 0.3 * mcColor; \n"
-	"    \n"
-	"    return float4(finalColor, 1.0); \n"
+	"    return float4(mcColor, 1.0); \n"
 	"} \n";
 
 struct Vertex
@@ -270,23 +229,48 @@ class IBLGenerator
 	LPD3DXCONSTANTTABLE specularPixelShaderConstants;
 	LPD3DXCONSTANTTABLE irradiancePixelShaderConstants;
 
-	// Матрицы обзора для 6 граней куба
-	D3DXMATRIX viewMatrices[6] = {
-		// +X
-		D3DXMATRIX(0, 0, -1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1),
-		// -X
-		D3DXMATRIX(0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 1),
-		// +Y
-		D3DXMATRIX(1, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1),
-		// -Y
-		D3DXMATRIX(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1),
-		// +Z
-		D3DXMATRIX(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1),
-		// -Z
-		D3DXMATRIX(-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1)};
+	// ИСПРАВЛЕННЫЕ матрицы обзора для 6 граней куба
+	D3DXMATRIX viewMatrices[6];
 
-	// Предварительно вычисленные коэффициенты SH
-	std::vector<D3DXVECTOR3> shCoefficients;
+	void InitializeViewMatrices()
+	{
+		D3DXVECTOR3 eye(0.0f, 0.0f, 0.0f);
+		D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+
+		// ИСПРАВЛЕНИЕ: Меняем местами X+ и X-, Y+ и Y-
+
+		// +X (правая грань) - теперь это будет -X
+		D3DXVECTOR3 atXPos(1.0f, 0.0f, 0.0f);
+		D3DXMatrixLookAtLH(&viewMatrices[1], &eye, &atXPos, &up); // Присваиваем индексу 1 (-X)
+
+		// -X (левая грань) - теперь это будет +X
+		D3DXVECTOR3 atXNeg(-1.0f, 0.0f, 0.0f);
+		D3DXMatrixLookAtLH(&viewMatrices[0], &eye, &atXNeg, &up); // Присваиваем индексу 0 (+X)
+
+		// +Y (верхняя грань) - теперь это будет -Y
+		D3DXVECTOR3 atYPos(0.0f, 1.0f, 0.0f);
+		D3DXVECTOR3 upY(0.0f, 0.0f, -1.0f);
+		D3DXMatrixLookAtLH(&viewMatrices[3], &eye, &atYPos, &upY); // Присваиваем индексу 3 (-Y)
+
+		// -Y (нижняя грань) - теперь это будет +Y
+		D3DXVECTOR3 atYNeg(0.0f, -1.0f, 0.0f);
+		D3DXVECTOR3 upYNeg(0.0f, 0.0f, 1.0f);
+		D3DXMatrixLookAtLH(&viewMatrices[2], &eye, &atYNeg, &upYNeg); // Присваиваем индексу 2 (+Y)
+
+		// +Z (передняя грань) - оставляем как есть
+		D3DXVECTOR3 atZPos(0.0f, 0.0f, 1.0f);
+		D3DXMatrixLookAtLH(&viewMatrices[4], &eye, &atZPos, &up);
+
+		// -Z (задняя грань) - оставляем как есть
+		D3DXVECTOR3 atZNeg(0.0f, 0.0f, -1.0f);
+		D3DXMatrixLookAtLH(&viewMatrices[5], &eye, &atZNeg, &up);
+
+		// Инвертируем матрицы
+		for (int i = 0; i < 6; i++)
+		{
+			D3DXMatrixInverse(&viewMatrices[i], NULL, &viewMatrices[i]);
+		}
+	}
 
 	bool InitializeShaders()
 	{
@@ -351,58 +335,9 @@ class IBLGenerator
 		return SUCCEEDED(hr);
 	}
 
-	void PrecomputeSHCoefficients(UINT sampleCount = 10000)
-	{
-		shCoefficients.resize(9, D3DXVECTOR3(0, 0, 0));
-
-		std::random_device rd;
-		std::mt19937 gen(rd());
-		std::uniform_real_distribution<float> dis(0.0f, 1.0f);
-
-		for (UINT i = 0; i < sampleCount; ++i)
-		{
-			// Генерация равномерно распределенных точек на сфере
-			float u1 = dis(gen);
-			float u2 = dis(gen);
-
-			float theta = 2.0f * D3DX_PI * u1;
-			float phi = acos(2.0f * u2 - 1.0f);
-
-			float x = sin(phi) * cos(theta);
-			float y = sin(phi) * sin(theta);
-			float z = cos(phi);
-
-			D3DXVECTOR3 direction(x, y, z);
-
-			// Сэмплирование cubemap
-			D3DXVECTOR3 color = SampleCubeMap(direction);
-
-			// Проекция на SH базис (упрощенная версия)
-			// В реальной реализации нужно использовать полную проекцию
-			float weight = 4.0f * D3DX_PI / sampleCount;
-
-			// Band 0
-			shCoefficients[0] += color * weight * 0.282095f;
-
-			// Band 1
-			shCoefficients[1] += color * weight * 0.488603f * y;
-			shCoefficients[2] += color * weight * 0.488603f * z;
-			shCoefficients[3] += color * weight * 0.488603f * x;
-
-			// Band 2
-			shCoefficients[4] += color * weight * 1.092548f * x * y;
-			shCoefficients[5] += color * weight * 1.092548f * y * z;
-			shCoefficients[6] += color * weight * 0.315392f * (3.0f * z * z - 1.0f);
-			shCoefficients[7] += color * weight * 1.092548f * x * z;
-			shCoefficients[8] += color * weight * 0.546274f * (x * x - y * y);
-		}
-	}
-
 	D3DXVECTOR3 SampleCubeMap(const D3DXVECTOR3& direction)
 	{
 		// Упрощенная реализация сэмплирования cubemap
-		// В реальной реализации нужно определить, какая грань cubemap используется
-		// и выполнить билинейную фильтрацию
 		D3DXVECTOR3 result(1.0f, 1.0f, 1.0f); // Заглушка
 		return result;
 	}
@@ -413,8 +348,8 @@ class IBLGenerator
 		  vertexShaderConstants(NULL), specularPixelShaderConstants(NULL), irradiancePixelShaderConstants(NULL)
 	{
 		device->AddRef();
+		InitializeViewMatrices(); // Инициализируем правильные матрицы
 		InitializeShaders();
-		PrecomputeSHCoefficients();
 	}
 
 	~IBLGenerator()
@@ -510,9 +445,6 @@ class IBLGenerator
 		device->SetRenderState(D3DRS_ZENABLE, FALSE);
 		device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
-		// Установка коэффициентов SH
-		SetSHCoefficients();
-
 		for (UINT face = 0; face < 6; ++face)
 		{
 			LPDIRECT3DSURFACE9 surface;
@@ -538,49 +470,54 @@ class IBLGenerator
   private:
 	void CreateCubeVertexBuffer(LPDIRECT3DVERTEXBUFFER9& vb)
 	{
-		// Вершины куба с нормалями
-		Vertex vertices[] = {// Front face
-							 {-1, -1, -1, 0, 0, -1},
-							 {1, -1, -1, 0, 0, -1},
-							 {1, 1, -1, 0, 0, -1},
-							 {1, 1, -1, 0, 0, -1},
-							 {-1, 1, -1, 0, 0, -1},
-							 {-1, -1, -1, 0, 0, -1},
-							 // Back face
-							 {-1, -1, 1, 0, 0, 1},
-							 {1, -1, 1, 0, 0, 1},
-							 {1, 1, 1, 0, 0, 1},
-							 {1, 1, 1, 0, 0, 1},
-							 {-1, 1, 1, 0, 0, 1},
-							 {-1, -1, 1, 0, 0, 1},
-							 // Left face
-							 {-1, -1, -1, -1, 0, 0},
-							 {-1, 1, -1, -1, 0, 0},
-							 {-1, 1, 1, -1, 0, 0},
-							 {-1, 1, 1, -1, 0, 0},
+		// ИСПРАВЛЕННЫЕ вершины куба - соответствуют новым матрицам обзора
+		Vertex vertices[] = {// +X face (была -X) - левая грань
 							 {-1, -1, 1, -1, 0, 0},
+							 {-1, 1, 1, -1, 0, 0},
+							 {-1, 1, -1, -1, 0, 0},
+							 {-1, 1, -1, -1, 0, 0},
 							 {-1, -1, -1, -1, 0, 0},
-							 // Right face
+							 {-1, -1, 1, -1, 0, 0},
+
+							 // -X face (была +X) - правая грань
 							 {1, -1, -1, 1, 0, 0},
 							 {1, 1, -1, 1, 0, 0},
 							 {1, 1, 1, 1, 0, 0},
 							 {1, 1, 1, 1, 0, 0},
 							 {1, -1, 1, 1, 0, 0},
 							 {1, -1, -1, 1, 0, 0},
-							 // Top face
+
+							 // +Y face (была -Y) - нижняя грань
+							 {-1, -1, 1, 0, -1, 0},
+							 {1, -1, 1, 0, -1, 0},
+							 {1, -1, -1, 0, -1, 0},
+							 {1, -1, -1, 0, -1, 0},
+							 {-1, -1, -1, 0, -1, 0},
+							 {-1, -1, 1, 0, -1, 0},
+
+							 // -Y face (была +Y) - верхняя грань
 							 {-1, 1, -1, 0, 1, 0},
 							 {1, 1, -1, 0, 1, 0},
 							 {1, 1, 1, 0, 1, 0},
 							 {1, 1, 1, 0, 1, 0},
 							 {-1, 1, 1, 0, 1, 0},
 							 {-1, 1, -1, 0, 1, 0},
-							 // Bottom face
-							 {-1, -1, -1, 0, -1, 0},
-							 {1, -1, -1, 0, -1, 0},
-							 {1, -1, 1, 0, -1, 0},
-							 {1, -1, 1, 0, -1, 0},
-							 {-1, -1, 1, 0, -1, 0},
-							 {-1, -1, -1, 0, -1, 0}};
+
+							 // +Z face (перед) - оставляем как есть
+							 {-1, -1, 1, 0, 0, 1},
+							 {-1, 1, 1, 0, 0, 1},
+							 {1, 1, 1, 0, 0, 1},
+							 {1, 1, 1, 0, 0, 1},
+							 {1, -1, 1, 0, 0, 1},
+							 {-1, -1, 1, 0, 0, 1},
+
+							 // -Z face (зад) - оставляем как есть
+							 {1, -1, -1, 0, 0, -1},
+							 {1, 1, -1, 0, 0, -1},
+							 {-1, 1, -1, 0, 0, -1},
+							 {-1, 1, -1, 0, 0, -1},
+							 {-1, -1, -1, 0, 0, -1},
+							 {1, -1, -1, 0, 0, -1}};
 
 		device->CreateVertexBuffer(36 * sizeof(Vertex), 0, D3DFVF_XYZ | D3DFVF_NORMAL, D3DPOOL_DEFAULT, &vb, NULL);
 
@@ -670,26 +607,6 @@ class IBLGenerator
 		device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 12);
 
 		device->EndScene();
-	}
-
-	void SetSHCoefficients()
-	{
-		if (!irradiancePixelShaderConstants)
-			return;
-
-		// Создаем массив из 9 float3 для передачи в шейдер
-		float shCoeffsData[9][3];
-		for (int i = 0; i < 9; ++i)
-		{
-			shCoeffsData[i][0] = shCoefficients[i].x;
-			shCoeffsData[i][1] = shCoefficients[i].y;
-			shCoeffsData[i][2] = shCoefficients[i].z;
-		}
-
-		D3DXHANDLE shCoeffsHandle = irradiancePixelShaderConstants->GetConstantByName(NULL, "SHCoeffs");
-
-		// Устанавливаем весь массив коэффициентов SH одним вызовом
-		irradiancePixelShaderConstants->SetFloatArray(device, shCoeffsHandle, (float*)shCoeffsData, 9 * 3);
 	}
 };
 
