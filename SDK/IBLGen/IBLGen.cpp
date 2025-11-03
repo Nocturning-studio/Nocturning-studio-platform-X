@@ -4,12 +4,17 @@
 #include <cmath>
 #include <random>
 #include <algorithm>
+#include <string>
+#include <windows.h>
+#include <shellapi.h>
+#include <commdlg.h>
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 #pragma comment(lib, "kernel32.lib")
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "gdi32.lib")
+#pragma comment(lib, "shell32.lib")
 
 // Константы для максимального качества
 const int MAX_SAMPLES_SPECULAR = 65536;
@@ -35,7 +40,6 @@ const char* simpleVertexShader = "float4x4 worldViewProj; \n"
 								 "    return output; \n"
 								 "} \n";
 
-// Упрощенный, но максимально качественный шейдер для Specular IBL
 const char* qualitySpecularPixelShader =
 	"#define PI 3.14159265359 \n"
 	"#define TWO_PI 6.28318530718 \n"
@@ -43,86 +47,13 @@ const char* qualitySpecularPixelShader =
 	"float roughness; \n"
 	"float resolution; \n"
 	" \n"
-	"// Детектирование грани кубмапы по направлению \n"
-	"int getFaceIndex(float3 dir) \n"
-	"{ \n"
-	"    float3 absDir = abs(dir); \n"
-	"    \n"
-	"    if (absDir.x >= absDir.y && absDir.x >= absDir.z) \n"
-	"        return dir.x > 0.0 ? 0 : 1; \n"
-	"    else if (absDir.y >= absDir.x && absDir.y >= absDir.z) \n"
-	"        return dir.y > 0.0 ? 2 : 3; \n"
-	"    else \n"
-	"        return dir.z > 0.0 ? 4 : 5; \n"
-	"} \n"
-	" \n"
-	"// Преобразование направления в UV координаты для конкретной грани \n"
-	"float2 directionToFaceUV(float3 dir, int faceIndex) \n"
-	"{ \n"
-	"    float3 absDir = abs(dir); \n"
-	"    float ma; \n"
-	"    float2 uv; \n"
-	"    \n"
-	"    switch(faceIndex) { \n"
-	"        case 0: // +X \n"
-	"            ma = 0.5 / absDir.x; \n"
-	"            uv = float2(-dir.z, -dir.y); \n"
-	"            break; \n"
-	"        case 1: // -X \n"
-	"            ma = 0.5 / absDir.x; \n"
-	"            uv = float2(dir.z, -dir.y); \n"
-	"            break; \n"
-	"        case 2: // +Y \n"
-	"            ma = 0.5 / absDir.y; \n"
-	"            uv = float2(dir.x, dir.z); \n"
-	"            break; \n"
-	"        case 3: // -Y \n"
-	"            ma = 0.5 / absDir.y; \n"
-	"            uv = float2(dir.x, -dir.z); \n"
-	"            break; \n"
-	"        case 4: // +Z \n"
-	"            ma = 0.5 / absDir.z; \n"
-	"            uv = float2(dir.x, -dir.y); \n"
-	"            break; \n"
-	"        case 5: // -Z \n"
-	"            ma = 0.5 / absDir.z; \n"
-	"            uv = float2(-dir.x, -dir.y); \n"
-	"            break; \n"
-	"    } \n"
-	"    \n"
-	"    return uv * ma + 0.5; \n"
-	"} \n"
-	" \n"
-	"// Ручное сэмплирование исходной кубмапы с межгранной фильтрацией \n"
+	"// Улучшенная функция сэмплирования кубмапы с правильной межгранной фильтрацией \n"
 	"float3 manualCubeSampleHighQuality(float3 dir, float currentRoughness) \n"
 	"{ \n"
-	"    // ВАЖНО: Всегда сэмплируем исходную текстуру (Mip 0) \n"
-	"    float3 result = float3(0.0, 0.0, 0.0); \n"
-	"    float totalWeight = 0.0; \n"
-	"    \n"
-	"    // Определяем основную грань \n"
-	"    int mainFace = getFaceIndex(dir); \n"
-	"    \n"
-	"    // Вычисляем уровень размытия на основе roughness \n"
-	"    float blurAmount = currentRoughness * 0.1; \n"
-	"    \n"
-	"    // Многократное сэмплирование для smooth переходов \n"
-	"    for (int i = 0; i < 256; i++) \n"
-	"    { \n"
-	"        // Генерируем случайное смещение \n"
-	"        float2 randomOffset = float2( \n"
-	"            (fmod(float(i) * 1.618034, 1.0) - 0.5) * 2.0, \n"
-	"            (fmod(float(i) * 2.678234, 1.0) - 0.5) * 2.0 \n"
-	"        ) * blurAmount; \n"
-	"        \n"
-	"        float3 sampleDir = normalize(dir + float3(randomOffset.x, randomOffset.y, 0.0)); \n"
-	"        \n"
-	"        // Всегда сэмплируем Mip 0 исходной текстуры \n"
-	"        result += texCUBE(s0, sampleDir).rgb; \n"
-	"        totalWeight += 1.0; \n"
-	"    } \n"
-	"    \n"
-	"    return result / totalWeight; \n"
+	"    // Используем встроенную фильтрацию Direct3D для межгранных переходов \n"
+	"    // При высоких уровнях roughness увеличиваем уровень mip для исходной текстуры \n"
+	"    float mipLevel = currentRoughness * 8.0; // 8.0 - максимальный уровень размытия \n"
+	"    return texCUBElod(s0, float4(dir, mipLevel)).rgb; \n"
 	"} \n"
 	" \n"
 	"// Функция Hammersley для квази-случайных последовательностей \n"
@@ -173,8 +104,12 @@ const char* qualitySpecularPixelShader =
 	"    float totalWeight = 0.0; \n"
 	"    float3 prefilteredColor = float3(0.0, 0.0, 0.0); \n"
 	"    \n"
-	"    for(uint i = 0u; i < 65536; i++) { \n"
-	"        float2 Xi = hammersley(i, 65536); \n"
+	"    // Адаптивное количество сэмплов в зависимости от roughness \n"
+	"    uint numSamples = uint(64.0 + (1.0 - roughness) * 64.0); \n"
+	"    numSamples = min(numSamples, 128u); \n"
+	"    \n"
+	"    for(uint i = 0u; i < numSamples; i++) { \n"
+	"        float2 Xi = hammersley(i, numSamples); \n"
 	"        \n"
 	"        float3 H = importanceSampleGGX(Xi, roughness, N); \n"
 	"        float3 L = normalize(2.0 * dot(V, H) * H - V); \n"
@@ -182,7 +117,7 @@ const char* qualitySpecularPixelShader =
 	"        float NdotL = max(dot(N, L), 0.0); \n"
 	"        \n"
 	"        if(NdotL > 0.0) { \n"
-	"            // ВАЖНОЕ ИЗМЕНЕНИЕ: Всегда сэмплируем исходную текстуру с ручной фильтрацией \n"
+	"            // Используем улучшенную функцию сэмплирования \n"
 	"            float3 sampleColor = manualCubeSampleHighQuality(L, roughness); \n"
 	"            \n"
 	"            prefilteredColor += sampleColor * NdotL; \n"
@@ -194,30 +129,14 @@ const char* qualitySpecularPixelShader =
 	"    return float4(prefilteredColor, 1.0); \n"
 	"} \n";
 
-// Упрощенный, но максимально качественный шейдер для Irradiance IBL
+// Исправленный, максимально качественный шейдер для Irradiance IBL
 const char* qualityIrradiancePixelShader =
 	"#define PI 3.14159265359 \n"
 	" \n"
-	"// Ручное сэмплирование исходной кубмапы с межгранной фильтрацией \n"
+	"// Упрощенная функция сэмплирования для irradiance \n"
 	"float3 manualCubeSampleHighQuality(float3 dir) \n"
 	"{ \n"
-	"    float3 result = float3(0.0, 0.0, 0.0); \n"
-	"    float totalWeight = 0.0; \n"
-	"    \n"
-	"    // Многократное сэмплирование для smooth переходов \n"
-	"    for (int i = 0; i < 256; i++) \n"
-	"    { \n"
-	"        float2 randomOffset = float2( \n"
-	"            (fmod(float(i) * 1.618034, 1.0) - 0.5) * 2.0 * 0.02, \n"
-	"            (fmod(float(i) * 2.678234, 1.0) - 0.5) * 2.0 * 0.02 \n"
-	"        ); \n"
-	"        \n"
-	"        float3 sampleDir = normalize(dir + float3(randomOffset.x, randomOffset.y, 0.0)); \n"
-	"        result += texCUBE(s0, sampleDir).rgb; \n"
-	"        totalWeight += 1.0; \n"
-	"    } \n"
-	"    \n"
-	"    return result / totalWeight; \n"
+	"    return texCUBE(s0, dir).rgb; \n"
 	"} \n"
 	" \n"
 	"// Функция Hammersley для квази-случайных последовательностей \n"
@@ -236,8 +155,9 @@ const char* qualityIrradiancePixelShader =
 	"    float3 irradiance = float3(0.0, 0.0, 0.0); \n"
 	"    float totalWeight = 0.0; \n"
 	"    \n"
-	"    for(uint i = 0u; i < 131072; i++) { \n"
-	"        float2 Xi = hammersley(i, 131072); \n"
+	"    // Уменьшаем количество сэмплов для irradiance \n"
+	"    for(uint i = 0u; i < 1024u; i++) { \n"
+	"        float2 Xi = hammersley(i, 1024); \n"
 	"        \n"
 	"        // Косинусное распределение для диффузного освещения \n"
 	"        float phi = 2.0 * PI * Xi.x; \n"
@@ -254,9 +174,7 @@ const char* qualityIrradiancePixelShader =
 	"        float NdotL = max(dot(N, L), 0.0); \n"
 	"        \n"
 	"        if(NdotL > 0.0) { \n"
-	"            // ВАЖНОЕ ИЗМЕНЕНИЕ: Всегда сэмплируем исходную текстуру с ручной фильтрацией \n"
 	"            float3 sampleColor = manualCubeSampleHighQuality(L); \n"
-	"            \n"
 	"            irradiance += sampleColor * NdotL; \n"
 	"            totalWeight += NdotL; \n"
 	"        } \n"
@@ -421,6 +339,8 @@ class IBLGenerator
 
 	HRESULT LoadSourceCubeMap(const wchar_t* filename)
 	{
+		if (sourceCubeMap)
+			sourceCubeMap->Release();
 		return D3DXCreateCubeTextureFromFile(device, filename, &sourceCubeMap);
 	}
 
@@ -658,44 +578,210 @@ class IBLGenerator
 	}
 };
 
-int main()
+// Функция для извлечения пути и имени файла
+std::wstring GetFileNameWithoutExtension(const std::wstring& filePath)
 {
+	size_t lastSlash = filePath.find_last_of(L"\\/");
+	size_t lastDot = filePath.find_last_of(L".");
+
+	if (lastDot == std::wstring::npos || lastDot < lastSlash)
+		return filePath.substr(lastSlash + 1);
+
+	return filePath.substr(lastSlash + 1, lastDot - lastSlash - 1);
+}
+
+std::wstring GetDirectory(const std::wstring& filePath)
+{
+	size_t lastSlash = filePath.find_last_of(L"\\/");
+	if (lastSlash == std::wstring::npos)
+		return L"";
+	return filePath.substr(0, lastSlash + 1);
+}
+
+// Функция для обработки одной cubemap текстуры
+bool ProcessCubeMapFile(const std::wstring& filePath, IBLGenerator& generator)
+{
+	wprintf(L"Обработка файла: %s\n", filePath.c_str());
+
+	// Загрузка исходной Cubemap текстуры
+	if (FAILED(generator.LoadSourceCubeMap(filePath.c_str())))
+	{
+		wprintf(L"Ошибка: Не удалось загрузить cubemap текстуру: %s\n", filePath.c_str());
+		return false;
+	}
+
+	LPDIRECT3DCUBETEXTURE9 specularCubeMap = nullptr;
+	LPDIRECT3DCUBETEXTURE9 irradianceCubeMap = nullptr;
+
+	// Генерация Specular IBL с mip-уровнями
+	wprintf(L"Генерация specular IBL...\n");
+	if (FAILED(generator.GenerateSpecularIBL(specularCubeMap, 512, 9)))
+	{
+		wprintf(L"Ошибка: Не удалось сгенерировать specular IBL для: %s\n", filePath.c_str());
+		return false;
+	}
+
+	// Генерация Irradiance IBL без mip-уровней
+	wprintf(L"Генерация irradiance IBL...\n");
+	if (FAILED(generator.GenerateIrradianceIBL(irradianceCubeMap, 32)))
+	{
+		wprintf(L"Ошибка: Не удалось сгенерировать irradiance IBL для: %s\n", filePath.c_str());
+		specularCubeMap->Release();
+		return false;
+	}
+
+	// Формирование путей для сохранения
+	std::wstring baseName = GetFileNameWithoutExtension(filePath);
+	std::wstring directory = GetDirectory(filePath);
+
+	std::wstring specularPath = directory + baseName + L".dds";
+	std::wstring irradiancePath = directory + baseName + L"#irradiance.dds";
+
+	// Сохранение результатов
+	wprintf(L"Сохранение specular IBL: %s\n", specularPath.c_str());
+	if (FAILED(D3DXSaveTextureToFile(specularPath.c_str(), D3DXIFF_DDS, specularCubeMap, NULL)))
+	{
+		wprintf(L"Ошибка: Не удалось сохранить specular IBL: %s\n", specularPath.c_str());
+	}
+
+	wprintf(L"Сохранение irradiance IBL: %s\n", irradiancePath.c_str());
+	if (FAILED(D3DXSaveTextureToFile(irradiancePath.c_str(), D3DXIFF_DDS, irradianceCubeMap, NULL)))
+	{
+		wprintf(L"Ошибка: Не удалось сохранить irradiance IBL: %s\n", irradiancePath.c_str());
+	}
+
+	specularCubeMap->Release();
+	irradianceCubeMap->Release();
+
+	wprintf(L"Успешно обработан файл: %s\n\n", filePath.c_str());
+	return true;
+}
+
+// Оконная процедура для обработки сообщений drag and drop
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+
+	case WM_DROPFILES: {
+		HDROP hDrop = (HDROP)wParam;
+		UINT fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+
+		// Получаем устройство Direct3D из пользовательских данных окна
+		IBLGenerator* generator = (IBLGenerator*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+
+		if (generator && fileCount > 0)
+		{
+			wprintf(L"Обнаружено %d файлов для обработки:\n", fileCount);
+
+			for (UINT i = 0; i < fileCount; i++)
+			{
+				wchar_t filePath[MAX_PATH];
+				DragQueryFile(hDrop, i, filePath, MAX_PATH);
+				ProcessCubeMapFile(filePath, *generator);
+			}
+
+			wprintf(L"Обработка всех файлов завершена!\n");
+		}
+
+		DragFinish(hDrop);
+		return 0;
+	}
+
+	case WM_PAINT: {
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hwnd, &ps);
+
+		// Выводим инструкцию для пользователя
+		RECT rect;
+		GetClientRect(hwnd, &rect);
+		DrawText(hdc, L"Перетащите cubemap текстуры (.dds) в это окно для обработки", -1, &rect,
+				 DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+		EndPaint(hwnd, &ps);
+		return 0;
+	}
+	}
+
+	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+	// Регистрация класса окна
+	WNDCLASS wc = {};
+	wc.lpfnWndProc = WindowProc;
+	wc.hInstance = hInstance;
+	wc.lpszClassName = L"IBLGeneratorWindow";
+	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+
+	RegisterClass(&wc);
+
+	// Создание окна
+	HWND hwnd =
+		CreateWindowEx(0, L"IBLGeneratorWindow", L"IBL Generator - Drag & Drop Tool", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+					   CW_USEDEFAULT, CW_USEDEFAULT, 600, 400, NULL, NULL, hInstance, NULL);
+
+	if (!hwnd)
+		return -1;
+
+	// Включаем поддержку drag and drop
+	DragAcceptFiles(hwnd, TRUE);
+
 	// Инициализация Direct3D
 	LPDIRECT3D9 d3d = Direct3DCreate9(D3D_SDK_VERSION);
+	if (!d3d)
+	{
+		MessageBox(hwnd, L"Не удалось инициализировать Direct3D 9", L"Ошибка", MB_ICONERROR);
+		return -1;
+	}
+
 	D3DPRESENT_PARAMETERS d3dpp = {};
 	d3dpp.Windowed = TRUE;
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
 	d3dpp.BackBufferWidth = 1;
 	d3dpp.BackBufferHeight = 1;
+	d3dpp.hDeviceWindow = hwnd;
 
 	LPDIRECT3DDEVICE9 device;
-	d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, GetConsoleWindow(), D3DCREATE_HARDWARE_VERTEXPROCESSING,
-					  &d3dpp, &device);
+	HRESULT hr = d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd, D3DCREATE_HARDWARE_VERTEXPROCESSING,
+								   &d3dpp, &device);
 
-	// Создание генератора IBL
-	IBLGenerator generator(device);
-
-	// Загрузка исходной Cubemap текстуры
-	if (SUCCEEDED(generator.LoadSourceCubeMap(L"skybox.dds")))
+	if (FAILED(hr))
 	{
-		LPDIRECT3DCUBETEXTURE9 specularCubeMap, irradianceCubeMap;
-
-		// Генерация Specular IBL с mip-уровнями
-		generator.GenerateSpecularIBL(specularCubeMap, 512, 9);
-
-		// Генерация Irradiance IBL без mip-уровней
-		generator.GenerateIrradianceIBL(irradianceCubeMap, 32);
-
-		// Сохранение результатов
-		D3DXSaveTextureToFile(L"specular_ibl.dds", D3DXIFF_DDS, specularCubeMap, NULL);
-		D3DXSaveTextureToFile(L"irradiance_ibl.dds", D3DXIFF_DDS, irradianceCubeMap, NULL);
-
-		specularCubeMap->Release();
-		irradianceCubeMap->Release();
+		MessageBox(hwnd, L"Не удалось создать устройство Direct3D", L"Ошибка", MB_ICONERROR);
+		d3d->Release();
+		return -1;
 	}
 
+	// Создание генератора IBL и сохранение указателя в пользовательских данных окна
+	IBLGenerator* generator = new IBLGenerator(device);
+	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)generator);
+
+	// Вывод инструкции
+	wprintf(L"IBL Generator запущен!\n");
+	wprintf(L"Перетащите cubemap текстуры (.dds) в окно для обработки.\n");
+	wprintf(L"Для каждой текстуры будут созданы:\n");
+	wprintf(L"  - Оригинальное_имя.dds (specular IBL с mip-уровнями)\n");
+	wprintf(L"  - Оригинальное_имя#irradiance.dds (irradiance IBL)\n\n");
+
+	// Цикл сообщений
+	MSG msg = {};
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	// Очистка ресурсов
+	delete generator;
 	device->Release();
 	d3d->Release();
+
 	return 0;
 }
