@@ -7,12 +7,12 @@ class ENGINE_API CEnvDescriptor
 	float exec_time_loaded;
 
 	shared_str sky_texture_name;
-	shared_str sky_texture_env_name;
+	shared_str sky_texture_irradiance_name;
 	shared_str clouds_texture_name;
 	shared_str lut_texture_name;
 
 	ref_texture sky_texture;
-	ref_texture sky_texture_env;
+	ref_texture sky_texture_irradiance;
 	ref_texture clouds_texture;
 	ref_texture lut_texture;
 

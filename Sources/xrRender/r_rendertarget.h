@@ -93,8 +93,8 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_ao;
 
 	// env
-	ref_texture t_envmap_0; // env-0
-	ref_texture t_envmap_1; // env-1
+	ref_texture t_irradiance_map_0; // env-0
+	ref_texture t_irradiance_map_1; // env-1
 
 	ref_texture t_LUT_0; // lut-0
 	ref_texture t_LUT_1; // lut-1

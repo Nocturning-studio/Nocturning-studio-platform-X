@@ -124,9 +124,9 @@ void CEnvDescriptor::load(CEnvironment& environment, CInifile& config)
 
 	string_path st, st_env;
 	strcpy(st, config.r_string(m_identifier.c_str(), "sky_texture"));
-	strconcat(sizeof(st_env), st_env, st, "#small");
+	strconcat(sizeof(st_env), st_env, st, "#irradiance");
 	sky_texture_name = st;
-	sky_texture_env_name = st_env;
+	sky_texture_irradiance_name = st_env;
 	clouds_texture_name = GetStringIfExist("clouds_texture", "sky\\sky_oblaka", config);
 	LPCSTR cldclr = GetStringIfExist("clouds_color", "0, 0, 0, 0", config);
 
@@ -203,8 +203,8 @@ void CEnvDescriptor::on_device_create()
 {
 	if (sky_texture_name.size())
 		sky_texture.create(sky_texture_name.c_str());
-	if (sky_texture_env_name.size())
-		sky_texture_env.create(sky_texture_env_name.c_str());
+	if (sky_texture_irradiance_name.size())
+		sky_texture_irradiance.create(sky_texture_irradiance_name.c_str());
 	if (clouds_texture_name.size())
 		clouds_texture.create(clouds_texture_name.c_str());
 	if (lut_texture_name.size())
@@ -214,7 +214,7 @@ void CEnvDescriptor::on_device_create()
 void CEnvDescriptor::on_device_destroy()
 {
 	sky_texture.destroy();
-	sky_texture_env.destroy();
+	sky_texture_irradiance.destroy();
 	clouds_texture.destroy();
 	lut_texture.destroy();
 }

@@ -14,8 +14,8 @@
 #define r_RT_Bent_Normals "$user$bent_normals"
 
 // Environment
-#define r_T_envs0 "$user$env_s0"
-#define r_T_envs1 "$user$env_s1"
+#define r_T_irradiance0 "$user$env_s0"
+#define r_T_irradiance1 "$user$env_s1"
 #define r_T_sky0 "$user$sky0"
 #define r_T_sky1 "$user$sky1"
 

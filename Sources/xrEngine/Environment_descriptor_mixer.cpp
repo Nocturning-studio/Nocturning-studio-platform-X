@@ -14,14 +14,14 @@ CEnvDescriptorMixer::CEnvDescriptorMixer(shared_str const& identifier) : CEnvDes
 void CEnvDescriptorMixer::destroy()
 {
 	sky_r_textures.clear();
-	sky_r_textures_env.clear();
+	sky_r_textures_irradiance.clear();
 	lut_r_textures.clear();
 	clouds_r_textures.clear();
 
 	on_device_destroy();
 
 	sky_texture.destroy();
-	sky_texture_env.destroy();
+	sky_texture_irradiance.destroy();
 	clouds_texture.destroy();
 	lut_texture.destroy();
 }
@@ -34,10 +34,10 @@ void CEnvDescriptorMixer::clear()
 	sky_r_textures.push_back(zero);
 	sky_r_textures.push_back(zero);
 
-	sky_r_textures_env.clear();
-	sky_r_textures_env.push_back(zero);
-	sky_r_textures_env.push_back(zero);
-	sky_r_textures_env.push_back(zero);
+	sky_r_textures_irradiance.clear();
+	sky_r_textures_irradiance.push_back(zero);
+	sky_r_textures_irradiance.push_back(zero);
+	sky_r_textures_irradiance.push_back(zero);
 
 	clouds_r_textures.clear();
 	clouds_r_textures.push_back(zero);
@@ -66,10 +66,10 @@ void CEnvDescriptorMixer::lerp(	CEnvironment*,
 	sky_r_textures.push_back(mk_pair(0, A.sky_texture));
 	sky_r_textures.push_back(mk_pair(1, B.sky_texture));
 
-	sky_r_textures_env.clear();
+	sky_r_textures_irradiance.clear();
 
-	sky_r_textures_env.push_back(mk_pair(0, A.sky_texture_env));
-	sky_r_textures_env.push_back(mk_pair(1, B.sky_texture_env));
+	sky_r_textures_irradiance.push_back(mk_pair(0, A.sky_texture_irradiance));
+	sky_r_textures_irradiance.push_back(mk_pair(1, B.sky_texture_irradiance));
 
 	clouds_r_textures.clear();
 	clouds_r_textures.push_back(mk_pair(0, A.clouds_texture));

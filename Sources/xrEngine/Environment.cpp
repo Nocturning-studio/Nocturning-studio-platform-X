@@ -511,7 +511,7 @@ void CEnvironment::OnFrame()
 		set_static_sun_dir();
 
 	CurrentEnv->sky_r_textures.push_back(mk_pair(2, autoexposure));
-	CurrentEnv->sky_r_textures_env.push_back(mk_pair(2, autoexposure));
+	CurrentEnv->sky_r_textures_irradiance.push_back(mk_pair(2, autoexposure));
 	CurrentEnv->clouds_r_textures.push_back(mk_pair(2, autoexposure));
 	CurrentEnv->lut_r_textures.push_back(mk_pair(2, autoexposure));
 

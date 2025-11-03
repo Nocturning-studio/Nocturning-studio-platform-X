@@ -4,7 +4,7 @@ class ENGINE_API CEnvDescriptorMixer : public CEnvDescriptor
 {
   public:
 	STextureList sky_r_textures;
-	STextureList sky_r_textures_env;
+	STextureList sky_r_textures_irradiance;
 	STextureList clouds_r_textures;
 	STextureList lut_r_textures;
 	float weight;
