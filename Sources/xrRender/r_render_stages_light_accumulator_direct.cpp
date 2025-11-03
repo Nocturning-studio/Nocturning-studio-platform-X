@@ -215,7 +215,7 @@ void CRender::accumulate_volumetric_sun(u32 sub_phase, Fmatrix m_shadow, Fvector
 	if (!bVolumetricSunTextureCleared)
 		bVolumetricSunTextureCleared = true;
 
-	// Ключевое изменение: Убираем ВСЕ ограничения для объемного света
+	// Убираем ВСЕ ограничения для объемного света
 	RenderBackend.set_Stencil(FALSE);
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Depth_Buffer(NULL);
@@ -246,6 +246,5 @@ void CRender::accumulate_volumetric_sun(u32 sub_phase, Fmatrix m_shadow, Fvector
 	RenderBackend.set_Constant("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
 	RenderBackend.set_Constant("m_shadow", m_shadow);
 
-	// Рендерим полноэкранный квад - ВАЖНО: используем полное разрешение
 	RenderBackend.RenderViewportSurface(Weight, Height, RenderTarget->rt_Volumetric_Sun);
 }
