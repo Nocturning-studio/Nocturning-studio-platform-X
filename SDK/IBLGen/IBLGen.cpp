@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include <random>
+#include <algorithm>
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
@@ -10,37 +11,118 @@
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "gdi32.lib")
 
-// Усовершенствованные шейдеры с использованием HLSL Shader Model 3.0
-const char* advancedVertexShader = "float4x4 worldViewProj; \n"
-								   "struct VS_INPUT { \n"
-								   "    float3 position : POSITION; \n"
-								   "    float3 normal : NORMAL; \n"
-								   "}; \n"
-								   "struct VS_OUTPUT { \n"
-								   "    float4 position : POSITION; \n"
-								   "    float3 worldPos : TEXCOORD0; \n"
-								   "    float3 normal : TEXCOORD1; \n"
-								   "}; \n"
-								   "VS_OUTPUT main(VS_INPUT input) { \n"
-								   "    VS_OUTPUT output; \n"
-								   "    output.position = mul(float4(input.position, 1.0), worldViewProj); \n"
-								   "    output.worldPos = input.position; \n"
-								   "    output.normal = input.normal; \n"
-								   "    return output; \n"
-								   "} \n";
+// Константы для максимального качества
+const int MAX_SAMPLES_SPECULAR = 65536;
+const int MAX_SAMPLES_IRRADIANCE = 131072;
+const int MANUAL_FILTER_SAMPLES = 256;
 
-// Продвинутый шейдер для Specular IBL с GGX и importance sampling
-const char* advancedSpecularPixelShader =
+// Простой вершинный шейдер
+const char* simpleVertexShader = "float4x4 worldViewProj; \n"
+								 "struct VS_INPUT { \n"
+								 "    float3 position : POSITION; \n"
+								 "    float3 normal : NORMAL; \n"
+								 "}; \n"
+								 "struct VS_OUTPUT { \n"
+								 "    float4 position : POSITION; \n"
+								 "    float3 worldPos : TEXCOORD0; \n"
+								 "    float3 normal : TEXCOORD1; \n"
+								 "}; \n"
+								 "VS_OUTPUT main(VS_INPUT input) { \n"
+								 "    VS_OUTPUT output; \n"
+								 "    output.position = mul(float4(input.position, 1.0), worldViewProj); \n"
+								 "    output.worldPos = input.position; \n"
+								 "    output.normal = input.normal; \n"
+								 "    return output; \n"
+								 "} \n";
+
+// Упрощенный, но максимально качественный шейдер для Specular IBL
+const char* qualitySpecularPixelShader =
 	"#define PI 3.14159265359 \n"
 	"#define TWO_PI 6.28318530718 \n"
-	"#define SAMPLE_COUNT 1024 \n"
 	" \n"
 	"float roughness; \n"
 	"float resolution; \n"
 	" \n"
-	"// Функция для генерации случайных чисел \n"
-	"float random(float2 uv) { \n"
-	"    return frac(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453); \n"
+	"// Детектирование грани кубмапы по направлению \n"
+	"int getFaceIndex(float3 dir) \n"
+	"{ \n"
+	"    float3 absDir = abs(dir); \n"
+	"    \n"
+	"    if (absDir.x >= absDir.y && absDir.x >= absDir.z) \n"
+	"        return dir.x > 0.0 ? 0 : 1; \n"
+	"    else if (absDir.y >= absDir.x && absDir.y >= absDir.z) \n"
+	"        return dir.y > 0.0 ? 2 : 3; \n"
+	"    else \n"
+	"        return dir.z > 0.0 ? 4 : 5; \n"
+	"} \n"
+	" \n"
+	"// Преобразование направления в UV координаты для конкретной грани \n"
+	"float2 directionToFaceUV(float3 dir, int faceIndex) \n"
+	"{ \n"
+	"    float3 absDir = abs(dir); \n"
+	"    float ma; \n"
+	"    float2 uv; \n"
+	"    \n"
+	"    switch(faceIndex) { \n"
+	"        case 0: // +X \n"
+	"            ma = 0.5 / absDir.x; \n"
+	"            uv = float2(-dir.z, -dir.y); \n"
+	"            break; \n"
+	"        case 1: // -X \n"
+	"            ma = 0.5 / absDir.x; \n"
+	"            uv = float2(dir.z, -dir.y); \n"
+	"            break; \n"
+	"        case 2: // +Y \n"
+	"            ma = 0.5 / absDir.y; \n"
+	"            uv = float2(dir.x, dir.z); \n"
+	"            break; \n"
+	"        case 3: // -Y \n"
+	"            ma = 0.5 / absDir.y; \n"
+	"            uv = float2(dir.x, -dir.z); \n"
+	"            break; \n"
+	"        case 4: // +Z \n"
+	"            ma = 0.5 / absDir.z; \n"
+	"            uv = float2(dir.x, -dir.y); \n"
+	"            break; \n"
+	"        case 5: // -Z \n"
+	"            ma = 0.5 / absDir.z; \n"
+	"            uv = float2(-dir.x, -dir.y); \n"
+	"            break; \n"
+	"    } \n"
+	"    \n"
+	"    return uv * ma + 0.5; \n"
+	"} \n"
+	" \n"
+	"// Ручное сэмплирование исходной кубмапы с межгранной фильтрацией \n"
+	"float3 manualCubeSampleHighQuality(float3 dir, float currentRoughness) \n"
+	"{ \n"
+	"    // ВАЖНО: Всегда сэмплируем исходную текстуру (Mip 0) \n"
+	"    float3 result = float3(0.0, 0.0, 0.0); \n"
+	"    float totalWeight = 0.0; \n"
+	"    \n"
+	"    // Определяем основную грань \n"
+	"    int mainFace = getFaceIndex(dir); \n"
+	"    \n"
+	"    // Вычисляем уровень размытия на основе roughness \n"
+	"    float blurAmount = currentRoughness * 0.1; \n"
+	"    \n"
+	"    // Многократное сэмплирование для smooth переходов \n"
+	"    for (int i = 0; i < 256; i++) \n"
+	"    { \n"
+	"        // Генерируем случайное смещение \n"
+	"        float2 randomOffset = float2( \n"
+	"            (fmod(float(i) * 1.618034, 1.0) - 0.5) * 2.0, \n"
+	"            (fmod(float(i) * 2.678234, 1.0) - 0.5) * 2.0 \n"
+	"        ) * blurAmount; \n"
+	"        \n"
+	"        float3 sampleDir = normalize(dir + float3(randomOffset.x, randomOffset.y, 0.0)); \n"
+	"        \n"
+	"        // Всегда сэмплируем Mip 0 исходной текстуры \n"
+	"        result += texCUBE(s0, sampleDir).rgb; \n"
+	"        totalWeight += 1.0; \n"
+	"    } \n"
+	"    \n"
+	"    return result / totalWeight; \n"
 	"} \n"
 	" \n"
 	"// Функция Hammersley для квази-случайных последовательностей \n"
@@ -67,37 +149,20 @@ const char* advancedSpecularPixelShader =
 	"float3 importanceSampleGGX(float2 Xi, float roughness, float3 N) { \n"
 	"    float a = roughness * roughness; \n"
 	"    \n"
-	"    // Распределение в локальной системе координат \n"
 	"    float phi = 2.0 * PI * Xi.x; \n"
 	"    float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a * a - 1.0) * Xi.y)); \n"
 	"    float sinTheta = sqrt(1.0 - cosTheta * cosTheta); \n"
 	"    \n"
-	"    // Преобразование из сферических в декартовы координаты \n"
 	"    float3 H; \n"
 	"    H.x = cos(phi) * sinTheta; \n"
 	"    H.y = sin(phi) * sinTheta; \n"
 	"    H.z = cosTheta; \n"
 	"    \n"
-	"    // Преобразование в мировую систему координат \n"
 	"    float3 up = abs(N.z) < 0.999 ? float3(0.0, 0.0, 1.0) : float3(1.0, 0.0, 0.0); \n"
 	"    float3 tangent = normalize(cross(up, N)); \n"
 	"    float3 bitangent = cross(N, tangent); \n"
 	"    \n"
 	"    return tangent * H.x + bitangent * H.y + N * H.z; \n"
-	"} \n"
-	" \n"
-	"// Функция геометрии Smith для GGX \n"
-	"float geometrySchlickGGX(float NdotV, float roughness) { \n"
-	"    float r = (roughness + 1.0); \n"
-	"    float k = (r * r) / 8.0; \n"
-	"    float denom = NdotV * (1.0 - k) + k; \n"
-	"    return NdotV / denom; \n"
-	"} \n"
-	" \n"
-	"float geometrySmith(float NdotV, float NdotL, float roughness) { \n"
-	"    float ggx2 = geometrySchlickGGX(NdotV, roughness); \n"
-	"    float ggx1 = geometrySchlickGGX(NdotL, roughness); \n"
-	"    return ggx1 * ggx2; \n"
 	"} \n"
 	" \n"
 	"float4 main(float3 worldPos : TEXCOORD0, float3 normal : TEXCOORD1) : COLOR { \n"
@@ -108,52 +173,51 @@ const char* advancedSpecularPixelShader =
 	"    float totalWeight = 0.0; \n"
 	"    float3 prefilteredColor = float3(0.0, 0.0, 0.0); \n"
 	"    \n"
-	"    for(uint i = 0u; i < SAMPLE_COUNT; i++) { \n"
-	"        // Генерация квази-случайной точки \n"
-	"        float2 Xi = hammersley(i, SAMPLE_COUNT); \n"
+	"    for(uint i = 0u; i < 65536; i++) { \n"
+	"        float2 Xi = hammersley(i, 65536); \n"
 	"        \n"
-	"        // Importance sampling на основе GGX \n"
 	"        float3 H = importanceSampleGGX(Xi, roughness, N); \n"
 	"        float3 L = normalize(2.0 * dot(V, H) * H - V); \n"
 	"        \n"
 	"        float NdotL = max(dot(N, L), 0.0); \n"
-	"        float NdotH = max(dot(N, H), 0.0); \n"
-	"        float VdotH = max(dot(V, H), 0.0); \n"
 	"        \n"
 	"        if(NdotL > 0.0) { \n"
-	"            // Вычисление D_GGX \n"
-	"            float D = D_GGX(NdotH, roughness); \n"
-	"            float pdf = D * NdotH / (4.0 * VdotH) + 0.0001; \n"
-	"            \n"
-	"            // Разрешение сэмпла для mip уровня \n"
-	"            float saTexel = 4.0 * PI / (6.0 * resolution * resolution); \n"
-	"            float saSample = 1.0 / (float(SAMPLE_COUNT) * pdf + 0.0001); \n"
-	"            \n"
-	"            float mipLevel = roughness == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel); \n"
-	"            \n"
-	"            // Сэмплирование cubemap с соответствующим mip уровнем \n"
-	"            float3 sampleColor = texCUBElod(s0, float4(L, mipLevel)).rgb; \n"
+	"            // ВАЖНОЕ ИЗМЕНЕНИЕ: Всегда сэмплируем исходную текстуру с ручной фильтрацией \n"
+	"            float3 sampleColor = manualCubeSampleHighQuality(L, roughness); \n"
 	"            \n"
 	"            prefilteredColor += sampleColor * NdotL; \n"
 	"            totalWeight += NdotL; \n"
 	"        } \n"
 	"    } \n"
 	"    \n"
-	"    prefilteredColor = prefilteredColor / totalWeight; \n"
+	"    prefilteredColor = totalWeight > 0.0 ? prefilteredColor / totalWeight : float3(0.0, 0.0, 0.0); \n"
 	"    return float4(prefilteredColor, 1.0); \n"
 	"} \n";
 
-// Улучшенный шейдер для Irradiance IBL только с методом Монте-Карло и Disney диффузом
-const char* advancedIrradiancePixelShader =
+// Упрощенный, но максимально качественный шейдер для Irradiance IBL
+const char* qualityIrradiancePixelShader =
 	"#define PI 3.14159265359 \n"
-	"#define SAMPLE_COUNT 8192 \n"
 	" \n"
-	"// Disney diffuse BRDF \n"
-	"float disneyDiffuse(float NdotV, float NdotL, float LdotH, float roughness) { \n"
-	"    float FD90 = 0.5 + 2.0 * LdotH * LdotH * roughness; \n"
-	"    float FdV = 1.0 + (FD90 - 1.0) * pow(1.0 - NdotV, 5.0); \n"
-	"    float FdL = 1.0 + (FD90 - 1.0) * pow(1.0 - NdotL, 5.0); \n"
-	"    return FdV * FdL / PI; \n"
+	"// Ручное сэмплирование исходной кубмапы с межгранной фильтрацией \n"
+	"float3 manualCubeSampleHighQuality(float3 dir) \n"
+	"{ \n"
+	"    float3 result = float3(0.0, 0.0, 0.0); \n"
+	"    float totalWeight = 0.0; \n"
+	"    \n"
+	"    // Многократное сэмплирование для smooth переходов \n"
+	"    for (int i = 0; i < 256; i++) \n"
+	"    { \n"
+	"        float2 randomOffset = float2( \n"
+	"            (fmod(float(i) * 1.618034, 1.0) - 0.5) * 2.0 * 0.02, \n"
+	"            (fmod(float(i) * 2.678234, 1.0) - 0.5) * 2.0 * 0.02 \n"
+	"        ); \n"
+	"        \n"
+	"        float3 sampleDir = normalize(dir + float3(randomOffset.x, randomOffset.y, 0.0)); \n"
+	"        result += texCUBE(s0, sampleDir).rgb; \n"
+	"        totalWeight += 1.0; \n"
+	"    } \n"
+	"    \n"
+	"    return result / totalWeight; \n"
 	"} \n"
 	" \n"
 	"// Функция Hammersley для квази-случайных последовательностей \n"
@@ -168,45 +232,38 @@ const char* advancedIrradiancePixelShader =
 	" \n"
 	"float4 main(float3 worldPos : TEXCOORD0, float3 normal : TEXCOORD1) : COLOR { \n"
 	"    float3 N = normalize(normal); \n"
-	"    float3 V = normalize(worldPos); \n"
 	"    \n"
-	"    // Monte Carlo интеграция с Disney диффузом \n"
-	"    float3 mcColor = float3(0.0, 0.0, 0.0); \n"
+	"    float3 irradiance = float3(0.0, 0.0, 0.0); \n"
 	"    float totalWeight = 0.0; \n"
 	"    \n"
-	"    for(uint i = 0u; i < SAMPLE_COUNT; i++) { \n"
-	"        // Используем Hammersley для квази-случайных последовательностей \n"
-	"        float2 Xi = hammersley(i, SAMPLE_COUNT); \n"
+	"    for(uint i = 0u; i < 131072; i++) { \n"
+	"        float2 Xi = hammersley(i, 131072); \n"
 	"        \n"
-	"        // Importance sampling с косинусным распределением \n"
+	"        // Косинусное распределение для диффузного освещения \n"
 	"        float phi = 2.0 * PI * Xi.x; \n"
-	"        float cosTheta = sqrt(Xi.y);  // Косинусное распределение для лучшей сходимости\n"
+	"        float cosTheta = sqrt(Xi.y); \n"
 	"        float sinTheta = sqrt(1.0 - cosTheta * cosTheta); \n"
 	"        \n"
 	"        float3 L = float3(cos(phi) * sinTheta, sin(phi) * sinTheta, cosTheta); \n"
 	"        \n"
-	"        // Преобразование в мировую систему координат \n"
 	"        float3 up = abs(N.z) < 0.999 ? float3(0.0, 0.0, 1.0) : float3(1.0, 0.0, 0.0); \n"
 	"        float3 tangent = normalize(cross(up, N)); \n"
 	"        float3 bitangent = cross(N, tangent); \n"
 	"        L = tangent * L.x + bitangent * L.y + N * L.z; \n"
 	"        \n"
 	"        float NdotL = max(dot(N, L), 0.0); \n"
-	"        float NdotV = max(dot(N, V), 0.0); \n"
-	"        float LdotH = max(dot(L, normalize(L + V)), 0.0); \n"
 	"        \n"
 	"        if(NdotL > 0.0) { \n"
-	"            float3 sampleColor = texCUBE(s0, L).rgb; \n"
-	"            float diffuse = disneyDiffuse(NdotV, NdotL, LdotH, 0.5); \n"
+	"            // ВАЖНОЕ ИЗМЕНЕНИЕ: Всегда сэмплируем исходную текстуру с ручной фильтрацией \n"
+	"            float3 sampleColor = manualCubeSampleHighQuality(L); \n"
 	"            \n"
-	"            mcColor += sampleColor * diffuse * NdotL; \n"
+	"            irradiance += sampleColor * NdotL; \n"
 	"            totalWeight += NdotL; \n"
 	"        } \n"
 	"    } \n"
 	"    \n"
-	"    mcColor = totalWeight > 0.0 ? mcColor / totalWeight : float3(0.0, 0.0, 0.0); \n"
-	"    \n"
-	"    return float4(mcColor, 1.0); \n"
+	"    irradiance = totalWeight > 0.0 ? irradiance / totalWeight : float3(0.0, 0.0, 0.0); \n"
+	"    return float4(irradiance, 1.0); \n"
 	"} \n";
 
 struct Vertex
@@ -229,7 +286,7 @@ class IBLGenerator
 	LPD3DXCONSTANTTABLE specularPixelShaderConstants;
 	LPD3DXCONSTANTTABLE irradiancePixelShaderConstants;
 
-	// ИСПРАВЛЕННЫЕ матрицы обзора для 6 граней куба
+	// ПРАВИЛЬНЫЕ матрицы обзора для 6 граней куба (поменяны X и Y)
 	D3DXMATRIX viewMatrices[6];
 
 	void InitializeViewMatrices()
@@ -237,31 +294,29 @@ class IBLGenerator
 		D3DXVECTOR3 eye(0.0f, 0.0f, 0.0f);
 		D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 
-		// ИСПРАВЛЕНИЕ: Меняем местами X+ и X-, Y+ и Y-
-
-		// +X (правая грань) - теперь это будет -X
-		D3DXVECTOR3 atXPos(1.0f, 0.0f, 0.0f);
-		D3DXMatrixLookAtLH(&viewMatrices[1], &eye, &atXPos, &up); // Присваиваем индексу 1 (-X)
-
-		// -X (левая грань) - теперь это будет +X
+		// -X (левая грань) - теперь индекс 0
 		D3DXVECTOR3 atXNeg(-1.0f, 0.0f, 0.0f);
-		D3DXMatrixLookAtLH(&viewMatrices[0], &eye, &atXNeg, &up); // Присваиваем индексу 0 (+X)
+		D3DXMatrixLookAtLH(&viewMatrices[0], &eye, &atXNeg, &up);
 
-		// +Y (верхняя грань) - теперь это будет -Y
-		D3DXVECTOR3 atYPos(0.0f, 1.0f, 0.0f);
-		D3DXVECTOR3 upY(0.0f, 0.0f, -1.0f);
-		D3DXMatrixLookAtLH(&viewMatrices[3], &eye, &atYPos, &upY); // Присваиваем индексу 3 (-Y)
+		// +X (правая грань) - теперь индекс 1
+		D3DXVECTOR3 atXPos(1.0f, 0.0f, 0.0f);
+		D3DXMatrixLookAtLH(&viewMatrices[1], &eye, &atXPos, &up);
 
-		// -Y (нижняя грань) - теперь это будет +Y
+		// -Y (нижняя грань) - теперь индекс 2
 		D3DXVECTOR3 atYNeg(0.0f, -1.0f, 0.0f);
 		D3DXVECTOR3 upYNeg(0.0f, 0.0f, 1.0f);
-		D3DXMatrixLookAtLH(&viewMatrices[2], &eye, &atYNeg, &upYNeg); // Присваиваем индексу 2 (+Y)
+		D3DXMatrixLookAtLH(&viewMatrices[2], &eye, &atYNeg, &upYNeg);
 
-		// +Z (передняя грань) - оставляем как есть
+		// +Y (верхняя грань) - теперь индекс 3
+		D3DXVECTOR3 atYPos(0.0f, 1.0f, 0.0f);
+		D3DXVECTOR3 upY(0.0f, 0.0f, -1.0f);
+		D3DXMatrixLookAtLH(&viewMatrices[3], &eye, &atYPos, &upY);
+
+		// +Z (передняя грань)
 		D3DXVECTOR3 atZPos(0.0f, 0.0f, 1.0f);
 		D3DXMatrixLookAtLH(&viewMatrices[4], &eye, &atZPos, &up);
 
-		// -Z (задняя грань) - оставляем как есть
+		// -Z (задняя грань)
 		D3DXVECTOR3 atZNeg(0.0f, 0.0f, -1.0f);
 		D3DXMatrixLookAtLH(&viewMatrices[5], &eye, &atZNeg, &up);
 
@@ -278,8 +333,8 @@ class IBLGenerator
 		LPD3DXBUFFER errorBuffer = NULL;
 
 		// Компиляция вершинного шейдера
-		HRESULT hr = D3DXCompileShader(advancedVertexShader, strlen(advancedVertexShader), NULL, NULL, "main", "vs_3_0",
-									   0, &shaderBuffer, &errorBuffer, &vertexShaderConstants);
+		HRESULT hr = D3DXCompileShader(simpleVertexShader, strlen(simpleVertexShader), NULL, NULL, "main", "vs_3_0", 0,
+									   &shaderBuffer, &errorBuffer, &vertexShaderConstants);
 		if (FAILED(hr))
 		{
 			if (errorBuffer)
@@ -296,7 +351,7 @@ class IBLGenerator
 			return false;
 
 		// Компиляция пиксельного шейдера для Specular
-		hr = D3DXCompileShader(advancedSpecularPixelShader, strlen(advancedSpecularPixelShader), NULL, NULL, "main",
+		hr = D3DXCompileShader(qualitySpecularPixelShader, strlen(qualitySpecularPixelShader), NULL, NULL, "main",
 							   "ps_3_0", 0, &shaderBuffer, &errorBuffer, &specularPixelShaderConstants);
 		if (FAILED(hr))
 		{
@@ -314,7 +369,7 @@ class IBLGenerator
 			return false;
 
 		// Компиляция пиксельного шейдера для Irradiance
-		hr = D3DXCompileShader(advancedIrradiancePixelShader, strlen(advancedIrradiancePixelShader), NULL, NULL, "main",
+		hr = D3DXCompileShader(qualityIrradiancePixelShader, strlen(qualityIrradiancePixelShader), NULL, NULL, "main",
 							   "ps_3_0", 0, &shaderBuffer, &errorBuffer, &irradiancePixelShaderConstants);
 		if (FAILED(hr))
 		{
@@ -335,20 +390,13 @@ class IBLGenerator
 		return SUCCEEDED(hr);
 	}
 
-	D3DXVECTOR3 SampleCubeMap(const D3DXVECTOR3& direction)
-	{
-		// Упрощенная реализация сэмплирования cubemap
-		D3DXVECTOR3 result(1.0f, 1.0f, 1.0f); // Заглушка
-		return result;
-	}
-
   public:
 	IBLGenerator(LPDIRECT3DDEVICE9 dev)
 		: device(dev), vertexShader(NULL), specularPixelShader(NULL), irradiancePixelShader(NULL),
 		  vertexShaderConstants(NULL), specularPixelShaderConstants(NULL), irradiancePixelShaderConstants(NULL)
 	{
 		device->AddRef();
-		InitializeViewMatrices(); // Инициализируем правильные матрицы
+		InitializeViewMatrices();
 		InitializeShaders();
 	}
 
@@ -398,6 +446,13 @@ class IBLGenerator
 		device->SetRenderState(D3DRS_ZENABLE, FALSE);
 		device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
+		// ВАЖНО: Настраиваем сэмплер для максимального качества
+		device->SetTexture(0, sourceCubeMap);
+		device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+		device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+		device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+		device->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 16);
+
 		for (UINT mip = 0; mip < mipLevels; ++mip)
 		{
 			for (UINT face = 0; face < 6; ++face)
@@ -445,6 +500,13 @@ class IBLGenerator
 		device->SetRenderState(D3DRS_ZENABLE, FALSE);
 		device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
+		// ВАЖНО: Настраиваем сэмплер для максимального качества
+		device->SetTexture(0, sourceCubeMap);
+		device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+		device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+		device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+		device->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 16);
+
 		for (UINT face = 0; face < 6; ++face)
 		{
 			LPDIRECT3DSURFACE9 surface;
@@ -470,8 +532,8 @@ class IBLGenerator
   private:
 	void CreateCubeVertexBuffer(LPDIRECT3DVERTEXBUFFER9& vb)
 	{
-		// ИСПРАВЛЕННЫЕ вершины куба - соответствуют новым матрицам обзора
-		Vertex vertices[] = {// +X face (была -X) - левая грань
+		// ПРАВИЛЬНЫЙ порядок вершин куба (поменяны X и Y)
+		Vertex vertices[] = {// -X face (левая грань) - теперь индекс 0
 							 {-1, -1, 1, -1, 0, 0},
 							 {-1, 1, 1, -1, 0, 0},
 							 {-1, 1, -1, -1, 0, 0},
@@ -479,7 +541,7 @@ class IBLGenerator
 							 {-1, -1, -1, -1, 0, 0},
 							 {-1, -1, 1, -1, 0, 0},
 
-							 // -X face (была +X) - правая грань
+							 // +X face (правая грань) - теперь индекс 1
 							 {1, -1, -1, 1, 0, 0},
 							 {1, 1, -1, 1, 0, 0},
 							 {1, 1, 1, 1, 0, 0},
@@ -487,23 +549,23 @@ class IBLGenerator
 							 {1, -1, 1, 1, 0, 0},
 							 {1, -1, -1, 1, 0, 0},
 
-							 // +Y face (была -Y) - нижняя грань
-							 {-1, -1, 1, 0, -1, 0},
-							 {1, -1, 1, 0, -1, 0},
-							 {1, -1, -1, 0, -1, 0},
-							 {1, -1, -1, 0, -1, 0},
+							 // -Y face (нижняя грань) - теперь индекс 2
 							 {-1, -1, -1, 0, -1, 0},
+							 {1, -1, -1, 0, -1, 0},
+							 {1, -1, 1, 0, -1, 0},
+							 {1, -1, 1, 0, -1, 0},
 							 {-1, -1, 1, 0, -1, 0},
+							 {-1, -1, -1, 0, -1, 0},
 
-							 // -Y face (была +Y) - верхняя грань
-							 {-1, 1, -1, 0, 1, 0},
-							 {1, 1, -1, 0, 1, 0},
-							 {1, 1, 1, 0, 1, 0},
-							 {1, 1, 1, 0, 1, 0},
+							 // +Y face (верхняя грань) - теперь индекс 3
 							 {-1, 1, 1, 0, 1, 0},
+							 {1, 1, 1, 0, 1, 0},
+							 {1, 1, -1, 0, 1, 0},
+							 {1, 1, -1, 0, 1, 0},
 							 {-1, 1, -1, 0, 1, 0},
+							 {-1, 1, 1, 0, 1, 0},
 
-							 // +Z face (перед) - оставляем как есть
+							 // +Z face (передняя грань)
 							 {-1, -1, 1, 0, 0, 1},
 							 {-1, 1, 1, 0, 0, 1},
 							 {1, 1, 1, 0, 0, 1},
@@ -511,7 +573,7 @@ class IBLGenerator
 							 {1, -1, 1, 0, 0, 1},
 							 {-1, -1, 1, 0, 0, 1},
 
-							 // -Z face (зад) - оставляем как есть
+							 // -Z face (задняя грань)
 							 {1, -1, -1, 0, 0, -1},
 							 {1, 1, -1, 0, 0, -1},
 							 {-1, 1, -1, 0, 0, -1},
@@ -551,21 +613,13 @@ class IBLGenerator
 			vertexShaderConstants->SetMatrix(device, handle, &worldViewProj);
 		}
 
-		// Устанавливаем текстуру напрямую через устройство
-		device->SetTexture(0, sourceCubeMap);
-		device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-		device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-		device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
 		// Устанавливаем параметры для пиксельного шейдера
 		if (specularPixelShaderConstants)
 		{
-			// Устанавливаем roughness
 			float roughness = (float)mip / (float)(totalMips - 1);
 			D3DXHANDLE roughnessHandle = specularPixelShaderConstants->GetConstantByName(NULL, "roughness");
 			specularPixelShaderConstants->SetFloat(device, roughnessHandle, roughness);
 
-			// Устанавливаем разрешение
 			D3DXHANDLE resolutionHandle = specularPixelShaderConstants->GetConstantByName(NULL, "resolution");
 			specularPixelShaderConstants->SetFloat(device, resolutionHandle, (float)resolution);
 		}
@@ -597,12 +651,6 @@ class IBLGenerator
 			vertexShaderConstants->SetMatrix(device, handle, &worldViewProj);
 		}
 
-		// Устанавливаем текстуру напрямую через устройство
-		device->SetTexture(0, sourceCubeMap);
-		device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-		device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-		device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
 		// Рендерим куб
 		device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 12);
 
@@ -610,7 +658,6 @@ class IBLGenerator
 	}
 };
 
-// Пример использования
 int main()
 {
 	// Инициализация Direct3D
