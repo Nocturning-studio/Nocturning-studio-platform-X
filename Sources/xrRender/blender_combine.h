@@ -40,10 +40,10 @@ class CBlender_combine : public IBlender
 			C.begin_Pass(PassDescription);
 			C.set_Sampler_point("s_light_accumulator", r_RT_Light_Accumulator);
 			C.set_Sampler_point("s_ao", r_RT_ao);
-			C.set_Sampler_linear("env_s0", r_T_irradiance0);
-			C.set_Sampler_linear("env_s1", r_T_irradiance1);
-			C.set_Sampler_linear("sky_s0", r_T_sky0);
-			C.set_Sampler_linear("sky_s1", r_T_sky1);
+			C.set_Sampler("env_s0", r_T_irradiance0, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
+			C.set_Sampler("env_s1", r_T_irradiance1, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
+			C.set_Sampler("sky_s0", r_T_sky0, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
+			C.set_Sampler("sky_s1", r_T_sky1, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
 			C.set_Sampler_linear("s_brdf_lut", "vfx\\vfx_brdf_lut");
 			C.set_Sampler_point("s_image", r_RT_generic0);
 			C.set_Sampler_linear("s_reflections", r_RT_reflections);
@@ -57,7 +57,6 @@ class CBlender_combine : public IBlender
 			PassDescription.EnableAlphaBlend = false;
 			C.begin_Pass(PassDescription);
 			C.set_Sampler_point("s_image", r_RT_generic1);
-			C.set_Sampler_linear("s_autoexposure", r_RT_autoexposure_cur);
 			C.set_Sampler_linear("s_bloom", r_RT_bloom1);
 			C.set_Sampler_linear("s_bloom_blades", r_RT_bloom_blades1);
 			C.set_Sampler_point("s_light_accumulator", r_RT_Light_Accumulator);
