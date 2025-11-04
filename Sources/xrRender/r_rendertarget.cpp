@@ -87,14 +87,14 @@ void CRenderTarget::create_textures()
 	rt_Bloom_Blades_2.create(r_RT_bloom_blades2, w, h, D3DFMT_A16B16G16R16F);
 
 	// autoexposure
-	//rt_LUM_512.create(r_RT_autoexposure_t512, 512, 512, D3DFMT_R16F);
-	//rt_LUM_256.create(r_RT_autoexposure_t256, 256, 256, D3DFMT_R16F);
-	//rt_LUM_128.create(r_RT_autoexposure_t128, 128, 128, D3DFMT_R16F);
-	//rt_LUM_64.create(r_RT_autoexposure_t64, 64, 64, D3DFMT_R16F);
-	//rt_LUM_8.create(r_RT_autoexposure_t8, 8, 8, D3DFMT_R16F);
+	rt_LUM_512.create(r_RT_autoexposure_t512, 512, 512, D3DFMT_R16F);
+	rt_LUM_256.create(r_RT_autoexposure_t256, 256, 256, D3DFMT_R16F);
+	rt_LUM_128.create(r_RT_autoexposure_t128, 128, 128, D3DFMT_R16F);
+	rt_LUM_64.create(r_RT_autoexposure_t64, 64, 64, D3DFMT_R16F);
+	rt_LUM_8.create(r_RT_autoexposure_t8, 8, 8, D3DFMT_R16F);
 
-	//rt_SceneLuminance.create(r_RT_autoexposure_luminance, 8, 8, D3DFMT_R16F);
-	//rt_SceneLuminancePrevious.create(r_RT_autoexposure_luminance_previous, 8, 8, D3DFMT_R16F);
+	rt_SceneLuminance.create(r_RT_autoexposure_luminance, 8, 8, D3DFMT_R16F);
+	rt_SceneLuminancePrevious.create(r_RT_autoexposure_luminance_previous, 8, 8, D3DFMT_R16F);
 }
 
 void CRenderTarget::create_blenders()
@@ -131,8 +131,8 @@ void CRenderTarget::create_blenders()
 	b_bloom = xr_new<CBlender_bloom>();
 	s_bloom.create(b_bloom);
 
-	//b_autoexposure = xr_new<CBlender_autoexposure>();
-	//s_autoexposure.create(b_autoexposure);
+	b_autoexposure = xr_new<CBlender_autoexposure>();
+	s_autoexposure.create(b_autoexposure);
 
 	b_combine = xr_new<CBlender_combine>();
 	s_combine.create(b_combine);
@@ -171,7 +171,7 @@ void CRenderTarget::delete_blenders()
 	xr_delete(b_distortion);
 	xr_delete(b_antialiasing);
 	xr_delete(b_combine);
-	//xr_delete(b_autoexposure);
+	xr_delete(b_autoexposure);
 	xr_delete(b_bloom);
 	xr_delete(b_ambient_occlusion);
 	xr_delete(b_output_to_screen);

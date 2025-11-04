@@ -145,10 +145,10 @@ class ENGINE_API CBlender_Compile
 	{
 		return r_Sampler(name, texture.c_str(), b_ps1x_ProjectiveDivide, address, fmin, fmip, fmag, b_srgb);
 	}
-	void r_Sampler_rtf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
-	void r_Sampler_clf(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
-	void r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
-	void r_Sampler_tex(LPCSTR name, LPCSTR texture, bool b_SRGB = true);
+	void r_Sampler_point(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
+	void r_Sampler_linear(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
+	void r_Sampler_linear_wrap(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
+	void r_Sampler_point_wrap(LPCSTR name, LPCSTR texture, bool b_SRGB = true);
 	void r_Sampler_gaussian(LPCSTR name, LPCSTR texture, bool b_SRGB = true);
 	void r_End();
 

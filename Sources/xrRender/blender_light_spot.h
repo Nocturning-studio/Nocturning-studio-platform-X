@@ -63,7 +63,7 @@ class CBlender_accum_spot : public IBlender
 			C.r_Define("USE_LIGHT_MAPPING", "1");
 			C.r_Pass("accumulating_light_stage_volume", "accumulating_light_stage_spot", false, FALSE, FALSE, TRUE, D3DBLEND_ONE, D3DBLEND_ONE);
 			gbuffer(C);
-			C.r_Sampler_clf("s_lmap", r_RT_smap_surf); // diff here
+			C.r_Sampler_linear("s_lmap", r_RT_smap_surf); // diff here
 			C.r_Sampler_gaussian("s_smap", r_RT_smap_depth);
 			jitter(C);
 			C.r_End();

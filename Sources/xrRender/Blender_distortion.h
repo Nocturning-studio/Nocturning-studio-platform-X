@@ -33,8 +33,8 @@ class CBlender_distortion : public IBlender
 		case 0:
 			C.r_Pass("screen_quad", "postprocess_stage_distortion", FALSE, FALSE, FALSE);
 			gbuffer(C);
-			C.r_Sampler_rtf("s_image", r_RT_generic1);
-			C.r_Sampler_clf("s_distort", r_RT_distortion_mask);
+			C.r_Sampler_point("s_image", r_RT_generic1);
+			C.r_Sampler_linear("s_distort", r_RT_distortion_mask);
 			jitter(C);
 			C.r_End();
 			break;

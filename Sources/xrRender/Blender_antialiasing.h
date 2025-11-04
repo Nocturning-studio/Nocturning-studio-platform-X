@@ -31,12 +31,12 @@ class CBlender_antialiasing : public IBlender
 		{
 		case SE_PASS_NFAA:
 			C.r_Pass("screen_quad", "postprocess_stage_antialiasing_pass_nfaa", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_image", r_RT_generic0);
+			C.r_Sampler_point("s_image", r_RT_generic0);
 			C.r_End();
 			break;
 		case SE_PASS_AA_DUMMY:
 			C.r_Pass("screen_quad", "simple_image", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_image", r_RT_generic1);
+			C.r_Sampler_point("s_image", r_RT_generic1);
 			C.r_End();
 			break;
 		}

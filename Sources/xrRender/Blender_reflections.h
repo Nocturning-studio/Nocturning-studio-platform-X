@@ -42,13 +42,13 @@ class CBlender_reflections : public IBlender
 		case SE_RENDER_PASS:
 			C.r_Pass("screen_quad", "postprocess_stage_reflections_pass_render", FALSE, FALSE, FALSE);
 			C.r_Sampler_gaussian("s_image", r_RT_generic0);
-			C.r_Sampler_rtf("s_bent_normals", r_RT_Bent_Normals);
+			C.r_Sampler_point("s_bent_normals", r_RT_Bent_Normals);
 			gbuffer(C);
 			C.r_End();
 			break;
 		case SE_BLUR_PASS:
 			C.r_Pass("screen_quad", "postprocess_stage_reflections_pass_blur", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_reflections", r_RT_reflections_raw);
+			C.r_Sampler_point("s_reflections", r_RT_reflections_raw);
 			gbuffer(C);
 			C.r_End();
 			break;

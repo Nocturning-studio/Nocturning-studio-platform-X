@@ -596,11 +596,11 @@ void xrRender_initconsole()
 	CMD3(CCC_Token, "r_ao_quality", &ps_r_ao_quality, ao_quality_token);
 	CMD4(CCC_Float, "r_ao_brightness", &ps_r_ao_brightness, 0.0f, 1.0f);
 
-	//CMD3(CCC_Mask, "r_autoexposure", &ps_r_postprocess_flags, RFLAG_AUTOEXPOSURE);
-	//CMD4(CCC_Float, "r_autoexposure_middlegray", &ps_r_autoexposure_middlegray, 0.0f, 2.0f);
-	//CMD4(CCC_Float, "r_autoexposure_adaptation", &ps_r_autoexposure_adaptation, 0.01f, 10.0f);
-	//CMD4(CCC_Float, "r_autoexposure_lowlum", &ps_r_autoexposure_low_lum, 0.0f, 1.0f);
-	//CMD4(CCC_Float, "r_autoexposure_amount", &ps_r_autoexposure_amount, 0.0f, 1.0f);
+	CMD3(CCC_Mask, "r_autoexposure", &ps_r_postprocess_flags, RFLAG_AUTOEXPOSURE);
+	CMD4(CCC_Float, "r_autoexposure_middlegray", &ps_r_autoexposure_middlegray, 0.0f, 2.0f);
+	CMD4(CCC_Float, "r_autoexposure_adaptation", &ps_r_autoexposure_adaptation, 0.01f, 10.0f);
+	CMD4(CCC_Float, "r_autoexposure_lowlum", &ps_r_autoexposure_low_lum, 0.0f, 1.0f);
+	CMD4(CCC_Float, "r_autoexposure_amount", &ps_r_autoexposure_amount, 0.0f, 1.0f);
 
 	CMD3(CCC_Mask, "r_bloom", &ps_r_postprocess_flags, RFLAG_BLOOM);
 	CMD3(CCC_Token, "r_bloom_quality", &ps_r_bloom_quality, bloom_quality_token);

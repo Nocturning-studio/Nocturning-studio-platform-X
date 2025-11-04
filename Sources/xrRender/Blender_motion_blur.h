@@ -31,8 +31,8 @@ class CBlender_motion_blur : public IBlender
 		{
 		case SE_PASS_PREPARE_DILATION_MAP:
 			C.r_Pass("screen_quad", "postprocess_stage_motion_blur_pass_create_dilation_map", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_image", r_RT_generic0);
-			C.r_Sampler_rtf("s_previous_depth", r_RT_mblur_previous_frame_depth);
+			C.r_Sampler_point("s_image", r_RT_generic0);
+			C.r_Sampler_point("s_previous_depth", r_RT_mblur_previous_frame_depth);
 			gbuffer(C);
 			C.r_End();
 			break;
@@ -50,14 +50,14 @@ class CBlender_motion_blur : public IBlender
 		case SE_PASS_BLUR_FRAME:
 			C.r_Define("USE_VERTICAL_FILTER", "1");
 			C.r_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_image", r_RT_generic1);
+			C.r_Sampler_point("s_image", r_RT_generic1);
 			C.r_Sampler_gaussian("s_dilation_map", r_RT_mblur_dilation_map_0);
 			gbuffer(C);
 			C.r_End();
 
 			C.r_Define("USE_HORIZONTAL_FILTER", "1");
 			C.r_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_image", r_RT_generic0);
+			C.r_Sampler_point("s_image", r_RT_generic0);
 			C.r_Sampler_gaussian("s_dilation_map", r_RT_mblur_dilation_map_0);
 			gbuffer(C);
 			C.r_End();

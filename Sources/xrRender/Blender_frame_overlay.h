@@ -27,8 +27,8 @@ class CBlender_frame_overlay : public IBlender
 		{
 		case 0:
 			C.r_Pass("screen_quad", "overlay_stage_apply", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_image", r_RT_generic1);
-			C.r_Sampler_tex("s_watermark", "vfx\\vfx_watermark");
+			C.r_Sampler_point("s_image", r_RT_generic1);
+			C.r_Sampler_point_wrap("s_watermark", "vfx\\vfx_watermark");
 			C.r_End();
 			break;
 		}

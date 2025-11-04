@@ -68,7 +68,7 @@ class CBlender_transluent : public IBlender
 					C.r_Pass("alpha_blend_lightmap_lighted", "alpha_blend_lightmap_lighted", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, oAREF.value);
 					C.r_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 					C.r_Sampler("s_lmap", C.L_textures[1]);
-					C.r_Sampler_clf("s_hemi", *C.L_textures[2]);
+					C.r_Sampler_linear("s_hemi", *C.L_textures[2]);
 					C.r_Sampler("s_env", r_T_irradiance0, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
 					C.r_End();
 				}

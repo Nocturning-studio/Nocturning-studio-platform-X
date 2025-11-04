@@ -37,7 +37,7 @@ class CBlender_output_to_screen : public IBlender
 		{
 		case 0:
 			C.r_Pass("screen_quad", "output_to_screen_stage", FALSE, FALSE, FALSE);
-			C.r_Sampler_rtf("s_image", r_RT_generic0);
+			C.r_Sampler_point("s_image", r_RT_generic0);
 			C.r_End();
 			break;
 		}
