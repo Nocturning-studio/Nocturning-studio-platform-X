@@ -66,18 +66,133 @@ IC bool pred_energy(const CROS_impl::Light& L1, const CROS_impl::Light& L2)
 //////////////////////////////////////////////////////////////////////////
 #pragma warning(push)
 #pragma warning(disable : 4305)
+
+// Оптимизированные направления гемисферы из X-Ray 1.6
 const float hdir[lt_hemisamples][3] = {
-	{0.00000, 1.00000, 0.00000},   {0.52573, 0.85065, 0.00000},	  {0.16246, 0.85065, 0.50000},
-	{-0.42533, 0.85065, 0.30902},  {-0.42533, 0.85065, -0.30902}, {0.16246, 0.85065, -0.50000},
-	{0.89443, 0.44721, 0.00000},   {0.27639, 0.44721, 0.85065},	  {-0.72361, 0.44721, 0.52573},
-	{-0.72361, 0.44721, -0.52573}, {0.27639, 0.44721, -0.85065},  {0.68819, 0.52573, 0.50000},
-	{-0.26287, 0.52573, 0.80902},  {-0.85065, 0.52573, -0.00000}, {-0.26287, 0.52573, -0.80902},
-	{0.68819, 0.52573, -0.50000},  {0.95106, 0.00000, 0.30902},	  {0.58779, 0.00000, 0.80902},
-	{-0.00000, 0.00000, 1.00000},  {-0.58779, 0.00000, 0.80902},  {-0.95106, 0.00000, 0.30902},
-	{-0.95106, 0.00000, -0.30902}, {-0.58779, 0.00000, -0.80902}, {0.00000, 0.00000, -1.00000},
-	{0.58779, 0.00000, -0.80902},  {0.95106, 0.00000, -0.30902}};
+	{-0.26287, 0.52573, 0.80902},  {0.27639, 0.44721, 0.85065},	  {-0.95106, 0.00000, 0.30902},
+	{-0.95106, 0.00000, -0.30902}, {0.58779, 0.00000, -0.80902},  {0.58779, 0.00000, 0.80902},
+
+	{-0.00000, 0.00000, 1.00000},  {0.52573, 0.85065, 0.00000},	  {-0.26287, 0.52573, -0.80902},
+	{-0.42533, 0.85065, 0.30902},  {0.95106, 0.00000, 0.30902},	  {0.95106, 0.00000, -0.30902},
+
+	{0.00000, 1.00000, 0.00000},   {-0.58779, 0.00000, 0.80902},  {-0.72361, 0.44721, 0.52573},
+	{-0.72361, 0.44721, -0.52573}, {-0.58779, 0.00000, -0.80902}, {0.16246, 0.85065, -0.50000},
+
+	{0.89443, 0.44721, 0.00000},   {-0.85065, 0.52573, -0.00000}, {0.16246, 0.85065, 0.50000},
+	{0.68819, 0.52573, -0.50000},  {0.27639, 0.44721, -0.85065},  {0.00000, 0.00000, -1.00000},
+
+	{-0.42533, 0.85065, -0.30902}, {0.68819, 0.52573, 0.50000},
+};
 #pragma warning(pop)
 
+inline void CROS_impl::accum_hemi(float* hemi_cube, Fvector3& dir, float scale)
+{
+	if (dir.x > 0)
+		hemi_cube[CUBE_FACE_POS_X] += dir.x * scale;
+	else
+		hemi_cube[CUBE_FACE_NEG_X] -= dir.x * scale;
+
+	if (dir.y > 0)
+		hemi_cube[CUBE_FACE_POS_Y] += dir.y * scale;
+	else
+		hemi_cube[CUBE_FACE_NEG_Y] -= dir.y * scale;
+
+	if (dir.z > 0)
+		hemi_cube[CUBE_FACE_POS_Z] += dir.z * scale;
+	else
+		hemi_cube[CUBE_FACE_NEG_Z] -= dir.z * scale;
+}
+
+void CROS_impl::smart_update(IRenderable* O)
+{
+	if (!O)
+		return;
+	if (0 == O->renderable.visual)
+		return;
+
+	--ticks_to_update;
+
+	// Получение текущей позиции
+	Fvector position;
+	VERIFY(dynamic_cast<CROS_impl*>(O->renderable_ROS()));
+	O->renderable.xform.transform_tiny(position, O->renderable.visual->vis.sphere.P);
+
+	if (ticks_to_update <= 0)
+	{
+		update(O);
+		last_position = position;
+
+		if (result_count < lt_hemisamples)
+			ticks_to_update = ::Random.randI(1, 2); // s_iUTFirstTimeMin, s_iUTFirstTimeMax
+		else if (sky_rays_uptodate < lt_hemisamples)
+			ticks_to_update = ::Random.randI(3, 7); // s_iUTPosChangedMin, s_iUTPosChangedMax
+		else
+			ticks_to_update = ::Random.randI(1000, 2001); // s_iUTIdleMin, s_iUTIdleMax
+	}
+	else
+	{
+		if (!last_position.similar(position, 0.15))
+		{
+			sky_rays_uptodate = 0;
+			update(O);
+			last_position = position;
+
+			if (result_count < lt_hemisamples)
+				ticks_to_update = ::Random.randI(1, 2);
+			else
+				ticks_to_update = ::Random.randI(3, 7);
+		}
+	}
+}
+
+void CROS_impl::calc_sky_hemi_value(Fvector& position, CObject* _object)
+{
+	// hemi-tracing
+	if (MODE & IRender_ObjectSpecific::TRACE_HEMI)
+	{
+		sky_rays_uptodate += ps_r_dhemi_count;
+		sky_rays_uptodate = _min(sky_rays_uptodate, lt_hemisamples);
+
+		for (u32 it = 0; it < (u32)ps_r_dhemi_count; it++)
+		{
+			u32 sample = 0;
+			if (result_count < lt_hemisamples)
+			{
+				sample = result_count;
+				result_count++;
+			}
+			else
+			{
+				sample = (result_iterator % lt_hemisamples);
+				result_iterator++;
+			}
+
+			// take sample
+			Fvector direction;
+			direction.set(hdir[sample][0], hdir[sample][1], hdir[sample][2]).normalize();
+			result[sample] = !g_pGameLevel->ObjectSpace.RayTest(position, direction, 50.f, collide::rqtStatic,
+																&cache[sample], _object);
+		}
+	}
+
+	// Расчет значения гемисферы и накопление в кубические грани
+	int _pass = 0;
+	for (int it = 0; it < result_count; it++)
+		if (result[it])
+			_pass++;
+
+	hemi_value = float(_pass) / float(result_count ? result_count : 1);
+	hemi_value *= ps_r_dhemi_sky_scale;
+
+	// Накопление в кубические грани для каждого успешного сэмпла
+	for (int it = 0; it < result_count; it++)
+	{
+		if (result[it])
+		{
+			accum_hemi(hemi_cube, Fvector3().set(hdir[it][0], hdir[it][1], hdir[it][2]), ps_r_dhemi_sky_scale);
+		}
+	}
+}
 //////////////////////////////////////////////////////////////////////////
 void CROS_impl::update(IRenderable* O)
 {
@@ -103,7 +218,22 @@ void CROS_impl::update(IRenderable* O)
 	Fvector direction;
 	direction.random_dir();
 
-	// sun-tracing
+	// ========== НАЧАЛО: ЗАМЕНА HEMI РАСЧЕТА ==========
+
+	// Инициализация кубических граней
+	for (size_t i = 0; i < NUM_FACES; ++i)
+	{
+		hemi_cube[i] = 0;
+	}
+
+	bool bFirstTime = (0 == result_count);
+
+	// Используем новый расчет HEMI из 1.6
+	calc_sky_hemi_value(position, _object);
+
+	// ========== КОНЕЦ: ЗАМЕНА HEMI РАСЧЕТА ==========
+
+	// sun-tracing (БЕЗ ИЗМЕНЕНИЙ)
 	light* sun = (light*)RenderImplementation.Lights.sun_adapted._get();
 
 	if (MODE & IRender_ObjectSpecific::TRACE_SUN)
@@ -115,55 +245,20 @@ void CROS_impl::update(IRenderable* O)
 			sun_direction.set(sun->get_direction()).invert().normalize();
 			sun_value = !(g_pGameLevel->ObjectSpace.RayTest(position, sun_direction, 500.f, collide::rqtBoth,
 															&cache_sun, _object))
-					? 1.f
-					: 0.f;
+							? 1.f
+							: 0.f;
 		}
 	}
 
-	// hemi-tracing
-	bool bFirstTime = (0 == result_count);
-	if (MODE & IRender_ObjectSpecific::TRACE_HEMI)
-	{
-		for (u32 it = 0; it < (u32)ps_r_dhemi_count; it++)
-		{ // five samples per one frame
-			u32 sample = 0;
-			if (result_count < lt_hemisamples)
-			{
-				sample = result_count;
-				result_count++;
-			}
-			else
-			{
-				sample = (result_iterator % lt_hemisamples);
-				result_iterator++;
-			}
-
-			// take sample
-			Fvector hemi_sample_direction;
-			hemi_sample_direction.set(hdir[sample][0], hdir[sample][1], hdir[sample][2]).normalize();
-			//.			result[sample]	=
-			//! g_pGameLevel->ObjectSpace.RayTest(position,hemi_sample_direction,50.f,collide::rqtBoth,&cache[sample],_object);
-			result[sample] = !g_pGameLevel->ObjectSpace.RayTest(position, hemi_sample_direction, 50.f,
-																collide::rqtStatic,
-																&cache[sample], _object);
-			//	Msg				("%d:-- %s",sample,result[sample]?"true":"false");
-		}
-	}
-
-	// hemi & sun: update and smooth
-	//	float	l_f				=	dt*lt_smooth;
-	//	float	l_i				=	1.f-l_f;
-	int _pass = 0;
-	for (int it = 0; it < result_count; it++)
-		if (result[it])
-			_pass++;
-	hemi_value = float(_pass) / float(result_count ? result_count : 1);
-	hemi_value *= ps_r_dhemi_scale;
+	// Сглаживание HEMI (обновленная версия)
 	if (bFirstTime)
+	{
 		hemi_smooth = hemi_value;
+		CopyMemory(hemi_cube_smooth, hemi_cube, NUM_FACES * sizeof(float));
+	}
 	update_smooth();
 
-	// light-tracing
+	// light-tracing (БЕЗ ИЗМЕНЕНИЙ)
 	BOOL bTraceLights = MODE & IRender_ObjectSpecific::TRACE_LIGHTS;
 	if ((!O->renderable_ShadowGenerate()) && (!O->renderable_ShadowReceive()))
 		bTraceLights = FALSE;
@@ -247,7 +342,7 @@ void CROS_impl::update(IRenderable* O)
 		concurrency::parallel_sort(lights.begin(), lights.end(), pred_energy);
 	}
 
-	// Process ambient lighting and approximate average lighting
+	// Process ambient lighting and approximate average lighting (БЕЗ ИЗМЕНЕНИЙ)
 	// Process our lights to find average luminiscense
 	CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
 	Fvector accum = {desc->ambient.x, desc->ambient.y, desc->ambient.z};
@@ -275,10 +370,6 @@ void CROS_impl::update(IRenderable* O)
 			lacc.y += lights[lit].color.g * a;
 			lacc.z += lights[lit].color.b * a;
 		}
-		//		lacc.x		*= desc.lmap_color.x;
-		//		lacc.y		*= desc.lmap_color.y;
-		//		lacc.z		*= desc.lmap_color.z;
-		//		Msg				("- rgb[%f,%f,%f]",lacc.x,lacc.y,lacc.z);
 		accum.add(lacc);
 	}
 	else
@@ -295,11 +386,19 @@ void CROS_impl::update_smooth(IRenderable* O)
 		return;
 
 	dwFrameSmooth = Device.dwFrame;
-	if (O && (0 == result_count))
-		update(O); // First time only
+
+	// Используем умное обновление для HEMI
+	smart_update(O);
+
 	float l_f = Device.fTimeDelta * ps_r_lt_smooth;
 	clamp(l_f, 0.f, 1.f);
 	float l_i = 1.f - l_f;
 	hemi_smooth = hemi_value * l_f + hemi_smooth * l_i;
 	sun_smooth = sun_value * l_f + sun_smooth * l_i;
+
+	// Сглаживание кубических граней (новая функциональность)
+	for (size_t i = 0; i < NUM_FACES; ++i)
+	{
+		hemi_cube_smooth[i] = hemi_cube[i] * l_f + hemi_cube_smooth[i] * l_i;
+	}
 }

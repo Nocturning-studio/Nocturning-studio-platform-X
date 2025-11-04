@@ -186,7 +186,10 @@ class CRender : public R_dsgraph_structure
 		LT.update_smooth(O);
 		o_hemi = 0.75f * LT.get_hemi();
 		o_sun = 0.75f * LT.get_sun();
+		CopyMemory(o_hemi_cube, LT.get_hemi_cube(), CROS_impl::NUM_FACES * sizeof(float));
 	}
+
+	float o_hemi_cube[CROS_impl::NUM_FACES];
 	IC void apply_lmaterial()
 	{
 		R_constant* C = &*RenderBackend.get_Constant(c_sbase); // get sampler
@@ -198,6 +201,8 @@ class CRender : public R_dsgraph_structure
 		VERIFY(T);
 		float mtl = T->m_material;
 		RenderBackend.set_Constant(c_lmaterial, o_hemi, o_sun, 0, (mtl + .5f) / 4.f);
+		RenderBackend.set_Constant("hemi_cube_pos_faces", o_hemi_cube[CROS_impl::CUBE_FACE_POS_X], o_hemi_cube[CROS_impl::CUBE_FACE_POS_Y], o_hemi_cube[CROS_impl::CUBE_FACE_POS_Z]);
+		RenderBackend.set_Constant("hemi_cube_neg_faces", o_hemi_cube[CROS_impl::CUBE_FACE_NEG_X], o_hemi_cube[CROS_impl::CUBE_FACE_NEG_Y], o_hemi_cube[CROS_impl::CUBE_FACE_NEG_Z]);
 	}
 
   public:

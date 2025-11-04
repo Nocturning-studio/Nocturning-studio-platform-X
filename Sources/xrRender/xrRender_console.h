@@ -142,6 +142,7 @@ extern ECORE_API u32 ps_r_shadow_filtering;
 extern ECORE_API float ps_r_zfill; // .1f
 
 extern ECORE_API float ps_r_dhemi_scale; // 1.5f
+extern ECORE_API float ps_r_dhemi_sky_scale;
 extern ECORE_API int ps_r_dhemi_count;	  // 5
 
 extern ECORE_API float ps_r_slight_fade; // 1.f

@@ -346,6 +346,11 @@ class ENGINE_API CBackend
 	{
 		if (ctable)
 			set_Constant(&*ctable->get(n), A);
+	}	
+	ICF void set_Constant(shared_str& n, const Fvector3& A)
+	{
+		if (ctable)
+			set_Constant(&*ctable->get(n), Fvector4().set(A.x, A.y, A.z, 0.0f));
 	}
 	ICF void set_Constant(shared_str& n, float x, float y, float z, float w)
 	{

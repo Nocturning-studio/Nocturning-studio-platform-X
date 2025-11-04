@@ -13,6 +13,25 @@ const int lt_hemisamples = 26;
 class CROS_impl : public IRender_ObjectSpecific
 {
   public:
+	enum CubeFaces
+	{
+		CUBE_FACE_POS_X,
+		CUBE_FACE_POS_Y,
+		CUBE_FACE_POS_Z,
+		CUBE_FACE_NEG_X,
+		CUBE_FACE_NEG_Y,
+		CUBE_FACE_NEG_Z,
+		NUM_FACES
+	};
+
+	float hemi_cube[NUM_FACES];
+	float hemi_cube_smooth[NUM_FACES];
+
+	// Smart update system
+	Fvector last_position;
+	s32 ticks_to_update;
+	s32 sky_rays_uptodate;
+
 	struct Item
 	{
 		u32 frame_touched;		  // to track creation & removal
@@ -59,6 +78,10 @@ class CROS_impl : public IRender_ObjectSpecific
 
 	Fvector approximate;
 
+	static inline void accum_hemi(float* hemi_cube, Fvector3& dir, float scale);
+	void calc_sky_hemi_value(Fvector& position, CObject* _object);
+	void smart_update(IRenderable* O);
+
   public:
 	virtual void force_mode(u32 mode)
 	{
@@ -72,6 +95,18 @@ class CROS_impl : public IRender_ObjectSpecific
 	virtual float get_luminocity_hemi()
 	{
 		return get_hemi();
+	}
+
+	virtual float* get_luminocity_hemi_cube()
+	{
+		return hemi_cube_smooth;
+	}
+
+	const float* get_hemi_cube()
+	{
+		if (dwFrameSmooth != Device.dwFrame)
+			update_smooth();
+		return hemi_cube_smooth;
 	}
 
 	void add(light* L);
