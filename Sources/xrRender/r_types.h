@@ -52,15 +52,12 @@
 #define r_RT_ao_raw "$user$ao_raw"
 
 // Autoexposure
-#define r_RT_autoexposure_t512 "$user$lum_t512"
-#define r_RT_autoexposure_t256 "$user$lum_t256"
-#define r_RT_autoexposure_t128 "$user$lum_t128"
-#define r_RT_autoexposure_t64 "$user$lum_t64"
-#define r_RT_autoexposure_t8 "$user$lum_t8"
-#define r_RT_autoexposure_src "$user$autoexposure_src" // --- prev-frame-result
-#define r_RT_autoexposure_cur "$user$autoexposure"	 // --- result
-#define r_RT_autoexposure_pool "$user$autoexposure"		 // --- pool
-
+#define r_RT_autoexposure_64 "$user$r_RT_autoexposure_64"
+#define r_RT_autoexposure_32 "$user$r_RT_autoexposure_32"
+#define r_RT_autoexposure_16 "$user$r_RT_autoexposure_16"
+#define r_RT_autoexposure_8 "$user$r_RT_autoexposure_8"
+#define r_RT_autoexposure_4 "$user$r_RT_autoexposure_4"
+#define r_RT_autoexposure_1 "$user$r_RT_autoexposure_1"
 #define r_RT_autoexposure_luminance "$user$autoexposure_luminance"
 #define r_RT_autoexposure_luminance_previous "$user$autoexposure_luminance_previous"
 

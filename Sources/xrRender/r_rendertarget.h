@@ -71,11 +71,12 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_Bloom_2; // 32bit, dim/4	(r,g,b,?)
 	ref_rt rt_Bloom_Blades_1;
 	ref_rt rt_Bloom_Blades_2;
-	ref_rt rt_LUM_512;
-	ref_rt rt_LUM_256;
-	ref_rt rt_LUM_128;
-	ref_rt rt_LUM_64;  // 64bit, 64x64,	log-average in all components
-	ref_rt rt_LUM_8;   // 64bit, 8x8,		log-average in all components
+	ref_rt rt_LUM_64;
+	ref_rt rt_LUM_32;
+	ref_rt rt_LUM_16;
+	ref_rt rt_LUM_8;
+	ref_rt rt_LUM_4;	
+	ref_rt rt_LUM_1;
 	ref_rt rt_SceneLuminance;
 	ref_rt rt_SceneLuminancePrevious;
 

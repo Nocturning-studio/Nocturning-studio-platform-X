@@ -228,10 +228,10 @@ float ps_r_df_parallax_h = 0.02f;
 
 float ps_r_ao_brightness = 1.0f;
 
-float ps_r_autoexposure_middlegray = 1.f;
-float ps_r_autoexposure_adaptation = 1.f;
-float ps_r_autoexposure_low_lum = 0.0001f;
-float ps_r_autoexposure_amount = 0.25f;
+float ps_r_autoexposure_middlegray = 0.5f;
+float ps_r_autoexposure_adaptation = 0.3f;
+float ps_r_autoexposure_low_lum = 0.01f;
+float ps_r_autoexposure_amount = 1.0f;
 
 float ps_r_bloom_threshold = 0.9f;
 float ps_r_bloom_brightness = 1.5f;
@@ -598,7 +598,7 @@ void xrRender_initconsole()
 
 	CMD3(CCC_Mask, "r_autoexposure", &ps_r_postprocess_flags, RFLAG_AUTOEXPOSURE);
 	CMD4(CCC_Float, "r_autoexposure_middlegray", &ps_r_autoexposure_middlegray, 0.0f, 2.0f);
-	CMD4(CCC_Float, "r_autoexposure_adaptation", &ps_r_autoexposure_adaptation, 0.01f, 10.0f);
+	CMD4(CCC_Float, "r_autoexposure_adaptation", &ps_r_autoexposure_adaptation, 0.0001f, 10.0f);
 	CMD4(CCC_Float, "r_autoexposure_lowlum", &ps_r_autoexposure_low_lum, 0.0f, 1.0f);
 	CMD4(CCC_Float, "r_autoexposure_amount", &ps_r_autoexposure_amount, 0.0f, 1.0f);
 

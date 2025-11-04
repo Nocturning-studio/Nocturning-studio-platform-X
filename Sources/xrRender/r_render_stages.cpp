@@ -531,10 +531,6 @@ void CRender::render_postprocess()
 	// Generic1 -> Generic0
 	combine_additional_postprocess();
 
-	// Generic0 -> Generic0
-	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
-		render_autoexposure();
-
 	//Radiation
 	render_effectors_pass_generate_radiation_noise();
 
@@ -544,6 +540,10 @@ void CRender::render_postprocess()
 	// Ceneric1 -> Generic1
 	if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
 		render_motion_blur();
+
+	// Generic1 -> Generic0 -> Generic1
+	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
+		render_autoexposure();
 
 	//Generic_1 -> Generic_0
 	render_effectors_pass_resolve_gamma();
