@@ -172,7 +172,7 @@
     <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)Sources\;$(IncludePath)$(SolutionDir)Sources\</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
@@ -186,35 +186,35 @@
     <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)Sources\;$(IncludePath)$(SolutionDir)Sources\</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
     <OutDir>$(SolutionDir)Third-party\lib\x86\</OutDir>
     <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)Sources\;$(IncludePath)$(SolutionDir)Sources\</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
     <OutDir>$(SolutionDir)Third-party\lib\x86\</OutDir>
     <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)Sources\;$(IncludePath)$(SolutionDir)Sources\</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
     <OutDir>$(SolutionDir)Third-party\lib\x86\</OutDir>
     <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)Sources\;$(IncludePath)$(SolutionDir)Sources\</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
     <OutDir>$(SolutionDir)Third-party\lib\x86\</OutDir>
     <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)Sources\;$(IncludePath)$(SolutionDir)Sources\</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
@@ -940,10 +940,10 @@
     <ResourceCompile Include="BugTrap.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Third-party\include\minizip\minizip.vcxproj">
+    <ProjectReference Include="..\minizip\minizip.vcxproj">
       <Project>{893279cb-0805-405f-b484-9bb728a18261}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\Third-party\include\zlib\zlib.vcxproj">
+    <ProjectReference Include="..\zlib\zlib.vcxproj">
       <Project>{ca2604ca-a2ac-49a1-a468-8ab5a2e6cbc9}</Project>
     </ProjectReference>
   </ItemGroup>
