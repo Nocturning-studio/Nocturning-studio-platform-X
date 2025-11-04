@@ -53,6 +53,20 @@ class ENGINE_API CBlender_Compile
 	}
 
   public:
+	struct PassDesc
+	{
+		LPCSTR VertexShader = "null";
+		LPCSTR PixelShader = "null";
+		bool EnableFog = FALSE;
+		BOOL EnableZTest = FALSE;
+		BOOL EnableZWrite = FALSE;
+		BOOL EnableAlbhaBlend = FALSE;
+		D3DBLEND BlendSRC = D3DBLEND_ONE;
+		D3DBLEND BlendDST = D3DBLEND_ZERO;
+		BOOL EnableAlphaTest = FALSE;
+		u32 AlphaRef = 0;
+	};
+
 	CShaderMacros macros;
 
 	CSimulator& R()
@@ -136,7 +150,20 @@ class ENGINE_API CBlender_Compile
 	void set_Define(BOOL Enabled, string32 Name, string32 Definition);
 
 	void begin_Pass(LPCSTR vs, LPCSTR ps, bool bFog = FALSE, BOOL bZtest = TRUE, BOOL bZwrite = TRUE, BOOL bABlend = FALSE,
-				D3DBLEND abSRC = D3DBLEND_ONE, D3DBLEND abDST = D3DBLEND_ZERO, BOOL aTest = FALSE, u32 aRef = 0);
+				D3DBLEND abSRC = D3DBLEND_ONE, D3DBLEND abDST = D3DBLEND_ZERO, BOOL aTest = FALSE, u32 aRef = 0);	
+	void begin_Pass(PassDesc PassDescription)
+	{
+		begin_Pass(	PassDescription.VertexShader, 
+					PassDescription.PixelShader, 
+					PassDescription.EnableFog,
+					PassDescription.EnableZTest,
+					PassDescription.EnableZWrite,
+					PassDescription.EnableAlbhaBlend, 
+					PassDescription.BlendSRC, 
+					PassDescription.BlendDST,
+					PassDescription.EnableAlphaTest, 
+					PassDescription.AlphaRef );
+	};
 	void set_Constant(LPCSTR name, R_constant_setup* s);
 	u32 set_Sampler(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, u32 address = D3DTADDRESS_WRAP,
 				  u32 fmin = D3DTEXF_LINEAR, u32 fmip = D3DTEXF_LINEAR, u32 fmag = D3DTEXF_LINEAR, bool b_srgb = true);
