@@ -55,12 +55,12 @@ class ENGINE_API CBlender_Compile
   public:
 	struct PassDesc
 	{
-		LPCSTR VertexShader = "null";
-		LPCSTR PixelShader = "null";
+		std::string VertexShader = "null";
+		std::string PixelShader = "null";
 		bool EnableFog = FALSE;
 		BOOL EnableZTest = FALSE;
 		BOOL EnableZWrite = FALSE;
-		BOOL EnableAlbhaBlend = FALSE;
+		BOOL EnableAlphaBlend = FALSE;
 		D3DBLEND BlendSRC = D3DBLEND_ONE;
 		D3DBLEND BlendDST = D3DBLEND_ZERO;
 		BOOL EnableAlphaTest = FALSE;
@@ -149,16 +149,17 @@ class ENGINE_API CBlender_Compile
 	void set_Define(string32 Name, string32 Definition);
 	void set_Define(BOOL Enabled, string32 Name, string32 Definition);
 
-	void begin_Pass(LPCSTR vs, LPCSTR ps, bool bFog = FALSE, BOOL bZtest = TRUE, BOOL bZwrite = TRUE, BOOL bABlend = FALSE,
+	void begin_Pass(LPCSTR vs = "null", LPCSTR ps = "null", bool bFog = FALSE, BOOL bZtest = FALSE, BOOL bZwrite = FALSE,
+					BOOL bABlend = FALSE,
 				D3DBLEND abSRC = D3DBLEND_ONE, D3DBLEND abDST = D3DBLEND_ZERO, BOOL aTest = FALSE, u32 aRef = 0);	
 	void begin_Pass(PassDesc PassDescription)
 	{
-		begin_Pass(	PassDescription.VertexShader, 
-					PassDescription.PixelShader, 
+		begin_Pass(	PassDescription.VertexShader.c_str(), 
+					PassDescription.PixelShader.c_str(), 
 					PassDescription.EnableFog,
 					PassDescription.EnableZTest,
 					PassDescription.EnableZWrite,
-					PassDescription.EnableAlbhaBlend, 
+					PassDescription.EnableAlphaBlend, 
 					PassDescription.BlendSRC, 
 					PassDescription.BlendDST,
 					PassDescription.EnableAlphaTest, 

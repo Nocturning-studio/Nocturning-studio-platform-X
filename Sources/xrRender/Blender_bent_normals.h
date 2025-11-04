@@ -23,7 +23,7 @@ class CBlender_bent_normals : public IBlender
 		switch (C.iElement)
 		{
 		case 0:
-			C.begin_Pass("screen_quad", "bent_normals_stage", FALSE, FALSE, FALSE);
+			C.begin_Pass("screen_quad", "bent_normals_stage");
 			gbuffer(C);
 			jitter(C);
 			C.end_Pass();

@@ -31,7 +31,7 @@ class CBlender_effectors : public IBlender
 		switch (C.iElement)
 		{
 		case SE_PASS_COMBINE:
-			C.begin_Pass("null", "postprocess_stage_pass_combine_effectors", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
+			C.begin_Pass("null", "postprocess_stage_pass_combine_effectors");
 			C.set_Sampler_point("s_image", r_RT_generic0);
 			C.set_Sampler_linear("s_grad0", r_colormap0);
 			C.set_Sampler_linear("s_grad1", r_colormap1);
@@ -41,32 +41,32 @@ class CBlender_effectors : public IBlender
 			C.end_Pass();
 			break;
 		case SE_PASS_RADIATION:
-			C.begin_Pass("screen_quad", "postprocess_stage_pass_radiation", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
+			C.begin_Pass("screen_quad", "postprocess_stage_pass_radiation");
 			C.end_Pass();
 			break;
 		case SE_PASS_RESOLVE_GAMMA:
-			C.begin_Pass("screen_quad", "postprocess_stage_pass_resolve_gamma", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
+			C.begin_Pass("screen_quad", "postprocess_stage_pass_resolve_gamma");
 			C.set_Sampler_point("s_image", r_RT_generic1);
 			C.end_Pass();
 			break;
 		case SE_PASS_LUT:
-			C.begin_Pass("screen_quad", "postprocess_stage_pass_lut", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
+			C.begin_Pass("screen_quad", "postprocess_stage_pass_lut");
 			C.set_Sampler_point("s_image", r_RT_generic0);
 			C.set_Sampler_linear("s_env_lut0", r_T_LUTs0);
 			C.set_Sampler_linear("s_env_lut1", r_T_LUTs1);
 			C.end_Pass();
 
-			C.begin_Pass("screen_quad", "simple_image", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
+			C.begin_Pass("screen_quad", "simple_image");
 			C.set_Sampler_point("s_image", r_RT_generic1);
 			C.end_Pass();
 			break;
 		case SE_PASS_COLOR_BLIND_FILTER:
-			C.begin_Pass("screen_quad", "postprocess_stage_pass_color_blind_filter", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
+			C.begin_Pass("screen_quad", "postprocess_stage_pass_color_blind_filter");
 			C.set_Sampler_point("s_image", r_RT_generic1);
 			jitter(C);
 			C.end_Pass();
 
-			C.begin_Pass("null", "simple_image", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
+			C.begin_Pass("null", "simple_image");
 			C.set_Sampler_point("s_image", r_RT_generic0);
 			C.end_Pass();
 			break;

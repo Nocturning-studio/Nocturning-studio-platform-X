@@ -52,7 +52,7 @@ class CBlender_accum_direct_cascade : public IBlender
 			C.set_Define("NEAR_CASCADE");
 		case SE_SUN_VOL_MIDDLE:
 			C.set_Define("MIDDLE_CASCADE");
-			PassDescription.PixelShader = "accumulating_light_stage_direct_volumetric";
+			PassDescription.PixelShader += "_volumetric";
 			C.begin_Pass(PassDescription);
 			C.PassSET_ZB(TRUE, FALSE, TRUE); // force inverted Z-Buffer
 			C.set_Sampler_point("s_smap", r_RT_smap_depth);
@@ -61,7 +61,7 @@ class CBlender_accum_direct_cascade : public IBlender
 			C.end_Pass();
 			break;
 		case SE_SUN_VOL_FAR: // far pass, only stencil clipping performed
-			PassDescription.PixelShader = "accumulating_light_stage_direct_volumetric";
+			PassDescription.PixelShader += "_volumetric";
 			C.set_Define("USE_SMOOTH_FADING");
 			C.set_Define("FAR_CASCADE");
 			C.begin_Pass(PassDescription);

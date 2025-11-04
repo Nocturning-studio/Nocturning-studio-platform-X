@@ -182,14 +182,14 @@ class CBlender_multiple_usage : public IBlender
 
 			// if (oBlend.value || bUseCustomOpacity || bUseAlphaTest)
 			//{
-			//	C.begin_Pass(tvs_s, "shadow_depth_stage_static_mesh_alphatest", FALSE);
+			//	C.begin_Pass(tvs_s, "shadow_depth_stage_static_mesh_alphatest");
 
 			//	C.set_Sampler("s_custom_opacity", CustomOpacityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC,
 			//D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 			//}
 			// else
 			//{
-			//	C.begin_Pass(tvs_s, "shadow_depth_stage_static_mesh", FALSE);
+			//	C.begin_Pass(tvs_s, "shadow_depth_stage_static_mesh");
 			//}
 			// C.set_Sampler("s_base", C.L_textures[0]);
 

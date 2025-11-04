@@ -62,7 +62,7 @@ class CBlender_LmEbB : public IBlender
 		if (oBlend.value)
 			C.begin_Pass("lmapE", "lmapE", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, 0);
 		else
-			C.begin_Pass("lmapE", "lmapE", TRUE);
+			C.begin_Pass("lmapE", "lmapE", TRUE, TRUE, TRUE);
 
 		C.set_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR,D3DTEXF_ANISOTROPIC, true);
 		C.set_Sampler("s_lmap", C.L_textures[1]);

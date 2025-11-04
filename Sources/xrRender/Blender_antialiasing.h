@@ -30,12 +30,12 @@ class CBlender_antialiasing : public IBlender
 		switch (C.iElement)
 		{
 		case SE_PASS_NFAA:
-			C.begin_Pass("screen_quad", "postprocess_stage_antialiasing_pass_nfaa", FALSE, FALSE, FALSE);
+			C.begin_Pass("screen_quad", "postprocess_stage_antialiasing_pass_nfaa");
 			C.set_Sampler_point("s_image", r_RT_generic0);
 			C.end_Pass();
 			break;
 		case SE_PASS_AA_DUMMY:
-			C.begin_Pass("screen_quad", "simple_image", FALSE, FALSE, FALSE);
+			C.begin_Pass("screen_quad", "simple_image");
 			C.set_Sampler_point("s_image", r_RT_generic1);
 			C.end_Pass();
 			break;

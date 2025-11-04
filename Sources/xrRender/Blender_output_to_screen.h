@@ -36,7 +36,7 @@ class CBlender_output_to_screen : public IBlender
 		switch (C.iElement)
 		{
 		case 0:
-			C.begin_Pass("screen_quad", "output_to_screen_stage", FALSE, FALSE, FALSE);
+			C.begin_Pass("screen_quad", "output_to_screen_stage");
 			C.set_Sampler_point("s_image", r_RT_generic0);
 			C.end_Pass();
 			break;
