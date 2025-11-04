@@ -497,85 +497,85 @@ static cl_wind_turbulence binder_wind_turbulence;
 void CBlender_Compile::SetMapping()
 {
 	// matrices
-	r_Constant("m_World", &binder_w);
-	r_Constant("m_invWorld", &binder_invw);
-	r_Constant("m_View", &binder_v);
-	r_Constant("m_invView", &binder_invv);
-	r_Constant("m_Project", &binder_p);
-	r_Constant("m_invProject", &binder_invP);
-	r_Constant("m_WorldView", &binder_wv);
-	r_Constant("m_ViewProject", &binder_vp);
-	r_Constant("m_WorldViewProject", &binder_wvp);
+	set_Constant("m_World", &binder_w);
+	set_Constant("m_invWorld", &binder_invw);
+	set_Constant("m_View", &binder_v);
+	set_Constant("m_invView", &binder_invv);
+	set_Constant("m_Project", &binder_p);
+	set_Constant("m_invProject", &binder_invP);
+	set_Constant("m_WorldView", &binder_wv);
+	set_Constant("m_ViewProject", &binder_vp);
+	set_Constant("m_WorldViewProject", &binder_wvp);
 
-	r_Constant("m_xform_v", &tree_binder_m_xform_v);
-	r_Constant("m_xform", &tree_binder_m_xform);
-	r_Constant("consts", &tree_binder_consts);
-	r_Constant("wave", &tree_binder_wave);
-	r_Constant("wind", &tree_binder_wind);
-	r_Constant("c_scale", &tree_binder_c_scale);
-	r_Constant("c_bias", &tree_binder_c_bias);
-	r_Constant("c_sun", &tree_binder_c_sun);
-	r_Constant("wind_params", &binder_wind_params);
-	r_Constant("wind_turbulence", &binder_wind_turbulence);
+	set_Constant("m_xform_v", &tree_binder_m_xform_v);
+	set_Constant("m_xform", &tree_binder_m_xform);
+	set_Constant("consts", &tree_binder_consts);
+	set_Constant("wave", &tree_binder_wave);
+	set_Constant("wind", &tree_binder_wind);
+	set_Constant("c_scale", &tree_binder_c_scale);
+	set_Constant("c_bias", &tree_binder_c_bias);
+	set_Constant("c_sun", &tree_binder_c_sun);
+	set_Constant("wind_params", &binder_wind_params);
+	set_Constant("wind_turbulence", &binder_wind_turbulence);
 
 	//	Igor	temp solution for the texgen functionality in the shader
-	r_Constant("m_texgen", &binder_texgen);
-	r_Constant("mVPTexgen", &binder_VPtexgen);
+	set_Constant("m_texgen", &binder_texgen);
+	set_Constant("mVPTexgen", &binder_VPtexgen);
 
 #ifndef _EDITOR
 	// fog-params
-	r_Constant("fog_params", &binder_fog_params);
-	r_Constant("fog_color", &binder_fog_color);
-	r_Constant("fog_density", &binder_fog_density);
-	r_Constant("fog_sky_influence", &binder_fog_sky_influence);
-	r_Constant("vertical_fog_intensity", &binder_vertical_fog_intensity);
-	r_Constant("vertical_fog_density", &binder_vertical_fog_density);
-	r_Constant("vertical_fog_height", &binder_vertical_fog_height);
+	set_Constant("fog_params", &binder_fog_params);
+	set_Constant("fog_color", &binder_fog_color);
+	set_Constant("fog_density", &binder_fog_density);
+	set_Constant("fog_sky_influence", &binder_fog_sky_influence);
+	set_Constant("vertical_fog_intensity", &binder_vertical_fog_intensity);
+	set_Constant("vertical_fog_density", &binder_vertical_fog_density);
+	set_Constant("vertical_fog_height", &binder_vertical_fog_height);
 #endif
 
-	r_Constant("water_intensity", &binder_water_intensity);
-	r_Constant("rain_density", &binder_rain_density);
+	set_Constant("water_intensity", &binder_water_intensity);
+	set_Constant("rain_density", &binder_rain_density);
 
-	r_Constant("sepia_params", &binder_sepia_params);
-	r_Constant("vignette_power", &binder_vignette_power);
+	set_Constant("sepia_params", &binder_sepia_params);
+	set_Constant("vignette_power", &binder_vignette_power);
 
-	r_Constant("far_plane", &binder_far_plane);
+	set_Constant("far_plane", &binder_far_plane);
 
-	r_Constant("pos_decompression_params", &binder_pos_decompress_params);
-	r_Constant("pos_decompression_params_hud", &binder_pos_decompress_params_hud);
+	set_Constant("pos_decompression_params", &binder_pos_decompress_params);
+	set_Constant("pos_decompression_params_hud", &binder_pos_decompress_params_hud);
 
-	r_Constant("fov", &binder_fov);
+	set_Constant("fov", &binder_fov);
 	
 	// env-params
-	r_Constant("env_color", &binder_env_color);
+	set_Constant("env_color", &binder_env_color);
 
 	// time
-	r_Constant("timers", &binder_times);
+	set_Constant("timers", &binder_times);
 
 	// eye-params
-	r_Constant("eye_position", &binder_eye_P);
-	r_Constant("eye_direction", &binder_eye_D);
-	r_Constant("eye_normal", &binder_eye_N);
+	set_Constant("eye_position", &binder_eye_P);
+	set_Constant("eye_direction", &binder_eye_D);
+	set_Constant("eye_normal", &binder_eye_N);
 
 #ifndef _EDITOR
 	// global-lighting (env params)
-	r_Constant("L_sun_color", &binder_sun0_color);
-	r_Constant("L_sun_dir_w", &binder_sun0_dir_w);
-	r_Constant("L_sun_dir_e", &binder_sun0_dir_e);
-	r_Constant("L_hemi_color", &binder_hemi_color);
-	r_Constant("L_ambient", &binder_amb_color);
-	r_Constant("ambient_brightness", &binder_ambient_brightness);
+	set_Constant("L_sun_color", &binder_sun0_color);
+	set_Constant("L_sun_dir_w", &binder_sun0_dir_w);
+	set_Constant("L_sun_dir_e", &binder_sun0_dir_e);
+	set_Constant("L_hemi_color", &binder_hemi_color);
+	set_Constant("L_ambient", &binder_amb_color);
+	set_Constant("ambient_brightness", &binder_ambient_brightness);
 #endif
 
-	r_Constant("screen_res", &binder_screen_res);
+	set_Constant("screen_res", &binder_screen_res);
 
 	if (bDetail && bDetail_Diffuse && detail_scaler)
-		r_Constant("dt_params", detail_scaler);
+		set_Constant("dt_params", detail_scaler);
 
 	// other common
 	for (u32 it = 0; it < Device.Resources->v_constant_setup.size(); it++)
 	{
 		std::pair<shared_str, R_constant_setup*> cs = Device.Resources->v_constant_setup[it];
-		r_Constant(*cs.first, cs.second);
+		set_Constant(*cs.first, cs.second);
 	}
 }

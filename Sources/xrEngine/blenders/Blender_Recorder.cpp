@@ -311,42 +311,42 @@ void CBlender_Compile::Stage_Constant(LPCSTR name)
 	passConstants.push_back(Device.Resources->_CreateConstant((id >= 0) ? *lst[id] : name));
 }
 
-void CBlender_Compile::r_Define(string32 Name, int value)
+void CBlender_Compile::set_Define(string32 Name, int value)
 {
 	macros.add(Name, value);
 }
 
-void CBlender_Compile::r_Define(string32 Name, float value)
+void CBlender_Compile::set_Define(string32 Name, float value)
 {
 	macros.add(Name, value);
 }
 
-void CBlender_Compile::r_Define(string32 Name, u32 value)
+void CBlender_Compile::set_Define(string32 Name, u32 value)
 {
 	macros.add(Name, value);
 }
 
-void CBlender_Compile::r_Define(string32 Name, bool value)
+void CBlender_Compile::set_Define(string32 Name, bool value)
 {
 	macros.add(Name, value);
 }
 
-void CBlender_Compile::r_Define(string32 Name)
+void CBlender_Compile::set_Define(string32 Name)
 {
 	macros.add(Name, "1");
 }
 
-void CBlender_Compile::r_Define(string32 Name, string32 Definition)
+void CBlender_Compile::set_Define(string32 Name, string32 Definition)
 {
 	macros.add(Name, Definition);
 }
 
-void CBlender_Compile::r_Define(BOOL Enabled, string32 Name, string32 Definition)
+void CBlender_Compile::set_Define(BOOL Enabled, string32 Name, string32 Definition)
 {
 	macros.add(Enabled, Name, Definition);
 }
 
-void CBlender_Compile::r_Pass(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest, BOOL bZwrite, BOOL bABlend,
+void CBlender_Compile::begin_Pass(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest, BOOL bZwrite, BOOL bABlend,
 							  D3DBLEND abSRC, D3DBLEND abDST, BOOL aTest, u32 aRef)
 {
 	RS.Invalidate();
@@ -379,7 +379,7 @@ void CBlender_Compile::r_Pass(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest, BO
 	}
 }
 
-void CBlender_Compile::r_Constant(LPCSTR name, R_constant_setup* s)
+void CBlender_Compile::set_Constant(LPCSTR name, R_constant_setup* s)
 {
 	R_ASSERT(s);
 	ref_constant C = ctable.get(name);
@@ -455,7 +455,7 @@ void CBlender_Compile::i_Filter(u32 s, u32 _min, u32 _mip, u32 _mag)
 	i_Filter_Mag(s, _mag);
 }
 
-u32 CBlender_Compile::r_Sampler(LPCSTR _name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, u32 address, u32 fmin,
+u32 CBlender_Compile::set_Sampler(LPCSTR _name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, u32 address, u32 fmin,
 								u32 fmip, u32 fmag, bool b_srgb)
 {
 	dwStage = i_Sampler(_name);
@@ -485,37 +485,37 @@ u32 CBlender_Compile::r_Sampler(LPCSTR _name, LPCSTR texture, bool b_ps1x_Projec
 	return dwStage;
 }
 
-void CBlender_Compile::r_Sampler_point(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
+void CBlender_Compile::set_Sampler_point(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
 {
-	r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT,
+	set_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT,
 			  b_SRGB);
 }
 
-void CBlender_Compile::r_Sampler_linear(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
+void CBlender_Compile::set_Sampler_linear(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
 {
-	r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_LINEAR,
+	set_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_LINEAR,
 			  b_SRGB);
 }
 
-void CBlender_Compile::r_Sampler_linear_wrap(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
+void CBlender_Compile::set_Sampler_linear_wrap(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide, bool b_SRGB)
 {
-	u32 s = r_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE,
+	u32 s = set_Sampler(name, texture, b_ps1x_ProjectiveDivide, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE,
 					  D3DTEXF_LINEAR, b_SRGB);
 	if (u32(-1) != s)
 		RS.SetSAMP(s, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
 }
 
-void CBlender_Compile::r_Sampler_point_wrap(LPCSTR name, LPCSTR texture, bool b_SRGB)
+void CBlender_Compile::set_Sampler_point_wrap(LPCSTR name, LPCSTR texture, bool b_SRGB)
 {
-	r_Sampler(name, texture, false, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
+	set_Sampler(name, texture, false, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
 }
 
-void CBlender_Compile::r_Sampler_gaussian(LPCSTR name, LPCSTR texture, bool b_SRGB)
+void CBlender_Compile::set_Sampler_gaussian(LPCSTR name, LPCSTR texture, bool b_SRGB)
 {
-	r_Sampler(name, texture, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_NONE, D3DTEXF_GAUSSIANQUAD, b_SRGB);
+	set_Sampler(name, texture, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_NONE, D3DTEXF_GAUSSIANQUAD, b_SRGB);
 }
 
-void CBlender_Compile::r_End()
+void CBlender_Compile::end_Pass()
 {
 	dest.constants = Device.Resources->_CreateConstantTable(ctable);
 	dest.state = Device.Resources->_CreateState(RS.GetContainer());

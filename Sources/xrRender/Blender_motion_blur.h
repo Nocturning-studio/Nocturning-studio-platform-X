@@ -30,42 +30,42 @@ class CBlender_motion_blur : public IBlender
 		switch (C.iElement)
 		{
 		case SE_PASS_PREPARE_DILATION_MAP:
-			C.r_Pass("screen_quad", "postprocess_stage_motion_blur_pass_create_dilation_map", FALSE, FALSE, FALSE);
-			C.r_Sampler_point("s_image", r_RT_generic0);
-			C.r_Sampler_point("s_previous_depth", r_RT_mblur_previous_frame_depth);
+			C.begin_Pass("screen_quad", "postprocess_stage_motion_blur_pass_create_dilation_map", FALSE, FALSE, FALSE);
+			C.set_Sampler_point("s_image", r_RT_generic0);
+			C.set_Sampler_point("s_previous_depth", r_RT_mblur_previous_frame_depth);
 			gbuffer(C);
-			C.r_End();
+			C.end_Pass();
 			break;
 		case SE_PASS_BLUR_DILATION_MAP:
-			C.r_Define("USE_VERTICAL_FILTER", "1");
-			C.r_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur_dilation_map", FALSE, FALSE, FALSE);
-			C.r_Sampler_gaussian("s_dilation_map", r_RT_mblur_dilation_map_0);
-			C.r_End();
+			C.set_Define("USE_VERTICAL_FILTER", "1");
+			C.begin_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur_dilation_map", FALSE, FALSE, FALSE);
+			C.set_Sampler_gaussian("s_dilation_map", r_RT_mblur_dilation_map_0);
+			C.end_Pass();
 
-			C.r_Define("USE_HORIZONTAL_FILTER", "1");
-			C.r_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur_dilation_map", FALSE, FALSE, FALSE);
-			C.r_Sampler_gaussian("s_dilation_map", r_RT_mblur_dilation_map_1);
-			C.r_End();
+			C.set_Define("USE_HORIZONTAL_FILTER", "1");
+			C.begin_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur_dilation_map", FALSE, FALSE, FALSE);
+			C.set_Sampler_gaussian("s_dilation_map", r_RT_mblur_dilation_map_1);
+			C.end_Pass();
 			break;
 		case SE_PASS_BLUR_FRAME:
-			C.r_Define("USE_VERTICAL_FILTER", "1");
-			C.r_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur", FALSE, FALSE, FALSE);
-			C.r_Sampler_point("s_image", r_RT_generic1);
-			C.r_Sampler_gaussian("s_dilation_map", r_RT_mblur_dilation_map_0);
+			C.set_Define("USE_VERTICAL_FILTER", "1");
+			C.begin_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur", FALSE, FALSE, FALSE);
+			C.set_Sampler_point("s_image", r_RT_generic1);
+			C.set_Sampler_gaussian("s_dilation_map", r_RT_mblur_dilation_map_0);
 			gbuffer(C);
-			C.r_End();
+			C.end_Pass();
 
-			C.r_Define("USE_HORIZONTAL_FILTER", "1");
-			C.r_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur", FALSE, FALSE, FALSE);
-			C.r_Sampler_point("s_image", r_RT_generic0);
-			C.r_Sampler_gaussian("s_dilation_map", r_RT_mblur_dilation_map_0);
+			C.set_Define("USE_HORIZONTAL_FILTER", "1");
+			C.begin_Pass("screen_quad", "postprocess_stage_motion_blur_pass_blur", FALSE, FALSE, FALSE);
+			C.set_Sampler_point("s_image", r_RT_generic0);
+			C.set_Sampler_gaussian("s_dilation_map", r_RT_mblur_dilation_map_0);
 			gbuffer(C);
-			C.r_End();
+			C.end_Pass();
 			break;
 		case SE_PASS_SAVE_DEPTH_BUFFER:
-			C.r_Pass("screen_quad", "postprocess_stage_motion_blur_pass_save_depth", FALSE, FALSE, FALSE);
+			C.begin_Pass("screen_quad", "postprocess_stage_motion_blur_pass_save_depth", FALSE, FALSE, FALSE);
 			gbuffer(C);
-			C.r_End();
+			C.end_Pass();
 			break;
 		}
 	}

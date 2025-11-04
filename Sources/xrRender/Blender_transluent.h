@@ -65,18 +65,18 @@ class CBlender_transluent : public IBlender
 			case SE_NORMAL_LQ:
 				if (lmapped)
 				{
-					C.r_Pass("alpha_blend_lightmap_lighted", "alpha_blend_lightmap_lighted", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, oAREF.value);
-					C.r_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
-					C.r_Sampler("s_lmap", C.L_textures[1]);
-					C.r_Sampler_linear("s_hemi", *C.L_textures[2]);
-					C.r_Sampler("s_env", r_T_irradiance0, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
-					C.r_End();
+					C.begin_Pass("alpha_blend_lightmap_lighted", "alpha_blend_lightmap_lighted", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, oAREF.value);
+					C.set_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
+					C.set_Sampler("s_lmap", C.L_textures[1]);
+					C.set_Sampler_linear("s_hemi", *C.L_textures[2]);
+					C.set_Sampler("s_env", r_T_irradiance0, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
+					C.end_Pass();
 				}
 				else
 				{
-					C.r_Pass("alpha_blend_vertex_lighted", "alpha_blend_vertex_lighted", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, oAREF.value);
-					C.r_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
-					C.r_End();
+					C.begin_Pass("alpha_blend_vertex_lighted", "alpha_blend_vertex_lighted", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, oAREF.value);
+					C.set_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
+					C.end_Pass();
 				}
 				break;
 			default:
@@ -98,12 +98,12 @@ class CBlender_transluent : public IBlender
 				configure_shader(C, false, "static_mesh", "static_mesh", true);
 				break;
 			case SE_SHADOW_DEPTH: // smap
-								  // C.r_Pass("shadow_depth_stage_static_mesh_alphatest",
-								  // "shadow_depth_stage_static_mesh_alphatest", FALSE); C.r_Sampler("s_base",
-								  // C.L_textures[0]); jitter(C); C.r_End(); break;
+								  // C.begin_Pass("shadow_depth_stage_static_mesh_alphatest",
+								  // "shadow_depth_stage_static_mesh_alphatest", FALSE); C.set_Sampler("s_base",
+								  // C.L_textures[0]); jitter(C); C.end_Pass(); break;
 			case SE_DEPTH_PREPASS:
-				// C.r_Pass("depth_prepass_stage_static_mesh_alphatest", "depth_prepass_stage_static_mesh_alphatest",
-				// FALSE, TRUE, TRUE, FALSE); C.r_Sampler("s_base", C.L_textures[0]); jitter(C); C.r_End();
+				// C.begin_Pass("depth_prepass_stage_static_mesh_alphatest", "depth_prepass_stage_static_mesh_alphatest",
+				// FALSE, TRUE, TRUE, FALSE); C.set_Sampler("s_base", C.L_textures[0]); jitter(C); C.end_Pass();
 				configure_shader(C, true, "static_mesh", "static_mesh", true, true);
 				break;
 			}

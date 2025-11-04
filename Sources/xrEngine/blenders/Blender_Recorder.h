@@ -127,30 +127,30 @@ class ENGINE_API CBlender_Compile
 	void i_Filter(u32 s, u32 _min, u32 _mip, u32 _mag);
 	void i_sRGB(u32 s, bool state = true);
 
-	void r_Define(string32 Name, int value);
-	void r_Define(string32 Name, float value);
-	void r_Define(string32 Name, u32 value);
-	void r_Define(string32 Name, bool value);
-	void r_Define(string32 Name);
-	void r_Define(string32 Name, string32 Definition);
-	void r_Define(BOOL Enabled, string32 Name, string32 Definition);
+	void set_Define(string32 Name, int value);
+	void set_Define(string32 Name, float value);
+	void set_Define(string32 Name, u32 value);
+	void set_Define(string32 Name, bool value);
+	void set_Define(string32 Name);
+	void set_Define(string32 Name, string32 Definition);
+	void set_Define(BOOL Enabled, string32 Name, string32 Definition);
 
-	void r_Pass(LPCSTR vs, LPCSTR ps, bool bFog = FALSE, BOOL bZtest = TRUE, BOOL bZwrite = TRUE, BOOL bABlend = FALSE,
+	void begin_Pass(LPCSTR vs, LPCSTR ps, bool bFog = FALSE, BOOL bZtest = TRUE, BOOL bZwrite = TRUE, BOOL bABlend = FALSE,
 				D3DBLEND abSRC = D3DBLEND_ONE, D3DBLEND abDST = D3DBLEND_ZERO, BOOL aTest = FALSE, u32 aRef = 0);
-	void r_Constant(LPCSTR name, R_constant_setup* s);
-	u32 r_Sampler(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, u32 address = D3DTADDRESS_WRAP,
+	void set_Constant(LPCSTR name, R_constant_setup* s);
+	u32 set_Sampler(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, u32 address = D3DTADDRESS_WRAP,
 				  u32 fmin = D3DTEXF_LINEAR, u32 fmip = D3DTEXF_LINEAR, u32 fmag = D3DTEXF_LINEAR, bool b_srgb = true);
-	u32 r_Sampler(LPCSTR name, shared_str texture, bool b_ps1x_ProjectiveDivide = false, u32 address = D3DTADDRESS_WRAP,
+	u32 set_Sampler(LPCSTR name, shared_str texture, bool b_ps1x_ProjectiveDivide = false, u32 address = D3DTADDRESS_WRAP,
 				  u32 fmin = D3DTEXF_LINEAR, u32 fmip = D3DTEXF_LINEAR, u32 fmag = D3DTEXF_LINEAR, bool b_srgb = true)
 	{
-		return r_Sampler(name, texture.c_str(), b_ps1x_ProjectiveDivide, address, fmin, fmip, fmag, b_srgb);
+		return set_Sampler(name, texture.c_str(), b_ps1x_ProjectiveDivide, address, fmin, fmip, fmag, b_srgb);
 	}
-	void r_Sampler_point(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
-	void r_Sampler_linear(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
-	void r_Sampler_linear_wrap(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
-	void r_Sampler_point_wrap(LPCSTR name, LPCSTR texture, bool b_SRGB = true);
-	void r_Sampler_gaussian(LPCSTR name, LPCSTR texture, bool b_SRGB = true);
-	void r_End();
+	void set_Sampler_point(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
+	void set_Sampler_linear(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
+	void set_Sampler_linear_wrap(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, bool b_SRGB = true);
+	void set_Sampler_point_wrap(LPCSTR name, LPCSTR texture, bool b_SRGB = true);
+	void set_Sampler_gaussian(LPCSTR name, LPCSTR texture, bool b_SRGB = true);
+	void end_Pass();
 
 	CBlender_Compile();
 	~CBlender_Compile();

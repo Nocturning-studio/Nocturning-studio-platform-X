@@ -26,10 +26,10 @@ class CBlender_frame_overlay : public IBlender
 		switch (C.iElement)
 		{
 		case 0:
-			C.r_Pass("screen_quad", "overlay_stage_apply", FALSE, FALSE, FALSE);
-			C.r_Sampler_point("s_image", r_RT_generic1);
-			C.r_Sampler_point_wrap("s_watermark", "vfx\\vfx_watermark");
-			C.r_End();
+			C.begin_Pass("screen_quad", "overlay_stage_apply", FALSE, FALSE, FALSE);
+			C.set_Sampler_point("s_image", r_RT_generic1);
+			C.set_Sampler_point_wrap("s_watermark", "vfx\\vfx_watermark");
+			C.end_Pass();
 			break;
 		}
 	}

@@ -191,11 +191,11 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	bool bUseOpacity = false;
 	string_path OpacityTexture;
 	bUseOpacity = ConcatAndFindTexture(OpacityTexture, AlbedoTexture, "_opacity");
-	C.r_Define(bUseOpacity, "USE_CUSTOM_OPACITY", "1");
+	C.set_Define(bUseOpacity, "USE_CUSTOM_OPACITY", "1");
 
 	// Create shader with alpha testing if need
-	C.r_Define(bUseAlphaTest || bUseOpacity, "USE_ALPHA_TEST", "1");
-	C.r_Define(bNeedHashedAlphaTest, "USE_HASHED_ALPHA_TEST", "1");
+	C.set_Define(bUseAlphaTest || bUseOpacity, "USE_ALPHA_TEST", "1");
+	C.set_Define(bNeedHashedAlphaTest, "USE_HASHED_ALPHA_TEST", "1");
 
 	bool bUseBump = false;
 
@@ -212,7 +212,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 				bIsSrgbAlbedo = false;
 		}
 
-		C.r_Define(bIsSrgbAlbedo, "USE_SRGB_COLOR_CONVERTING", "1");
+		C.set_Define(bIsSrgbAlbedo, "USE_SRGB_COLOR_CONVERTING", "1");
 
 		// Normal map params
 		// Check bump existing
@@ -253,11 +253,11 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 			strconcat(sizeof(BumpCorrectionTexture), BumpCorrectionTexture, BumpCorrectionTexture, "#");
 
 			if (FS.exist(Dummy, "$game_textures$", BumpCorrectionTexture, ".dds") && (ps_r_material_quality > 1))
-				C.r_Define("USE_BUMP_DECOMPRESSION", "1");
+				C.set_Define("USE_BUMP_DECOMPRESSION", "1");
 		}
 
-		C.r_Define(bUseBump, "USE_BUMP", "1");
-		C.r_Define(bIsOpenGLNormal, "IS_OPENGL_NORMAL", "1");
+		C.set_Define(bUseBump, "USE_BUMP", "1");
+		C.set_Define(bIsOpenGLNormal, "IS_OPENGL_NORMAL", "1");
 	}
 
 	// Wind params
@@ -287,15 +287,15 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		bUseBothAxisAsWeight = GetBoolValueIfExist("wind_configuration", "use_both_axis_as_weight", bUseBothAxisAsWeight, MaterialConfiguration);
 		bInvertWeightAxis = GetBoolValueIfExist("wind_configuration", "invert_weight_axis", bInvertWeightAxis, MaterialConfiguration);
 	}
-	C.r_Define(bUseWind, "USE_WIND", "1");
-	C.r_Define(WindTypeNum == 0, "USE_LEGACY_WIND", "1");
-	C.r_Define(WindTypeNum == 1, "USE_TRUNK_WIND", "1");
-	C.r_Define(WindTypeNum == 2, "USE_BRANCHCARD_WIND", "1");
-	C.r_Define(WindTypeNum == 3, "USE_LEAFCARD_WIND", "1");
-	C.r_Define(bUseXAxisAsWeight, "USE_X_AXIS_AS_WEIGHT", "1");
-	C.r_Define(bUseYAxisAsWeight, "USE_Y_AXIS_AS_WEIGHT", "1");
-	C.r_Define(bUseBothAxisAsWeight, "USE_BOTH_AXIS_AS_WEIGHT", "1");
-	C.r_Define(bInvertWeightAxis, "INVERT_WEIGHT_AXIS", "1");
+	C.set_Define(bUseWind, "USE_WIND", "1");
+	C.set_Define(WindTypeNum == 0, "USE_LEGACY_WIND", "1");
+	C.set_Define(WindTypeNum == 1, "USE_TRUNK_WIND", "1");
+	C.set_Define(WindTypeNum == 2, "USE_BRANCHCARD_WIND", "1");
+	C.set_Define(WindTypeNum == 3, "USE_LEAFCARD_WIND", "1");
+	C.set_Define(bUseXAxisAsWeight, "USE_X_AXIS_AS_WEIGHT", "1");
+	C.set_Define(bUseYAxisAsWeight, "USE_Y_AXIS_AS_WEIGHT", "1");
+	C.set_Define(bUseBothAxisAsWeight, "USE_BOTH_AXIS_AS_WEIGHT", "1");
+	C.set_Define(bInvertWeightAxis, "INVERT_WEIGHT_AXIS", "1");
 
 	strcpy_s(AlbedoTexture, sizeof(AlbedoTexture), *C.L_textures[0]);
 
@@ -311,7 +311,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	if (!bUseCustomWeight)
 		bUseCustomWeight = ConcatAndFindTexture(CustomWeightTexture, AlbedoTexture, "_weight");
 
-	C.r_Define(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
+	C.set_Define(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
 
 	// Get AO-Roughness-Metallic texture
 	bool bUseARMMap = false;
@@ -393,7 +393,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 					bIsSrgbDetail = false;
 			}
 
-			C.r_Define(bIsSrgbDetail, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1");
+			C.set_Define(bIsSrgbDetail, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1");
 
 			strcpy_s(DetailAlbedoTexture, sizeof(DetailAlbedoTexture), C.detail_texture);
 
@@ -432,15 +432,15 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		}
 
 		// Create lightmapped shader if need
-		C.r_Define(bUseLightMap, "USE_LIGHTMAP", "1");
+		C.set_Define(bUseLightMap, "USE_LIGHTMAP", "1");
 
 		// Get AO-Roughness-Metallic texture if needed
 		bUseARMMap = ConcatAndFindTexture(ARMTexture, AlbedoTexture, "_arm") && !DisablePBR;
-		C.r_Define(bUseARMMap, "USE_ARM_MAP", "1");
+		C.set_Define(bUseARMMap, "USE_ARM_MAP", "1");
 
 		// Get Empty-Roughness-Metallic texture if needed
 		bUseERMMap = ConcatAndFindTexture(ERMTexture, AlbedoTexture, "_erm") && !DisablePBR;
-		C.r_Define(bUseERMMap, "USE_ERM_MAP", "1");
+		C.set_Define(bUseERMMap, "USE_ERM_MAP", "1");
 
 		if (!DisablePBR)
 		{
@@ -470,10 +470,10 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 				if (!bUseCustomMetallic)
 					bUseCustomMetallic = ConcatAndFindTexture(CustomMetallicTexture, AlbedoTexture, "_metallic");
 
-				C.r_Define(bUseBakedAO, "USE_BAKED_AO", "1");
-				C.r_Define(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
-				C.r_Define(bUseCustomGloss, "USE_CUSTOM_GLOSS", "1");
-				C.r_Define(bUseCustomMetallic, "USE_CUSTOM_METALLIC", "1");
+				C.set_Define(bUseBakedAO, "USE_BAKED_AO", "1");
+				C.set_Define(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
+				C.set_Define(bUseCustomGloss, "USE_CUSTOM_GLOSS", "1");
+				C.set_Define(bUseCustomMetallic, "USE_CUSTOM_METALLIC", "1");
 			}
 
 			if (bUseConfigurator)
@@ -491,42 +491,42 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 			if (!bUseCustomNormal)
 				bUseCustomNormal = ConcatAndFindTexture(CustomNormalTexture, AlbedoTexture, "_normal");
 
-			C.r_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
+			C.set_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
 
 			if (!bUseCustomSubsurfacePower)
 				bUseCustomSubsurfacePower = ConcatAndFindTexture(CustomSubsurfacePowerTexture, AlbedoTexture, "_subsurface_power");
 
-			C.r_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
+			C.set_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
 
 			if (!bUseCustomCavity)
 				bUseCustomCavity = ConcatAndFindTexture(CustomCavityTexture, AlbedoTexture, "_cavity");
 
-			C.r_Define(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
+			C.set_Define(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
 
 			if (!bUseCustomSpecularTint)
 				bUseCustomSpecularTint = ConcatAndFindTexture(CustomSpecularTintTexture, AlbedoTexture, "_specular_tint");
 
-			C.r_Define(bUseCustomSpecularTint, "USE_CUSTOM_SPECULAR_TINT", "1");
+			C.set_Define(bUseCustomSpecularTint, "USE_CUSTOM_SPECULAR_TINT", "1");
 
 			if (!bUseCustomSheenIntensity)
 				bUseCustomSheenIntensity = ConcatAndFindTexture(CustomSheenIntensityTexture, AlbedoTexture, "_sheen_intensity");
 
-			C.r_Define(bUseCustomSheenIntensity, "USE_CUSTOM_SHEEN_INTENSITY", "1");
+			C.set_Define(bUseCustomSheenIntensity, "USE_CUSTOM_SHEEN_INTENSITY", "1");
 
 			if (!bUseCustomSheenRoughness)
 				bUseCustomSheenRoughness = ConcatAndFindTexture(CustomSheenRoughnessTexture, AlbedoTexture, "_sheen_roughness");
 
-			C.r_Define(bUseCustomSheenRoughness, "USE_CUSTOM_SHEEN_ROUGHNESS", "1");
+			C.set_Define(bUseCustomSheenRoughness, "USE_CUSTOM_SHEEN_ROUGHNESS", "1");
 
 			if (!bUseCustomCoatIntensity)
 				bUseCustomCoatIntensity = ConcatAndFindTexture(CustomCoatIntensityTexture, AlbedoTexture, "_coat_intensity");
 
-			C.r_Define(bUseCustomCoatIntensity, "USE_CUSTOM_COAT_INTENSITY", "1");
+			C.set_Define(bUseCustomCoatIntensity, "USE_CUSTOM_COAT_INTENSITY", "1");
 
 			if (!bUseCustomCoatRoughness)
 				bUseCustomCoatRoughness = ConcatAndFindTexture(CustomCoatRoughnessTexture, AlbedoTexture, "_coat_roughness");
 
-			C.r_Define(bUseCustomCoatRoughness, "USE_CUSTOM_COAT_ROUGHNESS", "1");
+			C.set_Define(bUseCustomCoatRoughness, "USE_CUSTOM_COAT_ROUGHNESS", "1");
 		}
 
 		if (bUseConfigurator)
@@ -538,7 +538,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		if (!bUseCustomEmission)
 			bUseCustomEmission = ConcatAndFindTexture(CustomEmissionTexture, AlbedoTexture, "_emission");
 
-		C.r_Define(bUseCustomEmission, "USE_CUSTOM_EMISSION", "1");
+		C.set_Define(bUseCustomEmission, "USE_CUSTOM_EMISSION", "1");
 
 		// Create shader with normal mapping or displacement if need
 		int DisplacementType = 1;
@@ -574,9 +574,9 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 				DisplacementType = 3; // steep parallax
 		}
 
-		C.r_Define(DisplacementType == 1, "USE_NORMAL_MAPPING", "1");
-		C.r_Define(DisplacementType == 2, "USE_PARALLAX_MAPPING", "1");
-		C.r_Define(DisplacementType == 3, "USE_PARALLAX_OCCLUSION_MAPPING", "1");
+		C.set_Define(DisplacementType == 1, "USE_NORMAL_MAPPING", "1");
+		C.set_Define(DisplacementType == 2, "USE_PARALLAX_MAPPING", "1");
+		C.set_Define(DisplacementType == 3, "USE_PARALLAX_OCCLUSION_MAPPING", "1");
 
 		// Get displacement texture
 		if (bUseConfigurator)
@@ -585,12 +585,12 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		if (!bUseCustomDisplacement)
 			bUseCustomDisplacement = ConcatAndFindTexture(CustomDisplacementTexture, AlbedoTexture, "_displacement");
 
-		C.r_Define(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
+		C.set_Define(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
 
 		// Create shader with deatil texture if need
-		C.r_Define(bUseDetail, "USE_TDETAIL", "1");
+		C.set_Define(bUseDetail, "USE_TDETAIL", "1");
 
-		C.r_Define(bUseDetailBump, "USE_DETAIL_BUMP", "1");
+		C.set_Define(bUseDetailBump, "USE_DETAIL_BUMP", "1");
 
 		// Check do we need to use custom shader
 		if (bUseConfigurator)
@@ -608,98 +608,98 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	// Create shader pass
 	strconcat(sizeof(NewPixelShaderName), NewPixelShaderName, "gbuffer_stage_", PixelShaderName);
 	strconcat(sizeof(NewVertexShaderName), NewVertexShaderName, "gbuffer_stage_", VertexShaderName);
-	C.r_Pass(NewVertexShaderName, NewPixelShaderName, FALSE);
+	C.begin_Pass(NewVertexShaderName, NewPixelShaderName, FALSE);
 
-	C.r_Sampler("s_base", AlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
+	C.set_Sampler("s_base", AlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 	
 	if (bUseOpacity)
-		C.r_Sampler("s_custom_opacity", OpacityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_opacity", OpacityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseARMMap)
 	{
-		C.r_Sampler("s_arm_map", ARMTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_arm_map", ARMTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 	}
 	else
 	{
 		if (bUseERMMap)
 		{
-			C.r_Sampler("s_erm_map", ERMTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+			C.set_Sampler("s_erm_map", ERMTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 		}
 
 		if (bUseBakedAO)
-			C.r_Sampler("s_baked_ao", BakedAOTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+			C.set_Sampler("s_baked_ao", BakedAOTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 		if (bUseCustomRoughness)
-			C.r_Sampler("s_custom_roughness", CustomRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+			C.set_Sampler("s_custom_roughness", CustomRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 		if (bUseCustomGloss)
-			C.r_Sampler("s_custom_gloss", CustomGlossTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+			C.set_Sampler("s_custom_gloss", CustomGlossTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 		if (bUseCustomMetallic)
-			C.r_Sampler("s_custom_metallic", CustomMetallicTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+			C.set_Sampler("s_custom_metallic", CustomMetallicTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 	}
 
 	if (bUseCustomNormal)
-		C.r_Sampler("s_custom_normal", CustomNormalTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_normal", CustomNormalTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomSubsurfacePower)
-		C.r_Sampler("s_custom_subsurface_power", CustomSubsurfacePowerTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_subsurface_power", CustomSubsurfacePowerTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomEmission)
-		C.r_Sampler("s_custom_emission", CustomEmissionTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_emission", CustomEmissionTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomDisplacement)
-		C.r_Sampler("s_custom_displacement", CustomDisplacementTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_displacement", CustomDisplacementTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomCavity)
-		C.r_Sampler("s_custom_cavity", CustomCavityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_cavity", CustomCavityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomSpecularTint)
-		C.r_Sampler("s_custom_specular_tint", CustomSpecularTintTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_specular_tint", CustomSpecularTintTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomSheenIntensity)
-		C.r_Sampler("s_custom_sheen_intensity", CustomSheenIntensityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_sheen_intensity", CustomSheenIntensityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomSheenRoughness)
-		C.r_Sampler("s_custom_sheen_roughness", CustomSheenRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_sheen_roughness", CustomSheenRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomCoatIntensity)
-		C.r_Sampler("s_custom_coat_intensity", CustomCoatIntensityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_coat_intensity", CustomCoatIntensityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomCoatRoughness)
-		C.r_Sampler("s_custom_coat_roughness", CustomCoatRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_coat_roughness", CustomCoatRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomWeight)
-		C.r_Sampler("s_custom_weight", CustomWeightTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_weight", CustomWeightTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseBump)
 	{
-		C.r_Sampler("s_bumpX", BumpCorrectionTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_bumpX", BumpCorrectionTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
-		C.r_Sampler("s_bump", BumpTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_bump", BumpTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 	}
 
 	if (bUseDetail)
 	{
-		C.r_Sampler("s_detail", DetailAlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
+		C.set_Sampler("s_detail", DetailAlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 
 		if (bUseDetailBump)
 		{
-			C.r_Sampler("s_detailBump", DetailBumpTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+			C.set_Sampler("s_detailBump", DetailBumpTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
-			C.r_Sampler("s_detailBumpX", DetailBumpCorrectionTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+			C.set_Sampler("s_detailBumpX", DetailBumpCorrectionTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 		}
 	}
 
 	if (bUseLightMap)
 	{
-		C.r_Sampler("s_hemi", HemisphereLightMapTexture, false, D3DTADDRESS_CLAMP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
-		C.r_Sampler("s_lmap", LightMapTexture, false, D3DTADDRESS_CLAMP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_hemi", HemisphereLightMapTexture, false, D3DTADDRESS_CLAMP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_lmap", LightMapTexture, false, D3DTADDRESS_CLAMP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 	}
 
 	jitter(C);
 
-	C.r_End();
+	C.end_Pass();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR VertexShaderName, LPCSTR PixelShaderName, BOOL bUseAlpha)
@@ -745,113 +745,113 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 			bIsSrgbAlbedo = false;
 	}
 
-	C.r_Define(bIsSrgbAlbedo, "USE_SRGB_COLOR_CONVERTING", "1");
+	C.set_Define(bIsSrgbAlbedo, "USE_SRGB_COLOR_CONVERTING", "1");
 
-	C.r_Define(true, "USE_NORMAL_MAPPING", "1");
+	C.set_Define(true, "USE_NORMAL_MAPPING", "1");
 
 	// Get opacity texture
 	bool bUseOpacity = false;
 	string_path OpacityTexture;
 	bUseOpacity = ConcatAndFindLevelTexture(OpacityTexture, AlbedoTexture, "_opacity");
-	C.r_Define(bUseOpacity, "USE_CUSTOM_OPACITY", "1");
+	C.set_Define(bUseOpacity, "USE_CUSTOM_OPACITY", "1");
 
 	// Create shader with alpha testing if need
-	C.r_Define(bUseAlpha || bUseOpacity, "USE_ALPHA_TEST", "1");
+	C.set_Define(bUseAlpha || bUseOpacity, "USE_ALPHA_TEST", "1");
 
 	// Get BakedAO texture
 	bool bUseBakedAO = false;
 	string_path BakedAOTexture;
 	bUseBakedAO = ConcatAndFindLevelTexture(BakedAOTexture, AlbedoTexture, "_ao") && !DisablePBR;
-	C.r_Define(bUseBakedAO, "USE_BAKED_AO", "1");
+	C.set_Define(bUseBakedAO, "USE_BAKED_AO", "1");
 
 	// Get normal texture
 	bool bUseCustomNormal = false;
 	string_path CustomNormalTexture;
 	bUseCustomNormal = ConcatAndFindLevelTexture(CustomNormalTexture, AlbedoTexture, "_normal") && !DisablePBR;
-	C.r_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
+	C.set_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1");
 
 	// Get roughness texture
 	bool bUseCustomRoughness = false;
 	string_path CustomRoughnessTexture;
 	bUseCustomRoughness = ConcatAndFindLevelTexture(CustomRoughnessTexture, AlbedoTexture, "_roughness") && !DisablePBR;
-	C.r_Define(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
+	C.set_Define(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1");
 
 	// Get metallic texture
 	bool bUseCustomMetallic = false;
 	string_path CustomMetallicTexture;
 	bUseCustomMetallic = ConcatAndFindLevelTexture(CustomMetallicTexture, AlbedoTexture, "_metallic") && !DisablePBR;
-	C.r_Define(bUseCustomMetallic, "USE_CUSTOM_METALLIC", "1");
+	C.set_Define(bUseCustomMetallic, "USE_CUSTOM_METALLIC", "1");
 
 	// Get subsurface_power power texture
 	bool bUseCustomSubsurfacePower = false;
 	string_path CustomSubsurfacePowerTexture;
 	bUseCustomSubsurfacePower = ConcatAndFindLevelTexture(CustomSubsurfacePowerTexture, AlbedoTexture, "_subsurface_power") && !DisablePBR;
-	C.r_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
+	C.set_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1");
 	Msg("CustomSubsurfacePowerTexture %s", CustomSubsurfacePowerTexture);
 
 	// Get emission power texture
 	bool bUseCustomEmission = false;
 	string_path CustomEmissionTexture;
 	bUseCustomEmission = ConcatAndFindLevelTexture(CustomEmissionTexture, AlbedoTexture, "_emission");
-	C.r_Define(bUseCustomEmission, "USE_CUSTOM_EMISSION", "1");
+	C.set_Define(bUseCustomEmission, "USE_CUSTOM_EMISSION", "1");
 
 	// Get displacement texture
 	bool bUseCustomDisplacement = false;
 	string_path CustomDisplacementTexture;
 	bUseCustomDisplacement = ConcatAndFindLevelTexture(CustomDisplacementTexture, AlbedoTexture, "_displacement") && !DisablePBR;
-	C.r_Define(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
+	C.set_Define(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1");
 
 	// Get cavity texture
 	bool bUseCustomCavity = false;
 	string_path CustomCavityTexture;
 	bUseCustomCavity = ConcatAndFindLevelTexture(CustomCavityTexture, AlbedoTexture, "_cavity") && !DisablePBR;
-	C.r_Define(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
+	C.set_Define(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1");
 
 	// Get weight texture
 	bool bUseCustomWeight = false;
 	string_path CustomWeightTexture;
 	bUseCustomWeight = ConcatAndFindLevelTexture(CustomWeightTexture, AlbedoTexture, "_weight");
-	C.r_Define(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
+	C.set_Define(bUseCustomWeight, "USE_WEIGHT_MAP", "1");
 
 	// Create shader pass
 	strconcat(sizeof(NewPixelShaderName), NewPixelShaderName, "gbuffer_stage_", PixelShaderName);
 	strconcat(sizeof(NewVertexShaderName), NewVertexShaderName, "gbuffer_stage_", VertexShaderName);
-	C.r_Pass(NewVertexShaderName, NewPixelShaderName, FALSE);
+	C.begin_Pass(NewVertexShaderName, NewPixelShaderName, FALSE);
 
-	C.r_Sampler("s_base", AlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
+	C.set_Sampler("s_base", AlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 
 	if (bUseOpacity)
-		C.r_Sampler("s_custom_opacity", OpacityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_opacity", OpacityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseBakedAO)
-		C.r_Sampler("s_baked_ao", BakedAOTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_baked_ao", BakedAOTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomNormal)
-		C.r_Sampler("s_custom_normal", CustomNormalTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_normal", CustomNormalTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomRoughness)
-		C.r_Sampler("s_custom_roughness", CustomRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_roughness", CustomRoughnessTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomMetallic)
-		C.r_Sampler("s_custom_metallic", CustomMetallicTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_metallic", CustomMetallicTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomSubsurfacePower)
-		C.r_Sampler("s_custom_subsurface_power", CustomSubsurfacePowerTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_subsurface_power", CustomSubsurfacePowerTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomEmission)
-		C.r_Sampler("s_custom_emission", CustomEmissionTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_emission", CustomEmissionTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomDisplacement)
-		C.r_Sampler("s_custom_displacement", CustomDisplacementTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_displacement", CustomDisplacementTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomCavity)
-		C.r_Sampler("s_custom_cavity", CustomCavityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_cavity", CustomCavityTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	if (bUseCustomWeight)
-		C.r_Sampler("s_custom_weight", CustomWeightTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
+		C.set_Sampler("s_custom_weight", CustomWeightTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC);
 
 	jitter(C);
 
-	C.r_End();
+	C.end_Pass();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

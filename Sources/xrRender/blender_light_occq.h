@@ -12,11 +12,6 @@ class CBlender_light_occq : public IBlender
 		return "INTERNAL: occlusion testing";
 	}
 
-	CBlender_light_occq()
-	{
-		description.CLS = 0;
-	}
-
 	~CBlender_light_occq() = default;
 
 	void Compile(CBlender_Compile& C)
@@ -26,9 +21,9 @@ class CBlender_light_occq : public IBlender
 		switch (C.iElement)
 		{
 		case 0: // occlusion testing
-			C.r_Pass("accumulating_light_stage_occlusion_culling", "accumulating_light_stage_occlusion_culling", false,
+			C.begin_Pass("accumulating_light_stage_occlusion_culling", "accumulating_light_stage_occlusion_culling", false,
 					 TRUE, FALSE, FALSE);
-			C.r_End();
+			C.end_Pass();
 			break;
 		}
 	}

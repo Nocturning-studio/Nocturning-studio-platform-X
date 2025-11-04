@@ -48,32 +48,32 @@ class CBlender_detail_object : public IBlender
 		switch (C.iElement)
 		{
 		case SE_DETAIL_NORMAL_ANIMATED:
-			C.r_Define("USE_DETAILWAVE", "1");
+			C.set_Define("USE_DETAILWAVE", "1");
 			configure_shader_detail_object(C, false, "detail_object", "detail_object", false);
 			break;
 		case SE_DETAIL_NORMAL_STATIC:
 			configure_shader_detail_object(C, false, "detail_object", "detail_object", false);
 			break;
 		case SE_DETAIL_SHADOW_DEPTH_ANIMATED:
-			C.r_Pass("shadow_depth_stage_detail_object_animated", "shadow_depth_stage_detail_object", FALSE);
-			C.r_Sampler("s_base", C.L_textures[0]);
+			C.begin_Pass("shadow_depth_stage_detail_object_animated", "shadow_depth_stage_detail_object", FALSE);
+			C.set_Sampler("s_base", C.L_textures[0]);
 			jitter(C);
-			C.r_End();
+			C.end_Pass();
 			break;
 		case SE_DETAIL_SHADOW_DEPTH_STATIC:
-			C.r_Pass("shadow_depth_stage_detail_object", "shadow_depth_stage_detail_object", FALSE);
-			C.r_Sampler("s_base", C.L_textures[0]);
+			C.begin_Pass("shadow_depth_stage_detail_object", "shadow_depth_stage_detail_object", FALSE);
+			C.set_Sampler("s_base", C.L_textures[0]);
 			jitter(C);
-			C.r_End();
+			C.end_Pass();
 			break;
 			// case SE_DETAIL_DEPTH_PREPASS_ANIMATED:
-			//	C.r_Define("USE_DETAILWAVE", "1");
+			//	C.set_Define("USE_DETAILWAVE", "1");
 			// case SE_DETAIL_DEPTH_PREPASS_STATIC:
-			//	C.r_Pass("shadow_depth_stage_detail_object", "shadow_depth_stage_detail_object",
-			//FALSE);//C.r_Pass("depth_prepass_stage_detail_object", "depth_prepass_stage_detail_object", FALSE);
-			//	C.r_Sampler("s_base", C.L_textures[0]);
+			//	C.begin_Pass("shadow_depth_stage_detail_object", "shadow_depth_stage_detail_object",
+			//FALSE);//C.begin_Pass("depth_prepass_stage_detail_object", "depth_prepass_stage_detail_object", FALSE);
+			//	C.set_Sampler("s_base", C.L_textures[0]);
 			//	jitter(C);
-			//	C.r_End();
+			//	C.end_Pass();
 			//	break;
 		}
 	}

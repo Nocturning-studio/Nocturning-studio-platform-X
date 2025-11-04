@@ -60,15 +60,15 @@ class CBlender_LmEbB : public IBlender
 	void Compile(CBlender_Compile& C)
 	{
 		if (oBlend.value)
-			C.r_Pass("lmapE", "lmapE", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, 0);
+			C.begin_Pass("lmapE", "lmapE", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, 0);
 		else
-			C.r_Pass("lmapE", "lmapE", TRUE);
+			C.begin_Pass("lmapE", "lmapE", TRUE);
 
-		C.r_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR,D3DTEXF_ANISOTROPIC, true);
-		C.r_Sampler("s_lmap", C.L_textures[1]);
-		C.r_Sampler_linear("s_hemi", *C.L_textures[2]);
-		C.r_Sampler("s_env", oT2_Name, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
-		C.r_End();
+		C.set_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR,D3DTEXF_ANISOTROPIC, true);
+		C.set_Sampler("s_lmap", C.L_textures[1]);
+		C.set_Sampler_linear("s_hemi", *C.L_textures[2]);
+		C.set_Sampler("s_env", oT2_Name, false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_POINT, D3DTEXF_LINEAR, true);
+		C.end_Pass();
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////

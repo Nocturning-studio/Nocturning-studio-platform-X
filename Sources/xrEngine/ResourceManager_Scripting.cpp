@@ -226,7 +226,7 @@ class adopt_compiler
 
 	adopt_compiler& _pass(LPCSTR vs, LPCSTR ps)
 	{
-		C->r_Pass(vs, ps, true);
+		C->begin_Pass(vs, ps, true);
 		return *this;
 	}
 
@@ -256,7 +256,7 @@ class adopt_compiler
 
 	adopt_sampler _sampler(LPCSTR _name)
 	{
-		u32 s = C->r_Sampler(_name, 0);
+		u32 s = C->set_Sampler(_name, 0);
 		return adopt_sampler(C, s);
 	}
 };
@@ -559,7 +559,7 @@ ShaderElement* CBlender_Compile::_lua_Compile(LPCSTR namesp, LPCSTR name)
 	functor<void> element = object_cast<functor<void>>(shader[name]);
 	adopt_compiler ac = adopt_compiler(this);
 	element(ac, t_0, t_1, t_d);
-	r_End();
+	end_Pass();
 	ShaderElement* _r = Device.Resources->_CreateElement(E);
 	return _r;
 }

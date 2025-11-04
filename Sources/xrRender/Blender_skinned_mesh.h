@@ -84,10 +84,10 @@ class CBlender_skinned_mesh : public IBlender
 			case 0:
 			case 1:
 				vsname = psname = "model_def_lq";
-				C.r_Pass(vsname, psname, TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, oAREF.value);
-				C.r_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR,
+				C.begin_Pass(vsname, psname, TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, oAREF.value);
+				C.set_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR,
 							D3DTEXF_ANISOTROPIC, true);
-				C.r_End();
+				C.end_Pass();
 				break;
 			default:
 				break;
@@ -109,33 +109,33 @@ class CBlender_skinned_mesh : public IBlender
 			case SE_SHADOW_DEPTH: // smap
 				if (bAref)
 				{
-					C.r_Pass("shadow_depth_stage_dynamic_mesh_alphatest", "shadow_depth_stage_static_mesh_alphatest", FALSE);
-					C.r_Sampler("s_base", C.L_textures[0]);
+					C.begin_Pass("shadow_depth_stage_dynamic_mesh_alphatest", "shadow_depth_stage_static_mesh_alphatest", FALSE);
+					C.set_Sampler("s_base", C.L_textures[0]);
 					jitter(C);
-					C.r_End();
+					C.end_Pass();
 					break;
 				}
 				else
 				{
-					C.r_Pass("shadow_depth_stage_dynamic_mesh", "shadow_depth_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
-					C.r_Sampler("s_base", C.L_textures[0]);
-					C.r_End();
+					C.begin_Pass("shadow_depth_stage_dynamic_mesh", "shadow_depth_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
+					C.set_Sampler("s_base", C.L_textures[0]);
+					C.end_Pass();
 					break;
 				}
 			case SE_DEPTH_PREPASS:
 				if (bAref)
 				{
-					C.r_Pass("depth_prepass_stage_dynamic_mesh_alphatest", "depth_prepass_stage_static_mesh_alphatest", FALSE, TRUE, TRUE, FALSE);
-					C.r_Sampler("s_base", C.L_textures[0]);
+					C.begin_Pass("depth_prepass_stage_dynamic_mesh_alphatest", "depth_prepass_stage_static_mesh_alphatest", FALSE, TRUE, TRUE, FALSE);
+					C.set_Sampler("s_base", C.L_textures[0]);
 					jitter(C);
-					C.r_End();
+					C.end_Pass();
 					break;
 				}
 				else
 				{
-					C.r_Pass("depth_prepass_stage_dynamic_mesh", "depth_prepass_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
-					C.r_Sampler("s_base", C.L_textures[0]);
-					C.r_End();
+					C.begin_Pass("depth_prepass_stage_dynamic_mesh", "depth_prepass_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
+					C.set_Sampler("s_base", C.L_textures[0]);
+					C.end_Pass();
 					break;
 				}
 			}

@@ -37,37 +37,37 @@ class CBlender_bloom : public IBlender
 		switch (C.iElement)
 		{
 		case SE_PASS_PREPARE:
-			C.r_Pass("screen_quad", "postprocess_stage_bloom_prepare", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA,
+			C.begin_Pass("screen_quad", "postprocess_stage_bloom_prepare", FALSE, FALSE, FALSE, FALSE, D3DBLEND_SRCALPHA,
 					 D3DBLEND_INVSRCALPHA);
-			C.r_Sampler_gaussian("s_image", r_RT_generic1);
+			C.set_Sampler_gaussian("s_image", r_RT_generic1);
 			gbuffer(C);
-			C.r_End();
+			C.end_Pass();
 			break;
 		case SE_PASS_PROCESS_BLOOM:
-			C.r_Define("USE_HORIZONTAL_FILTER", "1");
-			C.r_Pass("screen_quad", "postprocess_stage_bloom_filter", FALSE, FALSE, FALSE);
-			C.r_Sampler_gaussian("s_bloom", r_RT_bloom1);
-			C.r_End();
+			C.set_Define("USE_HORIZONTAL_FILTER", "1");
+			C.begin_Pass("screen_quad", "postprocess_stage_bloom_filter", FALSE, FALSE, FALSE);
+			C.set_Sampler_gaussian("s_bloom", r_RT_bloom1);
+			C.end_Pass();
 
-			C.r_Pass("screen_quad", "postprocess_stage_bloom_filter", FALSE, FALSE, FALSE);
-			C.r_Sampler_gaussian("s_bloom", r_RT_bloom2);
-			C.r_End();
+			C.begin_Pass("screen_quad", "postprocess_stage_bloom_filter", FALSE, FALSE, FALSE);
+			C.set_Sampler_gaussian("s_bloom", r_RT_bloom2);
+			C.end_Pass();
 			break;
 		case SE_PASS_PROCESS_BLADES:
-			C.r_Define("FILTER_STEP", "1");
-			C.r_Pass("screen_quad", "postprocess_stage_bloom_blades_filter", FALSE, FALSE, FALSE);
-			C.r_Sampler_gaussian("s_bloom_blades", r_RT_bloom_blades1);
-			C.r_End();
+			C.set_Define("FILTER_STEP", "1");
+			C.begin_Pass("screen_quad", "postprocess_stage_bloom_blades_filter", FALSE, FALSE, FALSE);
+			C.set_Sampler_gaussian("s_bloom_blades", r_RT_bloom_blades1);
+			C.end_Pass();
 
-			C.r_Define("FILTER_STEP", "2");
-			C.r_Pass("screen_quad", "postprocess_stage_bloom_blades_filter", FALSE, FALSE, FALSE);
-			C.r_Sampler_gaussian("s_bloom_blades", r_RT_bloom_blades2);
-			C.r_End();
+			C.set_Define("FILTER_STEP", "2");
+			C.begin_Pass("screen_quad", "postprocess_stage_bloom_blades_filter", FALSE, FALSE, FALSE);
+			C.set_Sampler_gaussian("s_bloom_blades", r_RT_bloom_blades2);
+			C.end_Pass();
 
-			C.r_Define("FILTER_STEP", "3");
-			C.r_Pass("screen_quad", "postprocess_stage_bloom_blades_filter", FALSE, FALSE, FALSE);
-			C.r_Sampler_gaussian("s_bloom_blades", r_RT_bloom_blades1);
-			C.r_End();
+			C.set_Define("FILTER_STEP", "3");
+			C.begin_Pass("screen_quad", "postprocess_stage_bloom_blades_filter", FALSE, FALSE, FALSE);
+			C.set_Sampler_gaussian("s_bloom_blades", r_RT_bloom_blades1);
+			C.end_Pass();
 			break;
 		}
 	}
