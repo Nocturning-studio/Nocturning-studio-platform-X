@@ -606,7 +606,7 @@
     <ClInclude Include="ptmalloc3\malloc-2.8.3.h">
       <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager\doug_lea_memory_allocator\dllmalloc</Filter>
     </ClInclude>
-    <ClInclude Include="dx11\stats_manager.h">
+    <ClInclude Include="HWCreationParams.h">
       <Filter>Render\Execution &amp; 3D\HW</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1057,9 +1057,6 @@
     </ClCompile>
     <ClCompile Include="ptmalloc3\sysdeps\win32\win32.c">
       <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager\doug_lea_memory_allocator\dllmalloc</Filter>
-    </ClCompile>
-    <ClCompile Include="dx11\stats_manager.cpp">
-      <Filter>Render\Execution &amp; 3D\HW</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

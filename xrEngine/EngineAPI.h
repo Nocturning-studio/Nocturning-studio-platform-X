@@ -8,6 +8,8 @@
 #define AFX_ENGINEAPI_H__CF21372B_C8B8_4891_82FC_D872C84E1DD4__INCLUDED_
 #pragma once
 
+#include <HWCreationParams.h>
+
 // Abstract 'Pure' class for DLL interface
 class ENGINE_API DLL_Pure
 {
@@ -56,6 +58,7 @@ class ENGINE_API CEngineAPI
 	BOOL tune_enabled;
 	VTPause* tune_pause;
 	VTResume* tune_resume;
+
 	void Initialize();
 	void Destroy();
 

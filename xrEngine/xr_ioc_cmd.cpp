@@ -14,16 +14,14 @@
 #include "ResourceManager.h"
 
 #include "xr_object.h"
+#include "HWCreationParams.h"
 
 extern ENGINE_API Flags32 ps_psp_ls_flags = {PSP_VIEW | NORMAL_VIEW};
 extern ENGINE_API Flags32 ps_weather_ls_flags = {WEATHER_EFFECTS};
 extern ENGINE_API Flags32 ps_effectors_ls_flags = {VIEW_BOBBING_ENABLED | DYNAMIC_FOV_ENABLED};
 extern ENGINE_API Flags32 ps_game_ls_flags = {INTRO_ENABLE | TUTORIALS_ENABLE};
 
-extern xr_token* vid_mode_token;
-
-xr_token vid_quality_token[] = {
-	{"renderer_r1", 0}, {"renderer_r2", 1}, {0, 0}};
+xr_token* vid_mode_token = NULL;
 
 xr_token vid_bpp_token[] = {{"16", 16}, {"32", 32}, {0, 0}};
 
@@ -656,34 +654,35 @@ class CCC_DR_UsePoints : public CCC_Integer
 	virtual void Save(IWriter* F){};
 };
 
-u32 renderer_value = 0;
-class CCC_r2 : public CCC_Token
+xr_token vid_quality_token[] = {{"renderer_r1", 0}, {"renderer_r4a", 1}, {"renderer_r4", 2}, {0, NULL}};
+
+u32 ENGINE_API renderer_value = RenderCreationParams::base_value;
+
+class CCC_renderer : public CCC_Token
 {
 	typedef CCC_Token inherited;
 
   public:
-	CCC_r2(LPCSTR N) : inherited(N, &renderer_value, vid_quality_token)
+	CCC_renderer(LPCSTR N) : inherited(N, &renderer_value, NULL)
 	{
-		renderer_value = 0;
+		renderer_value = RenderCreationParams::base_value;
 	};
+
+	virtual ~CCC_renderer()
+	{
+	}
 
 	virtual void Execute(LPCSTR args)
 	{
-#ifdef DEDICATED_SERVER
-		inherited::Execute("renderer_r1");
-#else
+		// vid_quality_token must be already created!
+		tokens = vid_quality_token;
 		inherited::Execute(args);
-#endif // DEDICATED_SERVER
-
-		psDeviceFlags.set(rsR2, renderer_value == 1);
 	}
 
 	virtual void Save(IWriter* F)
 	{
-		if (!strstr(Core.Params, "-r2"))
-		{
-			inherited::Save(F);
-		}
+		tokens = vid_quality_token;
+		inherited::Save(F);
 	}
 
 	virtual xr_token* GetToken()
@@ -692,6 +691,44 @@ class CCC_r2 : public CCC_Token
 		return inherited::GetToken();
 	}
 };
+
+xr_token* feature_level_token = NULL;
+u32 ENGINE_API directx_level = 0;
+
+class CCC_directx_level : public CCC_Token
+{
+	typedef CCC_Token inherited;
+
+  public:
+	CCC_directx_level(LPCSTR N) : inherited(N, &directx_level, NULL)
+	{
+		directx_level = 0;
+	};
+
+	virtual ~CCC_directx_level()
+	{
+	}
+
+	virtual void Execute(LPCSTR args)
+	{
+		// feature_level_token must be already created!
+		tokens = feature_level_token;
+		inherited::Execute(args);
+	}
+
+	virtual void Save(IWriter* F)
+	{
+		tokens = feature_level_token;
+		inherited::Save(F);
+	}
+
+	virtual xr_token* GetToken()
+	{
+		tokens = feature_level_token;
+		return inherited::GetToken();
+	}
+};
+
 //-----------------------------------------------------------------------
 ENGINE_API float psHUD_FOV = 0.45f;
 
@@ -772,12 +809,15 @@ void CCC_Register()
 	CMD3(CCC_Mask, "rs_stats", &psDeviceFlags, rsStatistic);
 	CMD4(CCC_Float, "rs_vis_distance", &psVisDistance, 0.4f, 1.5f);
 
-#ifdef DEBUG
+//#ifdef DEBUG
 	CMD3(CCC_Mask, "rs_cam_pos", &psDeviceFlags, rsCameraPos);
 	CMD3(CCC_Mask, "rs_occ_draw", &psDeviceFlags, rsOcclusionDraw);
 	CMD3(CCC_Mask, "rs_occ_stats", &psDeviceFlags, rsOcclusionStats);
 	CMD4(CCC_Integer, "rs_skeleton_update", &psSkeletonUpdate, 2, 128);
-#endif // DEBUG
+//#endif // DEBUG
+
+	CMD3(CCC_Mask, "rs_borderless", &psDeviceFlags, rsBorderless);
+	CMD3(CCC_Mask, "rs_center_screen", &psDeviceFlags, rsCenterScreen);
 
 	CMD2(CCC_Gamma, "rs_c_gamma", &ps_gamma);
 	CMD2(CCC_Gamma, "rs_c_brightness", &ps_brightness);
@@ -844,7 +884,9 @@ void CCC_Register()
 	CMD3(CCC_Mask, "game_intro_enable", &ps_game_ls_flags, INTRO_ENABLE);
 	CMD3(CCC_Mask, "game_tutorials_enable", &ps_game_ls_flags, TUTORIALS_ENABLE);
 
-	CMD1(CCC_r2, "renderer");
+	CMD1(CCC_renderer, "renderer");
+	CMD1(CCC_directx_level, "directx_level");
+
 	// psSoundRolloff	= pSettings->r_float	("sound","rolloff");		clamp(psSoundRolloff, EPS_S,	2.f);
 	psSoundOcclusionScale = pSettings->r_float("sound", "occlusion_scale");
 	clamp(psSoundOcclusionScale, 0.1f, .5f);

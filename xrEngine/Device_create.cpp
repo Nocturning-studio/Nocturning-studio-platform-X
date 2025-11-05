@@ -101,7 +101,7 @@ void CRenderDevice::Create()
 	psCurrentVidMode[1] = dwHeight;
 #endif
 
-	HW.CreateDevice(m_hWnd);
+	HW.CreateDevice(m_hWnd, false);
 	dwWidth = HW.m_ChainDesc.BufferDesc.Width;
 	dwHeight = HW.m_ChainDesc.BufferDesc.Height;
 	fWidth_2 = float(dwWidth / 2);

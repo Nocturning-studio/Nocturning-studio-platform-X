@@ -119,7 +119,7 @@ void dx10SamplerStateCache::VSApplySamplers(HArray &samplers)
 	u32 uiMin;
 	u32 uiMax;
 	PrepareSamplerStates( samplers, pSS, m_aVSSamplers, uiMin, uiMax);
-	HW.pContext->VSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
+	HW.pContext11->VSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
 }
 
 void dx10SamplerStateCache::PSApplySamplers(HArray &samplers)
@@ -128,7 +128,7 @@ void dx10SamplerStateCache::PSApplySamplers(HArray &samplers)
 	u32 uiMin;
 	u32 uiMax;
 	PrepareSamplerStates( samplers, pSS, m_aPSSamplers, uiMin, uiMax);
-	HW.pContext->PSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
+	HW.pContext11->PSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
 }
 /*
 void dx10SamplerStateCache::GSApplySamplers(HArray &samplers)
@@ -137,7 +137,7 @@ void dx10SamplerStateCache::GSApplySamplers(HArray &samplers)
 	u32 uiMin;
 	u32 uiMax;
 	PrepareSamplerStates( samplers, pSS, m_aGSSamplers, uiMin, uiMax);
-	HW.pContext->GSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
+	HW.pContext11->GSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
 }
 
 void dx10SamplerStateCache::HSApplySamplers(HArray &samplers)
@@ -146,7 +146,7 @@ void dx10SamplerStateCache::HSApplySamplers(HArray &samplers)
 	u32 uiMin;
 	u32 uiMax;
 	PrepareSamplerStates( samplers, pSS, m_aHSSamplers, uiMin, uiMax);
-	HW.pContext->HSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
+	HW.pContext11->HSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
 }
 
 void dx10SamplerStateCache::DSApplySamplers(HArray &samplers)
@@ -155,7 +155,7 @@ void dx10SamplerStateCache::DSApplySamplers(HArray &samplers)
 	u32 uiMin;
 	u32 uiMax;
 	PrepareSamplerStates( samplers, pSS, m_aDSSamplers, uiMin, uiMax);
-	HW.pContext->DSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
+	HW.pContext11->DSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
 }
 
 void dx10SamplerStateCache::CSApplySamplers(HArray &samplers)
@@ -164,7 +164,7 @@ void dx10SamplerStateCache::CSApplySamplers(HArray &samplers)
 	u32 uiMin;
 	u32 uiMax;
 	PrepareSamplerStates( samplers, pSS, m_aCSSamplers, uiMin, uiMax);
-	HW.pContext->CSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
+	HW.pContext11->CSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
 }*/
 
 void dx10SamplerStateCache::SetMaxAnisotropy( UINT uiMaxAniso)

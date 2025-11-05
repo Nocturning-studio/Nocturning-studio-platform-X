@@ -153,13 +153,13 @@ IC void CBackend::set_RT(ID3D11RenderTargetView* RT, u32 ID)
 		PGO(Msg("PGO:setRT"));
 		stat.target_rt++;
 		pRT[ID] = RT;
-		HW.pContext->OMSetRenderTargets(4, pRT, pZB);
+		HW.pContext11->OMSetRenderTargets(4, pRT, pZB);
 		//	Mark RT array dirty
 		// HW.pDevice->OMSetRenderTargets(sizeof(pRT)/sizeof(pRT[0]), pRT, 0);
 		// HW.pDevice->OMSetRenderTargets(sizeof(pRT)/sizeof(pRT[0]), pRT, pZB);
 		//	Reset all RT's here to allow RT to be bounded as input
 		//if (!m_bChangedRTorZB)
-		//	HW.pContext->OMSetRenderTargets(0, 0, 0);
+		//	HW.pContext11->OMSetRenderTargets(0, 0, 0);
 
 		//m_bChangedRTorZB = true;
 	}
@@ -172,12 +172,12 @@ IC void CBackend::set_ZB(ID3D11DepthStencilView* ZB)
 		PGO(Msg("PGO:setZB"));
 		stat.target_zb++;
 		pZB = ZB;
-		HW.pContext->OMSetRenderTargets(4, pRT, pZB);
+		HW.pContext11->OMSetRenderTargets(4, pRT, pZB);
 		// HW.pDevice->OMSetRenderTargets(0, 0, pZB);
 		// HW.pDevice->OMSetRenderTargets(sizeof(pRT)/sizeof(pRT[0]), pRT, pZB);
 		//	Reset all RT's here to allow RT to be bounded as input
 		//if (!m_bChangedRTorZB)
-		//	HW.pContext->OMSetRenderTargets(0, 0, 0);
+		//	HW.pContext11->OMSetRenderTargets(0, 0, 0);
 		//m_bChangedRTorZB = true;
 	}
 }
@@ -201,7 +201,7 @@ ICF void CBackend::set_PS(ID3D11PixelShader* _ps, LPCSTR _n)
 		PGO(Msg("PGO:Pshader:%x", _ps));
 		stat.ps++;
 		ps = _ps;
-		HW.pContext->PSSetShader(ps, 0, 0);
+		HW.pContext11->PSSetShader(ps, 0, 0);
 #ifdef DEBUG
 		ps_name = _n;
 #endif
@@ -220,7 +220,7 @@ ICF void CBackend::set_VS(ID3D11VertexShader* _vs, LPCSTR _n)
 		PGO(Msg("PGO:Vshader:%x", _vs));
 		stat.vs++;
 		vs = _vs;
-		HW.pContext->VSSetShader(vs, 0, 0);
+		HW.pContext11->VSSetShader(vs, 0, 0);
 #ifdef DEBUG
 		vs_name = _n;
 #endif
@@ -249,7 +249,7 @@ ICF void CBackend::set_Vertices(ID3D11Buffer* _vb, u32 _vb_stride)
 		// const UINT *pStrides,
 		// const UINT *pOffsets
 		u32 iOffset = 0;
-		HW.pContext->IASetVertexBuffers(0, 1, &vb, &_vb_stride, &iOffset);
+		HW.pContext11->IASetVertexBuffers(0, 1, &vb, &_vb_stride, &iOffset);
 	}
 }
 
@@ -262,7 +262,7 @@ ICF void CBackend::set_Indices(ID3D11Buffer* _ib)
 		stat.ib++;
 #endif
 		ib = _ib;
-		HW.pContext->IASetIndexBuffer(ib, DXGI_FORMAT_R16_UINT, 0);
+		HW.pContext11->IASetIndexBuffer(ib, DXGI_FORMAT_R16_UINT, 0);
 	}
 }
 
@@ -316,7 +316,7 @@ IC void CBackend::ApplyPrimitieTopology(D3D_PRIMITIVE_TOPOLOGY Topology)
 	if (m_PrimitiveTopology != Topology)
 	{
 		m_PrimitiveTopology = Topology;
-		HW.pContext->IASetPrimitiveTopology(m_PrimitiveTopology);
+		HW.pContext11->IASetPrimitiveTopology(m_PrimitiveTopology);
 	}
 }
 
@@ -328,13 +328,13 @@ IC void CBackend::Compute(UINT ThreadGroupCountX, UINT ThreadGroupCountY, UINT T
 	StateManager.Apply();
 	//	State manager may alter constants
 	constants.flush();
-	HW.pContext->Dispatch(ThreadGroupCountX, ThreadGroupCountY, ThreadGroupCountZ);
+	HW.pContext11->Dispatch(ThreadGroupCountX, ThreadGroupCountY, ThreadGroupCountZ);
 }
 
 IC void CBackend::Render(D3DPRIMITIVETYPE T, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC)
 {
 	//D3D11_VIEWPORT VP = {0, 0, (float)Device.dwWidth, (float)Device.dwHeight, 0, 1.f};
-	//HW.pContext->RSSetViewports(1, &VP);
+	//HW.pContext11->RSSetViewports(1, &VP);
 
 	// VERIFY(vs);
 	// HW.pDevice->VSSetShader(vs);
@@ -357,7 +357,7 @@ IC void CBackend::Render(D3DPRIMITIVETYPE T, u32 baseV, u32 startV, u32 countV, 
 	constants.flush();
 	//	Msg("DrawIndexed: Start");
 	//	Msg("iIndexCount=%d, startI=%d, baseV=%d", iIndexCount, startI, baseV);
-	HW.pContext->DrawIndexed(iIndexCount, startI, baseV);
+	HW.pContext11->DrawIndexed(iIndexCount, startI, baseV);
 	//	Msg("DrawIndexed: End\n");
 
 	PGO(Msg("PGO:DIP:%dv/%df", countV, PC));
@@ -389,7 +389,7 @@ IC void CBackend::Render(D3DPRIMITIVETYPE T, u32 startV, u32 PC)
 	//	Msg("Draw: Start");
 	//	Msg("iVertexCount=%d, startV=%d", iVertexCount, startV);
 	// CHK_DX				(HW.pDevice->DrawPrimitive(T, startV, PC));
-	HW.pContext->Draw(iVertexCount, startV);
+	HW.pContext11->Draw(iVertexCount, startV);
 	//	Msg("Draw: End\n");
 	PGO(Msg("PGO:DIP:%dv/%df", 3 * PC, PC));
 }
@@ -410,14 +410,14 @@ IC void CBackend::set_Scissor(Irect* R)
 		StateManager.EnableScissoring(TRUE);
 		StateManager.OverrideScissoring(TRUE, TRUE);
 		RECT* clip = (RECT*)R;
-		HW.pContext->RSSetScissorRects(1, clip);
+		HW.pContext11->RSSetScissorRects(1, clip);
 	}
 	else
 	{
 		// CHK_DX		(HW.pDevice->SetRenderState(D3DRS_SCISSORTESTENABLE,FALSE));
 		StateManager.EnableScissoring(FALSE);
 		StateManager.OverrideScissoring(FALSE, FALSE);
-		HW.pContext->RSSetScissorRects(0, 0);
+		HW.pContext11->RSSetScissorRects(0, 0);
 	}
 }
 
@@ -515,7 +515,7 @@ IC void CBackend::ApplyVertexLayout()
 	if (m_pInputLayout != it->second)
 	{
 		m_pInputLayout = it->second;
-		HW.pContext->IASetInputLayout(m_pInputLayout);
+		HW.pContext11->IASetInputLayout(m_pInputLayout);
 	}
 }
 
@@ -625,7 +625,7 @@ IC void CBackend::set_Constants(R_constant_table* C)
 					tempBuffer[i] = 0;
 			}
 
-			HW.pContext->PSSetConstantBuffers(uiMin, uiMax - uiMin, &tempBuffer[uiMin]);
+			HW.pContext11->PSSetConstantBuffers(uiMin, uiMax - uiMin, &tempBuffer[uiMin]);
 		}
 
 		if (CBuffersNeedUpdate(m_aVertexConstants, aVertexConstants, uiMin, uiMax))
@@ -639,7 +639,7 @@ IC void CBackend::set_Constants(R_constant_table* C)
 				else
 					tempBuffer[i] = 0;
 			}
-			HW.pContext->VSSetConstantBuffers(uiMin, uiMax - uiMin, &tempBuffer[uiMin]);
+			HW.pContext11->VSSetConstantBuffers(uiMin, uiMax - uiMin, &tempBuffer[uiMin]);
 		}
 	}
 
@@ -660,7 +660,7 @@ ICF void CBackend::ApplyRTandZB()
 	if (m_bChangedRTorZB)
 	{
 		//m_bChangedRTorZB = false;
-		//HW.pContext->OMSetRenderTargets(sizeof(pRT) / sizeof(pRT[0]), pRT, pZB);
+		//HW.pContext11->OMSetRenderTargets(sizeof(pRT) / sizeof(pRT[0]), pRT, pZB);
 	}
 }
 

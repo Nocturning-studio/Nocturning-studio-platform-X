@@ -31,45 +31,98 @@ ENGINE_API bool is_enough_address_space_available()
 
 CEngineAPI::~CEngineAPI()
 {
+#ifdef FEATURE_LEVELS_DEBUG
+	if (feature_level_token)
+	{
+		for (int i = 0; feature_level_token[i].name; i++)
+		{
+			xr_free(feature_level_token[i].name);
+		}
+		xr_free(feature_level_token);
+		feature_level_token = NULL;
+	}
+#endif
 }
+
+#ifdef FEATURE_LEVELS_DEBUG
+extern xr_token* feature_level_token;
+#endif
+
 extern u32 renderer_value; // con cmd
 
 void CEngineAPI::Initialize(void)
 {
-	Msg("Initializing Engine API...");
-	//////////////////////////////////////////////////////////////////////////
-	// render
-	LPCSTR r1_name = "xrRender_R1.dll";
-	LPCSTR r2_name = "xrRender_R2.dll";
-
 	Msg("Initializing Renderer...");
 
-#ifndef DEDICATED_SERVER
-	if (psDeviceFlags.test(rsR2))
+#ifdef FEATURE_LEVELS_DEBUG
 	{
-		// try to initialize R2
-		Log("Loading DLL:", r2_name);
-		hRender = LoadLibrary(r2_name);
+		u32 size = 1;
 
-		if (0 == hRender)
+		switch (support.level)
 		{
-			Msg("Loading failed - incompatible hardware.");
-			Msg("Try to load %s", r1_name);
+		case D3D_FEATURE_LEVEL_10_0:
+			size = 3;
+			break;
+		case D3D_FEATURE_LEVEL_10_1:
+			size = 4;
+			break;
+		case D3D_FEATURE_LEVEL_11_0:
+			size = 5;
+			break;
+		case D3D_FEATURE_LEVEL_11_1:
+			size = 6;
+			break;
+		case D3D_FEATURE_LEVEL_12_0:
+			size = 7;
+			break;
+		case D3D_FEATURE_LEVEL_12_1:
+			size = 8;
+			break;
 		}
+
+		feature_level_token = xr_alloc<xr_token>(size);
+
+		xr_token feature_level_token_full[] = {
+			{"opt_auto", 0},
+			{"opt_10_0", D3D_FEATURE_LEVEL_10_0},
+			{"opt_10_1", D3D_FEATURE_LEVEL_10_1},
+			{"opt_11_0", D3D_FEATURE_LEVEL_11_0},
+			{"opt_11_1", D3D_FEATURE_LEVEL_11_1},
+			{"opt_12_0", D3D_FEATURE_LEVEL_12_0},
+			{"opt_12_1", D3D_FEATURE_LEVEL_12_1},
+		};
+
+		Msg("* Feature level options: ");
+
+		for (u32 i = 0; i < size - 1; i++)
+		{
+			feature_level_token[i].id = feature_level_token_full[i].id;
+			feature_level_token[i].name = xr_strdup(feature_level_token_full[i].name);
+
+			Msg("* \t%s", feature_level_token[i].name);
+		}
+
+		feature_level_token[size - 1].id = -1;
+		feature_level_token[size - 1].name = NULL;
 	}
 #endif
 
+	switch (renderer_value)
+	{
+	case RenderCreationParams::R_R4A:
+	case RenderCreationParams::R_R4:
+		Log("Loading DLL:", "xrRender_R4.dll");
+		hRender = LoadLibrary("xrRender_R4.dll");
+		break;
+	case RenderCreationParams::R_R1:
+		Log("Loading DLL:", "xrRender_R1.dll");
+		hRender = LoadLibrary("xrRender_R1.dll");
+		break;
+	}
+
 	if (0 == hRender)
 	{
-		// try to load R1
-		psDeviceFlags.set(rsR2, FALSE);
-		renderer_value = 0; // con cmd
-
-		Msg("Loading DLL: %s", r1_name);
-		hRender = LoadLibrary(r1_name);
-
-		if (0 == hRender)
-			Msg("Loading failed - library not exist.");
+		Msg("Loading failed - incompatible hardware.");
 	}
 
 	// game

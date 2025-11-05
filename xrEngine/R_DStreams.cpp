@@ -70,7 +70,7 @@ void* _VertexStream::Lock(u32 vl_Count, u32 Stride, u32& vOffset)
 		mPosition = 0;
 		vOffset = 0;
 		mDiscardID++;
-		HW.pContext->Map(pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedSubRes);
+		HW.pContext11->Map(pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedSubRes);
 		pData = (BYTE*)MappedSubRes.pData;
 		pData += vOffset;
 	}
@@ -79,7 +79,7 @@ void* _VertexStream::Lock(u32 vl_Count, u32 Stride, u32& vOffset)
 		// APPEND-LOCK
 		mPosition = vl_mPosition * Stride;
 		vOffset = vl_mPosition;
-		HW.pContext->Map(pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &MappedSubRes);
+		HW.pContext11->Map(pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &MappedSubRes);
 		pData = (BYTE*)MappedSubRes.pData;
 		pData += vOffset * Stride;
 	}
@@ -99,7 +99,7 @@ void _VertexStream::Unlock(u32 Count, u32 Stride)
 
 	VERIFY(pVB);
 
-	HW.pContext->Unmap(pVB, 0);
+	HW.pContext11->Unmap(pVB, 0);
 }
 
 void _VertexStream::reset_begin()
@@ -185,7 +185,7 @@ u16* _IndexStream::Lock(u32 Count, u32& vOffset)
 	}
 
 	D3D11_MAP MapMode = (dwFlags == LOCKFLAGS_APPEND) ? D3D11_MAP_WRITE_NO_OVERWRITE : D3D11_MAP_WRITE_DISCARD;
-	HW.pContext->Map(pIB, 0, MapMode, 0, &MappedSubRes);
+	HW.pContext11->Map(pIB, 0, MapMode, 0, &MappedSubRes);
 	pLockedData = (BYTE*)MappedSubRes.pData;
 	pLockedData += mPosition * 2;
 
@@ -201,7 +201,7 @@ void _IndexStream::Unlock(u32 RealCount)
 	PGO(Msg("PGO:IB_UNLOCK:%d", RealCount));
 	mPosition += RealCount;
 	VERIFY(pIB);
-	HW.pContext->Unmap(pIB, 0);
+	HW.pContext11->Unmap(pIB, 0);
 }
 
 void _IndexStream::reset_begin()

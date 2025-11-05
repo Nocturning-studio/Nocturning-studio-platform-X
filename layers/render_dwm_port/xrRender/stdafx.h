@@ -16,7 +16,7 @@
 
 //#include "stdintport/stdintport.h"
 
-#include <D3D11.h>
+#include <DXSDK/d3d11.h>
 //#include <D3D11_3.h>
 #include <D3Dx11core.h>
 #include <D3DCompiler.h>

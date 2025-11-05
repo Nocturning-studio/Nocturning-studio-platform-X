@@ -683,7 +683,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lp
 				return 0;
 		};
 
-		if (strstr(Core.Params, "-r2.5"))
+		/* if (strstr(Core.Params, "-r2.5"))
 			Console->Execute("renderer renderer_r2.5");
 		else if (strstr(Core.Params, "-r2a"))
 			Console->Execute("renderer renderer_r2a");
@@ -694,7 +694,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lp
 			CCC_LoadCFG_custom* pTmp = xr_new<CCC_LoadCFG_custom>("renderer ");
 			pTmp->Execute(Console->ConfigFile);
 			xr_delete(pTmp);
-		}
+		}*/
 
 		Engine.External.Initialize();
 		//Console->Execute("stat_memory");
@@ -1225,13 +1225,14 @@ void doBenchmark(LPCSTR name)
 void CApplication::load_draw_internal()
 {
 	D3D11_VIEWPORT VP = {0, 0, (float)Device.dwWidth, (float)Device.dwHeight, 0, 1.f};
-	HW.pContext->RSSetViewports(1, &VP);
+	HW.pContext11->RSSetViewports(1, &VP);
 
 	RCache.set_RT(HW.pBaseRT);
-	RCache.set_ZB(HW.pBaseZB);
+	//RCache.set_ZB(HW.pBaseZB);
+	RCache.set_ZB(HW.pBaseDepthReadDSV);
 
 	//FLOAT ColorRGBA[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-	//HW.pContext->ClearRenderTargetView(RCache.get_RT(), ColorRGBA);
+	//HW.pContext11->ClearRenderTargetView(RCache.get_RT(), ColorRGBA);
 
 	if (!sh_progress)
 	{

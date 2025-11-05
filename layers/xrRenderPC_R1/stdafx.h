@@ -29,9 +29,10 @@
 #include "..\xrRender\xrRender_console.h"
 #include "FStaticRender.h"
 
-#include <d3d11.h>
+#include <DXSDK/d3d11.h>
+//#include <d3d11_3.h>
 #include <d3dx11.h>
-#include "d3d11shader.h"
+#include "DXSDK/d3d11shader.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dx11d.lib")

@@ -7,7 +7,51 @@
 #pragma once
 
 #include "hwcaps.h"
-#include "stats_manager.h"
+
+enum enum_stats_buffer_type
+{
+	enum_stats_buffer_type_vertex,
+	enum_stats_buffer_type_index,
+	enum_stats_buffer_type_rtarget,
+	enum_stats_buffer_type_COUNT
+};
+
+class stats_manager
+{
+
+  public:
+	~stats_manager();
+	void increment_stats(u32 size, enum_stats_buffer_type type, _D3DPOOL location);
+	void decrement_stats(u32 size, enum_stats_buffer_type type, _D3DPOOL location);
+
+	void increment_stats_rtarget(ID3D11Texture2D* buff);
+	void increment_stats_vb(ID3D11Buffer* buff);
+	void increment_stats_ib(ID3D11Buffer* buff);
+
+	void decrement_stats_rtarget(ID3D11Texture2D* buff);
+	void decrement_stats_vb(ID3D11Buffer* buff);
+	void decrement_stats_ib(ID3D11Buffer* buff);
+
+	u32 memory_usage_summary[enum_stats_buffer_type_COUNT][4];
+
+  private:
+	void increment_stats(u32 size, enum_stats_buffer_type type, _D3DPOOL location, void* buff_ptr);
+	void decrement_stats(u32 size, enum_stats_buffer_type type, _D3DPOOL location, void* buff_ptr);
+
+#ifdef DEBUG
+	struct stats_item
+	{
+		void* buff_ptr;
+		u32 size;
+		enum_stats_buffer_type type;
+		_D3DPOOL location;
+	}; // stats_item
+
+	xr_vector<stats_item> m_buffers_list;
+#endif
+}; // class stats_manager
+
+u32 get_format_pixel_size(DXGI_FORMAT format);
 
 class CHW
 
@@ -39,11 +83,13 @@ class CHW
 	IDXGIAdapter* m_pAdapter; //	pD3D equivalent
 	IDXGISwapChain* m_pSwapChain;
 
-	ID3D11Device* pDevice;
-	ID3D11DeviceContext* pContext;
+	ID3D11Device* pDevice11;
+	ID3D11DeviceContext* pContext11;
 
-	//ID3D11Device3* pDevice3;
-	//ID3D11DeviceContext3* pContext3;
+#ifdef USE_DX11_3
+	ID3D11Device3* pDevice11_3;
+	ID3D11DeviceContext3* pContext11_3;
+#endif
 
 	ID3D11Texture2D* pBaseDepthSurface; // Base depth surface
 

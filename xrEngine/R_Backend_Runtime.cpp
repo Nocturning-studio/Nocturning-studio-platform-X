@@ -13,7 +13,7 @@
 
 void CBackend::OnFrameEnd()
 {
-	HW.pContext->ClearState();
+	HW.pContext11->ClearState();
 	Invalidate();
 }
 
