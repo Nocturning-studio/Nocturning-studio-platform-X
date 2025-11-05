@@ -111,7 +111,6 @@
     <ClCompile Include="..\xrRender\rendertarget_phase_smap_D.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_smap_S.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_wallmarks.cpp" />
-    <ClCompile Include="..\xrRender\stats_manager.cpp" />
     <ClCompile Include="..\xrRender\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -257,7 +256,6 @@
     <ClInclude Include="..\xrRender\rendertarget.h" />
     <ClInclude Include="..\xrRender\rendertarget_wallmarks.h" />
     <ClInclude Include="..\xrRender\SMAP_Allocator.h" />
-    <ClInclude Include="..\xrRender\stats_manager.h" />
     <ClInclude Include="..\xrRender\stdafx.h" />
     <ClInclude Include="..\xrRender\uber_deffer.h" />
     <ClInclude Include="..\xrRender\VertexCache.h" />

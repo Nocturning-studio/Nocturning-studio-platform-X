@@ -229,7 +229,7 @@ void dx103DFluidManager::CreateRTTextureAndViews(int rtIndex, D3D_TEXTURE3D_DESC
 	ID3DTexture3D	*pRT;
 
 	// Create the texture
-	CHK_DX( HW.pDevice->CreateTexture3D(&TexDesc,NULL,&pRT));
+	CHK_DX( HW.pDevice11->CreateTexture3D(&TexDesc,NULL,&pRT));
 	// Create the render target view
 	D3D_RENDER_TARGET_VIEW_DESC DescRT;
 	DescRT.Format = TexDesc.Format;
@@ -238,7 +238,7 @@ void dx103DFluidManager::CreateRTTextureAndViews(int rtIndex, D3D_TEXTURE3D_DESC
 	DescRT.Texture3D.MipSlice = 0;
 	DescRT.Texture3D.WSize = TexDesc.Depth;
 
-	CHK_DX( HW.pDevice->CreateRenderTargetView( pRT, &DescRT, &pRenderTargetViews[rtIndex]) );
+	CHK_DX( HW.pDevice11->CreateRenderTargetView( pRT, &DescRT, &pRenderTargetViews[rtIndex]) );
 
 	pRTTextures[rtIndex]->surface_set(pRT);
 

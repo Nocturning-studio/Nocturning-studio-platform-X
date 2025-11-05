@@ -2184,6 +2184,7 @@
     <ClInclude Include="dx11\StateCacheImpl.h" />
     <ClInclude Include="dx11\StateManager.h" />
     <ClInclude Include="dx11\StateUtils.h" />
+    <ClInclude Include="dx11\stats_manager.h" />
     <ClInclude Include="edit_actions.h" />
     <ClInclude Include="Effector.h" />
     <ClInclude Include="EffectorPP.h" />
@@ -2425,6 +2426,7 @@
     <ClCompile Include="dx11\StateCache.cpp" />
     <ClCompile Include="dx11\StateManager.cpp" />
     <ClCompile Include="dx11\StateUtils.cpp" />
+    <ClCompile Include="dx11\stats_manager.cpp" />
     <ClCompile Include="edit_actions.cpp" />
     <ClCompile Include="Effector.cpp" />
     <ClCompile Include="EffectorPP.cpp" />

@@ -2,6 +2,8 @@
 #define	dx10BufferUtils_included
 #pragma once
 
+#define BufferUtils dx10BufferUtils
+
 namespace dx10BufferUtils
 {
 ENGINE_API HRESULT  CreateVertexBuffer(ID3D11Buffer** ppBuffer, const void* pData, UINT DataSize, bool bImmutable = true);

@@ -45,8 +45,6 @@ class CHWCaps
 	u32 iGPUNum;
 
 	// device format
-	D3DFORMAT fTarget;
-	D3DFORMAT fDepth;
 	u32 dwRefreshRate;
 
 	// caps itself
@@ -57,8 +55,6 @@ class CHWCaps
 	u16 raster_minor;
 	caps_Raster raster;
 
-	DWORD max_coverage;
-
 	u32 id_vendor;
 	u32 id_device;
 
@@ -67,10 +63,11 @@ class CHWCaps
 	BOOL bTableFog; //
 
 	// some precalculated values
-	D3DSTENCILOP soDec, soInc; // best stencil OPs for shadows
-	u32 dwMaxStencilValue;	   // maximum value the stencil buffer can hold
+	D3D11_STENCIL_OP soDec, soInc; // best stencil OPs for shadows
+	u32 dwMaxStencilValue;		 // maximum value the stencil buffer can hold
 
 	void Update(void);
 };
+
 
 #endif

@@ -107,7 +107,7 @@ void dx103DFluidGrid::CreateVertexBuffers()
 
 	//CreateVertexBuffer(sizeof(VS_INPUT_FLUIDSIM_STRUCT)*numVerticesRenderQuad,
 	//	D3Dxx_BIND_VERTEX_BUFFER, &renderQuadBuffer, renderQuad, numVerticesRenderQuad));
-	CHK_DX(BufferUtils::CreateBuffer(&m_pRenderQuadBuffer, renderQuad, vSize*m_iNumVerticesRenderQuad, D3D_BIND_VERTEX_BUFFER));
+	CHK_DX(BufferUtils::CreateVertexBuffer(&m_pRenderQuadBuffer, renderQuad, vSize*m_iNumVerticesRenderQuad, D3D_BIND_VERTEX_BUFFER));
 	m_GeomRenderQuad.create(layoutDesc, m_pRenderQuadBuffer, 0);
 
 	// Vertex buffer for "m_vDim[2]" quads to draw all the slices to a 3D texture
@@ -118,7 +118,7 @@ void dx103DFluidGrid::CreateVertexBuffers()
 	VERIFY(index==m_iNumVerticesSlices);
 	//V_RETURN(CreateVertexBuffer(sizeof(VS_INPUT_FLUIDSIM_STRUCT)*numVerticesSlices,
 	//	D3Dxx_BIND_VERTEX_BUFFER, &slicesBuffer, slices , numVerticesSlices));
-	CHK_DX(BufferUtils::CreateBuffer(&m_pSlicesBuffer, slices, vSize*m_iNumVerticesSlices, D3D_BIND_VERTEX_BUFFER));
+	CHK_DX(BufferUtils::CreateVertexBuffer(&m_pSlicesBuffer, slices, vSize*m_iNumVerticesSlices, D3D_BIND_VERTEX_BUFFER));
 	m_GeomSlices.create(layoutDesc, m_pSlicesBuffer, 0);
 
 	// Vertex buffers for boundary geometry
@@ -128,7 +128,7 @@ void dx103DFluidGrid::CreateVertexBuffers()
 	VERIFY(index==m_iNumVerticesBoundarySlices);
 	//V_RETURN(CreateVertexBuffer(sizeof(VS_INPUT_FLUIDSIM_STRUCT)*numVerticesBoundarySlices,
 	//	D3Dxx_BIND_VERTEX_BUFFER, &boundarySlicesBuffer, boundarySlices, numVerticesBoundarySlices));
-	CHK_DX(BufferUtils::CreateBuffer(&m_pBoundarySlicesBuffer, boundarySlices, vSize*m_iNumVerticesBoundarySlices, D3D_BIND_VERTEX_BUFFER));
+	CHK_DX(BufferUtils::CreateVertexBuffer(&m_pBoundarySlicesBuffer, boundarySlices, vSize*m_iNumVerticesBoundarySlices, D3D_BIND_VERTEX_BUFFER));
 	m_GeomBoundarySlices.create(layoutDesc, m_pBoundarySlicesBuffer, 0);
 
 	//   ( 4 * "m_vDim[2]" ) boundary lines
@@ -137,7 +137,7 @@ void dx103DFluidGrid::CreateVertexBuffers()
 	VERIFY(index==m_iNumVerticesBoundaryLines);
 	//V_RETURN(CreateVertexBuffer(sizeof(VS_INPUT_FLUIDSIM_STRUCT)*numVerticesBoundaryLines,
 	//	D3Dxx_BIND_VERTEX_BUFFER, &boundaryLinesBuffer, boundaryLines, numVerticesBoundaryLines));
-	CHK_DX(BufferUtils::CreateBuffer(&m_pBoundaryLinesBuffer, boundaryLines, vSize*m_iNumVerticesBoundaryLines, D3D_BIND_VERTEX_BUFFER));
+	CHK_DX(BufferUtils::CreateVertexBuffer(&m_pBoundaryLinesBuffer, boundaryLines, vSize*m_iNumVerticesBoundaryLines, D3D_BIND_VERTEX_BUFFER));
 	m_GeomBoundaryLines.create(layoutDesc, m_pBoundaryLinesBuffer, 0);
 
 //cleanup:

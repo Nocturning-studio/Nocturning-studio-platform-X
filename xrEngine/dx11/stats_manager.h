@@ -17,13 +17,13 @@ public:
  	void increment_stats		( u32 size, enum_stats_buffer_type type, _D3DPOOL location );
 	void decrement_stats		( u32 size, enum_stats_buffer_type type, _D3DPOOL location );
 
-	void increment_stats_rtarget( ID3DTexture2D*	buff );
-	void increment_stats_vb		( ID3DBuffer*		buff );
-	void increment_stats_ib		( ID3DBuffer*		buff );
+	void increment_stats_rtarget( ID3D11Texture2D*	buff );
+	void increment_stats_vb		( ID3D11Buffer*		buff );
+	void increment_stats_ib		( ID3D11Buffer*		buff );
 
-	void decrement_stats_rtarget( ID3DTexture2D*	buff );
-	void decrement_stats_vb		( ID3DBuffer*		buff );
-	void decrement_stats_ib		( ID3DBuffer*		buff );
+	void decrement_stats_rtarget( ID3D11Texture2D*	buff );
+	void decrement_stats_vb		( ID3D11Buffer*		buff );
+	void decrement_stats_ib		( ID3D11Buffer*		buff );
 
 	u32 memory_usage_summary[enum_stats_buffer_type_COUNT][4];
 

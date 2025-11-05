@@ -552,7 +552,6 @@
     <ClCompile Include="halton.cpp">
       <Filter>Core\halton</Filter>
     </ClCompile>
-    <ClCompile Include="..\xrRender\stats_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\xrRender\ColorMapManager.h">
@@ -942,7 +941,6 @@
     <ClInclude Include="..\..\..\SDK\include\FidelityFX\ffx_fsr1.h">
       <Filter>Graphic features\FidelityFX</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrRender\stats_manager.h" />
     <ClInclude Include="dxHashHelper.h" />
   </ItemGroup>
 </Project>

@@ -7,69 +7,114 @@
 #pragma once
 
 #include "hwcaps.h"
+#include "stats_manager.h"
 
-class ENGINE_API CHW
+class CHW
+
+	: public pureAppActivate,
+	  public pureAppDeactivate
+
 {
-	//HINSTANCE hD3D9;
-
+	//	Functions section
   public:
-	//IDirect3D9* pD3D;		   // D3D
-	//IDirect3DDevice9* pDevice; // render device
-
-	//IDirect3DSurface9* pBaseRT;
-	//IDirect3DSurface9* pBaseZB;
-
-	IDXGIAdapter1* pAdapter;
-	ID3D11Device* pDevice11;
-	ID3D11DeviceContext* pContext;
-	IDXGISwapChain* m_pSwapChain;
-	ID3D11DepthStencilView* pBaseZB;
-	ID3D11RenderTargetView* pBaseRT;
-	DXGI_SWAP_CHAIN_DESC m_ChainDesc;
-	D3D_FEATURE_LEVEL FeatureLevel;
-
-	CHWCaps Caps;
-
-	UINT DevAdapter;
-	//D3DDEVTYPE DevT;
-	//D3DPRESENT_PARAMETERS DevPP;
-
-	CHW()
-	{
-		//hD3D9 = NULL;
-		//pD3D = NULL;
-		//pDevice = NULL;
-		pBaseRT = NULL;
-		pBaseZB = NULL;
-	};
+	CHW();
+	~CHW();
 
 	void CreateD3D();
 	void DestroyD3D();
-	void CreateDevice(HWND hw);
-	void DestroyDevice();
+	void CreateDevice(HWND hw, bool move_window);
 
-	void CreateRenderTarget();
-	void DestroyRenderTarget();
+	void DestroyDevice();
 
 	void Reset(HWND hw);
 
 	void selectResolution(u32& dwWidth, u32& dwHeight, BOOL bWindowed);
-	D3DFORMAT selectDepthStencil(D3DFORMAT);
-	u32 selectPresentInterval();
-	u32 selectGPU();
-	u32 selectRefresh(u32 dwWidth, u32 dwHeight, D3DFORMAT fmt);
 	void updateWindowProps(HWND hw);
-	BOOL support(D3DFORMAT fmt, DWORD type, DWORD usage);
 
-#ifdef DEBUG
-	void Validate(void)
-	{
-		VERIFY(pDevice);
-		VERIFY(pD3D);
-	};
-#else
 	void Validate(void){};
+
+	//	Variables section
+
+  public:
+	IDXGIAdapter* m_pAdapter; //	pD3D equivalent
+	IDXGISwapChain* m_pSwapChain;
+
+	ID3D11Device* pDevice;
+	ID3D11DeviceContext* pContext;
+
+	//ID3D11Device3* pDevice3;
+	//ID3D11DeviceContext3* pContext3;
+
+	ID3D11Texture2D* pBaseDepthSurface; // Base depth surface
+
+	/*
+		! Shader resource view with depth buffer
+		Depth:
+		- Write No
+		- Test:	No
+		- Read:	Yes
+		Stencil:
+		- ...No
+	*/
+	ID3D11ShaderResourceView* pBaseDepthReadSRV;
+
+#ifdef __GFSDK_DX11__
+	GFSDK_SSAO_Context_D3D* pSSAO;
+
+	NvTxaaContextDX11 m_TXAA;
+	bool m_TXAA_initialized;
 #endif
+
+	bool m_cs_support;
+	bool m_12_level; // D3D_FEATURE_LEVEL_12_X
+
+	CHWCaps Caps;
+
+	D3D_DRIVER_TYPE m_DriverType;	  //	DevT equivalent
+	DXGI_SWAP_CHAIN_DESC m_ChainDesc; //	DevPP equivalent
+	bool m_bUsePerfhud;
+	D3D_FEATURE_LEVEL FeatureLevel;
+
+	ID3D11RenderTargetView* pBaseRT; //	combine with DX9 pBaseRT via typedef
+
+	/*
+		! Depth-stencil view
+		Depth:
+		- Write Yes
+		- Test:	Yes
+		- Read:	No
+		Stencil:
+		- Write: Yes
+		- Test:	Yes
+		- Read:	No
+	*/
+	ID3D11DepthStencilView* pBaseDepthReadWriteDSV;
+
+	/*
+		! Depth-stencil view
+		Depth:
+		- Write DX11: No, other: Yes
+		- Test:	Yes
+		- Read:	Yes (can be used with pBaseDepthReadSRV)
+		Stencil:
+		- Write: Yes
+		- Test:	Yes
+		- Read:	No
+	*/
+	ID3D11DepthStencilView* pBaseDepthReadDSV;
+
+#ifndef _MAYA_EXPORT
+	stats_manager stats_manager;
+#endif
+
+	void UpdateViews();
+	DXGI_RATIONAL selectRefresh(u32 dwWidth, u32 dwHeight, DXGI_FORMAT fmt);
+
+	virtual void OnAppActivate();
+	virtual void OnAppDeactivate();
+
+  private:
+	bool m_move_window;
 };
 
 extern ENGINE_API CHW HW;
