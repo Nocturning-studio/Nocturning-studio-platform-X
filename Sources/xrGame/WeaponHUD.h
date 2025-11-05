@@ -142,7 +142,7 @@ class CWeaponHUD
 	}
 
 	// Animations
-	void animPlay(MotionID M, BOOL bMixIn /*=TRUE*/, CHudItem* W /*=0*/, u32 state);
+	void animPlay(MotionID M, BOOL bMixIn /*=TRUE*/, CHudItem* _W /*=0*/, u32 state);
 	void animDisplay(MotionID M, BOOL bMixIn);
 	MotionID animGet(LPCSTR name);
 

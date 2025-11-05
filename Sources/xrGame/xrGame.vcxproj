@@ -728,7 +728,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OrderInUnityFile>100</OrderInUnityFile>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
-      <IncludeInUnityFile>true</IncludeInUnityFile>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
