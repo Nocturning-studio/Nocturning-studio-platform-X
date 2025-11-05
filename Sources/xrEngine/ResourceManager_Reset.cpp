@@ -13,15 +13,18 @@ void CResourceManager::reset_begin()
 	// destroy everything, renderer may use
 	::Render->reset_begin();
 
-	// destroy state-blocks
-	for (u32 _it = 0; _it < v_states.size(); _it++)
-		_RELEASE(v_states[_it]->state);
+	if (0)
+	{
+		// destroy state-blocks
+		for (u32 _it = 0; _it < v_states.size(); _it++)
+			_RELEASE(v_states[_it]->state);
 
-	// destroy RTs
-	for (map_RTIt rt_it = m_rtargets.begin(); rt_it != m_rtargets.end(); rt_it++)
-		rt_it->second->reset_begin();
-	for (map_RTCIt rtc_it = m_rtargets_c.begin(); rtc_it != m_rtargets_c.end(); rtc_it++)
-		rtc_it->second->reset_begin();
+		// destroy RTs
+		for (map_RTIt rt_it = m_rtargets.begin(); rt_it != m_rtargets.end(); rt_it++)
+			rt_it->second->reset_begin();
+		for (map_RTCIt rtc_it = m_rtargets_c.begin(); rtc_it != m_rtargets_c.end(); rtc_it++)
+			rtc_it->second->reset_begin();
+	}
 
 	// destroy DStreams
 	RenderBackend.old_QuadIB = RenderBackend.QuadIB;
@@ -29,7 +32,7 @@ void CResourceManager::reset_begin()
 	RenderBackend.Index.reset_begin();
 	RenderBackend.Vertex.reset_begin();
 
-	DeferredUnload();
+	//DeferredUnload();
 }
 
 bool cmp_rt(const CRT* A, const CRT* B)
@@ -74,6 +77,7 @@ void CResourceManager::reset_end()
 	}
 
 	// create RTs in the same order as them was first created
+	if (0)
 	{
 		// RT
 #pragma todo("container is created in stack!")
@@ -84,6 +88,8 @@ void CResourceManager::reset_end()
 		for (u32 _it = 0; _it < rt.size(); _it++)
 			rt[_it]->reset_end();
 	}
+
+	if (0)
 	{
 		// RTc
 #pragma todo("container is created in stack!")
@@ -96,12 +102,13 @@ void CResourceManager::reset_end()
 	}
 
 	// create state-blocks
+	if (0)
 	{
 		for (u32 _it = 0; _it < v_states.size(); _it++)
 			v_states[_it]->state = v_states[_it]->state_code.record();
 	}
 
-	DeferredUpload();
+	//DeferredUpload();
 
 	// create everything, renderer may use
 	::Render->reset_end();

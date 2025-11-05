@@ -45,7 +45,7 @@ void CHW::Reset(HWND hwnd)
 
 	selectResolution(DevPP.BackBufferWidth, DevPP.BackBufferHeight, bWindowed);
 	// Windoze
-	DevPP.SwapEffect = bWindowed ? D3DSWAPEFFECT_COPY : D3DSWAPEFFECT_DISCARD;
+	DevPP.SwapEffect = D3DSWAPEFFECT_FLIPEX; // bWindowed ? D3DSWAPEFFECT_COPY : D3DSWAPEFFECT_DISCARD;
 	DevPP.Windowed = bWindowed;
 	DevPP.PresentationInterval = selectPresentInterval();
 	if (!bWindowed)
@@ -74,10 +74,18 @@ void CHW::Reset(HWND hwnd)
 
 xr_token* vid_mode_token = NULL;
 
+#pragma todo(Deathman to Deathman: Починить для dedicated)
 void CHW::CreateD3D()
 {
 	OPTICK_EVENT("CHW::CreateD3D");
 
+	Msg("Creating Direct3D9Ex");
+
+	HRESULT hr = Direct3DCreate9Ex(D3D_SDK_VERSION, &this->pD3D);
+	if (FAILED(hr) || !this->pD3D)
+		Msg("Failed to create Direct3D9Ex!");
+
+	/*
 #ifndef DEDICATED_SERVER
 	LPCSTR _name = "d3d9.dll";
 #else
@@ -98,6 +106,7 @@ void CHW::CreateD3D()
 	this->pD3D = createD3D(D3D_SDK_VERSION);
 	if (!this->pD3D)
 		make_string("Please install DirectX 9.0c");
+		*/
 }
 
 void CHW::DestroyD3D()
@@ -105,7 +114,7 @@ void CHW::DestroyD3D()
 	OPTICK_EVENT("CHW::DestroyD3D");
 
 	_RELEASE(this->pD3D);
-	FreeLibrary(hD3D9);
+	//FreeLibrary(hD3D9);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -313,7 +322,7 @@ void CHW::CreateDevice(HWND m_hWnd)
 	P.MultiSampleQuality = 0;
 
 	// Windoze
-	P.SwapEffect = bWindowed ? D3DSWAPEFFECT_COPY : D3DSWAPEFFECT_DISCARD;
+	P.SwapEffect = D3DSWAPEFFECT_FLIPEX; // bWindowed ? D3DSWAPEFFECT_COPY : D3DSWAPEFFECT_DISCARD;
 	P.hDeviceWindow = m_hWnd;
 	P.Windowed = bWindowed;
 
@@ -332,26 +341,31 @@ void CHW::CreateDevice(HWND m_hWnd)
 
 	// Create the device
 	u32 GPU = selectGPU();
-	HRESULT R = HW.pD3D->CreateDevice(DevAdapter, DevT, m_hWnd,
-									  GPU | D3DCREATE_MULTITHREADED, //. ? locks at present
-									  &P, &pDevice);
+	//HRESULT R = HW.pD3D->CreateDeviceEx(DevAdapter, DevT, m_hWnd,
+	//								  GPU | D3DCREATE_MULTITHREADED, //. ? locks at present
+	//								  &P, &pDevice);
 
-	if (FAILED(R))
-	{
-		R = HW.pD3D->CreateDevice(DevAdapter, DevT, m_hWnd,
-								  GPU | D3DCREATE_MULTITHREADED, //. ? locks at present
-								  &P, &pDevice);
-	}
-	if (D3DERR_DEVICELOST == R)
-	{
-		// Fatal error! Cannot create rendering device AT STARTUP !!!
-		Msg("Failed to initialize graphics hardware.\nPlease try to restart the game.");
-		FlushLog();
-		MessageBox(NULL, "Failed to initialize graphics hardware.\nPlease try to restart the game.", "Error!",
-				   MB_OK | MB_ICONERROR);
-		TerminateProcess(GetCurrentProcess(), 0);
-	};
-	R_CHK(R);
+	HRESULT hr = HW.pD3D->CreateDeviceEx(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, P.hDeviceWindow,
+										 D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED |
+											 D3DCREATE_ENABLE_PRESENTSTATS,
+										 &P, nullptr, &pDevice);
+
+	//if (FAILED(R))
+	//{
+	//	R = HW.pD3D->CreateDeviceEx(DevAdapter, DevT, m_hWnd,
+	//							  GPU | D3DCREATE_MULTITHREADED, //. ? locks at present
+	//							  &P, &pDevice);
+	//}
+	//if (D3DERR_DEVICELOST == R)
+	//{
+	//	// Fatal error! Cannot create rendering device AT STARTUP !!!
+	//	Msg("Failed to initialize graphics hardware.\nPlease try to restart the game.");
+	//	FlushLog();
+	//	MessageBox(NULL, "Failed to initialize graphics hardware.\nPlease try to restart the game.", "Error!",
+	//			   MB_OK | MB_ICONERROR);
+	//	TerminateProcess(GetCurrentProcess(), 0);
+	//};
+	//R_CHK(R);
 
 	_SHOW_REF("* CREATE: DeviceREF:", HW.pDevice);
 	switch (GPU)

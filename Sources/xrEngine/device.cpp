@@ -83,9 +83,9 @@ void Present()
 
 	Device.Statistic->RenderPresentation.Begin();
 
-	HRESULT _hr = HW.pDevice->Present(NULL, NULL, NULL, NULL);
-	if (D3DERR_DEVICELOST == _hr)
-		return; // we will handle this later
+	HRESULT _hr = HW.pDevice->PresentEx(NULL, NULL, NULL, NULL, NULL);
+	//if (D3DERR_DEVICELOST == _hr)
+	//	return; // we will handle this later
 
 	Device.Statistic->RenderPresentation.End();
 }

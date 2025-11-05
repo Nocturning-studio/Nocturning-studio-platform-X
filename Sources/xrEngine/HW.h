@@ -13,8 +13,8 @@ class ENGINE_API CHW
 	HINSTANCE hD3D9;
 
   public:
-	IDirect3D9* pD3D;		   // D3D
-	IDirect3DDevice9* pDevice; // render device
+	IDirect3D9Ex* pD3D;		   // D3D
+	IDirect3DDevice9Ex* pDevice; // render device
 
 	IDirect3DSurface9* pBaseRT;
 	IDirect3DSurface9* pBaseZB;
