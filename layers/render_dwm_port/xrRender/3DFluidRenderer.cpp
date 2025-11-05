@@ -155,7 +155,7 @@ void dx103DFluidRenderer::CreateGridBox ()
 	};
 	m_iGridBoxVertNum = sizeof(vertices)/sizeof(vertices[0]);
 
-	CHK_DX(BufferUtils::CreateBuffer(&m_pGridBoxVertexBuffer, vertices, sizeof(vertices), D3D_BIND_VERTEX_BUFFER));
+	CHK_DX(BufferUtils::CreateVertexBuffer(&m_pGridBoxVertexBuffer, vertices, sizeof(vertices), D3D_BIND_VERTEX_BUFFER));
 
 	// Create index buffer
 	u16 indices[] =
@@ -169,7 +169,7 @@ void dx103DFluidRenderer::CreateGridBox ()
 	};
 	m_iGridBoxFaceNum = (sizeof(indices)/sizeof(indices[0]))/3;
 
-	CHK_DX(BufferUtils::CreateBuffer(&m_pGridBoxIndexBuffer, indices, sizeof(indices), D3D_BIND_INDEX_BUFFER));
+	CHK_DX(BufferUtils::CreateIndexBuffer(&m_pGridBoxIndexBuffer, indices, sizeof(indices), D3D_BIND_INDEX_BUFFER));
 
 	HW.stats_manager.increment_stats(sizeof(indices), enum_stats_buffer_type_index, D3DPOOL_MANAGED);
 
@@ -199,7 +199,7 @@ void dx103DFluidRenderer::CreateScreenQuad()
 	svQuad[2].pos = D3DXVECTOR3(-1.0f, -1.0f, 0.0f );
 	svQuad[3].pos = D3DXVECTOR3(1.0f, -1.0f, 0.0f );
 
-	CHK_DX(BufferUtils::CreateBuffer(&m_pQuadVertexBuffer, svQuad, sizeof(svQuad), D3D_BIND_VERTEX_BUFFER));
+	CHK_DX(BufferUtils::CreateVertexBuffer(&m_pQuadVertexBuffer, svQuad, sizeof(svQuad), D3D_BIND_VERTEX_BUFFER));
 	m_GeomQuadVertex.create(quadlayout, m_pQuadVertexBuffer, 0);
 }
 
@@ -231,7 +231,7 @@ void dx103DFluidRenderer::CreateJitterTexture()
 
 	ID3DTexture2D* NoiseTexture = NULL;
 
-	CHK_DX( HW.pDevice->CreateTexture2D(&desc, &dataDesc, &NoiseTexture));
+	CHK_DX( HW.pDevice11->CreateTexture2D(&desc, &dataDesc, &NoiseTexture));
 
 	m_JitterTexture = dxRenderDeviceRender::Instance().Resources->_CreateTexture("$user$NVjitterTex");
 	m_JitterTexture->surface_set(NoiseTexture);
@@ -320,7 +320,7 @@ void dx103DFluidRenderer::CreateHHGGTexture()
 
 	ID3DTexture1D* HHGGTexture = NULL;
 
-	CHK_DX( HW.pDevice->CreateTexture1D(&desc, &dataDesc, &HHGGTexture));
+	CHK_DX( HW.pDevice11->CreateTexture1D(&desc, &dataDesc, &HHGGTexture));
 
 	m_HHGGTexture = dxRenderDeviceRender::Instance().Resources->_CreateTexture("$user$NVHHGGTex");
 	m_HHGGTexture->surface_set(HHGGTexture);

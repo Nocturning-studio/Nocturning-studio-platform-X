@@ -1,8 +1,5 @@
 #include "stdafx.h"
 
-#include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidRenderer.cpp"
-
-
 #include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidVolume.cpp"
 
 
@@ -25,4 +22,7 @@
 
 
 #include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\PSLibrary.cpp"
+
+
+#include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render.cpp"
 

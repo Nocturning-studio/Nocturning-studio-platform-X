@@ -4,9 +4,9 @@
 #include "dxRenderDeviceRender.h"
 
 #include "../xrEngine/xr_object.h"
-#include "../xrEngine/IPhysicsShell.h"
-#include "../xrEngine/IObjectPhysicsCollision.h"
-#include "../xrEngine/IPhysicsGeometry.h"
+#include "../../xrGame/PhysicsShell.h"
+//#include "../xrEngine/IObjectPhysicsCollision.h"
+//#include "../xrEngine/IPhysicsGeometry.h"
 
 #include "3DFluidBlenders.h"
 #include "3DFluidData.h"
@@ -211,10 +211,11 @@ void dx103DFluidObstacles::ProcessDynamicObstacles( const dx103DFluidData &Fluid
 		CObject*		pObject = spatial->dcast_CObject();
 		if (!pObject) continue;
 
-		const IObjectPhysicsCollision* pCollision = pObject->physics_collision();
+		//const IObjectPhysicsCollision* pCollision = pObject->physics_collision();
+		void* pCollision = NULL; // Hack, fix me pls
 		if (!pCollision) continue;
 
-		const IPhysicsShell*		pShell = pCollision->physics_shell();
+		/*const IPhysicsShell*		pShell = pCollision->physics_shell();
 		const IPhysicsElement*	pElement = pCollision->physics_character();
 		if (pShell)
 		{
@@ -224,7 +225,7 @@ void dx103DFluidObstacles::ProcessDynamicObstacles( const dx103DFluidData &Fluid
 		else if (pElement)
 		{
 			m_lstElements.push_back(pElement);
-		}
+		}*/
 	}
 
 	if (! (m_lstShells.size() || m_lstElements.size()))
@@ -255,18 +256,18 @@ void dx103DFluidObstacles::ProcessDynamicObstacles( const dx103DFluidData &Fluid
 //	TODO: DX10: Do it using instancing.
 void dx103DFluidObstacles::RenderPhysicsShell( const IPhysicsShell *pShell, const Fmatrix &WorldToFluid, float timestep )
 {
-	u16 iObstNum = pShell->get_ElementsNumber();
+	/* u16 iObstNum = pShell->get_ElementsNumber();
 	for (u16 i=0; i<iObstNum; ++i)
 	{
 		const IPhysicsElement &Element = pShell->Element(i);
-
+	
 		RenderPhysicsElement( Element, WorldToFluid, timestep );
-	}
+	}*/
 }
 
 void dx103DFluidObstacles::RenderPhysicsElement( const IPhysicsElement &Element, const Fmatrix &WorldToFluid, float timestep)
 {
-	//	Shader must be already set up!
+	/*//	Shader must be already set up!
 	const Fvector3	&MassCenter3 = Element.mass_Center();
 	Fvector3	AngularVelocity3;
 	Fvector3	TranslationVelocity3;
@@ -313,7 +314,7 @@ void dx103DFluidObstacles::RenderPhysicsElement( const IPhysicsElement &Element,
 	{
 		if (Element.geometry(i)->collide_fluids())
 			RenderDynamicOOBB( *Element.geometry(i), WorldToFluid, timestep);
-	}
+	}*/
 }
 
 /*
@@ -388,7 +389,7 @@ void dx103DFluidObstacles::RenderDynamicOOBB( const IPhysicsElement &Element, co
 
 void dx103DFluidObstacles::RenderDynamicOOBB( const IPhysicsGeometry &Geometry, const Fmatrix &WorldToFluid, float timestep)
 {
-	PIX_EVENT(RenderDynamicObstacle);
+	/* PIX_EVENT(RenderDynamicObstacle);
 
 	//	dsdad;
 
@@ -419,5 +420,5 @@ void dx103DFluidObstacles::RenderDynamicOOBB( const IPhysicsGeometry &Geometry, 
 		RCache.set_ca(strOOBBClipPlane, i, TransformedPlane);
 	}
 
-	m_pGrid->DrawSlices();
+	m_pGrid->DrawSlices();*/
 }

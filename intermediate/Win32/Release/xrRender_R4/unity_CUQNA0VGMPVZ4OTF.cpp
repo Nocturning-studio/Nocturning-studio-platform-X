@@ -1,8 +1,5 @@
 #include "stdafx.h"
 
-#include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp"
-
-
 #include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_planar.cpp"
 
 
@@ -25,4 +22,7 @@
 
 
 #include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_sector_detect.cpp"
+
+
+#include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_sector_traversal.cpp"
 

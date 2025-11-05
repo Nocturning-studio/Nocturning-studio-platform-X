@@ -18,11 +18,11 @@
 #include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_wallmarks.cpp"
 
 
-#include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\stats_manager.cpp"
-
-
 #include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\VertexCache.cpp"
 
 
 #include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\WallmarksEngine.cpp"
+
+
+#include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\xrRender_console.cpp"
 

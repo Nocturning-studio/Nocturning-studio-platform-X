@@ -204,6 +204,12 @@ template <class T> struct _vector4
 		return mul(1 / magnitude());
 	}
 
+	IC SelfRef normalize_as_plane()
+	{
+		return mul(1 / _sqrt(x * x + y * y + z * z));
+	}
+
+
 	IC SelfRef lerp(const Self& p1, const Self& p2, T t)
 	{
 		T invt = 1.f - t;

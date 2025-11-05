@@ -69,25 +69,25 @@ D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\r_constants.h(87,6
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\dx11\ConstantBuffer_impl.h(185,30): warning C4458: объявление "lineSize" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\dx11\ConstantBuffer.h(49,23): message : см. объявление "dx10ConstantBuffer::lineSize"
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(103,33): warning C4324: CBackend: структура была дополнена нулями из-за описателя выравнивания
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(200,36): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(262,36): warning C4458: объявление "C" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(206,41): warning C4458: объявление "T" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(268,41): warning C4458: объявление "T" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(130,16): message : см. объявление "CBackend::T"
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(297,29): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(359,29): warning C4458: объявление "C" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(302,29): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(364,29): warning C4458: объявление "C" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(307,29): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(369,29): warning C4458: объявление "C" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(312,30): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(374,30): warning C4458: объявление "C" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(317,30): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(379,30): warning C4458: объявление "C" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(322,30): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(384,30): warning C4458: объявление "C" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(327,29): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(389,29): warning C4458: объявление "C" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(332,29): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(394,29): warning C4458: объявление "C" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend_Runtime.h(50,50): warning C4458: объявление "M" скрывает член класса
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(131,15): message : см. объявление "CBackend::M"

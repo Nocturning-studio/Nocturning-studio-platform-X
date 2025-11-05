@@ -1,8 +1,5 @@
 #include "stdafx.h"
 
-#include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_sector_traversal.cpp"
-
-
 #include "D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_TAA.cpp"
 
 

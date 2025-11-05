@@ -8,6 +8,12 @@ enum TextureBindFlags
 	fRT = D3D11_BIND_RENDER_TARGET,		// RenderTarget
 	fDS = D3D11_BIND_DEPTH_STENCIL,		// DepthStencil
 	fUA = D3D11_BIND_UNORDERED_ACCESS,	// UnorderedAcces
+
+	// legacy formats compatible with DWM mod
+	SRV_RTV_DSV = fSR | fRT | fDS, // Shader Resource & Render Target & Depth Stencil
+	SRV_RTV_UAV = fSR | fRT | fUA, // Shader Resource & Render Target with Unordered Acces
+	SRV_RTV		= fSR | fRT      , // Shader Resource & Render Target
+	SRV_DSV		= fSR | fDS      , // Shader Resource & Depth Stencil
 };
 
 //////////////////////////////////////////////////////////////////////////
