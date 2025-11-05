@@ -17,7 +17,7 @@ void CBlender_accum_direct_cascade::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case SE_SUN_NEAR: // near pass - enable Z-test to perform depth-clipping
+	/* case SE_SUN_NEAR: // near pass - enable Z-test to perform depth-clipping
 	case SE_SUN_MIDDLE:
 		C.r_Pass("accumulating_light_stage_volume", "accumulating_light_stage_direct", false, TRUE, FALSE, FALSE, D3DBLEND_ONE, D3DBLEND_ZERO);
 		C.PassSET_ZB(TRUE, FALSE, TRUE); // force inverted Z-Buffer
@@ -45,6 +45,6 @@ void CBlender_accum_direct_cascade::Compile(CBlender_Compile& C)
 			C.r_dx10Sampler("smp_smap");
 		}
 		C.r_End();
-		break;
+		break;*/
 	}
 }

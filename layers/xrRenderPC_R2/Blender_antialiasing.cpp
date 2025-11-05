@@ -24,7 +24,7 @@ void CBlender_antialiasing::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case 0:
+	/* case 0:
 		C.r_Pass("null", "postprocess_stage_antialiasing_pass_rgaa", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r2_RT_generic0);
 		jitter(C);
@@ -41,7 +41,7 @@ void CBlender_antialiasing::Compile(CBlender_Compile& C)
 		C.r_Sampler_rtf("s_image", r2_RT_generic0);
 		jitter(C);
 		C.r_End();
-		break;
+		break;*/
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////

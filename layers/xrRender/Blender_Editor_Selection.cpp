@@ -33,7 +33,7 @@ void CBlender_Editor_Selection::Compile(CBlender_Compile& C)
 {
 	IBlender::Compile(C);
 
-		C.r_Pass("editor", "simple_color", FALSE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
-		C.r_End();
+		//C.r_Pass("editor", "simple_color", FALSE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
+		//C.r_End();
 
 }

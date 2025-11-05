@@ -23,7 +23,7 @@ void CBlender_motion_blur::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case 0:
+	/* case 0:
 		C.r_Pass("null", "postprocess_stage_motion_blur_pass_combine", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r2_RT_generic0);
 		C.r_Sampler_rtf("s_previous_image", r2_RT_mblur_saved_frame);
@@ -35,7 +35,7 @@ void CBlender_motion_blur::Compile(CBlender_Compile& C)
 		C.r_Sampler_rtf("s_image", r2_RT_generic0);
 		jitter(C);
 		C.r_End();
-		break;
+		break;*/
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////

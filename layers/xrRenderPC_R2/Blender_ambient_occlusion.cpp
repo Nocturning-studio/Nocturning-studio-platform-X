@@ -23,7 +23,7 @@ void CBlender_ambient_occlusion::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case SE_AO_SSAO:
+	/* case SE_AO_SSAO:
 		// raw ao
 		C.r_Pass("null", "ambient_occlusion_stage_pass_ssao", FALSE, FALSE, FALSE);
 		gbuffer(C);
@@ -63,7 +63,7 @@ void CBlender_ambient_occlusion::Compile(CBlender_Compile& C)
 		C.r_Pass("null", "ambient_occlusion_blurring_stage_pass_bilinear_filter", FALSE, FALSE, FALSE);
 		C.r_Sampler_clf("s_ao", r2_RT_ao);
 		C.r_End();
-		break;
+		break;*/
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////

@@ -19,7 +19,7 @@ void CBlender_frame_overlay::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case 0:
+	/* case 0:
 		C.r_Pass("null", "overlay_stage_photo_grid", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r2_RT_generic0);
 		C.r_Sampler("s_photo_grid", "vfx\\vfx_photo_grid", false, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
@@ -36,6 +36,6 @@ void CBlender_frame_overlay::Compile(CBlender_Compile& C)
 		C.r_Sampler_rtf("s_image", r2_RT_generic0);
 		C.r_Sampler("s_watermark", "vfx\\vfx_watermark", false, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
 		C.r_End();
-		break;
+		break;*/
 	}
 }

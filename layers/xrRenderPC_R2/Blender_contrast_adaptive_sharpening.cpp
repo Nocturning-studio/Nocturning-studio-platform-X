@@ -24,11 +24,11 @@ void CBlender_contrast_adaptive_sharpening::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case 0:
+	/* case 0:
 		C.r_Pass("null", "postprocess_stage_contrast_adaptive_sharpening", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", r2_RT_generic0);
 		jitter(C);
-		C.r_End();
+		C.r_End();*/
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////

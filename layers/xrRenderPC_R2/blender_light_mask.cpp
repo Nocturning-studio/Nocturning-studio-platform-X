@@ -17,7 +17,7 @@ void CBlender_accum_direct_mask::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case SE_MASK_SPOT: // spot or omni-part
+	/* case SE_MASK_SPOT: // spot or omni-part
 		C.r_Pass("accumulating_light_stage_mask", "dumb", false, TRUE, FALSE);
 		gbuffer(C);
 		C.r_End();
@@ -31,6 +31,6 @@ void CBlender_accum_direct_mask::Compile(CBlender_Compile& C)
 		C.r_Pass("null", "accumulating_light_stage_sun_mask", false, FALSE, FALSE, TRUE, D3DBLEND_ZERO, D3DBLEND_ONE, TRUE, 1);
 		gbuffer(C);
 		C.r_End();
-		break;
+		break;*/
 	}
 }

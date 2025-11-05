@@ -23,7 +23,7 @@ float CRenderTarget::hclip(float v, float dim)
 {
 	return 2.f * v / dim - 1.f;
 }
-/*
+
 void CRenderTarget::u_setrt(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, IDirect3DSurface9* zb)
 {
 	VERIFY(_1);
@@ -58,7 +58,7 @@ void CRenderTarget::u_setrt(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurfac
 	RCache.set_ZB(zb);
 	//	RImplementation.rmNormal				();
 }
-*/
+
 void CRenderTarget::u_stencil_optimize(BOOL common_stencil)
 {
 	VERIFY(RImplementation.o.nvstencil);

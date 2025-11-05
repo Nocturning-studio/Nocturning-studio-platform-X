@@ -17,7 +17,7 @@ void CBlender_accum_point::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case SE_L_FILL: // fill projective
+	/* case SE_L_FILL: // fill projective
 		C.r_Pass("null", "copy", false, FALSE, FALSE);
 		C.r_Sampler("s_base", C.L_textures[0]);
 		C.r_End();
@@ -63,6 +63,6 @@ void CBlender_accum_point::Compile(CBlender_Compile& C)
 		C.r_Sampler_clf("s_brdf_lut", "vfx\\vfx_brdf_lut");
 		jitter(C);
 		C.r_End();
-		break;
+		break;*/
 	}
 }

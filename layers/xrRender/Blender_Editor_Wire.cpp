@@ -32,8 +32,8 @@ void CBlender_Editor_Wire::Load(IReader& fs, u16 version)
 void CBlender_Editor_Wire::Compile(CBlender_Compile& C)
 {
 	IBlender::Compile(C);
-
-		C.r_Pass("editor", "simple_color", FALSE, TRUE, TRUE);
-		C.r_End();
+	
+		//C.r_Pass("editor", "simple_color", FALSE, TRUE, TRUE);
+		//C.r_End();
 
 }
