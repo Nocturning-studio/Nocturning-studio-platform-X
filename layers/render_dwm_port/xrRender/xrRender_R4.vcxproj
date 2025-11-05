@@ -61,7 +61,6 @@
     <ClCompile Include="..\xrRender\dxUIRender.cpp" />
     <ClCompile Include="..\xrRender\dxUISequenceVideoItem.cpp" />
     <ClCompile Include="..\xrRender\dxUIShader.cpp" />
-    <ClCompile Include="..\xrRender\dxWallMarkArray.cpp" />
     <ClCompile Include="..\xrRender\FLOD.cpp" />
     <ClCompile Include="..\xrRender\FProgressive.cpp" />
     <ClCompile Include="..\xrRender\FSkinned.cpp" />
@@ -167,7 +166,6 @@
     <ClInclude Include="..\..\..\SDK\include\GFSDK\GFSDK_SSAO.h" />
     <ClInclude Include="..\..\..\SDK\include\GFSDK\GFSDK_TXAA.h" />
     <ClInclude Include="..\..\..\SDK\include\GFSDK\GFSDK_TXAA_Common.h" />
-    <ClInclude Include="..\..\..\SDK\include\stdintport\stdintport.h" />
     <ClInclude Include="..\..\Include\xrRender\ApplicationRender.h" />
     <ClInclude Include="..\..\Include\xrRender\ConsoleRender.h" />
     <ClInclude Include="..\..\Include\xrRender\DebugRender.h" />
@@ -187,7 +185,6 @@
     <ClInclude Include="..\..\Include\xrRender\UIRender.h" />
     <ClInclude Include="..\..\Include\xrRender\UISequenceVideoItem.h" />
     <ClInclude Include="..\..\Include\xrRender\UIShader.h" />
-    <ClInclude Include="..\..\Include\xrRender\WallMarkArray.h" />
     <ClInclude Include="..\xrRender\blender_add_effects.h" />
     <ClInclude Include="..\xrRender\Blender_BmmD.h" />
     <ClInclude Include="..\xrRender\blender_combine.h" />
@@ -232,7 +229,6 @@
     <ClInclude Include="..\xrRender\dxUIRender.h" />
     <ClInclude Include="..\xrRender\dxUISequenceVideoItem.h" />
     <ClInclude Include="..\xrRender\dxUIShader.h" />
-    <ClInclude Include="..\xrRender\dxWallMarkArray.h" />
     <ClInclude Include="..\xrRender\FLOD.h" />
     <ClInclude Include="..\xrRender\FProgressive.h" />
     <ClInclude Include="..\xrRender\FSkinned.h" />

@@ -113,7 +113,7 @@ void CRender::render_rain()
 		for		(u32 s=0; s<Sectors.size(); s++)
 		{
 			CSector*			S		= (CSector*)Sectors[s]	;
-			dxRender_Visual*		V		= S->root()				;
+			IRender_Visual*		V		= S->root()				;
 			float				vol		= V->vis.box.getvolume();
 			if (vol>largest_sector_vol)	{
 				largest_sector_vol		= vol;

@@ -258,6 +258,6 @@ void CSector::load		(IReader& fs)
 	else {
 		// Assign visual
 		size	= fs.find_chunk(fsP_Root);	R_ASSERT(size==4);
-		m_root	= (dxRender_Visual*)RImplementation.getVisual	(fs.r_u32());
+		m_root	= (IRender_Visual*)RImplementation.getVisual	(fs.r_u32());
 	}
 }

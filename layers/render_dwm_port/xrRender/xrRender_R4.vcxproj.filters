@@ -49,9 +49,6 @@
     <Filter Include="Interfase implementations\FontRender">
       <UniqueIdentifier>{d8a257b8-5f18-4527-b88b-ebe6f4f1ed4b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Interfase implementations\WallMarkArray">
-      <UniqueIdentifier>{ec73b3db-76c6-4ae8-8e6f-cfc73b6cdf7e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Interfase implementations\StatGraphRender">
       <UniqueIdentifier>{d613ef24-7c56-47e8-bd9b-564ebcfb42d6}</UniqueIdentifier>
     </Filter>
@@ -123,9 +120,6 @@
     </Filter>
     <Filter Include="Graphic features\FidelityFX">
       <UniqueIdentifier>{3d4e7ab2-a710-4815-b9ab-d8d990e999e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\stdintport">
-      <UniqueIdentifier>{7562aa1b-d952-42f2-adfa-8a993ad92707}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\halton">
       <UniqueIdentifier>{d9698e5a-e9a3-4b01-8bb9-92a1af23fcfb}</UniqueIdentifier>
@@ -260,9 +254,6 @@
     </ClCompile>
     <ClCompile Include="..\xrRender\dxFontRender.cpp">
       <Filter>Interfase implementations\FontRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxWallMarkArray.cpp">
-      <Filter>Interfase implementations\WallMarkArray</Filter>
     </ClCompile>
     <ClCompile Include="..\xrRender\dxStatGraphRender.cpp">
       <Filter>Interfase implementations\StatGraphRender</Filter>
@@ -635,12 +626,6 @@
     <ClInclude Include="..\xrRender\dxFontRender.h">
       <Filter>Interfase implementations\FontRender</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\WallMarkArray.h">
-      <Filter>Interfase implementations\WallMarkArray</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxWallMarkArray.h">
-      <Filter>Interfase implementations\WallMarkArray</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\xrRender\StatGraphRender.h">
       <Filter>Interfase implementations\StatGraphRender</Filter>
     </ClInclude>
@@ -919,9 +904,6 @@
     </ClInclude>
     <ClInclude Include="halton.h">
       <Filter>Core\halton</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\SDK\include\stdintport\stdintport.h">
-      <Filter>Core\stdintport</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\SDK\include\GFSDK\GFSDK_SSAO.h">
       <Filter>Graphic features\GFSDK</Filter>

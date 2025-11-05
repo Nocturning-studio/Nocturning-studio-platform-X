@@ -74,7 +74,7 @@ void __fastcall mapMatrix_Render	(mapMatrixItems& N)
 void __fastcall sorted_L1		(mapSorted_Node *N)
 {
 	VERIFY (N);
-	dxRender_Visual *V				= N->val.pVisual;
+	IRender_Visual *V				= N->val.pVisual;
 	VERIFY (V && V->shader._get());
 	RCache.set_Element				(N->val.se);
 	RCache.set_xform_world			(N->val.Matrix);
@@ -671,7 +671,7 @@ void	R_dsgraph_structure::r_dsgraph_render_subspace	(IRender_Sector* _sector, CF
 	for (u32 s_it=0; s_it<PortalTraverser.r_sectors.size(); s_it++)
 	{
 		CSector*	sector		= (CSector*)PortalTraverser.r_sectors[s_it];
-		dxRender_Visual*	root	= sector->root();
+		IRender_Visual*	root	= sector->root();
 		for (u32 v_it=0; v_it<sector->r_frustums.size(); v_it++)	{
 			set_Frustum			(&(sector->r_frustums[v_it]));
 			add_Geometry		(root);
@@ -730,10 +730,10 @@ void	R_dsgraph_structure::r_dsgraph_render_R1_box	(IRender_Sector* _S, Fbox& BB,
 	
 	for (u32 test=0; test<lstVisuals.size(); test++)
 	{
-		dxRender_Visual*	V		= 	lstVisuals[test];
+		IRender_Visual*	V		= 	lstVisuals[test];
 		
 		// Visual is 100% visible - simply add it
-		xr_vector<dxRender_Visual*>::iterator I,E;	// it may be usefull for 'hierrarhy' visuals
+		xr_vector<IRender_Visual*>::iterator I,E;	// it may be usefull for 'hierrarhy' visuals
 		
 		switch (V->Type) {
 		case MT_HIERRARHY:
@@ -743,7 +743,7 @@ void	R_dsgraph_structure::r_dsgraph_render_R1_box	(IRender_Sector* _S, Fbox& BB,
 				I = pV->children.begin	();
 				E = pV->children.end		();
 				for (; I!=E; I++)		{
-					dxRender_Visual* T			= *I;
+					IRender_Visual* T			= *I;
 					if (BB.intersect(T->vis.box))	lstVisuals.push_back(T);
 				}
 			}
@@ -757,7 +757,7 @@ void	R_dsgraph_structure::r_dsgraph_render_R1_box	(IRender_Sector* _S, Fbox& BB,
 				I = pV->children.begin	();
 				E = pV->children.end		();
 				for (; I!=E; I++)		{
-					dxRender_Visual* T				= *I;
+					IRender_Visual* T				= *I;
 					if (BB.intersect(T->vis.box))	lstVisuals.push_back(T);
 				}
 			}
@@ -768,7 +768,7 @@ void	R_dsgraph_structure::r_dsgraph_render_R1_box	(IRender_Sector* _S, Fbox& BB,
 				I = pV->children.begin		();
 				E = pV->children.end		();
 				for (; I!=E; I++)		{
-					dxRender_Visual* T				= *I;
+					IRender_Visual* T				= *I;
 					if (BB.intersect(T->vis.box))	lstVisuals.push_back(T);
 				}
 			}

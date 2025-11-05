@@ -109,4 +109,56 @@ D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(1717,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(1862,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(2032,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\PSLibrary.h(7,10): fatal error C1083: Не удается открыть файл включение: ../include/xrRender/particles_systems_library_interface.hpp: No such file or directory,
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(4,13): error C2374: SMAP_near_plane: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(75): message : см. объявление "SMAP_near_plane"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(5,11): error C2374: SMAP_adapt_min: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(76): message : см. объявление "SMAP_adapt_min"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(6,11): error C2374: SMAP_adapt_optimal: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(77): message : см. объявление "SMAP_adapt_optimal"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(7,11): error C2374: SMAP_adapt_max: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(78): message : см. объявление "SMAP_adapt_max"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(9,11): error C2374: TEX_material_LdotN: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(80): message : см. объявление "TEX_material_LdotN"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(10,11): error C2374: TEX_material_LdotH: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(81): message : см. объявление "TEX_material_LdotH"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(11,11): error C2374: TEX_material_Count: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(82): message : см. объявление "TEX_material_Count"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(13,11): error C2374: TEX_jitter: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(84): message : см. объявление "TEX_jitter"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(14,11): error C2374: TEX_jitter_count: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(85): message : см. объявление "TEX_jitter_count"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(16,11): error C2374: BLOOM_size_X: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(87): message : см. объявление "BLOOM_size_X"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(17,11): error C2374: BLOOM_size_Y: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(88): message : см. объявление "BLOOM_size_Y"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(18,11): error C2374: LUMINANCE_size: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(89): message : см. объявление "LUMINANCE_size"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(20,13): error C2374: r__detail_density_min: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(91): message : см. объявление "r__detail_density_min"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(22,13): error C2374: rgba_black: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(93): message : см. объявление "rgba_black"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(23,13): error C2374: rgba_alpha: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(94): message : см. объявление "rgba_alpha"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(105,1): error C2011: rt_TAA_params_type: переопределение типа "struct"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(175): message : см. объявление "rt_TAA_params_type"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(110,27): error C2374: rt_TAA_params: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(181): message : см. объявление "rt_TAA_params"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(111,1): error C2027: использование неопределенного типа "rt_TAA_params_type"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(175): message : см. объявление "rt_TAA_params_type"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(121,15): error C2374: dx10_msaa_id: переопределение; множественная инициализация
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(192): message : см. объявление "dx10_msaa_id"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(126,1): error C2011: r__aa_values: переопределение типа "enum"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(196): message : см. объявление "r__aa_values"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(136,1): error C2011: r__ssaa_values: переопределение типа "enum"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(206): message : см. объявление "r__ssaa_values"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(149,1): error C2011: r__sunshafts_mode_values: переопределение типа "enum"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(219): message : см. объявление "r__sunshafts_mode_values"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(156,1): error C2011: r__ssao_mode_values: переопределение типа "enum"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(226): message : см. объявление "r__ssao_mode_values"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(175,10): error C2084: функция "float u_diffuse2s(float,float,float)" уже имеет текст реализации
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(247): message : см. предыдущее определение "u_diffuse2s"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(176,10): error C2084: функция "float u_diffuse2s(Fvector3 &)" уже имеет текст реализации
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\xrRenderPC_R2_DWM\moved\r2_types.h(252): message : см. предыдущее определение "u_diffuse2s"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_types.h(176,69): error C2264: u_diffuse2s: ошибка в определении или объявлении функции; функция не вызвана
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\detailmanager.h(187,23): error C2065: RDEVICE: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\light.h(4,10): fatal error C1083: Не удается открыть файл включение: ../xrcdb/ispatial.h: No such file or directory,

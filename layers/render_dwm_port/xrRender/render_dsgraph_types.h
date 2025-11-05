@@ -62,7 +62,7 @@
 	typedef xr_allocator			render_allocator;
 #endif // USE_DOUG_LEA_ALLOCATOR_FOR_RENDER
 
-class dxRender_Visual;
+//class IRender_Visual;
 
 // #define	USE_RESOURCE_DEBUGGER
 
@@ -71,13 +71,13 @@ namespace	R_dsgraph
 	// Elementary types
 	struct _NormalItem	{
 		float				ssa;
-		dxRender_Visual*		pVisual;
+		IRender_Visual*		pVisual;
 	};
 
 	struct _MatrixItem	{
 		float				ssa;
 		IRenderable*		pObject;
-		dxRender_Visual*		pVisual;
+		IRender_Visual*		pVisual;
 		Fmatrix				Matrix;				// matrix (copy)
 	};
 
@@ -88,7 +88,7 @@ namespace	R_dsgraph
 
 	struct _LodItem		{
 		float				ssa;
-		dxRender_Visual*		pVisual;
+		IRender_Visual*		pVisual;
 	};
 
 #ifdef USE_RESOURCE_DEBUGGER

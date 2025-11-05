@@ -169,6 +169,7 @@ class ENGINE_API IRender_interface
   public:
 	// options
 	s32 m_skinning;
+	s32 m_MSAASample;
 
 	// data
 	CFrustum ViewBase;

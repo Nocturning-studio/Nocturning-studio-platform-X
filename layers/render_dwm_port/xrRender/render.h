@@ -25,10 +25,6 @@
 
 #include "rendertarget.h"
 
-class dxRender_Visual;
-
-#pragma todo ("Implement static spot/point lights")
-
 class cl_object_id : public R_constant_setup { virtual void setup(R_constant* C); };
 class cl_planar_env			: public R_constant_setup { virtual void setup(R_constant* C); };
 class cl_planar_amb			: public R_constant_setup { virtual void setup(R_constant* C); };
@@ -121,7 +117,7 @@ public:
 	xr_vector<VertexDeclarator>									nDC,xDC;
 	xr_vector<ID3DBuffer*>										nVB,xVB;
 	xr_vector<ID3DBuffer*>										nIB,xIB;
-	xr_vector<dxRender_Visual*>									Visuals;
+	xr_vector<IRender_Visual*>									Visuals;
 	CPSLibrary													PSLibrary;
 
 	CDetailManager*												Details;
@@ -187,10 +183,10 @@ private:
 	void							LoadSWIs					(CStreamReader	*fs);
 	void							Load3DFluid					();
 
-	BOOL							add_Dynamic					(dxRender_Visual*pVisual, u32 planes);		// normal processing
-	void							add_Static					(dxRender_Visual*pVisual, u32 planes);
-	void							add_leafs_Dynamic			(dxRender_Visual*pVisual);					// if detected node's full visibility
-	void							add_leafs_Static			(dxRender_Visual*pVisual);					// if detected node's full visibility
+	BOOL							add_Dynamic					(IRender_Visual*pVisual, u32 planes);		// normal processing
+	void							add_Static					(IRender_Visual*pVisual, u32 planes);
+	void							add_leafs_Dynamic			(IRender_Visual*pVisual);					// if detected node's full visibility
+	void							add_leafs_Static			(IRender_Visual*pVisual);					// if detected node's full visibility
 
 	void							update_options			();
 
@@ -217,16 +213,16 @@ public:
 
 	void							render_sun_vsm				();
 public:
-	ShaderElement*					rimp_select_sh				(dxRender_Visual	*pVisual, float cdist_sq);
-	ShaderElement*					rimp_select_sh_static		(dxRender_Visual	*pVisual, float cdist_sq);
-	ShaderElement*					rimp_select_sh_dynamic		(dxRender_Visual	*pVisual, float cdist_sq);
+	ShaderElement*					rimp_select_sh				(IRender_Visual	*pVisual, float cdist_sq);
+	ShaderElement*					rimp_select_sh_static		(IRender_Visual	*pVisual, float cdist_sq);
+	ShaderElement*					rimp_select_sh_dynamic		(IRender_Visual	*pVisual, float cdist_sq);
 	D3DVERTEXELEMENT9*				getVB_Format				(int id, BOOL	_alt=FALSE);
 	ID3DBuffer*						getVB						(int id, BOOL	_alt=FALSE);
 	ID3DBuffer*						getIB						(int id, BOOL	_alt=FALSE);
 	FSlideWindowItem*				getSWI						(int id);
 	IRender_Portal*					getPortal					(int id);
 	IRender_Sector*					getSectorActive				();
-	IRenderVisual*					model_CreatePE				(LPCSTR name);
+	IRender_Visual*					model_CreatePE				(LPCSTR name);
 	IRender_Sector*					detectSector				(const Fvector& P, Fvector& D);
 	int								translateSector				(IRender_Sector* pSector);
 
@@ -270,9 +266,6 @@ public:
 	}
 
 public:
-	// feature level
-	virtual	GenerationLevel			get_generation			()	{ return IRender_interface::GENERATION_R2; }
-
 	virtual DWORD					get_dx_level			()	{ return HW.FeatureLevel >= D3D_FEATURE_LEVEL_10_1 ? 0x000A0001 : 0x000A0000; }
 
 	virtual bool					is_sun_static				();
@@ -302,7 +295,7 @@ public:
 	virtual LPCSTR					getShaderPath				()									{ return "r3\\";	}
 	virtual ref_shader				getShader					(int id);
 	virtual IRender_Sector*			getSector					(int id);
-	virtual IRenderVisual*			getVisual					(int id);
+	virtual IRender_Visual*			getVisual					(int id);
 	virtual IRender_Sector*			detectSector				(const Fvector& P);
 	virtual IRender_Target*			getTarget					();
 
@@ -313,18 +306,18 @@ public:
 	virtual void					flush						();
 	virtual void					set_Object					(IRenderable*		O	);
 	virtual	void					add_Occluder				(Fbox2&	bb_screenspace	);			// mask screen region as oclluded
-	virtual void					add_Visual					(IRenderVisual*	V	);			// add visual leaf	(no culling performed at all)
-	virtual void					add_Geometry				(IRenderVisual*	V	);			// add visual(s)	(all culling performed)
+	virtual void add_Visual(IRender_Visual* V);		  // add visual leaf	(no culling performed at all)
+	virtual void add_Geometry(IRender_Visual* V); // add visual(s)	(all culling performed)
 
 	// wallmarks
 	virtual void					add_StaticWallmark			(ref_shader& S, const Fvector& P, float s, CDB::TRI* T, Fvector* V);
-	virtual void					add_StaticWallmark			(IWallMarkArray *pArray, const Fvector& P, float s, CDB::TRI* T, Fvector* V);
-	virtual void					add_StaticWallmark			(const wm_shader& S, const Fvector& P, float s, CDB::TRI* T, Fvector* V);
+	//virtual void					add_StaticWallmark			(IWallMarkArray *pArray, const Fvector& P, float s, CDB::TRI* T, Fvector* V);
+	//virtual void					add_StaticWallmark			(const wm_shader& S, const Fvector& P, float s, CDB::TRI* T, Fvector* V);
 	virtual void					clear_static_wallmarks		();
 	virtual void					add_SkeletonWallmark		(intrusive_ptr<CSkeletonWallmark> wm);
 	virtual void					add_SkeletonWallmark		(const Fmatrix* xf, CKinematics* obj, ref_shader& sh, const Fvector& start, const Fvector& dir, float size);
-	virtual void					add_SkeletonWallmark		(const Fmatrix* xf, IKinematics* obj, IWallMarkArray *pArray, const Fvector& start, const Fvector& dir, float size);
-
+	virtual void add_SkeletonWallmark(const Fmatrix* xf, CKinematics* obj, ref_shader& sh, const Fvector& start,
+									  const Fvector& dir, float size);
 	//
 	virtual IBlender*				blender_create				(CLASS_ID cls);
 	virtual void					blender_destroy				(IBlender* &);
@@ -338,12 +331,12 @@ public:
 	virtual IRender_Glow*			glow_create					();
 
 	// Models
-	virtual IRenderVisual*			model_CreateParticles		(LPCSTR name);
+	virtual IRender_Visual*			model_CreateParticles		(LPCSTR name);
 	virtual IRender_DetailModel*	model_CreateDM				(IReader* F);
-	virtual IRenderVisual*			model_Create				(LPCSTR name, IReader* data=0);
-	virtual IRenderVisual*			model_CreateChild			(LPCSTR name, IReader* data);
-	virtual IRenderVisual*			model_Duplicate				(IRenderVisual*	V);
-	virtual void					model_Delete				(IRenderVisual* &	V, BOOL bDiscard);
+	virtual IRender_Visual*			model_Create				(LPCSTR name, IReader* data=0);
+	virtual IRender_Visual*			model_CreateChild			(LPCSTR name, IReader* data);
+	virtual IRender_Visual*			model_Duplicate				(IRender_Visual*	V);
+	virtual void					model_Delete				(IRender_Visual* &	V, BOOL bDiscard);
 	virtual void 					model_Delete				(IRender_DetailModel* & F);
 	virtual void					model_Logging				(BOOL bEnable)				{ Models->Logging(bEnable);	}
 	virtual void					models_Prefetch				();
@@ -362,7 +355,7 @@ public:
 	virtual void					Screenshot					(ScreenshotMode mode, CMemoryWriter& memory_writer);
 	virtual void					ScreenshotAsyncBegin		();
 	virtual void					ScreenshotAsyncEnd			(CMemoryWriter& memory_writer);
-	virtual void		_BCL		OnFrame						();
+	virtual void		__stdcall		OnFrame						();
 
 	// Render mode
 	virtual void					rmNear						();
@@ -373,11 +366,24 @@ public:
 	CRender							();
 	virtual ~CRender				();
 
-	void addShaderOption(const char* name, const char* value);
-	void clearAllShaderOptions() {m_ShaderOptions.clear();}
+	CShaderMacros FetchShaderMacros();
 
-private:
-	xr_vector<D3D_SHADER_MACRO>									m_ShaderOptions;
+	//void addShaderOption(const char* name, const char* value);
+	//void clearAllShaderOptions() {m_ShaderOptions.clear();}
+
+	// feature level
+	virtual RenderType get_render_type()
+	{
+		return IRender_interface::RENDER_R2;
+	}
+
+	virtual RenderLightingType get_render_lighting_type()
+	{
+		return IRender_interface::RENDER_DYNAMIC_LIGHTED;
+	}
+
+  private:
+	//xr_vector<D3D_SHADER_MACRO>									m_ShaderOptions;
 
 private:
 	template<typename T>

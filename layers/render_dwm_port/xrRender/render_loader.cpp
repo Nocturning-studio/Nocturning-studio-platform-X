@@ -258,7 +258,7 @@ void CRender::LoadVisuals(IReader *fs)
 {
 	IReader*		chunk	= 0;
 	u32			index	= 0;
-	dxRender_Visual*		V		= 0;
+	IRender_Visual*		V		= 0;
 	ogf_header		H;
 
 	while ((chunk=fs->open_chunk(index))!=0)
@@ -410,7 +410,7 @@ void CRender::Load3DFluid()
 				//	3DFluid volume must be in render sector
 				VERIFY(pSector);
 
-				dxRender_Visual* pRoot = pSector->root();
+				IRender_Visual* pRoot = pSector->root();
 				//	Sector must have root
 				VERIFY(pRoot);
 				VERIFY(pRoot->getType() == MT_HIERRARHY);

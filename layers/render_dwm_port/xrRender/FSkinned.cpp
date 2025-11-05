@@ -432,13 +432,13 @@ struct	vertHW_4W
 //////////////////////////////////////////////////////////////////////
 // Body Part
 //////////////////////////////////////////////////////////////////////
-void CSkeletonX_PM::Copy	(dxRender_Visual *V) 
+void CSkeletonX_PM::Copy	(IRender_Visual *V) 
 {
 	inherited1::Copy		(V);
 	CSkeletonX_PM *X		= (CSkeletonX_PM*)(V);
 	_Copy					((CSkeletonX*)X);
 }
-void CSkeletonX_ST::Copy	(dxRender_Visual *P) 
+void CSkeletonX_ST::Copy	(IRender_Visual *P) 
 {
 	inherited1::Copy		(P);
 	CSkeletonX_ST *X		= (CSkeletonX_ST*)P;

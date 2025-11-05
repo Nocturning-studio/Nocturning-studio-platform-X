@@ -14,7 +14,7 @@ dx103DFluidVolume::~dx103DFluidVolume()
 void dx103DFluidVolume::Load( LPCSTR N, IReader *data, u32 dwFlags )
 {
 	//	Uncomment this if choose to read from OGF
-//	dxRender_Visual::Load		(N,data,dwFlags);
+//	IRender_Visual::Load		(N,data,dwFlags);
 
 	//	Create shader for correct sort while rendering
 	//	shader name can't start from a digit
@@ -178,12 +178,12 @@ void dx103DFluidVolume::Render( float LOD )		// LOD - Level Of Detail  [0.0f - m
 	FluidManager.RenderFluid( m_FluidData );
 }
 
-void dx103DFluidVolume::Copy( dxRender_Visual *pFrom )
+void dx103DFluidVolume::Copy( IRender_Visual *pFrom )
 {
-	dxRender_Visual::Copy(pFrom);
+	IRender_Visual::Copy(pFrom);
 }
 
 void dx103DFluidVolume::Release()
 {
-	dxRender_Visual::Release();
+	IRender_Visual::Release();
 }
