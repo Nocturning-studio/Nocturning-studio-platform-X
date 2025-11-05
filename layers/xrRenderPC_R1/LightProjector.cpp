@@ -288,7 +288,7 @@ void CLightProjector::calculate()
 		//D3DVIEWPORT9 VP = {s_x * P_o_size, s_y * P_o_size, P_o_size, P_o_size, 0, 1};
 		//CHK_DX(HW.pDevice->SetViewport(&VP));
 		D3D11_VIEWPORT VP = {s_x * P_o_size, s_y * P_o_size, P_o_size, P_o_size, 0, 1};
-		HW.pContext->RSSetViewports(1, &VP);
+		HW.pContext11->RSSetViewports(1, &VP);
 
 		// Clear color to ambience
 		Fvector& cap = LT->get_approximate();

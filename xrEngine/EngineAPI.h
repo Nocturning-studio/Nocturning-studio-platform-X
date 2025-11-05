@@ -8,7 +8,7 @@
 #define AFX_ENGINEAPI_H__CF21372B_C8B8_4891_82FC_D872C84E1DD4__INCLUDED_
 #pragma once
 
-#include <HWCreationParams.h>
+#include "HWCreationParams.h"
 
 // Abstract 'Pure' class for DLL interface
 class ENGINE_API DLL_Pure

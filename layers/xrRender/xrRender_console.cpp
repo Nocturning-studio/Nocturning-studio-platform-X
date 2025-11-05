@@ -907,8 +907,10 @@ void xrRender_console_apply_conditions()
 	r1_aa_type->ApplyConditions();
 
 	CCC_ConditionsToken* r1_aa_transluency = dynamic_cast<CCC_ConditionsToken*>(Console->GetCommand("r1_aa_transluency"));
-	r1_aa_transluency->SetCondition(trans_ssaa_fmt, HW.support(trans_ssaa_fmt, D3DRTYPE_SURFACE, NULL));
-	r1_aa_transluency->SetCondition(trans_atoc_fmt, HW.support(trans_atoc_fmt, D3DRTYPE_SURFACE, NULL));
+	//r1_aa_transluency->SetCondition(trans_ssaa_fmt, HW.support(trans_ssaa_fmt, D3DRTYPE_SURFACE, NULL));
+	//r1_aa_transluency->SetCondition(trans_atoc_fmt, HW.support(trans_atoc_fmt, D3DRTYPE_SURFACE, NULL));
+	r1_aa_transluency->SetCondition(trans_ssaa_fmt, TRUE);
+	r1_aa_transluency->SetCondition(trans_atoc_fmt, TRUE);
 	r1_aa_transluency->ApplyConditions();
 }
 ///////////////////////////////////////////////////////////////////////////////////

@@ -117,11 +117,11 @@ void CUISequenceVideoItem::Update()
 		if (is_playing)
 		{
 			// set swapchain texture RT
-			HW.pContext->OMSetRenderTargets(1, &HW.pBaseRT, NULL);
+			HW.pContext11->OMSetRenderTargets(1, &HW.pBaseRT, NULL);
 
 			// set viewport
 			static D3D11_VIEWPORT VP = {0, 0, HW.m_ChainDesc.BufferDesc.Width, HW.m_ChainDesc.BufferDesc.Height, 0, 1};
-			HW.pContext->RSSetViewports(1, &VP);
+			HW.pContext11->RSSetViewports(1, &VP);
 
 			m_texture->video_Sync(m_sync_time);
 		}

@@ -164,6 +164,11 @@ void CHWCaps::Update()
 	soDec = D3D11_STENCIL_OP_DECR_SAT;
 	dwMaxStencilValue = (1 << 8) - 1;
 
+	max_coverage = 0; // NOT IMPLEMENTED
+
+	fTarget = DXGI_FORMAT_R8G8B8A8_UNORM;
+	fDepth = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
 	// DEV INFO
 
 	iGPUNum = GetGpuNum();

@@ -33,11 +33,11 @@ IC void MouseRayFromPoint(Fvector& direction, int x, int y, Fmatrix& m_CamMat)
 	direction.normalize();
 }
 
-void CPUTextureKillAlpha(ID3D11DeviceContext* pContext, ID3D11Texture2D* pTexture)
+void CPUTextureKillAlpha(ID3D11Texture2D* pTexture)
 {
 	D3D11_MAPPED_SUBRESOURCE rect;
 	// R_CHK(Target->surf_screenshot_normal->LockRect(&rect, 0, D3DLOCK_NOSYSLOCK));
-	R_CHK(pContext->Map(pTexture, 0, D3D11_MAP_READ_WRITE, 0, &rect));
+	R_CHK(HW.pContext11->Map(pTexture, 0, D3D11_MAP_READ_WRITE, 0, &rect));
 
 	u32* pPixel = (u32*)rect.pData;
 	u32* pEnd = pPixel + (Device.dwWidth * Device.dwHeight);
@@ -49,7 +49,7 @@ void CPUTextureKillAlpha(ID3D11DeviceContext* pContext, ID3D11Texture2D* pTextur
 	}
 
 	//R_CHK(Target->surf_screenshot_normal->UnlockRect());
-	HW.pContext->Unmap(pTexture, 0);
+	HW.pContext11->Unmap(pTexture, 0);
 }
 
 void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
@@ -65,7 +65,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 
 	ID3D11Texture2D* tex_backbuffer;
 	HW.m_pSwapChain->GetBuffer(0, IID_ID3D11Texture2D, (void**)&tex_backbuffer);
-	HW.pContext->CopyResource(Target->tex_screenshot_normal, tex_backbuffer);
+	HW.pContext11->CopyResource(Target->tex_screenshot_normal, tex_backbuffer);
 
 	string64 t_stemp;
 	string_path file_name;
@@ -90,10 +90,10 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 
 		// R_CHK(D3DXLoadSurfaceFromSurface(Target->surf_screenshot_gamesave, NULL, NULL,
 		// Target->surf_screenshot_normal, NULL, NULL, D3DX_DEFAULT, NULL));
-		R_CHK(D3DX11LoadTextureFromTexture(HW.pContext, Target->tex_screenshot_normal, &info, Target->tex_screenshot_gamesave));
+		R_CHK(D3DX11LoadTextureFromTexture(HW.pContext11, Target->tex_screenshot_normal, &info, Target->tex_screenshot_gamesave));
 
 		//R_CHK(D3DXSaveTextureToFileInMemory(&saved, D3DXIFF_DDS, Target->tex_screenshot_gamesave, NULL));
-		R_CHK(D3DX11SaveTextureToMemory(HW.pContext, Target->tex_screenshot_gamesave, D3DX11_IFF_DDS, &saved, 0));
+		R_CHK(D3DX11SaveTextureToMemory(HW.pContext11, Target->tex_screenshot_gamesave, D3DX11_IFF_DDS, &saved, 0));
 		
 		IWriter* fs = FS.w_open(name);
 		if (fs)
@@ -111,15 +111,15 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		if (ps_render_flags.test(RFLAG_PNG_SCREENSHOTS))
 		{
 			strcat_s(file_name, ".png");
-			CPUTextureKillAlpha(HW.pContext, Target->tex_screenshot_normal);
+			CPUTextureKillAlpha(Target->tex_screenshot_normal);
 			//R_CHK(D3DXSaveSurfaceToFileInMemory(&saved, D3DXIFF_PNG, Target->surf_screenshot_normal, NULL, NULL));
-			R_CHK(D3DX11SaveTextureToMemory(HW.pContext, Target->tex_screenshot_normal, D3DX11_IFF_PNG, &saved, 0));
+			R_CHK(D3DX11SaveTextureToMemory(HW.pContext11, Target->tex_screenshot_normal, D3DX11_IFF_PNG, &saved, 0));
 		}
 		else
 		{
 			strcat_s(file_name, ".jpg");
 			//R_CHK(D3DXSaveSurfaceToFileInMemory(&saved, D3DXIFF_JPG, Target->surf_screenshot_normal, NULL, NULL));
-			R_CHK(D3DX11SaveTextureToMemory(HW.pContext, Target->tex_screenshot_normal, D3DX11_IFF_JPG, &saved, 0));
+			R_CHK(D3DX11SaveTextureToMemory(HW.pContext11, Target->tex_screenshot_normal, D3DX11_IFF_JPG, &saved, 0));
 		}
 
 		IWriter* fs = FS.w_open("$screenshots$", file_name);
@@ -171,10 +171,10 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		info.MipFilter = D3DX11_FILTER_TRIANGLE;
 
 		//R_CHK(D3DXLoadSurfaceFromSurface(surface, NULL, NULL, Target->surf_screenshot_normal, NULL, NULL, D3DX_DEFAULT, NULL));
-		R_CHK(D3DX11LoadTextureFromTexture(HW.pContext, Target->tex_screenshot_normal, &info, tex_levelmap));
+		R_CHK(D3DX11LoadTextureFromTexture(HW.pContext11, Target->tex_screenshot_normal, &info, tex_levelmap));
 
 		//R_CHK(D3DXSaveSurfaceToFileInMemory(&saved, D3DXIFF_DDS, surface, NULL, NULL));
-		R_CHK(D3DX11SaveTextureToMemory(HW.pContext, tex_levelmap, D3DX11_IFF_DDS, &saved, 0));
+		R_CHK(D3DX11SaveTextureToMemory(HW.pContext11, tex_levelmap, D3DX11_IFF_DDS, &saved, 0));
 
 		IWriter* fs = FS.w_open("$screenshots$", file_name);
 		if (fs)

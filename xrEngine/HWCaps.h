@@ -62,6 +62,11 @@ class CHWCaps
 	BOOL bScissor;	// scissor rect supported
 	BOOL bTableFog; //
 
+	DWORD max_coverage;
+
+	DXGI_FORMAT fTarget;
+	DXGI_FORMAT fDepth;
+
 	// some precalculated values
 	D3D11_STENCIL_OP soDec, soInc; // best stencil OPs for shadows
 	u32 dwMaxStencilValue;		 // maximum value the stencil buffer can hold

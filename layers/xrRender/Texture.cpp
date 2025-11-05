@@ -135,7 +135,7 @@ void TW_Save(ID3D11Texture2D* T, LPCSTR name, LPCSTR prefix, LPCSTR postfix)
 	string256 fn2;
 	strconcat(sizeof(fn2), fn2, "debug\\", fn, ".dds");
 	Log("* debug texture save: ", fn2);
-	R_CHK(D3DX11SaveTextureToFile(HW.pContext, T, D3DX11_IFF_DDS, fn2));
+	R_CHK(D3DX11SaveTextureToFile(HW.pContext11, T, D3DX11_IFF_DDS, fn2));
 }
 /*
 ID3DTexture2D*	TW_LoadTextureFromTexture
