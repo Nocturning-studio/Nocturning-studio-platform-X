@@ -654,7 +654,7 @@ class CCC_DR_UsePoints : public CCC_Integer
 	virtual void Save(IWriter* F){};
 };
 
-xr_token vid_quality_token[] = {{"renderer_r1", 0}, {"renderer_r2a", 1}, {"renderer_r2", 2}, {0, NULL}};
+xr_token vid_quality_token[] = {{"renderer_r1_dx11", 0}, {"renderer_r2a_dx11", 1}, {"renderer_r2.5_dx11", 2}, {0, NULL}};
 
 u32 ENGINE_API renderer_value = RenderCreationParams::base_value;
 
@@ -670,6 +670,7 @@ class CCC_renderer : public CCC_Token
 
 	virtual ~CCC_renderer()
 	{
+		tokens = 0;
 	}
 
 	virtual void Execute(LPCSTR args)
@@ -692,6 +693,7 @@ class CCC_renderer : public CCC_Token
 	}
 };
 
+#ifdef FEATURE_LEVELS_DEBUG
 xr_token* feature_level_token = NULL;
 u32 ENGINE_API directx_level = 0;
 
@@ -728,7 +730,7 @@ class CCC_directx_level : public CCC_Token
 		return inherited::GetToken();
 	}
 };
-
+#endif
 //-----------------------------------------------------------------------
 ENGINE_API float psHUD_FOV = 0.45f;
 
@@ -885,8 +887,9 @@ void CCC_Register()
 	CMD3(CCC_Mask, "game_tutorials_enable", &ps_game_ls_flags, TUTORIALS_ENABLE);
 
 	CMD1(CCC_renderer, "renderer");
+#ifdef FEATURE_LEVELS_DEBUG
 	CMD1(CCC_directx_level, "directx_level");
-
+#endif
 	// psSoundRolloff	= pSettings->r_float	("sound","rolloff");		clamp(psSoundRolloff, EPS_S,	2.f);
 	psSoundOcclusionScale = pSettings->r_float("sound", "occlusion_scale");
 	clamp(psSoundOcclusionScale, 0.1f, .5f);
