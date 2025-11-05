@@ -1,0 +1,112 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets(2065,5): warning : The referenced project '..\..\xrCPU_Pipe\xrCPU_Pipe.vcxproj' does not exist.
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets(2065,5): warning : The referenced project '..\..\xrEngine\xrEngine.vcxproj' does not exist.
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets(2065,5): warning : The referenced project '..\..\xrParticles\xrParticles.vcxproj' does not exist.
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets(2065,5): warning : The referenced project '..\xrAPI\xrAPI.vcxproj' does not exist.
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+  stdafx.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\xrMemory.h(182,10): warning C4595: "operator new": не допускается встроенное объявление функций Operator new или Operator delete, не являющихся членами
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\xrMemory.h(186,9): warning C4595: "operator delete": не допускается встроенное объявление функций Operator new или Operator delete, не являющихся членами
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\xrMemory.h(190,10): warning C4595: "operator new[]": не допускается встроенное объявление функций Operator new или Operator delete, не являющихся членами
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\xrMemory.h(194,9): warning C4595: "operator delete[]": не допускается встроенное объявление функций Operator new или Operator delete, не являющихся членами
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(12,1): warning C4005: DXGI_STATUS_OCCLUDED: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56388): message : см. предыдущее определение "DXGI_STATUS_OCCLUDED"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(13,1): warning C4005: DXGI_STATUS_CLIPPED: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56397): message : см. предыдущее определение "DXGI_STATUS_CLIPPED"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(14,1): warning C4005: DXGI_STATUS_NO_REDIRECTION: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56406): message : см. предыдущее определение "DXGI_STATUS_NO_REDIRECTION"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(15,1): warning C4005: DXGI_STATUS_NO_DESKTOP_ACCESS: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56415): message : см. предыдущее определение "DXGI_STATUS_NO_DESKTOP_ACCESS"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(16,1): warning C4005: DXGI_STATUS_GRAPHICS_VIDPN_SOURCE_IN_USE: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56424): message : см. предыдущее определение "DXGI_STATUS_GRAPHICS_VIDPN_SOURCE_IN_USE"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(17,1): warning C4005: DXGI_STATUS_MODE_CHANGED: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56433): message : см. предыдущее определение "DXGI_STATUS_MODE_CHANGED"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(18,1): warning C4005: DXGI_STATUS_MODE_CHANGE_IN_PROGRESS: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56442): message : см. предыдущее определение "DXGI_STATUS_MODE_CHANGE_IN_PROGRESS"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(21,1): warning C4005: DXGI_ERROR_INVALID_CALL: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56457): message : см. предыдущее определение "DXGI_ERROR_INVALID_CALL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(22,1): warning C4005: DXGI_ERROR_NOT_FOUND: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56466): message : см. предыдущее определение "DXGI_ERROR_NOT_FOUND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(23,1): warning C4005: DXGI_ERROR_MORE_DATA: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56475): message : см. предыдущее определение "DXGI_ERROR_MORE_DATA"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(24,1): warning C4005: DXGI_ERROR_UNSUPPORTED: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56484): message : см. предыдущее определение "DXGI_ERROR_UNSUPPORTED"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(25,1): warning C4005: DXGI_ERROR_DEVICE_REMOVED: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56493): message : см. предыдущее определение "DXGI_ERROR_DEVICE_REMOVED"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(26,1): warning C4005: DXGI_ERROR_DEVICE_HUNG: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56502): message : см. предыдущее определение "DXGI_ERROR_DEVICE_HUNG"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(27,1): warning C4005: DXGI_ERROR_DEVICE_RESET: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56512): message : см. предыдущее определение "DXGI_ERROR_DEVICE_RESET"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(28,1): warning C4005: DXGI_ERROR_WAS_STILL_DRAWING: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56521): message : см. предыдущее определение "DXGI_ERROR_WAS_STILL_DRAWING"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(29,1): warning C4005: DXGI_ERROR_FRAME_STATISTICS_DISJOINT: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56531): message : см. предыдущее определение "DXGI_ERROR_FRAME_STATISTICS_DISJOINT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(30,1): warning C4005: DXGI_ERROR_GRAPHICS_VIDPN_SOURCE_IN_USE: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56540): message : см. предыдущее определение "DXGI_ERROR_GRAPHICS_VIDPN_SOURCE_IN_USE"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(31,1): warning C4005: DXGI_ERROR_DRIVER_INTERNAL_ERROR: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56550): message : см. предыдущее определение "DXGI_ERROR_DRIVER_INTERNAL_ERROR"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(32,1): warning C4005: DXGI_ERROR_NONEXCLUSIVE: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56559): message : см. предыдущее определение "DXGI_ERROR_NONEXCLUSIVE"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(33,1): warning C4005: DXGI_ERROR_NOT_CURRENTLY_AVAILABLE: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56568): message : см. предыдущее определение "DXGI_ERROR_NOT_CURRENTLY_AVAILABLE"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(34,1): warning C4005: DXGI_ERROR_REMOTE_CLIENT_DISCONNECTED: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56578): message : см. предыдущее определение "DXGI_ERROR_REMOTE_CLIENT_DISCONNECTED"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\dxgitype.h(35,1): warning C4005: DXGI_ERROR_REMOTE_OUTOFMEMORY: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56587): message : см. предыдущее определение "DXGI_ERROR_REMOTE_OUTOFMEMORY"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3d11.h(917,1): warning C4005: D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56865): message : см. предыдущее определение "D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3d11.h(918,1): warning C4005: D3D11_ERROR_FILE_NOT_FOUND: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56874): message : см. предыдущее определение "D3D11_ERROR_FILE_NOT_FOUND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3d11.h(919,1): warning C4005: D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56884): message : см. предыдущее определение "D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3d11.h(920,1): warning C4005: D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56893): message : см. предыдущее определение "D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3d10.h(608,1): warning C4005: D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56841): message : см. предыдущее определение "D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3d10.h(609,1): warning C4005: D3D10_ERROR_FILE_NOT_FOUND: изменение макроопределения
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\winerror.h(56850): message : см. предыдущее определение "D3D10_ERROR_FILE_NOT_FOUND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\r_constants.h(101,35): warning C4458: объявление "destination" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\r_constants.h(87,6): message : см. объявление "R_constant::destination"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\dx11\ConstantBuffer_impl.h(185,30): warning C4458: объявление "lineSize" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\dx11\ConstantBuffer.h(49,23): message : см. объявление "dx10ConstantBuffer::lineSize"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(103,33): warning C4324: CBackend: структура была дополнена нулями из-за описателя выравнивания
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(200,36): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(206,41): warning C4458: объявление "T" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(130,16): message : см. объявление "CBackend::T"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(297,29): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(302,29): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(307,29): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(312,30): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(317,30): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(322,30): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(327,29): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(332,29): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend_Runtime.h(50,50): warning C4458: объявление "M" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(131,15): message : см. объявление "CBackend::M"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend_Runtime.h(54,49): warning C4458: объявление "M" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(131,15): message : см. объявление "CBackend::M"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend_Runtime.h(58,52): warning C4458: объявление "M" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(131,15): message : см. объявление "CBackend::M"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend_Runtime.h(142,52): warning C4458: объявление "M" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(131,15): message : см. объявление "CBackend::M"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend_Runtime.h(334,43): warning C4458: объявление "T" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(130,16): message : см. объявление "CBackend::T"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend_Runtime.h(366,43): warning C4458: объявление "T" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(130,16): message : см. объявление "CBackend::T"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend_Runtime.h(560,51): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend_Runtime.h(669,19): warning C4458: объявление "C" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(132,17): message : см. объявление "CBackend::C"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(1585,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(1717,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(1862,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(2032,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\PSLibrary.h(7,10): fatal error C1083: Не удается открыть файл включение: ../include/xrRender/particles_systems_library_interface.hpp: No such file or directory,
