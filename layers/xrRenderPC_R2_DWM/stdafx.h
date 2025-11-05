@@ -28,7 +28,7 @@
 #include "..\xrEngine\psystem.h"
 #include "..\xrRender\xrRender_console.h"
 #include "r2.h"
-
+/*
 IC	void	jitter(CBlender_Compile& C)
 {
 	C.r_Sampler	("jitter0",	JITTER(0), true, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
@@ -46,3 +46,4 @@ IC	void	gbuffer(CBlender_Compile& C)
 	C.r_Sampler_rtf("s_gbuffer_albedo", r2_RT_GBuffer_Albedo);
 	C.r_Sampler_rtf("s_zb", r2_RT_ZB);
 }
+*/
