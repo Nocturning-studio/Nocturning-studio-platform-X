@@ -198,6 +198,8 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	C.set_Define(bNeedHashedAlphaTest, "USE_HASHED_ALPHA_TEST", "1");
 
 	bool bUseBump = false;
+	bool bBumpPresent = false;
+	bool bUseBumpDecompression = false;
 
 	if (!UseAlbedoOnly)
 	{
@@ -215,17 +217,30 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		C.set_Define(bIsSrgbAlbedo, "USE_SRGB_COLOR_CONVERTING", "1");
 
 		// Normal map params
+		bool bIsOpenGLNormal = false;
+
 		// Check bump existing
+		if (bUseConfigurator)
+		{
+			bUseBump = GetBoolValueIfExist("material_configuration", "use_bump", bUseBump, MaterialConfiguration);
+
+			if (bUseBump)
+			{
+				bBumpPresent = CheckAndApplyManualTexturePath("material_configuration", "bump_path", BumpTexture, MaterialConfiguration);
+				bUseBumpDecompression = CheckAndApplyManualTexturePath("material_configuration", "bumpX_path", BumpCorrectionTexture, MaterialConfiguration);
+				if (bUseBumpDecompression)
+					C.set_Define("USE_BUMP_DECOMPRESSION", "1");
+			}
+		}
+
 		ref_texture refAlbedoTexture;
 		refAlbedoTexture.create(AlbedoTexture);
-		bUseBump = refAlbedoTexture.bump_exist();
-		bool bIsOpenGLNormal = false;
+		if (!bUseBump)
+			bUseBump = refAlbedoTexture.bump_exist();
+
 
 		if (bUseConfigurator)
 		{
-			// Check for enabled/disabled bump using
-			bUseBump = GetBoolValueIfExist("material_configuration", "use_bump", bUseBump, MaterialConfiguration);
-
 			// Check for details using
 			bUseDetail = GetBoolValueIfExist("material_configuration", "use_detail_map", bUseDetail, MaterialConfiguration);
 
@@ -235,19 +250,22 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 		}
 
 		// Get bump map texture
-		if (bUseBump)
+		if (!bBumpPresent)
 		{
-			strcpy_s(BumpTexture, sizeof(BumpTexture), refAlbedoTexture.bump_get().c_str());
-		}
-		else
-		{
-			// If bump not connected - try find unconnected texture with similar name
-			if (FS.exist(Dummy, "$game_textures$", BumpTexture, ".dds"))
-				bUseBump = ConcatAndFindTexture(BumpTexture, AlbedoTexture, "_bump");
+			if (bUseBump)
+			{
+				strcpy_s(BumpTexture, sizeof(BumpTexture), refAlbedoTexture.bump_get().c_str());
+			}
+			else
+			{
+				// If bump not connected - try find unconnected texture with similar name
+				if (FS.exist(Dummy, "$game_textures$", BumpTexture, ".dds"))
+					bUseBump = ConcatAndFindTexture(BumpTexture, AlbedoTexture, "_bump");
+			}
 		}
 
 		// Get bump decompression map
-		if (bUseBump)
+		if (bUseBump && !bUseBumpDecompression)
 		{
 			strcpy_s(BumpCorrectionTexture, sizeof(BumpCorrectionTexture), BumpTexture);
 			strconcat(sizeof(BumpCorrectionTexture), BumpCorrectionTexture, BumpCorrectionTexture, "#");
