@@ -44,7 +44,6 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 	Fvector L_dir, L_clr;
 	float L_spec;
 	L_clr.set(sun->get_color().r, sun->get_color().g, sun->get_color().b);
-	L_spec = u_diffuse2s(L_clr);
 	Device.mView.transform_dir(L_dir, sun->get_direction());
 	L_dir.normalize();
 
@@ -81,15 +80,15 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 	{
 	case SE_SUN_NEAR:
 		fBias = ps_r_sun_depth_near_bias;
-		fRange = ps_r_sun_depth_near_scale;
+		fRange = 1;
 		break;
 	case SE_SUN_MIDDLE:
 		fBias = ps_r_sun_depth_middle_bias;
-		fRange = ps_r_sun_depth_middle_scale;
+		fRange = 1;
 		break;
 	case SE_SUN_FAR:
 		fBias = ps_r_sun_depth_far_bias;
-		fRange = ps_r_sun_depth_far_scale;
+		fRange = 1;
 		break;
 	}
 
@@ -129,6 +128,25 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 		m_shadow.mulB_44(bias_t);
 	}
 	FPU::m24r();
+
+	float NormalBias = 0.0f;
+	float DirectionalBias = 0.0f;
+
+	switch (sub_phase)
+	{
+	case SE_SUN_NEAR:
+		NormalBias = ps_r_sun_depth_near_normal_bias;
+		DirectionalBias = ps_r_sun_depth_near_directional_bias;
+		break;
+	case SE_SUN_MIDDLE:
+		NormalBias = ps_r_sun_depth_middle_normal_bias;
+		DirectionalBias = ps_r_sun_depth_middle_directional_bias;
+		break;
+	case SE_SUN_FAR:
+		NormalBias = ps_r_sun_depth_far_normal_bias;
+		DirectionalBias = ps_r_sun_depth_far_directional_bias;
+		break;
+	}
 
 	// Setup texgen
 	Fmatrix m_Texgen;
@@ -170,9 +188,10 @@ void CRender::accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev,
 
 	// Setup shader and constants
 	RenderBackend.set_Element(RenderTarget->s_accum_direct_cascade->E[sub_phase]);
+	RenderBackend.set_Constant("m_bias", NormalBias, DirectionalBias);
 	RenderBackend.set_Constant("m_texgen", m_Texgen);
 	RenderBackend.set_Constant("Ldynamic_dir", L_dir.x, L_dir.y, L_dir.z, 0);
-	RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
+	RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z));
 	RenderBackend.set_Constant("m_shadow", m_shadow);
 
 	// Setup depth testing

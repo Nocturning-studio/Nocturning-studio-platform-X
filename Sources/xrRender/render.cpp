@@ -372,14 +372,6 @@ void CRender::OnFrame()
 	}
 }
 
-BOOL CRender::is_sun()
-{
-	OPTICK_EVENT("CRender::is_sun");
-
-	Fcolor sun_color = ((light*)Lights.sun_adapted._get())->get_color();
-	return (ps_r_lighting_flags.test(RFLAG_SUN) && (u_diffuse2s(sun_color.r, sun_color.g, sun_color.b) > EPS));
-}
-
 // Implementation
 IRender_ObjectSpecific* CRender::ros_create(IRenderable* parent)
 {

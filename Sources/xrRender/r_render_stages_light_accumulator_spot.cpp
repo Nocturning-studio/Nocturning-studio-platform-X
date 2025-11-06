@@ -124,10 +124,8 @@ void CRender::accumulate_spot_lights(light* L)
 
 	// Common constants
 	Fvector L_dir, L_clr, L_pos;
-	float L_spec;
 	L_clr.set(L->get_color().r, L->get_color().g, L->get_color().b);
 	L_clr.mul(L->get_LOD());
-	L_spec = u_diffuse2s(L_clr);
 	Device.mView.transform_tiny(L_pos, L->get_position());
 	Device.mView.transform_dir(L_dir, L->get_direction());
 	L_dir.normalize();
@@ -173,7 +171,7 @@ void CRender::accumulate_spot_lights(light* L)
 
 		RenderBackend.set_Constant("Ldynamic_pos", L_pos.x, L_pos.y, L_pos.z, att_factor);
 		RenderBackend.set_Constant("Ldynamic_spot_att", cos_inner, cos_outer, LightSourceRangeSqr, 0);
-		RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
+		RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z));
 		RenderBackend.set_Constant("m_texgen", m_Texgen);
 		RenderBackend.set_Constant("m_shadow", m_Shadow);
 		RenderBackend.set_Array_Constant("m_lmap", 0, m_Lmap._11, m_Lmap._21, m_Lmap._31, m_Lmap._41);

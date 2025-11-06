@@ -124,12 +124,15 @@ extern ECORE_API float ps_r_ls_far;
 extern ECORE_API float ps_r_sun_near; // 10.0f
 extern ECORE_API float ps_r_sun_far;
 extern ECORE_API float ps_r_sun_tsm_bias;		   // 0.0001f
-extern ECORE_API float ps_r_sun_depth_far_scale;  // 1.00001f
-extern ECORE_API float ps_r_sun_depth_far_bias;   // -0.0001f
-extern ECORE_API float ps_r_sun_depth_middle_scale; // 1.00001f
-extern ECORE_API float ps_r_sun_depth_middle_bias;	 // -0.0001f
-extern ECORE_API float ps_r_sun_depth_near_scale; // 1.00001f
-extern ECORE_API float ps_r_sun_depth_near_bias;  // -0.0001f
+extern ECORE_API float ps_r_sun_depth_far_normal_bias;
+extern ECORE_API float ps_r_sun_depth_far_directional_bias;
+extern ECORE_API float ps_r_sun_depth_far_bias;
+extern ECORE_API float ps_r_sun_depth_middle_normal_bias;
+extern ECORE_API float ps_r_sun_depth_middle_directional_bias;
+extern ECORE_API float ps_r_sun_depth_middle_bias;
+extern ECORE_API float ps_r_sun_depth_near_normal_bias;
+extern ECORE_API float ps_r_sun_depth_near_directional_bias;
+extern ECORE_API float ps_r_sun_depth_near_bias;
 extern ECORE_API float ps_r_sun_depth_normal_bias;
 extern ECORE_API float ps_r_sun_depth_directional_bias;
 extern ECORE_API float ps_r_sun_lumscale;		   // 0.5f

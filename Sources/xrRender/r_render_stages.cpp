@@ -13,6 +13,12 @@ IC bool pred_sp_sort(ISpatial* _1, ISpatial* _2)
 	return d1 < d2;
 }
 
+IC float u_diffuse2s(float x, float y, float z)
+{
+	float v = (x + y + z) / 3.f;
+	return ((v < 1) ? powf(v, 2.f / 3.f) : v);
+}
+
 bool CRender::need_render_sun()
 {
 	Fcolor sun_color = ((light*)Lights.sun_adapted._get())->get_color();

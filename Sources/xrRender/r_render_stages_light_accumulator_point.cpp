@@ -11,11 +11,9 @@ void CRender::accumulate_point_lights(light* L)
 
 	// Common
 	Fvector L_pos;
-	float L_spec;
 	float L_R = L->get_range();
 	Fvector L_clr;
 	L_clr.set(L->get_color().r, L->get_color().g, L->get_color().b);
-	L_spec = u_diffuse2s(L_clr);
 	Device.mView.transform_tiny(L_pos, L->get_position());
 
 	// Xforms
@@ -81,7 +79,7 @@ void CRender::accumulate_point_lights(light* L)
 
 		// Constants
 		RenderBackend.set_Constant("Ldynamic_pos", L_pos.x, L_pos.y, L_pos.z, 1 / (L_R * L_R));
-		RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z), L_spec);
+		RenderBackend.set_Constant("Ldynamic_color", sRgbToLinear(L_clr.x), sRgbToLinear(L_clr.y), sRgbToLinear(L_clr.z));
 		RenderBackend.set_Constant("m_texgen", m_Texgen);
 
 		// Render if (stencil >= light_id && z-pass)

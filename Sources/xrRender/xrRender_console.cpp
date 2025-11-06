@@ -230,13 +230,13 @@ float ps_r_ao_brightness = 1.0f;
 
 float ps_r_autoexposure_middlegray = 0.5f;
 float ps_r_autoexposure_adaptation = 0.3f;
-float ps_r_autoexposure_low_lum = 0.01f;
+float ps_r_autoexposure_low_lum = 0.5f;
 float ps_r_autoexposure_amount = 1.0f;
 
-float ps_r_bloom_threshold = 0.9f;
-float ps_r_bloom_brightness = 1.5f;
+float ps_r_bloom_threshold = 0.25f;
+float ps_r_bloom_brightness = 2.0f;
 float ps_r_bloom_blades_threshold = 0.9f;
-float ps_r_bloom_blades_brightness = 1.5f;
+float ps_r_bloom_blades_brightness = 0.2f;
 
 float ps_r_fxaa_subpix = 0.6f;
 float ps_r_fxaa_edge_treshold = 0.063f;
@@ -255,14 +255,19 @@ float ps_r_ls_far = 200.0f;
 float ps_r_sun_tsm_bias = -0.05f;
 float ps_r_sun_near = 12.f;
 float ps_r_sun_far = 200.f;
-float ps_r_sun_depth_far_scale = 1.00000f;
-float ps_r_sun_depth_far_bias = -0.002f;
-float ps_r_sun_depth_middle_scale = 1.0000f;
-float ps_r_sun_depth_middle_bias = -0.00002f;
-float ps_r_sun_depth_near_scale = 1.0000f;
-float ps_r_sun_depth_near_bias = 0.00028f;
-float ps_r_sun_depth_normal_bias = 0.01700f;
-float ps_r_sun_depth_directional_bias = -0.1000f;
+
+// Ёмпирически подобранные данные - настраиваютс€ командами
+float ps_r_sun_depth_far_normal_bias = 0.0f;
+float ps_r_sun_depth_far_directional_bias = 0.0f;
+float ps_r_sun_depth_far_bias = -0.0025f;
+float ps_r_sun_depth_middle_normal_bias = 0.12f;
+float ps_r_sun_depth_middle_directional_bias = 0.0f;
+float ps_r_sun_depth_middle_bias = 0.0f;
+float ps_r_sun_depth_near_normal_bias = 0.0f;
+float ps_r_sun_depth_near_directional_bias = 0.0f;
+float ps_r_sun_depth_near_bias = 0.0f;
+float ps_r_sun_depth_normal_bias = 0.05f;
+float ps_r_sun_depth_directional_bias = 0.02f;
 float ps_r_sun_lumscale = 1.0f;
 float ps_r_sun_lumscale_hemi = 1.0f;
 float ps_r_sun_lumscale_amb = 1.0f;
@@ -276,8 +281,6 @@ int ps_r_dhemi_count = 5;
 float ps_r_lt_smooth = 1.f;
 
 float ps_r_slight_fade = 1.f;
-
-float ps_r_gloss_factor = 1.0f;
 
 float ps_cas_contrast = 0.1f;
 float ps_cas_sharpening = 0.1f;
@@ -564,13 +567,8 @@ void xrRender_initconsole()
 	//CMD4(CCC_Float, "r_detail_l_ambient", &ps_r_Detail_l_ambient, .5f, .95f);
 	//CMD4(CCC_Float, "r_detail_l_aniso", &ps_r_Detail_l_aniso, .1f, .5f);
 
-	//CMD4(CCC_Float, "r_d_tree_w_amp", &ps_r_Tree_w_amp, .001f, 1.f);
-	//CMD4(CCC_Float, "r_d_tree_w_rot", &ps_r_Tree_w_rot, .01f, 100.f);
-	//CMD4(CCC_Float, "r_d_tree_w_speed", &ps_r_Tree_w_speed, 1.0f, 10.f);
-
 	tw_min.set(EPS, EPS, EPS);
 	tw_max.set(2, 2, 2);
-	//CMD4(CCC_Vector3, "r_d_tree_wave", &ps_r_Tree_Wave, tw_min, tw_max);
 
 	CMD3(CCC_Mask, "r_lens_flares", &ps_render_flags, RFLAG_LENS_FLARES);
 
@@ -588,7 +586,6 @@ void xrRender_initconsole()
 	//CMD4(CCC_Float, "r_pps_v", &ps_pps_v, -1.f, +1.f);
 
 	CMD3(CCC_Mask, "r_anti_aliasing", &ps_r_postprocess_flags, RFLAG_ANTI_ALIASING);
-	//CMD3(CCC_Mask, "r_anti_aliasing_alpha_test", &ps_r_postprocess_flags, RFLAG_ANTI_ALIASING_ALPHA_TEST);
 	CMD4(CCC_Float, "r_fxaa_subpix", &ps_r_fxaa_subpix, 0.0f, 1.0f);
 	CMD4(CCC_Float, "r_fxaa_treshold", &ps_r_fxaa_edge_treshold, 0.0f, 1.0f);
 	CMD4(CCC_Float, "r_fxaa_treshold_min", &ps_r_fxaa_edge_treshold_min, 0.0f, 1.0f);
@@ -640,14 +637,15 @@ void xrRender_initconsole()
 	//CMD4(CCC_Float, "r_sun_near", &ps_r_sun_near, 1.f, 50.f);
 	CMD4(CCC_Float, "r_sun_far", &ps_r_sun_far, 100.f, 360.f);
 
-	CMD4(CCC_Float, "r_sun_depth_far_scale", &ps_r_sun_depth_far_scale, 0.5, 1.5);
+	CMD4(CCC_Float, "r_sun_depth_far_normal_bias", &ps_r_sun_depth_far_normal_bias, -0.5, 0.5);
+	CMD4(CCC_Float, "r_sun_depth_far_directional_bias", &ps_r_sun_depth_far_directional_bias, -0.5, 0.5);
 	CMD4(CCC_Float, "r_sun_depth_far_bias", &ps_r_sun_depth_far_bias, -0.5, +0.5);
-	CMD4(CCC_Float, "r_sun_depth_middle_scale", &ps_r_sun_depth_middle_scale, 0.5, 1.5);
+	CMD4(CCC_Float, "r_sun_depth_middle_normal_bias", &ps_r_sun_depth_middle_normal_bias, -0.5, 0.5);
+	CMD4(CCC_Float, "r_sun_depth_middle_directional_bias", &ps_r_sun_depth_middle_directional_bias, -0.5, 0.5);
 	CMD4(CCC_Float, "r_sun_depth_middle_bias", &ps_r_sun_depth_middle_bias, -0.5, +0.5);
-	CMD4(CCC_Float, "r_sun_depth_near_scale", &ps_r_sun_depth_near_scale, 0.5, 1.5);
+	CMD4(CCC_Float, "r_sun_depth_near_normal_bias", &ps_r_sun_depth_near_normal_bias, -0.5, 0.5);
+	CMD4(CCC_Float, "r_sun_depth_near_directional_bias", &ps_r_sun_depth_near_directional_bias, -0.5, 0.5);
 	CMD4(CCC_Float, "r_sun_depth_near_bias", &ps_r_sun_depth_near_bias, -0.5, +0.5);
-	CMD4(CCC_Float, "r_sun_depth_normal_bias", &ps_r_sun_depth_normal_bias, -0.5, +0.5);
-	CMD4(CCC_Float, "r_sun_depth_directional_bias", &ps_r_sun_depth_directional_bias, -0.5, +0.5);
 
 	//CMD4(CCC_Float, "r_sun_lumscale", &ps_r_sun_lumscale, -1.0, +3.0);
 	//CMD4(CCC_Float, "r_sun_lumscale_hemi", &ps_r_sun_lumscale_hemi, 0.0, +3.0);
@@ -666,7 +664,6 @@ void xrRender_initconsole()
 	//CMD4(CCC_Float, "r_dhemi_smooth", &ps_r_lt_smooth, 0.f, 10.f);
 
 	CMD3(CCC_Token, "r_material_quality", &ps_r_material_quality, material_quality_token);
-	//CMD4(CCC_Float, "r_parallax_h", &ps_r_df_parallax_h, .0f, .5f);
 
 	CMD3(CCC_Token, "r_debug_render", &ps_r_debug_render, debug_render_token);	
 	
@@ -679,8 +676,6 @@ void xrRender_initconsole()
 	CMD2(CCC_tf_MipBias, "r_tf_mipbias", &ps_r_tf_Mipbias);
 
 	CMD3(CCC_Mask, "r_z_prepass", &ps_r_ls_flags, RFLAG_Z_PREPASS);
-
-	//CMD4(CCC_Float, "r_gloss_factor", &ps_r_gloss_factor, 1.f, 3.f);
 
 	//CMD3(CCC_Mask, "r_use_nvdbt", &ps_r_ls_flags, RFLAG_USE_NVDBT);
 
