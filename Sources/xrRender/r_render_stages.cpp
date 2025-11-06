@@ -498,7 +498,7 @@ void CRender::render_lights()
 
 void CRender::combine_scene()
 {
-	if (ps_r_shading_flags.test(RFLAG_ENABLE_PBR) && ps_r_postprocess_flags.test(RFLAG_REFLECTIONS))
+	if ((ps_r_shading_mode == 1) && ps_r_postprocess_flags.test(RFLAG_REFLECTIONS))
 	{
 		precombine_scene();
 

@@ -32,7 +32,7 @@ void CRender::render_screen_space_reflections()
 {
 	OPTICK_EVENT("CRender::render_screen_space_reflections");
 
-	if (ps_r_postprocess_flags.test(RFLAG_REFLECTIONS) && ps_r_shading_flags.test(RFLAG_ENABLE_PBR))
+	if (ps_r_postprocess_flags.test(RFLAG_REFLECTIONS) && (ps_r_shading_mode != 0))
 	{
 		ReflectionsTexIsCleared = false;
 		render_reflections();

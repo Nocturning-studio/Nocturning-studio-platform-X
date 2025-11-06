@@ -244,7 +244,7 @@ CShaderMacros CRender::FetchShaderMacros()
 	macros.add("SHADOW_FILTER_QUALITY", (int)ps_r_shadow_filtering);
 	macros.add("SUN_SHAFTS_QUALITY", (int)ps_r_sun_shafts_quality);
 
-	macros.add(ps_r_shading_flags.test(RFLAG_ENABLE_PBR), "ENABLE_PBR", "1");
+	macros.add(ps_r_shading_mode == 1, "ENABLE_PBR", "1");
 
 	return macros;
 }

@@ -146,7 +146,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	// Add extension to texture  and chek for null
 	Device.Resources->fix_texture_name(AlbedoTexture);
 
-	bool DisablePBR = !ps_r_shading_flags.test(RFLAG_ENABLE_PBR);
+	bool DisablePBR = ps_r_shading_mode == 0;
 
 	bool UseAlbedoOnly = bUseDepthOnly;
 
@@ -718,7 +718,7 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 	// Get  for base texture for material
 	strcpy_s(AlbedoTexture, sizeof(AlbedoTexture), *C.L_textures[0]);
 
-	bool DisablePBR = !ps_r_shading_flags.test(RFLAG_ENABLE_PBR);
+	bool DisablePBR = ps_r_shading_mode == 0;
 
 	bool bUseConfigurator = false;
 	CInifile* MaterialConfiguration;

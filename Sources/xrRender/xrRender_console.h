@@ -164,6 +164,8 @@ extern ECORE_API u32 ps_r_aa_transluency;
 
 extern ECORE_API u32 ps_r_rt_format;
 
+extern ECORE_API u32 ps_r_shading_mode;
+
 // R2/R2a/R2.5-specific flags
 extern ECORE_API Flags32 ps_r_lighting_flags;
 enum

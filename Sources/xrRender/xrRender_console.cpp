@@ -17,6 +17,14 @@ xr_token qpreset_token[] =
 	{0, 0}
 };
 
+u32 ps_r_shading_mode = 1;
+xr_token shading_mode_token[] = 
+{
+	{"st_opt_leashed_shading", 0}, 
+	{"st_opt_physically_based_shading", 1}, 
+	{0, 0}
+};
+
 u32 ps_EffPreset = 2;
 xr_token qeffpreset_token[] = 
 {
@@ -89,10 +97,10 @@ Flags32 ps_r_ls_flags = {RFLAG_Z_PREPASS};
 u32 ps_r_ao_quality = 2;
 xr_token ao_quality_token[] = 
 {
-	{"st_opt_low", 1}, 
-	{"st_opt_medium", 2}, 
-	{"st_opt_high", 3}, 
-	{"st_opt_ultra", 4}, 
+	{"st_opt_ssao", 1}, 
+	{"st_opt_mxao", 2}, 
+	{"st_opt_hbao_plus", 3}, 
+	{"st_opt_ssptao", 4}, 
 	{0, 0}
 };
 
@@ -559,6 +567,8 @@ void xrRender_initconsole()
 	CMD1(CCC_ModelPoolStat, "stat_models");
 
 	CMD3(CCC_Token, "r_cubemap_size", &ps_r_cubemap_size, cubemap_size_token);
+	
+	CMD3(CCC_Token, "r_shading_mode", &ps_r_shading_mode, shading_mode_token);
 
 	CMD4(CCC_Float, "r_geometry_lod", &ps_r_LOD, 0.1f, 1.2f);
 
@@ -652,8 +662,6 @@ void xrRender_initconsole()
 	//CMD4(CCC_Float, "r_sun_lumscale_amb", &ps_r_sun_lumscale_amb, 0.0, +3.0);
 
 	//CMD3(CCC_Mask, "r_shadow_cascede_zcul", &ps_r_lighting_flags, RFLAGEXT_SUN_ZCULLING);
-
-	CMD3(CCC_Mask, "r_enable_pbr", &ps_r_shading_flags, RFLAG_ENABLE_PBR);
 
 	CMD3(CCC_Mask, "r_allow_r1_lights", &ps_r_lighting_flags, RFLAG_R1LIGHTS);
 

@@ -33,7 +33,7 @@ void CRenderTarget::create_textures()
 	R_CHK(tex_screenshot_gamesave->GetSurfaceLevel(0, &surf_screenshot_gamesave));
 
 	// G-Buffer
-	if (!ps_r_shading_flags.test(RFLAG_ENABLE_PBR))
+	if (ps_r_shading_mode == 0)
 	{
 		rt_GBuffer_1.create(r_RT_GBuffer_1, dwWidth, dwHeight, D3DFMT_A8R8G8B8);
 		rt_GBuffer_2.create(r_RT_GBuffer_2, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
