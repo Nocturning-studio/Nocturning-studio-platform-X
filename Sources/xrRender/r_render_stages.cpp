@@ -515,6 +515,10 @@ void CRender::render_postprocess()
 
 	Device.Statistic->RenderCALC_POSTPROCESS.Begin();
 
+	// Generic1 -> Generic0 -> Generic1
+	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
+		render_autoexposure();
+
 	create_distortion_mask();
 
 	render_distortion();
@@ -540,10 +544,6 @@ void CRender::render_postprocess()
 	// Ceneric1 -> Generic1
 	if (ps_r_postprocess_flags.test(RFLAG_MBLUR))
 		render_motion_blur();
-
-	// Generic1 -> Generic0 -> Generic1
-	if (ps_r_postprocess_flags.test(RFLAG_AUTOEXPOSURE))
-		render_autoexposure();
 
 	//Generic_1 -> Generic_0
 	render_effectors_pass_resolve_gamma();
