@@ -45,7 +45,7 @@ void CHW::Reset(HWND hwnd)
 
 	selectResolution(DevPP.BackBufferWidth, DevPP.BackBufferHeight, bWindowed);
 	// Windoze
-	DevPP.SwapEffect = D3DSWAPEFFECT_FLIPEX; // bWindowed ? D3DSWAPEFFECT_COPY : D3DSWAPEFFECT_DISCARD;
+	DevPP.SwapEffect = bWindowed ? D3DSWAPEFFECT_FLIPEX : D3DSWAPEFFECT_DISCARD;
 	DevPP.Windowed = bWindowed;
 	DevPP.PresentationInterval = selectPresentInterval();
 	if (!bWindowed)
@@ -54,9 +54,23 @@ void CHW::Reset(HWND hwnd)
 		DevPP.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 #endif
 
+	D3DDISPLAYMODEEX Mode;
+	ZeroMemory(&Mode, sizeof(Mode));
+	Mode.Size = sizeof(D3DDISPLAYMODEEX);
+
+	if (!DevPP.Windowed)
+	{
+		Mode.Width = DevPP.BackBufferWidth;
+		Mode.Height = DevPP.BackBufferHeight;
+		Mode.Format = DevPP.BackBufferFormat;
+		Mode.RefreshRate = DevPP.FullScreen_RefreshRateInHz;
+		Mode.ScanLineOrdering = D3DSCANLINEORDERING_PROGRESSIVE;
+	}
+
 	while (TRUE)
 	{
-		HRESULT _hr = HW.pDevice->Reset(&DevPP);
+		HRESULT _hr = pDevice->ResetEx(&DevPP, DevPP.Windowed ? NULL : &Mode);
+
 		if (SUCCEEDED(_hr))
 			break;
 		Msg("! ERROR: [%dx%d]: %s", DevPP.BackBufferWidth, DevPP.BackBufferHeight, Debug.error2string(_hr));
@@ -322,7 +336,7 @@ void CHW::CreateDevice(HWND m_hWnd)
 	P.MultiSampleQuality = 0;
 
 	// Windoze
-	P.SwapEffect = D3DSWAPEFFECT_FLIPEX; // bWindowed ? D3DSWAPEFFECT_COPY : D3DSWAPEFFECT_DISCARD;
+	P.SwapEffect = bWindowed ? D3DSWAPEFFECT_FLIPEX : D3DSWAPEFFECT_DISCARD;
 	P.hDeviceWindow = m_hWnd;
 	P.Windowed = bWindowed;
 
@@ -339,33 +353,56 @@ void CHW::CreateDevice(HWND m_hWnd)
 	else
 		P.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
-	// Create the device
+	if (!bWindowed)
+	{
+		HRESULT hr = pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, FALSE);
+		if (FAILED(hr))
+		{
+			Msg("! Fullscreen mode not supported. Switching to windowed.");
+			bWindowed = TRUE;
+			P.Windowed = TRUE;
+			P.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+		}
+	}
+
 	u32 GPU = selectGPU();
-	//HRESULT R = HW.pD3D->CreateDeviceEx(DevAdapter, DevT, m_hWnd,
-	//								  GPU | D3DCREATE_MULTITHREADED, //. ? locks at present
-	//								  &P, &pDevice);
+	D3DDISPLAYMODEEX dispMode;
+	ZeroMemory(&dispMode, sizeof(dispMode));
+	dispMode.Size = sizeof(D3DDISPLAYMODEEX);
 
-	HRESULT hr = HW.pD3D->CreateDeviceEx(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, P.hDeviceWindow,
-										 D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED |
-											 D3DCREATE_ENABLE_PRESENTSTATS,
-										 &P, nullptr, &pDevice);
+	if (!bWindowed)
+	{
+		dispMode.Width = P.BackBufferWidth;
+		dispMode.Height = P.BackBufferHeight;
+		dispMode.Format = P.BackBufferFormat;
+		dispMode.RefreshRate = P.FullScreen_RefreshRateInHz;
+		dispMode.ScanLineOrdering = D3DSCANLINEORDERING_PROGRESSIVE;
+	}
 
-	//if (FAILED(R))
-	//{
-	//	R = HW.pD3D->CreateDeviceEx(DevAdapter, DevT, m_hWnd,
-	//							  GPU | D3DCREATE_MULTITHREADED, //. ? locks at present
-	//							  &P, &pDevice);
-	//}
-	//if (D3DERR_DEVICELOST == R)
-	//{
-	//	// Fatal error! Cannot create rendering device AT STARTUP !!!
-	//	Msg("Failed to initialize graphics hardware.\nPlease try to restart the game.");
-	//	FlushLog();
-	//	MessageBox(NULL, "Failed to initialize graphics hardware.\nPlease try to restart the game.", "Error!",
-	//			   MB_OK | MB_ICONERROR);
-	//	TerminateProcess(GetCurrentProcess(), 0);
-	//};
-	//R_CHK(R);
+	HRESULT R = pD3D->CreateDeviceEx(DevAdapter, DevT, m_hWnd, GPU | D3DCREATE_MULTITHREADED, &P,
+									 bWindowed ? NULL : &dispMode, &pDevice);
+
+	// Проверка поддержки полноэкранного режима
+	if (!bWindowed)
+	{
+		HRESULT hr = pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, FALSE);
+		if (FAILED(hr))
+		{
+			Msg("! Fullscreen mode not supported for this format. Switching to windowed.");
+			bWindowed = TRUE;
+			P.Windowed = TRUE;
+			P.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+		}
+	}
+
+	if (FAILED(R))
+	{
+		Msg("! Device creation failed: %s", Debug.error2string(R));
+		FlushLog();
+		MessageBox(NULL, "Failed to initialize graphics hardware.\n", "Error!",
+				   MB_OK | MB_ICONERROR);
+		TerminateProcess(GetCurrentProcess(), 0);
+	}
 
 	_SHOW_REF("* CREATE: DeviceREF:", HW.pDevice);
 	switch (GPU)
