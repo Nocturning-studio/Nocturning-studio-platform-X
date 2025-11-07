@@ -19,9 +19,6 @@
     <Filter Include="Lights">
       <UniqueIdentifier>{9d485d5c-641a-4f01-a510-d34789a4cea3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Glows">
-      <UniqueIdentifier>{9801b3a5-164c-4bb5-a8b4-8a8315db7241}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Wallmarks">
       <UniqueIdentifier>{d89e5eaf-1ee0-4afb-8b1a-6656235abfcc}</UniqueIdentifier>
     </Filter>
@@ -51,9 +48,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cl_intersect.h">
-      <Filter>Kernel</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Kernel</Filter>
     </ClInclude>
@@ -69,23 +63,8 @@
     <ClInclude Include="r2_types.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrRender\r__dsgraph_structure.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\r__dsgraph_types.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\r__occlusion.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\r__pixel_calculator.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="doug_lea_memory_allocator.h">
       <Filter>Core\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="DetailFormat.h">
-      <Filter>Details</Filter>
     </ClInclude>
     <ClInclude Include="..\xrRender\DetailManager.h">
       <Filter>Details</Filter>
@@ -104,9 +83,6 @@
     </ClInclude>
     <ClInclude Include="..\xrRender\xrStripify.h">
       <Filter>Stripifier</Filter>
-    </ClInclude>
-    <ClInclude Include="light.h">
-      <Filter>Lights</Filter>
     </ClInclude>
     <ClInclude Include="..\xrRender\Light_DB.h">
       <Filter>Lights</Filter>
@@ -180,9 +156,6 @@
     <ClInclude Include="..\xrRender\Blender_Particle.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrRender\uber_deffer.h">
-      <Filter>Shading templates</Filter>
-    </ClInclude>
     <ClInclude Include="..\xrRender\Blender_detail_still.h">
       <Filter>Shading templates\R1</Filter>
     </ClInclude>
@@ -225,9 +198,6 @@
     <ClInclude Include="..\xrRender\ParticleGroup.h">
       <Filter>Models\Visuals</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrRender\r__sector.h">
-      <Filter>Visibility\Sector/Portal</Filter>
-    </ClInclude>
     <ClInclude Include="..\xrRender\HOM.h">
       <Filter>Visibility\HOM Occlusion</Filter>
     </ClInclude>
@@ -245,6 +215,36 @@
     </ClInclude>
     <ClInclude Include="blender_aa.h">
       <Filter>Shading templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\r_dsgraph_types.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\r_occlusion.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\r_pixel_calculator.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\r_dsgraph_structure.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="uber_deffer.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\DetailFormat.h">
+      <Filter>Details</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\cl_intersect.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\light.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\r_sector.h">
+      <Filter>Visibility\Sector/Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\r_types.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -285,24 +285,6 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="r2_test_hw.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\r__dsgraph_build.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\r__dsgraph_render.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\r__dsgraph_render_lods.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\r__occlusion.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\r__pixel_calculator.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\r__screenshot.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\xrRender\Texture.cpp">
@@ -422,9 +404,6 @@
     <ClCompile Include="..\xrRender\Blender_Particle.cpp">
       <Filter>Shading templates</Filter>
     </ClCompile>
-    <ClCompile Include="..\xrRender\uber_deffer.cpp">
-      <Filter>Shading templates</Filter>
-    </ClCompile>
     <ClCompile Include="..\xrRender\Blender_detail_still.cpp">
       <Filter>Shading templates\R1</Filter>
     </ClCompile>
@@ -466,12 +445,6 @@
     </ClCompile>
     <ClCompile Include="..\xrRender\ParticleGroup.cpp">
       <Filter>Models\Visuals</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\r__sector.cpp">
-      <Filter>Visibility\Sector/Portal</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\r__sector_traversal.cpp">
-      <Filter>Visibility\Sector/Portal</Filter>
     </ClCompile>
     <ClCompile Include="..\xrRender\HOM.cpp">
       <Filter>Visibility\HOM Occlusion</Filter>
@@ -547,6 +520,33 @@
     </ClCompile>
     <ClCompile Include="blender_aa.cpp">
       <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\r_occlusion.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\r_pixel_calculator.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\r_screenshot.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\r_dsgraph_build.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\r_dsgraph_render.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\r_dsgraph_render_lods.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="uber_deffer.cpp">
+      <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\r_sector_traversal.cpp">
+      <Filter>Visibility\Sector/Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\r_sector.cpp">
+      <Filter>Visibility\Sector/Portal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

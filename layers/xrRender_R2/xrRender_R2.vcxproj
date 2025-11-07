@@ -122,7 +122,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\..\xrEngine\;..\..\xrEngine\dx11\;..\..\xrEngine\blenders\;..\..\Layers\xrRender\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xrEngine\dx11\;..\..\xrEngine\blenders\;..\..\Layers\xrRender\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;XRRENDER_R2_EXPORTS;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling />
@@ -210,6 +210,8 @@
     <ClInclude Include="..\xrRender\Blender_Particle.h" />
     <ClInclude Include="..\xrRender\Blender_Screen_SET.h" />
     <ClInclude Include="..\xrRender\Blender_tree.h" />
+    <ClInclude Include="..\xrRender\cl_intersect.h" />
+    <ClInclude Include="..\xrRender\DetailFormat.h" />
     <ClInclude Include="..\xrRender\DetailManager.h" />
     <ClInclude Include="..\xrRender\DetailModel.h" />
     <ClInclude Include="..\xrRender\FLOD.h" />
@@ -218,6 +220,7 @@
     <ClInclude Include="..\xrRender\FTreeVisual.h" />
     <ClInclude Include="..\xrRender\FVisual.h" />
     <ClInclude Include="..\xrRender\HOM.h" />
+    <ClInclude Include="..\xrRender\light.h" />
     <ClInclude Include="..\xrRender\LightTrack.h" />
     <ClInclude Include="..\xrRender\Light_DB.h" />
     <ClInclude Include="..\xrRender\Light_Package.h" />
@@ -229,12 +232,12 @@
     <ClInclude Include="..\xrRender\ParticleEffectDef.h" />
     <ClInclude Include="..\xrRender\ParticleGroup.h" />
     <ClInclude Include="..\xrRender\PSLibrary.h" />
-    <ClInclude Include="..\xrRender\r__dsgraph_structure.h" />
-    <ClInclude Include="..\xrRender\r__dsgraph_types.h" />
-    <ClInclude Include="..\xrRender\r__occlusion.h" />
-    <ClInclude Include="..\xrRender\r__pixel_calculator.h" />
-    <ClInclude Include="..\xrRender\r__sector.h" />
-    <ClInclude Include="..\xrRender\uber_deffer.h" />
+    <ClInclude Include="..\xrRender\r_dsgraph_structure.h" />
+    <ClInclude Include="..\xrRender\r_dsgraph_types.h" />
+    <ClInclude Include="..\xrRender\r_occlusion.h" />
+    <ClInclude Include="..\xrRender\r_pixel_calculator.h" />
+    <ClInclude Include="..\xrRender\r_sector.h" />
+    <ClInclude Include="..\xrRender\r_types.h" />
     <ClInclude Include="..\xrRender\VertexCache.h" />
     <ClInclude Include="..\xrRender\WallmarksEngine.h" />
     <ClInclude Include="..\xrRender\xrRender_console.h" />
@@ -252,11 +255,8 @@
     <ClInclude Include="blender_light_reflected.h" />
     <ClInclude Include="blender_light_spot.h" />
     <ClInclude Include="blender_luminance.h" />
-    <ClInclude Include="cl_intersect.h" />
-    <ClInclude Include="DetailFormat.h" />
     <ClInclude Include="doug_lea_memory_allocator.h" />
     <ClInclude Include="du_sphere_part.h" />
-    <ClInclude Include="light.h" />
     <ClInclude Include="light_gi.h" />
     <ClInclude Include="Light_Render_Direct.h" />
     <ClInclude Include="light_smapvis.h" />
@@ -266,6 +266,7 @@
     <ClInclude Include="r2_types.h" />
     <ClInclude Include="SMAP_Allocator.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="uber_deffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\xrRender\Blender_BmmD.cpp" />
@@ -313,17 +314,16 @@
     <ClCompile Include="..\xrRender\ParticleEffectDef.cpp" />
     <ClCompile Include="..\xrRender\ParticleGroup.cpp" />
     <ClCompile Include="..\xrRender\PSLibrary.cpp" />
-    <ClCompile Include="..\xrRender\r__dsgraph_build.cpp" />
-    <ClCompile Include="..\xrRender\r__dsgraph_render.cpp" />
-    <ClCompile Include="..\xrRender\r__dsgraph_render_lods.cpp" />
-    <ClCompile Include="..\xrRender\r__occlusion.cpp" />
-    <ClCompile Include="..\xrRender\r__pixel_calculator.cpp" />
-    <ClCompile Include="..\xrRender\r__screenshot.cpp" />
-    <ClCompile Include="..\xrRender\r__sector.cpp" />
-    <ClCompile Include="..\xrRender\r__sector_traversal.cpp" />
+    <ClCompile Include="..\xrRender\r_dsgraph_build.cpp" />
+    <ClCompile Include="..\xrRender\r_dsgraph_render.cpp" />
+    <ClCompile Include="..\xrRender\r_dsgraph_render_lods.cpp" />
+    <ClCompile Include="..\xrRender\r_occlusion.cpp" />
+    <ClCompile Include="..\xrRender\r_pixel_calculator.cpp" />
+    <ClCompile Include="..\xrRender\r_screenshot.cpp" />
+    <ClCompile Include="..\xrRender\r_sector.cpp" />
+    <ClCompile Include="..\xrRender\r_sector_traversal.cpp" />
     <ClCompile Include="..\xrRender\Texture.cpp" />
     <ClCompile Include="..\xrRender\tga.cpp" />
-    <ClCompile Include="..\xrRender\uber_deffer.cpp" />
     <ClCompile Include="..\xrRender\VertexCache.cpp" />
     <ClCompile Include="..\xrRender\WallmarksEngine.cpp" />
     <ClCompile Include="..\xrRender\xrRender_console.cpp" />
@@ -383,6 +383,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="uber_deffer.cpp" />
     <ClCompile Include="xrRender_R2.cpp" />
   </ItemGroup>
   <ItemGroup>

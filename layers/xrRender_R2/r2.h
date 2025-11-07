@@ -1,7 +1,7 @@
 #pragma once
 
-#include "..\xrRender\r__dsgraph_structure.h"
-#include "..\xrRender\r__occlusion.h"
+#include "..\xrRender\r_dsgraph_structure.h"
+#include "..\xrRender\r_occlusion.h"
 
 #include "..\xrRender\PSLibrary.h"
 
@@ -20,6 +20,8 @@
 
 #include "../irenderable.h"
 #include "../fmesh.h"
+
+#include "r_types.h"
 
 // definition
 class CRender													:	public R_dsgraph_structure
@@ -92,8 +94,8 @@ public:
 	xr_vector<ref_shader>										Shaders;
 	typedef svector<D3DVERTEXELEMENT9,MAXD3DDECLLENGTH+1>		VertexDeclarator;
 	xr_vector<VertexDeclarator>									nDC,xDC;
-	xr_vector<IDirect3DVertexBuffer9*>							nVB,xVB;
-	xr_vector<IDirect3DIndexBuffer9*>							nIB,xIB;
+	xr_vector<ID3D11Buffer*> nVB, xVB;
+	xr_vector<ID3D11Buffer*> nIB, xIB;
 	xr_vector<IRender_Visual*>									Visuals;
 	CPSLibrary													PSLibrary;
 
@@ -186,7 +188,7 @@ public:
 
 public:
 	// feature level
-	virtual	GenerationLevel			get_generation			()	{ return IRender_interface::GENERATION_R2; }
+	//virtual	GenerationLevel			get_generation			()	{ return IRender_interface::GENERATION_R2; }
 
 	// Loading / Unloading
 	virtual void					create						();
@@ -197,8 +199,10 @@ public:
 	virtual	void					level_Load					(IReader*);
 	virtual void					level_Unload				();
 
-	virtual IDirect3DBaseTexture9*	texture_load			(LPCSTR	fname, u32& msize);
-	virtual HRESULT					shader_compile			(
+	//virtual IDirect3DBaseTexture9* texture_load(LPCSTR fname, u32& msize);
+	ID3D11Resource* texture_load(LPCSTR fname, u32& msize, bool bStaging);
+
+	/* virtual HRESULT shader_compile(
 		LPCSTR							name,
 		LPCSTR                          pSrcData,
 		UINT                            SrcDataLen,
@@ -209,11 +213,11 @@ public:
 		DWORD                           Flags,
 		void*							ppShader,
 		void*							ppErrorMsgs,
-		void*							ppConstantTable);
+		void*							ppConstantTable);*/
 
 	// Information
 	virtual void					Statistics					(CGameFont* F);
-	virtual LPCSTR					getShaderPath				()									{ return "r2\\";	}
+	virtual LPCSTR					getShaderPath				()									{ return "r3_clear_sky\\";	}
 	virtual ref_shader				getShader					(int id);
 	virtual IRender_Sector*			getSector					(int id);
 	virtual IRender_Visual*			getVisual					(int id);
@@ -276,6 +280,19 @@ public:
 	// Constructor/destructor/loader
 	CRender							();
 	virtual ~CRender				();
+
+	// feature level
+	virtual RenderType get_render_type()
+	{
+		return IRender_interface::RENDER_R2;
+	}
+
+	virtual RenderLightingType get_render_lighting_type()
+	{
+		return IRender_interface::RENDER_DYNAMIC_LIGHTED;
+	}
+
+	CShaderMacros FetchShaderMacros();
 };
 
 extern CRender						RImplementation;

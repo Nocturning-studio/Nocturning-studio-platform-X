@@ -4,30 +4,42 @@
 
 #pragma once
 
-#pragma warning(disable:4995)
-#include "stdafx.h"
-#pragma warning(disable:4995)
+#pragma warning(disable : 4995)
+#include "..\xrEngine\stdafx.h"
+#pragma warning(disable : 4995)
 #include <d3dx9.h>
-#pragma warning(default:4995)
-#pragma warning(disable:4714)
-#pragma warning( 4 : 4018 )
-#pragma warning( 4 : 4244 )
-#pragma warning(disable:4237)
+#pragma warning(default : 4995)
+#pragma warning(disable : 4714)
+#pragma warning(4 : 4018)
+#pragma warning(4 : 4244)
 
-#define		R_R1	1
-#define		R_R2	2
-#define		RENDER	R_R2
+#define R_R1 1
+#define R_R2 2
+#define RENDER R_R2
 
-#include "resourcemanager.h"
-#include "vis_common.h"
-#include "render.h"
-#include "_d3d_extensions.h"
-#include "igame_level.h"
-#include "blenders\blender.h"
-#include "blenders\blender_clsid.h"
-#include "psystem.h"
-#include "xrRender_console.h"
+#include "../../xrCore/xrCore.h"
+
+#include "..\xrEngine\resourcemanager.h"
+#include "..\xrEngine\vis_common.h"
+#include "..\xrEngine\render.h"
+#include "..\xrEngine\igame_level.h"
+#include "..\xrEngine\blenders\blender.h"
+#include "..\xrEngine\blenders\blender_clsid.h"
+#include "..\xrEngine\psystem.h"
+#include "..\xrRender\xrRender_console.h"
 #include "r2.h"
+
+#include <DXSDK/d3d11.h>
+//#include <d3d11_3.h>
+#include <d3dx11.h>
+#include "DXSDK/d3d11shader.h"
+
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3dx11d.lib")
+
+#define TEX_POINT_ATT "internal\\internal_light_attpoint"
+#define TEX_SPOT_ATT "internal\\internal_light_attclip"
+
 /*
 inline	void	jitter(CBlender_Compile& C)
 {

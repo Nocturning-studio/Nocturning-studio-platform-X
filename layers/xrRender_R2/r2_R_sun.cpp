@@ -446,7 +446,7 @@ void CRender::render_sun				()
 	// calculate view-frustum bounds in world space
 	Fmatrix	ex_project, ex_full, ex_full_inverse;
 	{
-		float _far_	= min(OLES_SUN_LIMIT_27_01_07, g_pGamePersistent->Environment().CurrentEnv.far_plane);
+		float _far_ = min(OLES_SUN_LIMIT_27_01_07, g_pGamePersistent->Environment().CurrentEnv->far_plane);
 		ex_project.build_projection	(deg2rad(Device.fFOV/* *Device.fASPECT*/),Device.fASPECT,ps_r2_sun_near,_far_);
 		ex_full.mul					(ex_project,Device.mView);
 		D3DXMatrixInverse			((D3DXMATRIX*)&ex_full_inverse,0,(D3DXMATRIX*)&ex_full);
@@ -544,7 +544,7 @@ void CRender::render_sun				()
 	r_dsgraph_render_subspace					(cull_sector, &cull_frustum, cull_xform, cull_COP, TRUE);
 
 	// IGNORE PORTALS
-	if	(ps_r2_ls_flags.test(R2FLAG_SUN_IGNORE_PORTALS))
+	/* if (ps_r2_ls_flags.test(RFLAG_SUN_IGNORE_PORTALS))
 	{
 		for		(u32 s=0; s<Sectors.size(); s++)
 		{
@@ -554,7 +554,7 @@ void CRender::render_sun				()
 			set_Frustum			(&cull_frustum);
 			add_Geometry		(root);
 		}
-	}
+	}*/
 	set_Recorder						(NULL);
 
 	//	Prepare to interact with D3DX code
@@ -567,11 +567,11 @@ void CRender::render_sun				()
 	float m_fCosGamma = m_lightDir.x * m_View._13	+
 						m_lightDir.y * m_View._23	+
 						m_lightDir.z * m_View._33	;
-	float m_fTSM_Delta= ps_r2_sun_tsm_projection;
+	//float m_fTSM_Delta= ps_r2_sun_tsm_projection;
 
 	// Compute REAL sheared xform based on receivers/casters information
 	FPU::m64r			();
-	if	( _abs(m_fCosGamma) < 0.99f && ps_r2_ls_flags.test(R2FLAG_SUN_TSM))
+	/* if (_abs(m_fCosGamma) < 0.99f && ps_r2_ls_flags.test(R2FLAG_SUN_TSM))
 	{
 		//  get the near and the far plane (points) in eye space.
 		D3DXVECTOR3 frustumPnts[8];
@@ -759,13 +759,13 @@ void CRender::render_sun				()
 		D3DXMatrixMultiply	( &m_LightViewProj, &m_View,		  &lightSpaceBasis	);
 		D3DXMatrixMultiply	( &m_LightViewProj, &m_LightViewProj, &lightSpaceOrtho	);
 		D3DXMatrixMultiply	( &m_LightViewProj, &m_LightViewProj, &trapezoid_space	);
-	} else {
+	} else*/ {
 		m_LightViewProj				= *((D3DXMATRIX*)(&cull_xform));
 	}
 	FPU::m24r				();
 
 	// perform "refit" or "focusing" on relevant
-	if	(ps_r2_ls_flags.test(R2FLAG_SUN_FOCUS))
+	/* if (ps_r2_ls_flags.test(R2FLAG_SUN_FOCUS))
 	{
 		FPU::m64r				();
 
@@ -799,7 +799,7 @@ void CRender::render_sun				()
 		b_receivers		= view_clipper.clipped_AABB	(s_receivers,xform);
 		Fmatrix	x_project, x_full, x_full_inverse;
 		{
-			x_project.build_projection	(deg2rad(Device.fFOV/* *Device.fASPECT*/),Device.fASPECT,ps_r2_sun_near,ps_r2_sun_near+tweak_guaranteed_range);
+			x_project.build_projection	(deg2rad(Device.fFOV),Device.fASPECT,ps_r2_sun_near,ps_r2_sun_near+tweak_guaranteed_range);
 			x_full.mul					(x_project,Device.mView);
 			D3DXMatrixInverse			((D3DXMATRIX*)&x_full_inverse,0,(D3DXMATRIX*)&x_full);
 		}
@@ -824,12 +824,10 @@ void CRender::render_sun				()
 		if (b_casters.max.z>+1)		b_casters.max.z		=+1;
 
 		// refit?
-		/*
-		const float EPS				= 0.001f;
-		D3DXMATRIX					refit;
-		D3DXMatrixOrthoOffCenterLH	( &refit, b_receivers.min.x, b_receivers.max.x, b_receivers.min.y, b_receivers.max.y, b_casters.min.z-EPS, b_casters.max.z+EPS );
-		D3DXMatrixMultiply			( &m_LightViewProj, &m_LightViewProj, &refit);
-		*/
+		//const float EPS				= 0.001f;
+		//D3DXMATRIX					refit;
+		//D3DXMatrixOrthoOffCenterLH	( &refit, b_receivers.min.x, b_receivers.max.x, b_receivers.min.y, b_receivers.max.y, b_casters.min.z-EPS, b_casters.max.z+EPS );
+		//D3DXMatrixMultiply			( &m_LightViewProj, &m_LightViewProj, &refit);
 
 		float boxWidth  = b_receivers.max.x - b_receivers.min.x;
 		float boxHeight = b_receivers.max.y - b_receivers.min.y;
@@ -843,7 +841,7 @@ void CRender::render_sun				()
 		D3DXMatrixMultiply			( &m_LightViewProj, &m_LightViewProj, &trapezoidUnitCube);
 		//D3DXMatrixMultiply( &trapezoid_space, &trapezoid_space, &trapezoidUnitCube );
 		FPU::m24r					();
-	}
+	}*/
 
 	// Finalize & Cleanup
 	fuckingsun->X.D.combine			= *((Fmatrix*)&m_LightViewProj);
@@ -981,7 +979,8 @@ void CRender::render_sun_near	()
 		float	borderalpha			= (Device.fFOV-10) / (90-10);
 									
 		float	nearborder			= 1*borderalpha + 1.136363636364f*(1-borderalpha);
-		float	spherical_range		= ps_r2_sun_near_border * nearborder * _max(_max(c0,c1), _max(k0,k1)*1.414213562373f );
+		//float	spherical_range		= ps_r2_sun_near_border * nearborder * _max(_max(c0,c1), _max(k0,k1)*1.414213562373f );
+		float	spherical_range		= nearborder * _max(_max(c0,c1), _max(k0,k1)*1.414213562373f );
 		Fbox	frustum_bb;			frustum_bb.invalidate	();
 		hull.points.push_back		(Device.vCameraPosition);
 		for (int it=0; it<9; it++)	{

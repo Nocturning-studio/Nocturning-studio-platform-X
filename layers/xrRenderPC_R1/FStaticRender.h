@@ -21,6 +21,8 @@
 
 #include "../../xrEngine/ShaderMacros.h"
 
+#include "../xrRender/r_types.h"
+
 // definition
 class CRender : public R_dsgraph_structure
 {
@@ -137,7 +139,7 @@ class CRender : public R_dsgraph_structure
 
 	virtual RenderLightingType get_render_lighting_type()
 	{
-		return IRender_interface::RENDER_LIGHTMAP_LIGHTED;
+		return RENDER_LIGHTMAP_LIGHTED;
 	}
 	
 	// Loading / Unloading

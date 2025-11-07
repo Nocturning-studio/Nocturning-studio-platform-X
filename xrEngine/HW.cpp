@@ -867,6 +867,9 @@ void CHW::UpdateViews()
 		depthSRVDesc.Texture2D.MipLevels = 1;
 		depthSRVDesc.Texture2D.MostDetailedMip = 0;														// No MIP
 		R_CHK(pDevice11->CreateShaderResourceView(pBaseDepthSurface, &depthSRVDesc, &pBaseDepthReadSRV)); // read SRV
+
+		// legacy mode
+		pBaseZB = pBaseDepthReadWriteDSV;
 	}
 }
 #endif

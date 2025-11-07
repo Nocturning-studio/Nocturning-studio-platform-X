@@ -70,7 +70,8 @@ void					CRender::create					()
 
 	// Check for NULL render target support
 	D3DFORMAT	nullrt	= (D3DFORMAT)MAKEFOURCC('N','U','L','L');
-	o.nullrt			= HW.support	(nullrt,			D3DRTYPE_SURFACE, D3DUSAGE_RENDERTARGET);
+	//o.nullrt			= HW.support	(nullrt,			D3DRTYPE_SURFACE, D3DUSAGE_RENDERTARGET);
+	o.nullrt			= FALSE;
 	/*
 	if (o.nullrt)		{
 	Msg				("* NULLRT supported and used");
@@ -130,18 +131,22 @@ void					CRender::create					()
 
 	// SMAP / DST
 	o.HW_smap_FETCH4	= FALSE;
-	o.HW_smap			= HW.support	(D3DFMT_D24X8,			D3DRTYPE_TEXTURE,D3DUSAGE_DEPTHSTENCIL);
+	//o.HW_smap			= HW.support	(D3DFMT_D24X8,			D3DRTYPE_TEXTURE,D3DUSAGE_DEPTHSTENCIL);
+	o.HW_smap			= TRUE;
 	o.HW_smap_PCF		= o.HW_smap		;
 	if (o.HW_smap)		{
 		o.HW_smap_FORMAT	= D3DFMT_D24X8;
 		Msg				("* HWDST/PCF supported and used");
 	}
 
-	o.fp16_filter		= HW.support	(D3DFMT_A16B16G16R16F,	D3DRTYPE_TEXTURE,D3DUSAGE_QUERY_FILTER);
-	o.fp16_blend		= HW.support	(D3DFMT_A16B16G16R16F,	D3DRTYPE_TEXTURE,D3DUSAGE_QUERY_POSTPIXELSHADER_BLENDING);
+	//o.fp16_filter		= HW.support	(D3DFMT_A16B16G16R16F,	D3DRTYPE_TEXTURE,D3DUSAGE_QUERY_FILTER);
+	//o.fp16_blend		= HW.support	(D3DFMT_A16B16G16R16F,	D3DRTYPE_TEXTURE,D3DUSAGE_QUERY_POSTPIXELSHADER_BLENDING);
+	o.fp16_filter		= TRUE;
+	o.fp16_blend		= TRUE;
 
 	// search for ATI formats
-	if (!o.HW_smap && (0==strstr(Core.Params,"-nodf24")) )		{
+	/* if (!o.HW_smap && (0 == strstr(Core.Params, "-nodf24")))
+	{
 		o.HW_smap		= HW.support	((D3DFORMAT)(MAKEFOURCC('D','F','2','4')),	D3DRTYPE_TEXTURE,D3DUSAGE_DEPTHSTENCIL);
 		if (o.HW_smap)	{
 			o.HW_smap_FORMAT= MAKEFOURCC	('D','F','2','4');
@@ -149,7 +154,7 @@ void					CRender::create					()
 			o.HW_smap_FETCH4= TRUE			;
 		}
 		Msg				("* DF24/F4 supported and used [%X]", o.HW_smap_FORMAT);
-	}
+	}*/
 
 	// emulate ATI-R4xx series
 	if (strstr(Core.Params,"-r4xx"))	{
@@ -171,7 +176,8 @@ void					CRender::create					()
 	if (strstr(Core.Params,"-nonvs"))		o.nvstencil	= FALSE;
 
 	// nv-dbt
-	o.nvdbt				= HW.support	((D3DFORMAT)MAKEFOURCC('N','V','D','B'), D3DRTYPE_SURFACE, 0);
+	//o.nvdbt				= HW.support	((D3DFORMAT)MAKEFOURCC('N','V','D','B'), D3DRTYPE_SURFACE, 0);
+	o.nvdbt				= FALSE;
 	if (o.nvdbt)		Msg	("* NV-DBT supported and used");
 
 	// options (smap-pool-size)
@@ -217,8 +223,8 @@ void					CRender::create					()
 
 	//rmNormal					();
 	marker						= 0;
-	R_CHK						(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT,&q_sync_point[0]));
-	R_CHK						(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT,&q_sync_point[1]));
+	//R_CHK						(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT,&q_sync_point[0]));
+	//R_CHK						(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT,&q_sync_point[1]));
 
 	xrRender_apply_tf			();
 	::PortalTraverser.initialize();
@@ -262,8 +268,8 @@ void CRender::reset_begin()
 
 void CRender::reset_end()
 {
-	R_CHK						(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT,&q_sync_point[0]));
-	R_CHK						(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT,&q_sync_point[1]));
+	//R_CHK						(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT,&q_sync_point[0]));
+	//R_CHK						(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT,&q_sync_point[1]));
 	HWOCC.occq_create			(occq_size);
 
 	Target						=	xr_new<CRenderTarget>	();
@@ -282,7 +288,7 @@ void CRender::OnFrame()
 void CRender::OnFrame()
 {
 	Models->DeleteQueue			();
-	if (ps_r2_ls_flags.test(R2FLAG_EXP_MT_CALC))	{
+	if (ps_r2_ls_flags.test(RFLAG_EXP_MT_CALC))	{
 		// MT-details (@front)
 		Device.seqParallel.insert	(Device.seqParallel.begin(),
 			fastdelegate::FastDelegate0<>(Details,&CDetailManager::MT_CALC));
@@ -395,21 +401,30 @@ void					CRender::set_Object				(IRenderable*	O )
 }
 void					CRender::rmNear				()
 {
-	IRender_Target* T	=	getTarget	();
-	D3DVIEWPORT9 VP		=	{0,0,T->get_width(),T->get_height(),0,0.02f };
-	CHK_DX				(HW.pDevice->SetViewport(&VP));
+	//IRender_Target* T	=	getTarget	();
+	//D3DVIEWPORT9 VP		=	{0,0,T->get_width(),T->get_height(),0,0.02f };
+	//CHK_DX				(HW.pDevice->SetViewport(&VP));
+	IRender_Target* T = getTarget();
+	D3D11_VIEWPORT VP = {0, 0, (float)T->get_width(), (float)T->get_height(), 0, 0.02f};
+	HW.pContext11->RSSetViewports(1, &VP);
 }
 void					CRender::rmFar				()
 {
-	IRender_Target* T	=	getTarget	();
-	D3DVIEWPORT9 VP		=	{0,0,T->get_width(),T->get_height(),0.99999f,1.f };
-	CHK_DX				(HW.pDevice->SetViewport(&VP));
+	//IRender_Target* T	=	getTarget	();
+	//D3DVIEWPORT9 VP		=	{0,0,T->get_width(),T->get_height(),0.99999f,1.f };
+	//CHK_DX				(HW.pDevice->SetViewport(&VP));
+	IRender_Target* T = getTarget();
+	D3D11_VIEWPORT VP = {0, 0, (float)T->get_width(), (float)T->get_height(), 0.99999f, 1.f};
+	HW.pContext11->RSSetViewports(1, &VP);
 }
 void					CRender::rmNormal			()
 {
-	IRender_Target* T	=	getTarget	();
-	D3DVIEWPORT9 VP		= {0,0,T->get_width(),T->get_height(),0,1.f };
-	CHK_DX				(HW.pDevice->SetViewport(&VP));
+	//IRender_Target* T	=	getTarget	();
+	//D3DVIEWPORT9 VP		= {0,0,T->get_width(),T->get_height(),0,1.f };
+	//CHK_DX				(HW.pDevice->SetViewport(&VP));
+	IRender_Target* T = getTarget();
+	D3D11_VIEWPORT VP = {0, 0, (float)T->get_width(), (float)T->get_height(), 0, 1.f};
+	HW.pContext11->RSSetViewports(1, &VP);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -453,7 +468,7 @@ extern "C"
 LPCSTR WINAPI	D3DXGetPixelShaderProfile	(LPDIRECT3DDEVICE9  pDevice);
 LPCSTR WINAPI	D3DXGetVertexShaderProfile	(LPDIRECT3DDEVICE9	pDevice);
 };
-*/
+
 HRESULT	CRender::shader_compile			(
 	LPCSTR							name,
 	LPCSTR                          pSrcData,
@@ -643,4 +658,144 @@ HRESULT	CRender::shader_compile			(
 		_RELEASE			(disasm);
 	}
 	return		_result;
+}
+*/
+
+CShaderMacros CRender::FetchShaderMacros(void)
+{
+	CShaderMacros macros;
+
+	// options
+	{
+		static string32 c_smapsize;
+		sprintf(c_smapsize, "%d", u32(o.smapsize));
+		//defines[def_it].Name = "SMAP_size";
+		//defines[def_it].Definition = c_smapsize;
+		//def_it++;
+		macros.add("SMAP_size", c_smapsize);
+	}
+	if (o.fp16_filter)
+	{
+		//defines[def_it].Name = "FP16_FILTER";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+		macros.add("FP16_FILTER", "1");
+	}
+	if (o.fp16_blend)
+	{
+		//defines[def_it].Name = "FP16_BLEND";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+		macros.add("FP16_BLEND", "1");
+	}
+	if (o.HW_smap)
+	{
+		//defines[def_it].Name = "USE_HWSMAP";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+		macros.add("USE_HWSMAP", "1");
+	}
+	if (o.HW_smap_PCF)
+	{
+		//defines[def_it].Name = "USE_HWSMAP_PCF";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+		macros.add("USE_HWSMAP_PCF", "1");
+	}
+	if (o.HW_smap_FETCH4)
+	{
+		//defines[def_it].Name = "USE_FETCH4";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+	}
+	if (o.sjitter)
+	{
+		//defines[def_it].Name = "USE_SJITTER";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+	}
+	if (HW.Caps.raster_major >= 3)
+	{
+		//defines[def_it].Name = "USE_BRANCHING";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+		macros.add("USE_BRANCHING", "1");
+	}
+	if (HW.Caps.geometry.bVTF)
+	{
+		//defines[def_it].Name = "USE_VTF";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+		macros.add("USE_VTF", "1");
+	}
+	if (o.Tshadows)
+	{
+		//defines[def_it].Name = "USE_TSHADOWS";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+	}
+	if (o.mblur)
+	{
+		//defines[def_it].Name = "USE_MBLUR";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+	}
+	if (o.sunfilter)
+	{
+		//defines[def_it].Name = "USE_SUNFILTER";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+	}
+	if (o.sunstatic)
+	{
+		//defines[def_it].Name = "USE_R2_STATIC_SUN";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+	}
+	if (o.forcegloss)
+	{
+		//sprintf(c_gloss, "%f", o.forcegloss_v);
+		//defines[def_it].Name = "FORCE_GLOSS";
+		//defines[def_it].Definition = c_gloss;
+		//def_it++;
+	}
+	if (o.forceskinw)
+	{
+		//defines[def_it].Name = "SKIN_COLOR";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+		macros.add("SKIN_COLOR", "1");
+	}
+
+	// skinning
+	if (m_skinning < 0)
+	{
+		//defines[def_it].Name = "SKIN_NONE";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+		macros.add("SKIN_NONE", "1");
+	}
+	if (0 == m_skinning)
+	{
+		//defines[def_it].Name = "SKIN_0";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+		macros.add("SKIN_0", "1");
+	}
+	if (1 == m_skinning)
+	{
+		//defines[def_it].Name = "SKIN_1";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+		macros.add("SKIN_1", "1");
+	}
+	if (2 == m_skinning)
+	{
+		//defines[def_it].Name = "SKIN_2";
+		//defines[def_it].Definition = "1";
+		//def_it++;
+		macros.add("SKIN_2", "1");
+	}
+
+	return macros;
 }

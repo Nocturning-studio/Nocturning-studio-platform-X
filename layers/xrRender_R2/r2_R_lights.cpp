@@ -188,7 +188,8 @@ void	CRender::render_lights	(light_Package& LP)
 
 void	CRender::render_indirect			(light* L)
 {
-	if (!ps_r2_ls_flags.test(R2FLAG_GI))	return;
+	/* if (!ps_r2_ls_flags.test(R2FLAG_GI))
+		return;
 
 	light									LIGEN;
 	LIGEN.set_type							(IRender_Light::REFLECTED);
@@ -224,5 +225,5 @@ void	CRender::render_indirect			(light* L)
 		LIGEN.set_range					(x);
 
 		Target->accum_reflected			(&LIGEN);
-	}
+	}*/
 }

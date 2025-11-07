@@ -16,12 +16,13 @@ void	CRenderTarget::u_setrt			(const ref_rt& _1)
 	u_setrt(_1, NULL, NULL, NULL);
 }
 
-void	CRenderTarget::u_setrt			(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, IDirect3DSurface9* zb)
+void CRenderTarget::u_setrt(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, ID3D11DepthStencilView* zb)
 {
 	u_setrt(_1, _2, _3, NULL, zb);
 }
 
-void	CRenderTarget::u_setrt			(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, const ref_rt& _4, IDirect3DSurface9* zb)
+void CRenderTarget::u_setrt(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, const ref_rt& _4,
+							ID3D11DepthStencilView* zb)
 {
 	VERIFY									(_1);
 	dwWidth									= _1->dwWidth;
@@ -34,7 +35,9 @@ void	CRenderTarget::u_setrt			(const ref_rt& _1, const ref_rt& _2, const ref_rt&
 //	RImplementation.rmNormal				();
 }
 
-void	CRenderTarget::u_setrt			(u32 W, u32 H, IDirect3DSurface9* _1, IDirect3DSurface9* _2, IDirect3DSurface9* _3, IDirect3DSurface9* zb)
+void CRenderTarget::u_setrt(u32 W, u32 H, ID3D11RenderTargetView* _1, ID3D11RenderTargetView* _2,
+							ID3D11RenderTargetView* _3,
+							ID3D11DepthStencilView* zb)
 {
 	VERIFY									(_1);
 	dwWidth									= W;

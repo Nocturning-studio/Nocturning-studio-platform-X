@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "..\xrRender\uber_deffer.h"
+#include "uber_deffer.h"
 
 #include "..\xrRender\blender_BmmD.h"
 #include "blender_deffer_flat.h"
@@ -10,7 +10,7 @@
 #include "..\xrRender\blender_editor_wire.h"
 #include "..\xrRender\blender_editor_selection.h"
 #include "..\xrRender\blender_tree.h"
-#include "..\xrRender\blender_detail_still.h"
+#include "..\xrRender\blender_detail.h"
 #include "..\xrRender\blender_particle.h"
 #include "..\xrRender\Blender_Model_EbB.h"
 #include "..\xrRender\blender_Lm(EbB).h"
@@ -38,7 +38,7 @@ IBlender*	CRender::blender_create	(CLASS_ID cls)
 	case B_BLUR:			return 0;
 	case B_MODEL:			return xr_new<CBlender_deffer_model>	();		
 	case B_MODEL_EbB:		return xr_new<CBlender_Model_EbB>		();	
-	case B_DETAIL:			return xr_new<CBlender_Detail_Still>	();	
+	case B_DETAIL:			return xr_new<CBlender_Detail>	();	
 	case B_TREE:			return xr_new<CBlender_Tree>			();	
 	case B_PARTICLE:		return xr_new<CBlender_Particle>		();
 	}

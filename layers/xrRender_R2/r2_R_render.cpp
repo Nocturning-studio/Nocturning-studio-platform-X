@@ -155,7 +155,9 @@ void CRender::render_menu	()
 	// Distort
 	{
 		Target->u_setrt						(Target->rt_Generic_1,0,0,HW.pBaseZB);		// Now RT is a distortion mask
-		CHK_DX(HW.pDevice->Clear			( 0L, NULL, D3DCLEAR_TARGET, color_rgba(127,127,0,127), 1.0f, 0L));
+		//CHK_DX(HW.pDevice->Clear			( 0L, NULL, D3DCLEAR_TARGET, color_rgba(127,127,0,127), 1.0f, 0L));
+		FLOAT ColorRGBA[4] = {127.0f / 255.0f, 127.0f / 255.0f, 0.0f, 127.0f / 255.0f};
+		RCache.clear_CurrentRenderTargetView(ColorRGBA);
 		g_pGamePersistent->OnRenderPPUI_PP	()	;	// PP-UI
 	}
 
@@ -207,18 +209,19 @@ void CRender::Render		()
 	// HOM
 	ViewBase.CreateFromMatrix					(Device.mFullTransform, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
 	View										= 0;
-	if (!ps_r2_ls_flags.test(R2FLAG_EXP_MT_CALC))	{
+	if (!ps_r2_ls_flags.test(RFLAG_EXP_MT_CALC))	{
 		HOM.Enable									();
 		HOM.Render									(ViewBase);
 	}
 
 	//******* Z-prefill calc - DEFERRER RENDERER
-	if (ps_r2_ls_flags.test(R2FLAG_ZFILL))		{
+	/* if (ps_r2_ls_flags.test(R2FLAG_ZFILL))
+	{
 		Device.Statistic->RenderCALC.Begin			();
 		float		z_distance	= ps_r2_zfill		;
 		Fmatrix		m_zfill, m_project				;
 		m_project.build_projection	(
-			deg2rad(Device.fFOV/* *Device.fASPECT*/), 
+			deg2rad(Device.fFOV), 
 			Device.fASPECT, VIEWPORT_NEAR, 
 			z_distance * g_pGamePersistent->Environment().CurrentEnv.far_plane);
 		m_zfill.mul	(m_project,Device.mView);
@@ -234,13 +237,13 @@ void CRender::Render		()
 		RCache.set_ColorWriteEnable					(FALSE);
 		r_dsgraph_render_graph						(0);
 		RCache.set_ColorWriteEnable					( );
-	} else {
+	} else */{
 		Target->phase_scene_prepare					();
 	}
 
 	//*******
 	// Sync point
-	Device.Statistic->RenderDUMP_Wait_S.Begin	();
+	/* Device.Statistic->RenderDUMP_Wait_S.Begin();
 	if (1)
 	{
 		CTimer	T;							T.Start	();
@@ -256,7 +259,7 @@ void CRender::Render		()
 	}
 	Device.Statistic->RenderDUMP_Wait_S.End		();
 	q_sync_count								= (q_sync_count+1)%2;
-	CHK_DX										(q_sync_point[q_sync_count]->Issue(D3DISSUE_END));
+	CHK_DX										(q_sync_point[q_sync_count]->Issue(D3DISSUE_END));*/
 
 	//******* Main calc - DEFERRER RENDERER
 	// Main calc
@@ -271,10 +274,10 @@ void CRender::Render		()
 	Device.Statistic->RenderCALC.End			();
 
 	BOOL	split_the_scene_to_minimize_wait		= FALSE;
-	if (ps_r2_ls_flags.test(R2FLAG_EXP_SPLIT_SCENE))	split_the_scene_to_minimize_wait=TRUE;
+	//if (ps_r2_ls_flags.test(R2FLAG_EXP_SPLIT_SCENE))	split_the_scene_to_minimize_wait=TRUE;
 
 	//******* Main render :: PART-0	-- first
-	if (!split_the_scene_to_minimize_wait)
+	//if (!split_the_scene_to_minimize_wait)
 	{
 		// level, DO NOT SPLIT
 		Target->phase_scene_begin				();
@@ -283,12 +286,13 @@ void CRender::Render		()
 		r_dsgraph_render_lods					(true,true);
 		if(Details)	Details->Render				();
 		Target->phase_scene_end					();
-	} else {
+	} /* else
+	{
 		// level, SPLIT
 		Target->phase_scene_begin				();
 		r_dsgraph_render_graph					(0);
 		Target->disable_aniso					();
-	}
+	}*/
 
 	//******* Occlusion testing of volume-limited light-sources
 	Target->phase_occq							();
@@ -333,7 +337,8 @@ void CRender::Render		()
 	LP_pending.sort							();
 
 	//******* Main render :: PART-1 (second)
-	if (split_the_scene_to_minimize_wait)	{
+	/* if (split_the_scene_to_minimize_wait)
+	{
 		// skybox can be drawn here
 		if (0)
 		{
@@ -354,7 +359,7 @@ void CRender::Render		()
 		r_dsgraph_render_lods					(true,true);
 		if(Details)	Details->Render				();
 		Target->phase_scene_end					();
-	}
+	}*/
 
 	// Wall marks
 	if(Wallmarks)	{
