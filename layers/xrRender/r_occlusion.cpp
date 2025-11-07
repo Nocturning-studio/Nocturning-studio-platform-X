@@ -3,7 +3,8 @@
 
 R_occlusion::R_occlusion(void)
 {
-	enabled = ps_render_flags.test(RFLAG_EXP_HW_OCC);
+	//enabled = ps_render_flags.test(RFLAG_EXP_HW_OCC);
+	enabled = FALSE;
 }
 R_occlusion::~R_occlusion(void)
 {
