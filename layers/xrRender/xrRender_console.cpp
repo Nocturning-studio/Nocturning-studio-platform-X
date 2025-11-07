@@ -783,7 +783,7 @@ void xrRender_initconsole()
 	CMD3(CCC_Mask, "r2_soft_particles", &ps_r2_postprocess_flags, R2FLAG_SOFT_PARTICLES);
 	CMD3(CCC_Token, "r2_fog_quality", &ps_r2_fog_quality, fog_quality_token);
 
-	CMD3(CCC_Token, "r2_aa_type", &ps_r2_aa, aa_token);
+	//CMD3(CCC_Token, "r2_aa_type", &ps_r2_aa, aa_token);
 	CMD3(CCC_Token, "r2_aa_quality", &ps_r2_aa_quality, aa_quality_token);
 	CMD3(CCC_Token, "r2_aa_transluency", &ps_r2_aa_transluency, aa_transluency_token);
 	CMD4(CCC_Float, "r2_fxaa_subpix", &ps_r2_fxaa_subpix, 0.0f, 1.0f);

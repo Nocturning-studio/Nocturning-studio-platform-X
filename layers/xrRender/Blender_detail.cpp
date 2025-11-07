@@ -60,11 +60,11 @@ void CBlender_Detail::Compile(CBlender_Compile& C)
 	}
 
 }
-#else
+#else 
 //////////////////////////////////////////////////////////////////////////
 // R2
 //////////////////////////////////////////////////////////////////////////
-#include "shader_name_generator.h"
+/*#include "shader_name_generator.h"
 void CBlender_Detail::Compile(CBlender_Compile& C)
 {
 	IBlender::Compile(C);
@@ -76,6 +76,21 @@ void CBlender_Detail::Compile(CBlender_Compile& C)
 		break;
 	case SE_R2_NORMAL_LQ: // deffer still
 		generate_shader_name(C, false, "detail_object", "detail_object", false);
+		break;
+	}
+}*/
+#include "uber_deffer.h"
+void CBlender_Detail::Compile(CBlender_Compile& C)
+{
+	IBlender::Compile(C);
+
+	switch (C.iElement)
+	{
+	case SE_R2_NORMAL_HQ: // deffer wave
+		uber_deffer(C, false, "detail_w", "base", true);
+		break;
+	case SE_R2_NORMAL_LQ: // deffer still
+		uber_deffer(C, false, "detail_s", "base", true);
 		break;
 	}
 }

@@ -156,9 +156,6 @@
     <ClInclude Include="..\xrRender\Blender_Particle.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrRender\Blender_detail_still.h">
-      <Filter>Shading templates\R1</Filter>
-    </ClInclude>
     <ClInclude Include="..\xrRender\Blender_Lm(EbB).h">
       <Filter>Shading templates\R1</Filter>
     </ClInclude>
@@ -245,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="..\xrRender\r_types.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\Blender_detail.h">
+      <Filter>Shading templates\R1</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -404,9 +404,6 @@
     <ClCompile Include="..\xrRender\Blender_Particle.cpp">
       <Filter>Shading templates</Filter>
     </ClCompile>
-    <ClCompile Include="..\xrRender\Blender_detail_still.cpp">
-      <Filter>Shading templates\R1</Filter>
-    </ClCompile>
     <ClCompile Include="..\xrRender\Blender_Lm(EbB).cpp">
       <Filter>Shading templates\R1</Filter>
     </ClCompile>
@@ -547,6 +544,9 @@
     </ClCompile>
     <ClCompile Include="..\xrRender\r_sector.cpp">
       <Filter>Visibility\Sector/Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\Blender_detail.cpp">
+      <Filter>Shading templates\R1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

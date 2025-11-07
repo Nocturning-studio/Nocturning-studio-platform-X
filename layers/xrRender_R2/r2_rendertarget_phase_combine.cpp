@@ -15,8 +15,8 @@ void	CRenderTarget::phase_combine	()
 	//*** exposure-pipeline
 	u32			gpu_id	= Device.dwFrame%2;
 	{
-		t_LUM_src->surface_set		(rt_LUM_pool[gpu_id*2+0]->pSurface);
-		t_LUM_dest->surface_set		(rt_LUM_pool[gpu_id*2+1]->pSurface);
+		//t_LUM_src->surface_set		(rt_LUM_pool[gpu_id*2+0]->pSurface);
+		//t_LUM_dest->surface_set		(rt_LUM_pool[gpu_id*2+1]->pSurface);
 	}
 
 	// low/hi RTs
@@ -25,15 +25,17 @@ void	CRenderTarget::phase_combine	()
 	RCache.set_Stencil	( FALSE		);
 
 	BOOL	split_the_scene_to_minimize_wait			= FALSE;
-	if (ps_r2_ls_flags.test(R2FLAG_EXP_SPLIT_SCENE))	split_the_scene_to_minimize_wait=TRUE;
+	//if (ps_r2_ls_flags.test(R2FLAG_EXP_SPLIT_SCENE))	split_the_scene_to_minimize_wait=TRUE;
 
 	// draw skybox
 	if (1)
 	{
 		RCache.set_ColorWriteEnable					();
-		CHK_DX(HW.pDevice->SetRenderState			( D3DRS_ZENABLE,	FALSE				));
+		//CHK_DX(HW.pDevice->SetRenderState			( D3DRS_ZENABLE,	FALSE				));
+		RCache.set_Z(FALSE);
 		g_pGamePersistent->Environment().RenderSky	();
-		CHK_DX(HW.pDevice->SetRenderState			( D3DRS_ZENABLE,	TRUE				));
+		//CHK_DX(HW.pDevice->SetRenderState			( D3DRS_ZENABLE,	TRUE				));
+		RCache.set_Z(TRUE);
 	}
 
 	// 
@@ -65,7 +67,8 @@ void	CRenderTarget::phase_combine	()
 	{
 		// Compute params
 		Fmatrix		m_v2w;			m_v2w.invert				(Device.mView		);
-		CEnvDescriptorMixer& envdesc= g_pGamePersistent->Environment().CurrentEnv		;
+		CEnvDescriptorMixer* _envdesc= g_pGamePersistent->Environment().CurrentEnv		;
+		CEnvDescriptorMixer& envdesc = *_envdesc;
 		const float minamb			= 0.001f;
 		Fvector4	ambclr			= { _max(envdesc.ambient.x*2,minamb),	_max(envdesc.ambient.y*2,minamb),			_max(envdesc.ambient.z*2,minamb),	0	};
 					ambclr.mul		(ps_r2_sun_lumscale_amb);
@@ -104,8 +107,8 @@ void	CRenderTarget::phase_combine	()
 		RCache.Vertex.Unlock		(4,g_combine_VP->vb_stride);
 
 		// Setup textures
-		IDirect3DBaseTexture9*	e0	= _menu_pp?0:envdesc.sky_r_textures_env[0].second->surface_get();
-		IDirect3DBaseTexture9*	e1	= _menu_pp?0:envdesc.sky_r_textures_env[1].second->surface_get();
+		ID3D11Resource*	e0	= _menu_pp?0:envdesc.sky_r_textures_env[0].second->surface_get();
+		ID3D11Resource* e1 = _menu_pp ? 0 : envdesc.sky_r_textures_env[1].second->surface_get();
 		t_envmap_0->surface_set		(e0);	_RELEASE(e0);
 		t_envmap_1->surface_set		(e1);	_RELEASE(e1);
 	
@@ -148,7 +151,9 @@ void	CRenderTarget::phase_combine	()
 			RCache.set_CullMode			(CULL_CCW);
 			RCache.set_Stencil			(FALSE);
 			RCache.set_ColorWriteEnable	();
-			CHK_DX(HW.pDevice->Clear	( 0L, NULL, D3DCLEAR_TARGET, color_rgba(127,127,0,127), 1.0f, 0L));
+			//CHK_DX(HW.pDevice->Clear	( 0L, NULL, D3DCLEAR_TARGET, color_rgba(127,127,0,127), 1.0f, 0L));
+			float color[4] = {0.5f, 0.5f, 0.0f, 0.5f};
+			RCache.clear_CurrentRenderTargetView(color);
 			RImplementation.r_dsgraph_render_distort	();
 			if (g_pGamePersistent)	g_pGamePersistent->OnRenderPPUI_PP()	;	// PP-UI
 		}
@@ -195,11 +200,12 @@ void	CRenderTarget::phase_combine	()
 		RCache.Vertex.Unlock		(4,g_aa_AA->vb_stride);
 
 		// Draw COLOR
-		if (ps_r2_ls_flags.test(R2FLAG_AA))			RCache.set_Element	(s_combine->E[bDistort?3:1]);	// look at blender_combine.cpp
-		else										RCache.set_Element	(s_combine->E[bDistort?4:2]);	// look at blender_combine.cpp
-		RCache.set_c				("e_barrier",	ps_r2_aa_barier.x,	ps_r2_aa_barier.y,	ps_r2_aa_barier.z,	0);
-		RCache.set_c				("e_weights",	ps_r2_aa_weight.x,	ps_r2_aa_weight.y,	ps_r2_aa_weight.z,	0);
-		RCache.set_c				("e_kernel",	ps_r2_aa_kernel,	ps_r2_aa_kernel,	ps_r2_aa_kernel,	0);
+		//if (ps_r2_ls_flags.test(R2FLAG_AA))			RCache.set_Element	(s_combine->E[bDistort?3:1]);	// look at blender_combine.cpp
+		//else										RCache.set_Element	(s_combine->E[bDistort?4:2]);	// look at blender_combine.cpp
+		RCache.set_Element(s_combine->E[bDistort ? 4 : 2]);
+		//RCache.set_c				("e_barrier",	ps_r2_aa_barier.x,	ps_r2_aa_barier.y,	ps_r2_aa_barier.z,	0);
+		//RCache.set_c				("e_weights",	ps_r2_aa_weight.x,	ps_r2_aa_weight.y,	ps_r2_aa_weight.z,	0);
+		//RCache.set_c				("e_kernel",	ps_r2_aa_kernel,	ps_r2_aa_kernel,	ps_r2_aa_kernel,	0);
 		RCache.set_c				("m_current",	m_current);
 		RCache.set_c				("m_previous",	m_previous);
 		RCache.set_c				("m_blur",		m_blur_scale.x,m_blur_scale.y, 0,0);
@@ -211,9 +217,9 @@ void	CRenderTarget::phase_combine	()
 	//	if FP16-BLEND !not! supported - draw flares here, overwise they are already in the bloom target
 	/* if (!RImplementation.o.fp16_blend)*/	g_pGamePersistent->Environment().RenderFlares	();	// lens-flares
 
-	if (ps_r2_aa && PP_Complex) {
-		phase_TAA_apply();
-	}
+	//if (ps_r2_aa && PP_Complex) {
+	//	phase_TAA_apply();
+	//}
 
 	//	PP-if required
 	if (PP_Complex)		{
@@ -225,9 +231,9 @@ void	CRenderTarget::phase_combine	()
 
 	//*** exposure-pipeline-clear
 	{
-		std::swap					(rt_LUM_pool[gpu_id*2+0],rt_LUM_pool[gpu_id*2+1]);
-		t_LUM_src->surface_set		(NULL);
-		t_LUM_dest->surface_set		(NULL);
+		//std::swap					(rt_LUM_pool[gpu_id*2+0],rt_LUM_pool[gpu_id*2+1]);
+		//t_LUM_src->surface_set		(NULL);
+		//t_LUM_dest->surface_set		(NULL);
 	}
 
 #ifdef DEBUG

@@ -142,6 +142,7 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <AdditionalDependencies>D:\Games\STALKER_DWM\XRay\SHOC10004\libraries\xrCDB.lib;D:\Games\STALKER_DWM\XRay\SHOC10004\libraries\xrSound.lib;D:\Games\STALKER_DWM\XRay\SHOC10004\libraries\xrLUA.lib;D:\Games\STALKER_DWM\XRay\SHOC10004\libraries\XR_3DA.lib;D:\Games\STALKER_DWM\XRay\SHOC10004\libraries\xrParticles.lib;D:\Games\STALKER_DWM\XRay\SHOC10004\libraries\xrCPU_Pipe.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -202,7 +203,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\xrRender\Blender_BmmD.h" />
-    <ClInclude Include="..\xrRender\Blender_detail_still.h" />
+    <ClInclude Include="..\xrRender\Blender_detail.h" />
     <ClInclude Include="..\xrRender\Blender_Editor_Selection.h" />
     <ClInclude Include="..\xrRender\Blender_Editor_Wire.h" />
     <ClInclude Include="..\xrRender\Blender_Lm(EbB).h" />
@@ -270,7 +271,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\xrRender\Blender_BmmD.cpp" />
-    <ClCompile Include="..\xrRender\Blender_detail_still.cpp" />
+    <ClCompile Include="..\xrRender\Blender_detail.cpp" />
     <ClCompile Include="..\xrRender\Blender_Editor_Selection.cpp" />
     <ClCompile Include="..\xrRender\Blender_Editor_Wire.cpp" />
     <ClCompile Include="..\xrRender\Blender_Lm(EbB).cpp" />
