@@ -262,7 +262,7 @@ void CRenderTarget::Begin()
 	//	RCache.set_ZB(ZB->pRT);
 	//}
 
-	SetRT(RT, 0, 0, 0, HW.pBaseDepthReadDSV, true);
+	SetRT(RT, 0, 0, 0, HW.pBaseDepthReadWriteDSV, true);
 
 	RCache.set_CullMode(D3D11_CULL_BACK);
 
