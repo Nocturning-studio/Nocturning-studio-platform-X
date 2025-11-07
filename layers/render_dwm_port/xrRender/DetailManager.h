@@ -184,7 +184,7 @@ public:
 
 	void	__stdcall				MT_CALC			() ;
 	ICF	void						MT_SYNC			() {
-		if (m_frame_calc == RDEVICE.dwFrame)
+		if (m_frame_calc == Device.dwFrame)
 			return;
 
 		MT_CALC						(); 

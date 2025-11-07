@@ -256,17 +256,17 @@ void CRenderTarget::accum_direct_cascade(u32 sub_phase, Fmatrix& xform, Fmatrix&
 		//if (u_DBT_enable(zMin, zMax))
 		//{
 		//	// z-test always
-		//	HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-		//	HW.pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+		//	HW.pDevice11->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+		//	HW.pDevice11->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 		//}
 
 		// Enable Z function only for near and middle cascades, the far one is restricted by only stencil.
 		//if ((SE_SUN_NEAR == sub_phase || SE_SUN_MIDDLE == sub_phase))
-		//	HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_GREATEREQUAL);
+		//	HW.pDevice11->SetRenderState(D3DRS_ZFUNC, D3DCMP_GREATEREQUAL);
 		//else if (!ps_r2_lighting_flags.is(R2FLAGEXT_SUN_ZCULLING))
-		//	HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+		//	HW.pDevice11->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 		//else
-		//	HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
+		//	HW.pDevice11->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
 		// Enable Z function only for near and middle cascades, the far one is restricted by only stencil.
 		if ((SE_SUN_NEAR == sub_phase || SE_SUN_MIDDLE == sub_phase))
 			RCache.set_ZFunc(D3DCMP_GREATEREQUAL);
@@ -400,15 +400,15 @@ void CRenderTarget::accum_direct_volumetric(u32 sub_phase, const u32 Offset, con
 		if (u_DBT_enable(zMin, zMax))
 		{
 			// z-test always
-			HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-			HW.pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+			HW.pDevice11->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+			HW.pDevice11->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 		}
 		else
 		{
 			if (SE_SUN_NEAR == sub_phase)
-				HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_GREATER);
+				HW.pDevice11->SetRenderState(D3DRS_ZFUNC, D3DCMP_GREATER);
 			else
-				HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+				HW.pDevice11->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 		}
 
 		// setup stencil: we have to draw to both lit and unlit pixels

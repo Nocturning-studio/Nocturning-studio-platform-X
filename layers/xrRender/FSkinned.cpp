@@ -254,7 +254,7 @@ void CSkeletonX_ext::_Load_hw(Fvisual& V, void* _verts_)
 			BYTE* bytes = 0;
 			VERIFY(NULL == V.p_rm_Vertices);
 #pragma message(Reminder("fix skinning"))
-			//R_CHK(HW.pDevice->CreateVertexBuffer(V.vCount * vStride, dwUsage, 0, D3DPOOL_MANAGED, &V.p_rm_Vertices, 0));
+			//R_CHK(HW.pDevice11->CreateVertexBuffer(V.vCount * vStride, dwUsage, 0, D3DPOOL_MANAGED, &V.p_rm_Vertices, 0));
 			R_CHK(V.p_rm_Vertices->Lock(0, 0, (void**)&bytes, 0));
 			vertHW_1W* dst = (vertHW_1W*)bytes;
 			vertBoned1W* src = (vertBoned1W*)_verts_;
@@ -283,7 +283,7 @@ void CSkeletonX_ext::_Load_hw(Fvisual& V, void* _verts_)
 			VERIFY(NULL == V.p_rm_Vertices);
 
 			// R_CHK
-			// (HW.pDevice->CreateVertexBuffer(V.vCount*vStride,dwUsage,0,D3DPOOL_MANAGED,&V.p_rm_Vertices,0)); R_CHK
+			// (HW.pDevice11->CreateVertexBuffer(V.vCount*vStride,dwUsage,0,D3DPOOL_MANAGED,&V.p_rm_Vertices,0)); R_CHK
 			// (V.p_rm_Vertices->Lock(0,0,(void**)&bytes,0)); vertHW_1W*		dst	= (vertHW_1W*)bytes; vertBoned1W*
 			// src = (vertBoned1W*)_verts_; for (u32 it=0; it<V.vCount; it++)	{ Fvector2	uv; uv.set(src->u,src->v);
 			// dst->set	(src->P,src->N,src->T,src->B,uv,src->matrix*3);
@@ -304,7 +304,7 @@ void CSkeletonX_ext::_Load_hw(Fvisual& V, void* _verts_)
 				src++;
 			}
 			// R_CHK
-			// (HW.pDevice->CreateVertexBuffer(V.vCount*vStride,dwUsage,0,D3DPOOL_MANAGED,&V.p_rm_Vertices,0));
+			// (HW.pDevice11->CreateVertexBuffer(V.vCount*vStride,dwUsage,0,D3DPOOL_MANAGED,&V.p_rm_Vertices,0));
 			R_CHK(dx10BufferUtils::CreateVertexBuffer(&V.p_rm_Vertices, dstOriginal, V.vCount * vStride));
 			//HW.stats_manager.increment_stats_vb(V.p_rm_Vertices);
 			xr_free(dstOriginal);
@@ -320,7 +320,7 @@ void CSkeletonX_ext::_Load_hw(Fvisual& V, void* _verts_)
 			BYTE* bytes = 0;
 			VERIFY(NULL == V.p_rm_Vertices);
 #pragma message(Reminder("fix skinning"))
-			//R_CHK(HW.pDevice->CreateVertexBuffer(V.vCount * vStride, dwUsage, 0, D3DPOOL_MANAGED, &V.p_rm_Vertices, 0));
+			//R_CHK(HW.pDevice11->CreateVertexBuffer(V.vCount * vStride, dwUsage, 0, D3DPOOL_MANAGED, &V.p_rm_Vertices, 0));
 			R_CHK(V.p_rm_Vertices->Lock(0, 0, (void**)&bytes, 0));
 			vertHW_2W* dst = (vertHW_2W*)bytes;
 			vertBoned2W* src = (vertBoned2W*)_verts_;
@@ -349,7 +349,7 @@ void CSkeletonX_ext::_Load_hw(Fvisual& V, void* _verts_)
 			VERIFY(NULL == V.p_rm_Vertices);
 
 			// R_CHK
-			// (HW.pDevice->CreateVertexBuffer(V.vCount*vStride,dwUsage,0,D3DPOOL_MANAGED,&V.p_rm_Vertices,0)); R_CHK
+			// (HW.pDevice11->CreateVertexBuffer(V.vCount*vStride,dwUsage,0,D3DPOOL_MANAGED,&V.p_rm_Vertices,0)); R_CHK
 			// (V.p_rm_Vertices->Lock(0,0,(void**)&bytes,0)); vertHW_2W* dst		= (vertHW_2W*)bytes; vertBoned2W*
 			// src	= (vertBoned2W*)_verts_;
 

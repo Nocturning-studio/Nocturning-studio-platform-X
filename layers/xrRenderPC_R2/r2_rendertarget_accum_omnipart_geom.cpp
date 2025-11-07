@@ -10,7 +10,7 @@ void CRenderTarget::accum_omnip_geom_create()
 	{
 		u32 vCount = DU_SPHERE_PART_NUMVERTEX;
 		u32 vSize = 3 * 4;
-		//R_CHK(HW.pDevice->CreateVertexBuffer(vCount * vSize, dwUsage, 0, D3DPOOL_MANAGED, &g_accum_omnip_vb, 0));
+		//R_CHK(HW.pDevice11->CreateVertexBuffer(vCount * vSize, dwUsage, 0, D3DPOOL_MANAGED, &g_accum_omnip_vb, 0));
 		//BYTE* pData = 0;
 		//R_CHK(g_accum_omnip_vb->Lock(0, 0, (void**)&pData, 0));
 		//CopyMemory(pData, du_sphere_part_vertices, vCount * vSize);
@@ -23,7 +23,7 @@ void CRenderTarget::accum_omnip_geom_create()
 		u32 iCount = DU_SPHERE_PART_NUMFACES * 3;
 		//BYTE* pData = 0;
 		//R_CHK(
-		//	HW.pDevice->CreateIndexBuffer(iCount * 2, dwUsage, D3DFMT_INDEX16, D3DPOOL_MANAGED, &g_accum_omnip_ib, 0));
+		//	HW.pDevice11->CreateIndexBuffer(iCount * 2, dwUsage, D3DFMT_INDEX16, D3DPOOL_MANAGED, &g_accum_omnip_ib, 0));
 		//R_CHK(g_accum_omnip_ib->Lock(0, 0, (void**)&pData, 0));
 		//CopyMemory(pData, du_sphere_part_faces, iCount * 2);
 		//g_accum_omnip_ib->Unlock();

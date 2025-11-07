@@ -59,9 +59,9 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 
 #if RENDER==R_R1
 	//if (psDeviceFlags.test(rsFullscreen))
-	//	R_CHK(HW.pDevice->GetFrontBufferData(NULL, Target->surf_screenshot_normal));
+	//	R_CHK(HW.pDevice11->GetFrontBufferData(NULL, Target->surf_screenshot_normal));
 	//else
-	//	R_CHK(HW.pDevice->GetRenderTargetData(HW.pBaseRT, Target->surf_screenshot_normal));
+	//	R_CHK(HW.pDevice11->GetRenderTargetData(HW.pBaseRT, Target->surf_screenshot_normal));
 
 	ID3D11Texture2D* tex_backbuffer;
 	HW.m_pSwapChain->GetBuffer(0, IID_ID3D11Texture2D, (void**)&tex_backbuffer);
@@ -153,7 +153,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 
 		//IDirect3DTexture9* texture;
-		//R_CHK(HW.pDevice->CreateTexture(2048, 2048, 1, NULL, D3DFMT_DXT1, D3DPOOL_SYSTEMMEM, &texture, NULL));
+		//R_CHK(HW.pDevice11->CreateTexture(2048, 2048, 1, NULL, D3DFMT_DXT1, D3DPOOL_SYSTEMMEM, &texture, NULL));
 		//IDirect3DSurface9* surface;
 		//R_CHK(texture->GetSurfaceLevel(0, &surface));
 		ID3D11Texture2D* tex_levelmap;
@@ -212,7 +212,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 			desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 			desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 
-			//HW.pDevice->CreateCubeTexture(face_size, 1, NULL, D3DFMT_DXT5, D3DPOOL_SYSTEMMEM, &cubemap, NULL);
+			//HW.pDevice11->CreateCubeTexture(face_size, 1, NULL, D3DFMT_DXT5, D3DPOOL_SYSTEMMEM, &cubemap, NULL);
 			R_CHK(HW.pDevice11->CreateTexture2D(&desc, NULL, &cubemap));
 		}
 
@@ -245,14 +245,14 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		info.MipFilter = D3DX11_FILTER_TRIANGLE;
 
 		//R_CHK(D3DXLoadSurfaceFromSurface(surface[id], NULL, NULL, Target->surf_screenshot_normal, NULL, NULL, D3DX_DEFAULT, NULL));
-		R_CHK(D3DX11LoadTextureFromTexture(HW.pContext, Target->tex_screenshot_normal, &info, face[id]));
+		R_CHK(D3DX11LoadTextureFromTexture(HW.pContext11, Target->tex_screenshot_normal, &info, face[id]));
 
 		// end
 		if (id == 5)
 		{
 			int i = D3D11CalcSubresource(0, id, 1);
 			D3D11_MAPPED_SUBRESOURCE mappedResource;
-			HW.pContext->Map(cubemap, i, D3D11_MAP_READ_WRITE, 0, &mappedResource);
+			HW.pContext11->Map(cubemap, i, D3D11_MAP_READ_WRITE, 0, &mappedResource);
 			Texel* data = (Texel*)mappedResource.pData;
 
 			// ???
@@ -260,7 +260,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 			sprintf_s(file_name, sizeof(string_path), "cubemap_%s_%s.dds", Core.UserName, timestamp(t_stemp));
 
 			//D3DXSaveTextureToFileInMemory(&saved, D3DXIFF_DDS, cubemap, NULL);
-			R_CHK(D3DX11SaveTextureToMemory(HW.pContext, cubemap, D3DX11_IFF_DDS, &saved, 0));
+			R_CHK(D3DX11SaveTextureToMemory(HW.pContext11, cubemap, D3DX11_IFF_DDS, &saved, 0));
 
 			IWriter* fs = FS.w_open("$screenshots$", file_name);
 			R_ASSERT(fs);
@@ -289,9 +289,9 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 	/*BOOL fullscreen = psDeviceFlags.test(rsFullscreen);
 
 	if (fullscreen)
-		R_CHK(HW.pDevice->GetFrontBufferData(NULL, Target->surf_screenshot_normal));
+		R_CHK(HW.pDevice11->GetFrontBufferData(NULL, Target->surf_screenshot_normal));
 	else
-		R_CHK(HW.pDevice->GetRenderTargetData(HW.pBaseRT, Target->surf_screenshot_normal));
+		R_CHK(HW.pDevice11->GetRenderTargetData(HW.pBaseRT, Target->surf_screenshot_normal));
 
 	D3DLOCKED_RECT rect;
 	R_CHK(Target->surf_screenshot_normal->LockRect(&rect, 0, D3DLOCK_NOSYSLOCK));
@@ -379,7 +379,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		sprintf_s(file_name, sizeof(string_path), "level_map_%s_%s.dds", g_pGameLevel->name().c_str(), timestamp(t_stemp));
 		
 		IDirect3DTexture9* texture;
-		R_CHK(HW.pDevice->CreateTexture(2048, 2048, 1, NULL, D3DFMT_DXT1, D3DPOOL_SYSTEMMEM, &texture, NULL));
+		R_CHK(HW.pDevice11->CreateTexture(2048, 2048, 1, NULL, D3DFMT_DXT1, D3DPOOL_SYSTEMMEM, &texture, NULL));
 
 		IDirect3DSurface9* surface;
 		R_CHK(texture->GetSurfaceLevel(0, &surface));
@@ -415,7 +415,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		// begin
 		if (id == 0)
 		{
-			HW.pDevice->CreateCubeTexture(face_size, 1, NULL, D3DFMT_DXT5, D3DPOOL_SYSTEMMEM, &cubemap, NULL);
+			HW.pDevice11->CreateCubeTexture(face_size, 1, NULL, D3DFMT_DXT5, D3DPOOL_SYSTEMMEM, &cubemap, NULL);
 		}
 
 		D3DCUBEMAP_FACES face = (D3DCUBEMAP_FACES)id;

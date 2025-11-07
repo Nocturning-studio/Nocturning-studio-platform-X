@@ -95,7 +95,7 @@ void CRenderTarget::phase_bloom()
 	// Clear	- don't clear - it's stupid here :)
 	// Stencil	- disable
 	// Misc		- draw everything (no culling)
-	//CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
+	//CHK_DX(HW.pDevice11->SetRenderState(D3DRS_ZENABLE, FALSE));
 	StateManager.SetDepthEnable(TRUE);
 
 	// Transfer into Bloom1
@@ -323,11 +323,11 @@ void CRenderTarget::phase_bloom()
 	bool _menu_pp = g_pGamePersistent ? g_pGamePersistent->OnRenderPPUI_query() : false;
 	if (_menu_pp)
 	{
-		CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0L));
+		CHK_DX(HW.pDevice11->Clear(0L, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0L));
 	};
 
 	// re-enable z-buffer
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
+	CHK_DX(HW.pDevice11->SetRenderState(D3DRS_ZENABLE, TRUE));
 
 	{
 		u_setrt(rt_Generic_0, NULL, NULL, NULL);

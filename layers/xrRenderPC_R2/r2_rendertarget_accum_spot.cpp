@@ -177,10 +177,10 @@ void CRenderTarget::accum_spot(light* L)
 	}
 
 	dwLightMarkerID += 2; // keep lowest bit always setted up
-	//CHK_DX(HW.pDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE));
+	//CHK_DX(HW.pDevice11->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE));
 	StateManager.EnableScissoring(FALSE);
 	StateManager.OverrideScissoring(FALSE, FALSE);
-	HW.pContext->RSSetScissorRects(0, NULL);
+	HW.pContext11->RSSetScissorRects(0, NULL);
 
 	//u_DBT_disable();
 }

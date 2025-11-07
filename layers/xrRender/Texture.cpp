@@ -159,7 +159,7 @@ ID3DTexture2D*	TW_LoadTextureFromTexture
 	// Create HW-surface
 	if (D3DX_DEFAULT==t_dest_fmt)	t_dest_fmt = t_from_desc0.Format;
 	R_CHK					(D3DXCreateTexture(
-		HW.pDevice,
+		HW.pDevice11,
 		top_width,top_height,
 		levels_exist,0,t_dest_fmt,
 		D3DPOOL_MANAGED,&t_dest
@@ -367,7 +367,7 @@ _DDS : {
 
 _DDS_CUBE : {
 	// R_CHK(D3DXCreateCubeTextureFromFileInMemoryEx(
-	//	HW.pDevice,
+	//	HW.pDevice11,
 	//	S->pointer(),S->length(),
 	//	D3DX_DEFAULT,
 	//	IMG.MipLevels,0,
@@ -413,7 +413,7 @@ _DDS_2D : {
 	// ID3DTexture2D*		T_sysmem;
 	// R_CHK2(D3DXCreateTextureFromFileInMemoryEx
 	//	(
-	//	HW.pDevice,S->pointer(),S->length(),
+	//	HW.pDevice11,S->pointer(),S->length(),
 	//	D3DX_DEFAULT,D3DX_DEFAULT,
 	//	IMG.MipLevels,0,
 	//	IMG.Format,

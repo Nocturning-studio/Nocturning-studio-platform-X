@@ -245,9 +245,9 @@ CRenderTarget::CRenderTarget()
 	// SCREENSHOT
 	{
 		//D3DFORMAT format = psDeviceFlags.test(rsFullscreen) ? D3DFMT_A8R8G8B8 : HW.Caps.fTarget;
-		//R_CHK(HW.pDevice->CreateOffscreenPlainSurface(dwWidth, dwHeight, format, D3DPOOL_SYSTEMMEM,
+		//R_CHK(HW.pDevice11->CreateOffscreenPlainSurface(dwWidth, dwHeight, format, D3DPOOL_SYSTEMMEM,
 		//											  &surf_screenshot_normal, NULL));
-		//R_CHK(HW.pDevice->CreateTexture(128, 128, 1, NULL, D3DFMT_DXT1, D3DPOOL_SYSTEMMEM, &tex_screenshot_gamesave,
+		//R_CHK(HW.pDevice11->CreateTexture(128, 128, 1, NULL, D3DFMT_DXT1, D3DPOOL_SYSTEMMEM, &tex_screenshot_gamesave,
 		//								NULL));
 		//R_CHK(tex_screenshot_gamesave->GetSurfaceLevel(0, &surf_screenshot_gamesave));
 	}
@@ -392,7 +392,7 @@ CRenderTarget::CRenderTarget()
 			sprintf(name, "%s_%d", r2_RT_autoexposure_pool, it);
 			rt_LUM_pool[it].create(name, 1, 1, DXGI_FORMAT_R16_UNORM, fSR | fRT);
 			//u_setrt(rt_LUM_pool[it], 0, 0, 0);
-			//CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0x7f7f7f7f, 1.0f, 0L));
+			//CHK_DX(HW.pDevice11->Clear(0L, NULL, D3DCLEAR_TARGET, 0x7f7f7f7f, 1.0f, 0L));
 			ClearRT(rt_LUM_pool[it], 0.5f, 0.5f, 0.5f, 0.5f);
 		}
 	}
@@ -435,7 +435,7 @@ CRenderTarget::CRenderTarget()
 			//	So we need to init data _before_ the creation.
 			// Surface
 			// R_CHK
-			// (D3DXCreateVolumeTexture(HW.pDevice,TEX_material_LdotN,TEX_material_LdotH,4,1,0,D3DFMT_A8L8,D3DPOOL_MANAGED,&t_material_surf));
+			// (D3DXCreateVolumeTexture(HW.pDevice11,TEX_material_LdotN,TEX_material_LdotH,4,1,0,D3DFMT_A8L8,D3DPOOL_MANAGED,&t_material_surf));
 			// t_material					= dxRenderDeviceRender::Instance().Resources->_CreateTexture(r2_material);
 			// t_material->surface_set		(t_material_surf);
 			//	Use DXGI_FORMAT_R8G8_UNORM
@@ -521,7 +521,7 @@ CRenderTarget::CRenderTarget()
 			t_material = Device.Resources->_CreateTexture(r2_material);
 			t_material->surface_set(t_material_surf);
 			// R_CHK
-			// (D3DXCreateVolumeTexture(HW.pDevice,TEX_material_LdotN,TEX_material_LdotH,4,1,0,D3DFMT_A8L8,D3DPOOL_MANAGED,&t_material_surf));
+			// (D3DXCreateVolumeTexture(HW.pDevice11,TEX_material_LdotN,TEX_material_LdotH,4,1,0,D3DFMT_A8L8,D3DPOOL_MANAGED,&t_material_surf));
 			// t_material					= dxRenderDeviceRender::Instance().Resources->_CreateTexture(r2_material);
 			// t_material->surface_set		(t_material_surf);
 
@@ -541,7 +541,7 @@ CRenderTarget::CRenderTarget()
 			//	string_path					name;
 			//	xr_sprintf						(name,"%s%d",r2_jitter,it);
 			//	R_CHK	(D3DXCreateTexture
-			//(HW.pDevice,TEX_jitter,TEX_jitter,1,0,D3DFMT_Q8W8V8U8,D3DPOOL_MANAGED,&t_noise_surf[it])); 	t_noise[it]
+			//(HW.pDevice11,TEX_jitter,TEX_jitter,1,0,D3DFMT_Q8W8V8U8,D3DPOOL_MANAGED,&t_noise_surf[it])); 	t_noise[it]
 			//= dxRenderDeviceRender::Instance().Resources->_CreateTexture	(name); 	t_noise[it]->surface_set
 			//(t_noise_surf[it]); 	R_CHK						(t_noise_surf[it]->LockRect	(0,&R[it],0,0));
 			// }
@@ -609,7 +609,7 @@ CRenderTarget::CRenderTarget()
 				string_path name;
 				sprintf_s(name, "%s%d", r2_jitter, it);
 				// R_CHK	(D3DXCreateTexture
-				// (HW.pDevice,TEX_jitter,TEX_jitter,1,0,D3DFMT_Q8W8V8U8,D3DPOOL_MANAGED,&t_noise_surf[it]));
+				// (HW.pDevice11,TEX_jitter,TEX_jitter,1,0,D3DFMT_Q8W8V8U8,D3DPOOL_MANAGED,&t_noise_surf[it]));
 				R_CHK(HW.pDevice11->CreateTexture2D(&desc, &subData[it], &t_noise_surf[it]));
 				t_noise[it] = Device.Resources->_CreateTexture(name);
 				t_noise[it]->surface_set(t_noise_surf[it]);

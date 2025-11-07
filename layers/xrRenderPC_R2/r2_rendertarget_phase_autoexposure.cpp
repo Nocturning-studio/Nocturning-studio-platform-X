@@ -27,7 +27,7 @@ struct v_filter_autoexposure
 	RCache.set_Stencil(FALSE);
 	RCache.set_CullMode(CULL_NONE);
 	RCache.set_ColorWriteEnable();
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
+	CHK_DX(HW.pDevice11->SetRenderState(D3DRS_ZENABLE, FALSE));
 
 	// 000: Perform LUM-SAT, pass 0, 256x256 => 64x64
 	u_setrt(rt_LUM_64, NULL, NULL, NULL);
@@ -167,7 +167,7 @@ struct v_filter_autoexposure
 	}
 
 	// Cleanup states
-	CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
+	CHK_DX(HW.pDevice11->SetRenderState(D3DRS_ZENABLE, TRUE));
 
 	{
 		u_setrt(rt_Generic_0, NULL, NULL, NULL);

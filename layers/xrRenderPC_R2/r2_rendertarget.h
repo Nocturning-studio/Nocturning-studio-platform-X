@@ -178,7 +178,7 @@ class CRenderTarget : public IRender_Target
 		rts[2] = rt2 ? rt2->pRT : 0;
 		rts[3] = rt3 ? rt3->pRT : 0;
 
-		HW.pContext->OMSetRenderTargets(4, rts, zb);
+		HW.pContext11->OMSetRenderTargets(4, rts, zb);
 
 		u32 flags = 0;
 		if (clearZB)
@@ -202,7 +202,7 @@ class CRenderTarget : public IRender_Target
 		rts[2] = rt2;
 		rts[3] = rt3;
 
-		HW.pContext->OMSetRenderTargets(4, rts, zb);
+		HW.pContext11->OMSetRenderTargets(4, rts, zb);
 
 		u32 flags = 0;
 		if (clearZB)
@@ -220,7 +220,7 @@ class CRenderTarget : public IRender_Target
 		color[1] = g;
 		color[2] = b;
 		color[3] = a;
-		HW.pContext->ClearRenderTargetView(rt0->pRT, color);
+		HW.pContext11->ClearRenderTargetView(rt0->pRT, color);
 	}
 
 	IC void ClearRT(ID3D11RenderTargetView* rt0, float r = 0, float g = 0, float b = 0, float a = 0)
@@ -230,12 +230,12 @@ class CRenderTarget : public IRender_Target
 		color[1] = g;
 		color[2] = b;
 		color[3] = a;
-		HW.pContext->ClearRenderTargetView(rt0, color);
+		HW.pContext11->ClearRenderTargetView(rt0, color);
 	}
 
 	IC void ClearZB(ID3D11DepthStencilView* zb, u32 flags, float depth = 1, float stencil = 0)
 	{
-		HW.pContext->ClearDepthStencilView(zb, flags, depth, stencil);
+		HW.pContext11->ClearDepthStencilView(zb, flags, depth, stencil);
 	}
 
   public:

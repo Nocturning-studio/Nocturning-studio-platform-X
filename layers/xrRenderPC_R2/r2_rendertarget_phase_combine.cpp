@@ -26,10 +26,10 @@ void CRenderTarget::phase_combine()
 
 	// draw skybox
 	RCache.set_ColorWriteEnable();
-	//CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
+	//CHK_DX(HW.pDevice11->SetRenderState(D3DRS_ZENABLE, FALSE));
 	StateManager.SetDepthEnable(FALSE);
 	g_pGamePersistent->Environment().RenderSky();
-	//CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
+	//CHK_DX(HW.pDevice11->SetRenderState(D3DRS_ZENABLE, TRUE));
 	StateManager.SetDepthEnable(TRUE);
 
 	RCache.set_Stencil(TRUE, D3DCMP_LESSEQUAL, 0x01, 0xff, 0x00); // stencil should be >= 1
@@ -147,7 +147,7 @@ void CRenderTarget::phase_combine()
 	// Perform blooming filter and distortion if needed
 	RCache.set_Stencil(FALSE);
 
-	//CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE, TRUE));
+	//CHK_DX(HW.pDevice11->SetRenderState(D3DRS_ZENABLE, TRUE));
 	StateManager.SetDepthEnable(TRUE);
 
 	// Distortion filter

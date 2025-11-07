@@ -138,14 +138,14 @@ void CheckHWSupporting()
 	R_ASSERT2(HW.Caps.raster.b_MRT_mixdepth, 
 		make_string("Your graphics accelerator don`t meet minimal mod system requirements (Multiple render targets independent depths)"));
 
-	R_ASSERT2(HW.support(D3DFMT_D24X8, D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL), 
-		make_string("Your graphics accelerator don`t meet minimal mod system requirements (D24X8 rendertarget format)"));
+	//R_ASSERT2(HW.support(D3DFMT_D24X8, D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL), 
+	//	make_string("Your graphics accelerator don`t meet minimal mod system requirements (D24X8 rendertarget format)"));
 
-	R_ASSERT2(HW.support(D3DFMT_A16B16G16R16F, D3DRTYPE_TEXTURE, D3DUSAGE_QUERY_FILTER),
-			  make_string("Your graphics accelerator don`t meet minimal mod system requirements (Floating point 16-bits rendertarget format)"));
+	//R_ASSERT2(HW.support(D3DFMT_A16B16G16R16F, D3DRTYPE_TEXTURE, D3DUSAGE_QUERY_FILTER),
+	//		  make_string("Your graphics accelerator don`t meet minimal mod system requirements (Floating point 16-bits rendertarget format)"));
 
-	R_ASSERT2(HW.support(D3DFMT_A16B16G16R16F, D3DRTYPE_TEXTURE, D3DUSAGE_QUERY_POSTPIXELSHADER_BLENDING),
-			  make_string("Your graphics accelerator don`t meet minimal mod system requirements (Post-Pixel Shader blending)"));
+	//R_ASSERT2(HW.support(D3DFMT_A16B16G16R16F, D3DRTYPE_TEXTURE, D3DUSAGE_QUERY_POSTPIXELSHADER_BLENDING),
+	//		  make_string("Your graphics accelerator don`t meet minimal mod system requirements (Post-Pixel Shader blending)"));
 }
 //////////////////////////////////////////////////////////////////////////
 // update with vid_restart
@@ -162,15 +162,18 @@ void CRender::update_options()
 	o.sun_depth_far_scale = 1.0f;
 
 	o.nvstencil = (HW.Caps.id_vendor == 0x10DE) && (HW.Caps.id_device >= 0x40);
-	o.nvdbt = HW.support((D3DFORMAT)MAKEFOURCC('N', 'V', 'D', 'B'), D3DRTYPE_SURFACE, 0);
+	//o.nvdbt = HW.support((D3DFORMAT)MAKEFOURCC('N', 'V', 'D', 'B'), D3DRTYPE_SURFACE, 0);
+	o.nvdbt = false;
 
 	o.use_ssao = ps_r2_ao > 0;
 	o.use_soft_water = ps_r2_postprocess_flags.test(R2FLAG_SOFT_PARTICLES);
 	o.use_soft_particles = ps_r2_postprocess_flags.test(R2FLAG_SOFT_PARTICLES);
 	o.use_atest_aa = ps_r2_aa_transluency > 0;
 
-	bool intz = HW.support((D3DFORMAT)MAKEFOURCC('I', 'N', 'T', 'Z'), D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL);
-	bool rawz = HW.support((D3DFORMAT)MAKEFOURCC('R', 'A', 'W', 'Z'), D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL);
+	//bool intz = HW.support((D3DFORMAT)MAKEFOURCC('I', 'N', 'T', 'Z'), D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL);
+	//bool rawz = HW.support((D3DFORMAT)MAKEFOURCC('R', 'A', 'W', 'Z'), D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL);
+	bool intz = false;
+	bool rawz = false;
 
 	Msg("* depth format 'INTZ' check: %u", intz);
 	Msg("* depth format 'RAWZ' check: %u", rawz);
@@ -307,7 +310,7 @@ void CRender::create()
 	ZeroMemory(q_sync_point, sizeof(q_sync_point));
 #pragma message(Reminder("Fix sync points"))
 	//for (u32 i = 0; i < HW.Caps.iGPUNum; ++i)
-	//	R_CHK(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[i]));
+	//	R_CHK(HW.pDevice11->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[i]));
 
 	xrRender_apply_tf();
 	::PortalTraverser.initialize();
@@ -358,7 +361,7 @@ void CRender::reset_end()
 {
 #pragma message(Reminder("Fix sync points"))
 	//for (u32 i = 0; i < HW.Caps.iGPUNum; ++i)
-	//	R_CHK(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[i]));
+	//	R_CHK(HW.pDevice11->CreateQuery(D3DQUERYTYPE_EVENT, &q_sync_point[i]));
 	HWOCC.occq_create(occq_size);
 
 	update_options();
@@ -604,24 +607,24 @@ void CRender::rmNear()
 	IRender_Target* T = getTarget();
 	D3D11_VIEWPORT VP = {0, 0, (float)T->get_width(), (float)T->get_height(), 0, 0.02f};
 
-	HW.pContext->RSSetViewports(1, &VP);
-	// CHK_DX				(HW.pDevice->SetViewport(&VP));
+	HW.pContext11->RSSetViewports(1, &VP);
+	// CHK_DX				(HW.pDevice11->SetViewport(&VP));
 }
 void CRender::rmFar()
 {
 	IRender_Target* T = getTarget();
 	D3D11_VIEWPORT VP = {0, 0, (float)T->get_width(), (float)T->get_height(), 0.99999f, 1.f};
 
-	HW.pContext->RSSetViewports(1, &VP);
-	// CHK_DX				(HW.pDevice->SetViewport(&VP));
+	HW.pContext11->RSSetViewports(1, &VP);
+	// CHK_DX				(HW.pDevice11->SetViewport(&VP));
 }
 void CRender::rmNormal()
 {
 	IRender_Target* T = getTarget();
 	D3D11_VIEWPORT VP = {0, 0, (float)T->get_width(), (float)T->get_height(), 0, 1.f};
 
-	HW.pContext->RSSetViewports(1, &VP);
-	// CHK_DX				(HW.pDevice->SetViewport(&VP));
+	HW.pContext11->RSSetViewports(1, &VP);
+	// CHK_DX				(HW.pDevice11->SetViewport(&VP));
 }
 
 

@@ -19,7 +19,7 @@ void CRenderTarget::phase_accumulator()
 		SetRT(rt_Diffuse_Accumulator, rt_Specular_Accumulator, 0, 0, rt_ZB->pZRT, false, false);
 		dwLightMarkerID = 5;					// start from 5, increment in 2 units
 		//u32 clr4clear = color_rgba(0, 0, 0, 0); // 0x00
-		//CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, clr4clear, 1.0f, 0L));
+		//CHK_DX(HW.pDevice11->Clear(0L, NULL, D3DCLEAR_TARGET, clr4clear, 1.0f, 0L));
 		ClearRT(rt_Diffuse_Accumulator);
 		ClearRT(rt_Specular_Accumulator);
 
@@ -52,7 +52,7 @@ void CRenderTarget::phase_vol_accumulator()
 
 		u_setrt(rt_Generic_2, NULL, NULL, rt_ZB->pRT);
 		u32 clr4clearVol = color_rgba(0, 0, 0, 0); // 0x00
-		CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, clr4clearVol, 1.0f, 0L));
+		CHK_DX(HW.pDevice11->Clear(0L, NULL, D3DCLEAR_TARGET, clr4clearVol, 1.0f, 0L));
 	}
 	else
 		u_setrt(rt_Generic_2, NULL, NULL, rt_ZB->pRT);

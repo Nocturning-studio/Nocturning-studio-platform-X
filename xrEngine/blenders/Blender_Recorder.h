@@ -7,7 +7,7 @@
 #pragma once
 
 #include "..\tss.h"
-#include "..\..\layers\xrRenderPC_R2_DWM\moved\r2_types.h"
+//#include "r2_types.h"
 
 #pragma pack(push, 4)
 
@@ -156,7 +156,7 @@ class ENGINE_API CBlender_Compile
 	void r_End();
 
 	//
-	void Jitter()
+	/*void Jitter()
 	{
 		r_dx10Texture("jitter0", JITTER(0));
 		r_dx10Texture("jitter1", JITTER(1));
@@ -165,7 +165,7 @@ class ENGINE_API CBlender_Compile
 		r_dx10Texture("jitter4", JITTER(4));
 		r_dx10Texture("jitterMipped", tex_t_noise_mipped_);
 		r_dx10Sampler("smp_jitter");
-	}
+	}*/
 
 
 	CBlender_Compile();

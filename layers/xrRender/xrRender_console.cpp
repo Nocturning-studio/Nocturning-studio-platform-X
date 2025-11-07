@@ -326,7 +326,7 @@ class CCC_tf_Aniso : public CCC_Integer
 		int val = *value;
 		clamp(val, 1, 16);
 		//for (u32 i = 0; i < HW.Caps.raster.dwStages; i++)
-		//	CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, val));
+		//	CHK_DX(HW.pDevice11->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, val));
 		SSManager.SetMaxAnisotropy(val);
 	}
 	CCC_tf_Aniso(LPCSTR N, int* v) : CCC_Integer(N, v, 1, 16){};
@@ -348,10 +348,10 @@ class CCC_tf_MipBias : public CCC_Float
 	void apply()
 	{
 #pragma message(Reminder("fix mip bias options"))
-		//if (0 == HW.pDevice)
+		//if (0 == HW.pDevice11)
 		//	return;
 		//for (u32 i = 0; i < HW.Caps.raster.dwStages; i++)
-		//	CHK_DX(HW.pDevice->SetSamplerState(i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD)value)));
+		//	CHK_DX(HW.pDevice11->SetSamplerState(i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD)value)));
 	}
 
 	CCC_tf_MipBias(LPCSTR N, float* v) : CCC_Float(N, v, -0.5f, +0.5f){};

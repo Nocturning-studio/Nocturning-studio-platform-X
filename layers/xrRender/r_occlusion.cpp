@@ -19,7 +19,7 @@ void R_occlusion::occq_create(u32 limit)
 		_Q q;
 		q.order = it;
 #pragma message(Reminder("fix occq"))
-		//if (FAILED(HW.pDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, &q.Q)))
+		//if (FAILED(HW.pDevice11->CreateQuery(D3DQUERYTYPE_OCCLUSION, &q.Q)))
 		//	break;
 		pool.push_back(q);
 	}
