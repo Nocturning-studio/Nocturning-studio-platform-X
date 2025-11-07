@@ -202,6 +202,14 @@ void CRender::Render		()
 	if( !(g_pGameLevel && g_pGameLevel->pHUD) )	return;
 //.	VERIFY					(g_pGameLevel && g_pGameLevel->pHUD);
 
+	rmNormal();
+	RCache.set_RT(HW.pBaseRT);
+	float color[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+	RCache.clear_CurrentRenderTargetView(color);
+
+	// временно
+	return;
+
 	// Configure
 	RImplementation.o.distortion				= FALSE;		// disable distorion
 	Fcolor					sun_color			= ((light*)Lights.sun_adapted._get())->color;

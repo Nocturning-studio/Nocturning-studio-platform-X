@@ -3,8 +3,11 @@
 
 R_occlusion::R_occlusion(void)
 {
-	//enabled = ps_render_flags.test(RFLAG_EXP_HW_OCC);
+#if RENDER != R_R2
+	enabled = ps_render_flags.test(RFLAG_EXP_HW_OCC);
+#else
 	enabled = FALSE;
+#endif
 }
 R_occlusion::~R_occlusion(void)
 {
@@ -12,6 +15,7 @@ R_occlusion::~R_occlusion(void)
 }
 void R_occlusion::occq_create(u32 limit)
 {
+#if RENDER != R_R2
 	pool.reserve(limit);
 	used.reserve(limit);
 	fids.reserve(limit);
@@ -25,9 +29,11 @@ void R_occlusion::occq_create(u32 limit)
 		pool.push_back(q);
 	}
 	std::reverse(pool.begin(), pool.end());
+#endif
 }
 void R_occlusion::occq_destroy()
 {
+#if RENDER != R_R2
 	while (!used.empty())
 	{
 		_RELEASE(used.back().Q);
@@ -41,6 +47,7 @@ void R_occlusion::occq_destroy()
 	used.clear();
 	pool.clear();
 	fids.clear();
+#endif
 }
 u32 R_occlusion::occq_begin(u32& ID)
 {
