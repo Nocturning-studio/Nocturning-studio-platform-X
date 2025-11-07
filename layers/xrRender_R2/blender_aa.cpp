@@ -11,7 +11,7 @@ void CBlender_TAA::Compile(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case SE_TAA_OPT:
+	/* case SE_TAA_OPT:
 		C.r_Pass("temporal_vert", "temporal_reprojection_opt", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_position", r2_RT_P);
 		C.r_Sampler_rtf("s_image", r2_RT_albedo);
@@ -42,7 +42,7 @@ void CBlender_TAA::Compile(CBlender_Compile& C)
 	case SE_TAA_IMG_COPY_OPT: // Copy antialiased image
 		C.r_Pass("temporal_vert", "temporal_img_copy_opt", FALSE, FALSE, FALSE);
 		C.r_Sampler_rtf("s_image", "$user$taa_temp");
-		break;
+		break;*/
 	}
 
 	C.r_End();

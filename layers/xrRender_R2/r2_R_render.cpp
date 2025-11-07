@@ -150,6 +150,9 @@ void CRender::render_menu	()
 	// Main Render
 	{
 		Target->u_setrt						(Target->rt_Generic_0,0,0,HW.pBaseZB);		// LDR RT
+		IRender_Target* T = getTarget();
+		D3D11_VIEWPORT VP = {0, 0, (float)T->get_width(), (float)T->get_height(), 0, 1.f};
+		HW.pContext11->RSSetViewports(1, &VP);
 		g_pGamePersistent->OnRenderPPUI_main()	;	// PP-UI
 	}
 	// Distort
