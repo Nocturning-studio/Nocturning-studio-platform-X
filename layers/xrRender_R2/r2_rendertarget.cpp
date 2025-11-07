@@ -52,7 +52,7 @@ void CRenderTarget::u_setrt(u32 W, u32 H, ID3D11RenderTargetView* _1, ID3D11Rend
 
 void	CRenderTarget::u_stencil_optimize	(BOOL		common_stencil)
 {
-	VERIFY	(RImplementation.o.nvstencil);
+	/* VERIFY(RImplementation.o.nvstencil);
 	RCache.set_ColorWriteEnable	(FALSE);
 	u32		Offset;
 	float	_w					= float(Device.dwWidth);
@@ -69,7 +69,7 @@ void	CRenderTarget::u_stencil_optimize	(BOOL		common_stencil)
 	if (common_stencil)			RCache.set_Stencil	(TRUE,D3DCMP_LESSEQUAL,dwLightMarkerID,0xff,0x00);	// keep/keep/keep
 	RCache.set_Element			(s_occq->E[1]	);
 	RCache.set_Geometry			(g_combine		);
-	RCache.Render				(D3DPT_TRIANGLELIST,Offset,0,4,0,2);
+	RCache.Render				(D3DPT_TRIANGLELIST,Offset,0,4,0,2);*/
 }
 
 // 2D texgen (texture adjustment matrix)

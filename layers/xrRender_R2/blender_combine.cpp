@@ -37,7 +37,8 @@ void	CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_End				();
 		break;
 	case 2:	// non-AA
-		C.r_Pass			("null",			"combine_2_NAA",	FALSE,	FALSE,	FALSE);
+		//C.r_Pass			("null",			"combine_2_NAA",	FALSE,	FALSE,	FALSE);
+		C.r_Pass			("stub_notransform_aa_AA",			"combine_2_NAA",	FALSE,	FALSE,	FALSE);
 		C.r_Sampler_rtf		("s_position",		r2_RT_P);
 		C.r_Sampler_rtf		("s_normal",		r2_RT_N);
 		C.r_Sampler_clf		("s_image",			r2_RT_generic0);
@@ -55,6 +56,7 @@ void	CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_End				();
 		break;
 	case 4:	// non-AA + DISTORTION
+		//C.r_Pass			("null",			"combine_2_NAA_D",	FALSE,	FALSE,	FALSE);
 		C.r_Pass			("null",			"combine_2_NAA_D",	FALSE,	FALSE,	FALSE);
 		C.r_Sampler_rtf		("s_position",		r2_RT_P);
 		C.r_Sampler_rtf		("s_normal",		r2_RT_N);

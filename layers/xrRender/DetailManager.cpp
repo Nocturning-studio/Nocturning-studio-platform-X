@@ -138,6 +138,11 @@ void dump	(CDetailManager::vis_list& lst)
 */
 void CDetailManager::Load()
 {
+#if RENDER == R_R2
+#pragma todo(fix details with R2)
+	dtFS = NULL;
+	return;
+#endif
 	// Open file stream
 	if (!FS.exist("$level$", "level.details"))
 	{
