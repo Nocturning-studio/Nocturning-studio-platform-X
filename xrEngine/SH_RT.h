@@ -53,6 +53,9 @@ struct ENGINE_API resptrcode_crt : public resptr_base<CRT>
 	// Depth Stencil view type required DXGI_FORMAT_D...
 	void create(LPCSTR name, u32 w, u32 h, DXGI_FORMAT f, u32 bind_flags, u32 samples = 1);
 
+	// legacy
+	void create(LPCSTR name, u32 w, u32 h, D3DFORMAT f);
+
 	void destroy()
 	{
 		_set(NULL);

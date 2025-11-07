@@ -120,7 +120,8 @@ void CRenderTarget::phase_pp		()
 	u_calc_tc_noise			(n0,n1);
 
 	// Fill vertex buffer
-	float				du	= ps_r1_pps_u, dv = ps_r1_pps_v;
+	//float				du	= ps_r1_pps_u, dv = ps_r1_pps_v;
+	float				du	= 1, dv = 1;
 	TL_2c3uv* pv			= (TL_2c3uv*) RCache.Vertex.Lock	(4,g_postprocess.stride(),Offset);
 	pv->set(du+0,			dv+float(_h),	p_color, p_gray, r0.x, r1.y, l0.x, l1.y, n0.x, n1.y);	pv++;
 	pv->set(du+0,			dv+0,			p_color, p_gray, r0.x, r0.y, l0.x, l0.y, n0.x, n0.y);	pv++;

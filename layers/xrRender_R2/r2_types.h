@@ -1,10 +1,10 @@
 #pragma once
 
 // Antialiasing type defs
-#define AA_TAA2S 30
-#define AA_TAA4S 31
-#define AA_TAA8S 32
-#define AA_TAA16S 33
+//#define AA_TAA2S 30
+//#define AA_TAA4S 31
+//#define AA_TAA8S 32
+//#define AA_TAA16S 33
 
 // r3xx code-path (MRT)
 #define		r2_RT_depth			"$user$depth"			// MRT

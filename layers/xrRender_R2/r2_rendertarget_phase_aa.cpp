@@ -27,18 +27,18 @@ extern float hclip(float v, float dim);
 
 void CRenderTarget::phase_TAA_define(u32* pTAA_samples)
 {
-	switch (ps_r2_aa)
+	/* switch (ps_r2_aa)
 	{
 	case AA_TAA16S: *pTAA_samples = 16; break;
 	case AA_TAA8S: *pTAA_samples = 8; break;
 	case AA_TAA4S: *pTAA_samples = 4; break;
 	case AA_TAA2S: *pTAA_samples = 2; break;
-	};
+	};*/
 }
 
 void CRenderTarget::phase_TAA_prepare()
 {
-	u32 add_tab;
+	/* u32 add_tab;
 
 	switch (TAA_samples)
 	{
@@ -56,12 +56,12 @@ void CRenderTarget::phase_TAA_prepare()
 	CHK_DX(HW.pDevice->Clear(0l, NULL, D3DCLEAR_TARGET, 0x0, 1.0f, 0l));
 
 	for (u32 i = 0; i < 2; i++)
-		msaa_curr_offset[i] = msaa_sample_pattern[Device.dwFrame % TAA_samples + add_tab][i];
+		msaa_curr_offset[i] = msaa_sample_pattern[Device.dwFrame % TAA_samples + add_tab][i];*/
 }
 
 void CRenderTarget::phase_TAA_apply()
 {
-	if (!TAA_samples)
+	/* if (!TAA_samples)
 		return;
 
 	static Fmatrix m_vp_prev[15] = {};
@@ -116,5 +116,5 @@ void CRenderTarget::phase_TAA_apply()
 	RCache.set_Geometry(g_combine_VP);
 	RCache.Render(D3DPT_TRIANGLELIST, bias, 0, 4, 0, 2);
 
-	m_vp_prev[sample_id].set(Device.mFullTransform);
+	m_vp_prev[sample_id].set(Device.mFullTransform);*/
 }

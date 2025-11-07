@@ -5,36 +5,44 @@ void	CRenderTarget::phase_scene_prepare	()
 {
 	// Clear depth & stencil
 	u_setrt	( Device.dwWidth,Device.dwHeight,HW.pBaseRT,NULL,NULL,HW.pBaseZB );
-	CHK_DX	( HW.pDevice->Clear	( 0L, NULL, D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x0, 1.0f, 0L) );
+	//CHK_DX	( HW.pDevice->Clear	( 0L, NULL, D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x0, 1.0f, 0L) );
+	RCache.clear_CurrentDepthStencilView();
+	float color[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+	RCache.clear_CurrentRenderTargetView(color);
 
-	if (ps_r2_aa)
-		phase_TAA_prepare();
+	//if (ps_r2_aa)
+	//	phase_TAA_prepare();
 }
 
 // begin
 void	CRenderTarget::phase_scene_begin	()
 {
 	// Enable ANISO
-	for (u32 i=0; i<HW.Caps.raster.dwStages; i++)
-		CHK_DX(HW.pDevice->SetSamplerState( i, D3DSAMP_MAXANISOTROPY, ps_r__tf_Anisotropic	));
+	//for (u32 i=0; i<HW.Caps.raster.dwStages; i++)
+	//	CHK_DX(HW.pDevice->SetSamplerState( i, D3DSAMP_MAXANISOTROPY, ps_r__tf_Anisotropic	));
+	SSManager.SetMaxAnisotropy(ps_r_tf_Anisotropic);
 
 	// Targets, use accumulator for temporary storage
-	if (ps_r2_aa)
+	/* if (ps_r2_aa)
 	{
-		if (RImplementation.o.albedo_wo)	u_setrt(rt_Position, rt_Normal, rt_Accumulator, HW.pBaseZB);
-		else								u_setrt(rt_Position, rt_Normal, rt_Color, HW.pBaseZB);
+		if (RImplementation.o.albedo_wo)
+			u_setrt(rt_Position, rt_Normal, rt_Accumulator, rt_TAA_mask_curr, HW.pBaseZB);
+		else
+			u_setrt(rt_Position, rt_Normal, rt_Color, rt_TAA_mask_curr, HW.pBaseZB);
 	}
-	else
+	else*/
 	{
-		if (RImplementation.o.albedo_wo)	u_setrt(rt_Position, rt_Normal, rt_Accumulator, rt_TAA_mask_curr, HW.pBaseZB);
-		else								u_setrt(rt_Position, rt_Normal, rt_Color, rt_TAA_mask_curr, HW.pBaseZB);
+		if (RImplementation.o.albedo_wo)
+			u_setrt(rt_Position, rt_Normal, rt_Accumulator, HW.pBaseZB);
+		else
+			u_setrt(rt_Position, rt_Normal, rt_Color, HW.pBaseZB);
 	}
 
 	// Stencil - write 0x1 at pixel pos
 	RCache.set_Stencil					( TRUE,D3DCMP_ALWAYS,0x01,0xff,0xff,D3DSTENCILOP_KEEP,D3DSTENCILOP_REPLACE,D3DSTENCILOP_KEEP);
 
 	// Misc		- draw only front-faces
-	CHK_DX(HW.pDevice->SetRenderState	( D3DRS_TWOSIDEDSTENCILMODE,FALSE				));
+	//CHK_DX(HW.pDevice->SetRenderState	( D3DRS_TWOSIDEDSTENCILMODE,FALSE				));
 	RCache.set_CullMode					( CULL_CCW );
 	RCache.set_ColorWriteEnable			( );
 }
@@ -42,8 +50,9 @@ void	CRenderTarget::phase_scene_begin	()
 void	CRenderTarget::disable_aniso		()
 {
 	// Disable ANISO
-	for (u32 i=0; i<HW.Caps.raster.dwStages; i++)
-		CHK_DX(HW.pDevice->SetSamplerState( i, D3DSAMP_MAXANISOTROPY, 1	));
+	//for (u32 i=0; i<HW.Caps.raster.dwStages; i++)
+	//	CHK_DX(HW.pDevice->SetSamplerState( i, D3DSAMP_MAXANISOTROPY, 1	));
+	SSManager.SetMaxAnisotropy(1);
 }
 
 // end

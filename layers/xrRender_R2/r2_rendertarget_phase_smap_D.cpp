@@ -3,8 +3,9 @@
 void	CRenderTarget::phase_smap_direct		(light* L, u32 sub_phase)
 {
 	// Targets
-	if (RImplementation.o.HW_smap)		u_setrt	(rt_smap_surf, NULL, NULL, rt_smap_depth->pRT);
-	else								u_setrt	(rt_smap_surf, NULL, NULL, rt_smap_ZB);
+	//if (RImplementation.o.HW_smap)		u_setrt	(rt_smap_surf, NULL, NULL, rt_smap_depth->pRT);
+	//else								u_setrt	(rt_smap_surf, NULL, NULL, rt_smap_ZB);
+	u_setrt(rt_smap_surf, NULL, NULL, rt_smap_depth->pZRT);
 
 	// Clear
 	if (SE_SUN_NEAR==sub_phase)			{
@@ -14,11 +15,13 @@ void	CRenderTarget::phase_smap_direct		(light* L, u32 sub_phase)
 		R.x2		= L->X.D.maxX;
 		R.y1		= L->X.D.minY;
 		R.y2		= L->X.D.maxY;
-		CHK_DX							(HW.pDevice->Clear( 1L, &R,	  D3DCLEAR_ZBUFFER,	0xFFFFFFFF, 1.0f, 0L));
+		//CHK_DX							(HW.pDevice->Clear( 1L, &R,	  D3DCLEAR_ZBUFFER,	0xFFFFFFFF, 1.0f, 0L));
+		RCache.clear_CurrentDepthStencilView();
 	} else {
 		// full-clear
-		CHK_DX							(HW.pDevice->Clear( 0L, NULL, D3DCLEAR_ZBUFFER,	0xFFFFFFFF, 1.0f, 0L));
+		//CHK_DX							(HW.pDevice->Clear( 0L, NULL, D3DCLEAR_ZBUFFER,	0xFFFFFFFF, 1.0f, 0L));
 	}
+	RCache.clear_CurrentDepthStencilView();
 
 	// Stencil	- disable
 	RCache.set_Stencil					( FALSE );
@@ -38,5 +41,5 @@ void	CRenderTarget::phase_smap_direct_tsh	(light* L, u32 sub_phase)
 	VERIFY								(RImplementation.o.Tshadows);
 	u32		_clr						= 0xffffffff;	//color_rgba(127,127,12,12);
 	RCache.set_ColorWriteEnable			();
-	CHK_DX								(HW.pDevice->Clear( 0L, NULL, D3DCLEAR_TARGET,	_clr,	1.0f, 0L));
+	//CHK_DX								(HW.pDevice->Clear( 0L, NULL, D3DCLEAR_TARGET,	_clr,	1.0f, 0L));
 }

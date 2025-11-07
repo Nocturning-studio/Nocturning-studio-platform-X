@@ -53,8 +53,8 @@ Flags32 ps_r2_ls_flags = {};
 /*-------------------------------------------------------------------------------*/
 // R2a/R2/R2.5 specific tokens
 /*-------------------------------------------------------------------------------*/
-u32 ps_r2_aa = 1;
-xr_token aa_token[] = {{"st_opt_disabled", 0}, {"st_opt_rgaa", 1}, {"st_opt_dlaa", 2}, {"st_opt_fxaa", 3}, {0, 0}};
+//u32 ps_r2_aa = 1;
+//xr_token aa_token[] = {{"st_opt_disabled", 0}, {"st_opt_rgaa", 1}, {"st_opt_dlaa", 2}, {"st_opt_fxaa", 3}, {0, 0}};
 
 u32 ps_r2_aa_quality = 2;
 xr_token aa_quality_token[] = {

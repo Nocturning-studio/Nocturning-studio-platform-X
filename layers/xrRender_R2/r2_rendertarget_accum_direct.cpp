@@ -109,7 +109,7 @@ void CRenderTarget::accum_direct		(u32 sub_phase)
 			static	float	w_shift		= 0;
 			Fmatrix			m_xform;
 			Fvector			direction	= fuckingsun->direction	;
-			float	w_dir				= g_pGamePersistent->Environment().CurrentEnv.wind_direction	;
+			float	w_dir				= g_pGamePersistent->Environment().CurrentEnv->wind_direction	;
 			//float	w_speed				= g_pGamePersistent->Environment().CurrentEnv.wind_velocity	;
 			Fvector			normal	;	normal.setHP(w_dir,0);
 							w_shift		+=	0.003f*Device.fTimeDelta;
@@ -163,7 +163,8 @@ void CRenderTarget::accum_direct		(u32 sub_phase)
 		center_pt.mad(Device.vCameraPosition,Device.vCameraDirection,zMax);	Device.mFullTransform.transform	(center_pt);
 		zMax = center_pt.z	;
 
-		if (u_DBT_enable(zMin,zMax))	{
+		/* if (u_DBT_enable(zMin, zMax))
+		{
 			// z-test always
 			HW.pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 			HW.pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
@@ -174,18 +175,19 @@ void CRenderTarget::accum_direct		(u32 sub_phase)
 			//. we hacked the shader to force smap on S0
 #			define FOURCC_GET4  MAKEFOURCC('G','E','T','4') 
 			HW.pDevice->SetSamplerState	( 0, D3DSAMP_MIPMAPLODBIAS, FOURCC_GET4 );
-		}
+		}*/
 
 		// setup stencil
 		RCache.set_Stencil			(TRUE,D3DCMP_LESSEQUAL,dwLightMarkerID,0xff,0x00);
 		RCache.Render				(D3DPT_TRIANGLELIST,Offset,0,4,0,2);
 
 		// Fetch4 : disable
-		if (RImplementation.o.HW_smap_FETCH4)	{
+		/* if (RImplementation.o.HW_smap_FETCH4)
+		{
 			//. we hacked the shader to force smap on S0
 #			define FOURCC_GET1  MAKEFOURCC('G','E','T','1') 
 			HW.pDevice->SetSamplerState	( 0, D3DSAMP_MIPMAPLODBIAS, FOURCC_GET1 );
-		}
+		}*/
 
 		// disable depth bounds
 		u_DBT_disable	();
@@ -258,7 +260,9 @@ void CRenderTarget::accum_direct_f		(u32 sub_phase)
 	if (SE_SUN_NEAR==sub_phase)	//.
 	{
 		// For sun-filter - clear to zero
-		CHK_DX	(HW.pDevice->Clear	( 0L, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0L));
+		//CHK_DX	(HW.pDevice->Clear	( 0L, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0L));
+		float color[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+		RCache.clear_CurrentRenderTargetView(color);
 
 		// Fill vertex buffer
 		FVF::TL* pv					= (FVF::TL*)	RCache.Vertex.Lock	(4,g_combine->vb_stride,Offset);

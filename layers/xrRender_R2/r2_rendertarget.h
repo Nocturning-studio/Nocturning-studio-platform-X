@@ -47,18 +47,18 @@ public:
 	ref_rt						rt_Accumulator_temp;// only for HW which doesn't feature fp16 blend
 	ref_rt						rt_Generic_0;		// 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 	ref_rt						rt_Generic_1;		// 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
-	ref_rt						rt_Bloom_1;			// 32bit, dim/4	(r,g,b,?)
-	ref_rt						rt_Bloom_2;			// 32bit, dim/4	(r,g,b,?)
-	ref_rt						rt_LUM_64;			// 64bit, 64x64,	log-average in all components
-	ref_rt						rt_LUM_8;			// 64bit, 8x8,		log-average in all components
+	//ref_rt						rt_Bloom_1;			// 32bit, dim/4	(r,g,b,?)
+	//ref_rt						rt_Bloom_2;			// 32bit, dim/4	(r,g,b,?)
+	//ref_rt						rt_LUM_64;			// 64bit, 64x64,	log-average in all components
+	//ref_rt						rt_LUM_8;			// 64bit, 8x8,		log-average in all components
 
-	ref_rt						rt_LUM_pool	[4]	;	// 1xfp32,1x1,		exp-result -> scaler
-	ref_texture					t_LUM_src		;	// source
-	ref_texture					t_LUM_dest		;	// destination & usage for current frame
+	//ref_rt						rt_LUM_pool	[4]	;	// 1xfp32,1x1,		exp-result -> scaler
+	//ref_texture					t_LUM_src		;	// source
+	//ref_texture					t_LUM_dest		;	// destination & usage for current frame
 
-	ref_rt						rt_TAA[15];
-	ref_rt						rt_TAA_mask_curr;
-	ref_rt						rt_TAA_temp;
+	//ref_rt						rt_TAA[15];
+	//ref_rt						rt_TAA_mask_curr;
+	//ref_rt						rt_TAA_temp;
 
 	// env
 	ref_texture					t_envmap_0		;	// env-0
@@ -67,14 +67,14 @@ public:
 	// smap
 	ref_rt						rt_smap_surf;	// 32bit,		color
 	ref_rt						rt_smap_depth;	// 24(32) bit,	depth 
-	IDirect3DSurface9*			rt_smap_ZB;		//
+	//IDirect3DSurface9*			rt_smap_ZB;		//
 
 	// Textures
-	IDirect3DVolumeTexture9*	t_material_surf;
+	ID3D11Texture3D*	t_material_surf;
 	ref_texture					t_material;
 
-	IDirect3DTexture9*			t_noise_surf	[TEX_jitter_count];
-	ref_texture					t_noise			[TEX_jitter_count];
+	//IDirect3DTexture9*			t_noise_surf	[TEX_jitter_count];
+	//ref_texture					t_noise			[TEX_jitter_count];
 private:
 	// OCCq
 	ref_shader					s_occq;
@@ -90,26 +90,26 @@ private:
 	ref_geom					g_accum_spot	;
 	ref_geom					g_accum_omnipart;
 
-	IDirect3DVertexBuffer9*		g_accum_point_vb;
-	IDirect3DIndexBuffer9*		g_accum_point_ib;
+	ID3D11Buffer* g_accum_point_vb;
+	ID3D11Buffer* g_accum_point_ib;
 
-	IDirect3DVertexBuffer9*		g_accum_omnip_vb;
-	IDirect3DIndexBuffer9*		g_accum_omnip_ib;
+	ID3D11Buffer* g_accum_omnip_vb;
+	ID3D11Buffer* g_accum_omnip_ib;
 
-	IDirect3DVertexBuffer9*		g_accum_spot_vb	;
-	IDirect3DIndexBuffer9*		g_accum_spot_ib	;
+	ID3D11Buffer* g_accum_spot_vb;
+	ID3D11Buffer* g_accum_spot_ib;
 
 	// Bloom
-	ref_geom					g_bloom_build;
-	ref_geom					g_bloom_filter;
-	ref_shader					s_bloom_dbg_1;
-	ref_shader					s_bloom_dbg_2;
-	ref_shader					s_bloom;
-	float						f_bloom_factor;
+	//ref_geom					g_bloom_build;
+	//ref_geom					g_bloom_filter;
+	//ref_shader					s_bloom_dbg_1;
+	//ref_shader					s_bloom_dbg_2;
+	//ref_shader					s_bloom;
+	//float						f_bloom_factor;
 
 	// Luminance
-	ref_shader					s_luminance;
-	float						f_luminance_adapt;
+	//ref_shader					s_luminance;
+	//float						f_luminance_adapt;
 
 	// Combine
 	ref_geom					g_combine;
@@ -122,7 +122,7 @@ private:
 	ref_shader					s_combine_dbg_Accumulator;
 	ref_shader					s_combine;
 
-	ref_shader                  s_taa;
+	//ref_shader                  s_taa;
 	ref_geom					g_simple_quad;
 public:
 	ref_shader					s_postprocess;

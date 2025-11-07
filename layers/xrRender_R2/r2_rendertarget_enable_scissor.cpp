@@ -36,7 +36,8 @@ void CRenderTarget::enable_dbt_bounds		(light* L)
 // nv-DBT
 BOOL	CRenderTarget::u_DBT_enable	(float zMin, float zMax)
 {
-	if (!RImplementation.o.nvdbt)					return	FALSE;
+	/* if (!RImplementation.o.nvdbt)
+		return FALSE;
 	if (!ps_r2_ls_flags.test(R2FLAG_USE_NVDBT))		return	FALSE;
 
 	// enable cheat
@@ -44,13 +45,15 @@ BOOL	CRenderTarget::u_DBT_enable	(float zMin, float zMax)
 	HW.pDevice->SetRenderState(D3DRS_ADAPTIVETESS_Z,*(DWORD*)&zMin);
 	HW.pDevice->SetRenderState(D3DRS_ADAPTIVETESS_W,*(DWORD*)&zMax); 
 
-	return TRUE;
+	return TRUE;*/
+	return FALSE;
 }
 
 void	CRenderTarget::u_DBT_disable	()
 {
-	if (RImplementation.o.nvdbt && ps_r2_ls_flags.test(R2FLAG_USE_NVDBT))	
-		HW.pDevice->SetRenderState(D3DRS_ADAPTIVETESS_X,0);
+	//if (RImplementation.o.nvdbt && ps_r2_ls_flags.test(R2FLAG_USE_NVDBT))	
+	//	HW.pDevice->SetRenderState(D3DRS_ADAPTIVETESS_X,0);
+
 }
 
 BOOL CRenderTarget::enable_scissor		(light* L)		// true if intersects near plane

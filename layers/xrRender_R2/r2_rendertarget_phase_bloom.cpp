@@ -64,7 +64,7 @@ void	CalcGauss_wave(
 
 void CRenderTarget::phase_bloom	()
 {
-	u32		Offset;
+	/* u32 Offset;
 
 	// Targets
 	u_setrt									( rt_Bloom_1,NULL,NULL,NULL );		// No need for ZBuffer at all
@@ -320,5 +320,5 @@ void CRenderTarget::phase_bloom	()
 	};
 
 	// re-enable z-buffer
-	CHK_DX		(HW.pDevice->SetRenderState	( D3DRS_ZENABLE,	TRUE				));
+	CHK_DX		(HW.pDevice->SetRenderState	( D3DRS_ZENABLE,	TRUE				));*/
 }

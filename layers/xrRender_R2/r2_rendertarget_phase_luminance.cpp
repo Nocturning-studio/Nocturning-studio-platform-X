@@ -17,7 +17,7 @@ struct v_filter {
 
 void	CRenderTarget::phase_luminance()
 {
-	u32		Offset	= 0;
+	/* u32 Offset = 0;
 	float	eps		= EPS_S;
 
 	// Targets
@@ -126,5 +126,5 @@ void	CRenderTarget::phase_luminance()
 	}
 
 	// Cleanup states
-	CHK_DX		(HW.pDevice->SetRenderState(D3DRS_ZENABLE,TRUE));
+	CHK_DX		(HW.pDevice->SetRenderState(D3DRS_ZENABLE,TRUE));*/
 }

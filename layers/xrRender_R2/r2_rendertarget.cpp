@@ -255,7 +255,7 @@ CRenderTarget::CRenderTarget		()
 		rt_Generic_1.create			(r2_RT_generic1,w,h,D3DFMT_A8R8G8B8		);
 
 		// Create AA blender
-		if (ps_r2_aa)
+		/* if (ps_r2_aa)
 		{
 			phase_TAA_define(&TAA_samples);
 
@@ -268,10 +268,10 @@ CRenderTarget::CRenderTarget		()
 
 			rt_TAA_mask_curr.create("$user$taa_0_mask", Device.dwWidth, Device.dwHeight, D3DFMT_A8R8G8B8);
 			rt_TAA_temp.create("$user$taa_temp", Device.dwWidth, Device.dwHeight, D3DFMT_A8R8G8B8);
-		}
+		}*/
 	}
 
-	s_taa.create(b_taa);
+	//s_taa.create(b_taa);
 	g_simple_quad.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
 
 	// OCCLUSION
@@ -288,11 +288,11 @@ CRenderTarget::CRenderTarget		()
 		u32	size					=RImplementation.o.smapsize	;
 		rt_smap_depth.create		(r2_RT_smap_depth,			size,size,depth_format	);
 		rt_smap_surf.create			(r2_RT_smap_surf,			size,size,nullrt		);
-		rt_smap_ZB					= NULL;
+		//rt_smap_ZB					= NULL;
 		s_accum_mask.create			(b_accum_mask,				"r2\\accum_mask");
 		s_accum_direct.create		(b_accum_direct,			"r2\\accum_direct");
 	}
-	else
+	/* else
 	{
 		u32	size					=RImplementation.o.smapsize	;
 		rt_smap_surf.create			(r2_RT_smap_surf,			size,size,D3DFMT_R32F);
@@ -300,7 +300,7 @@ CRenderTarget::CRenderTarget		()
 		R_CHK						(HW.pDevice->CreateDepthStencilSurface	(size,size,D3DFMT_D24X8,D3DMULTISAMPLE_NONE,0,TRUE,&rt_smap_ZB,NULL));
 		s_accum_mask.create			(b_accum_mask,				"r2\\accum_mask");
 		s_accum_direct.create		(b_accum_direct,			"r2\\accum_direct");
-	}
+	}*/
 
 	// POINT
 	{
@@ -324,7 +324,7 @@ CRenderTarget::CRenderTarget		()
 	}
 
 	// BLOOM
-	{
+	/* {
 		D3DFORMAT	fmt				= D3DFMT_A8R8G8B8;			//;		// D3DFMT_X8R8G8B8
 		u32	w=BLOOM_size_X, h=BLOOM_size_Y;
 		u32 fvf_build				= D3DFVF_XYZRHW|D3DFVF_TEX4|D3DFVF_TEXCOORDSIZE2(0)|D3DFVF_TEXCOORDSIZE2(1)|D3DFVF_TEXCOORDSIZE2(2)|D3DFVF_TEXCOORDSIZE2(3);
@@ -337,10 +337,10 @@ CRenderTarget::CRenderTarget		()
 		s_bloom_dbg_2.create		("effects\\screen_set",		r2_RT_bloom2);
 		s_bloom.create				(b_bloom,					"r2\\bloom");
 		f_bloom_factor				= 0.5f;
-	}
+	}*/
 
 	// TONEMAP
-	{
+	/* {
 		rt_LUM_64.create			(r2_RT_luminance_t64,	64, 64,	D3DFMT_A16B16G16R16F	);
 		rt_LUM_8.create				(r2_RT_luminance_t8,	8,	8,	D3DFMT_A16B16G16R16F	);
 		s_luminance.create			(b_luminance,				"r2\\luminance");
@@ -358,7 +358,7 @@ CRenderTarget::CRenderTarget		()
 			CHK_DX						(HW.pDevice->Clear( 0L, NULL, D3DCLEAR_TARGET,	0x7f7f7f7f,	1.0f, 0L));
 		}
 		u_setrt						( Device.dwWidth,Device.dwHeight,HW.pBaseRT,NULL,NULL,HW.pBaseZB);
-	}
+	}*/
 
 	// COMBINE
 	{
@@ -390,20 +390,43 @@ CRenderTarget::CRenderTarget		()
 		// Build material(s)
 		{
 			// Surface
-			R_CHK						(D3DXCreateVolumeTexture(HW.pDevice,TEX_material_LdotN,TEX_material_LdotH,4,1,0,D3DFMT_A8L8,D3DPOOL_MANAGED,&t_material_surf));
-			t_material					= Device.Resources->_CreateTexture(r2_material);
-			t_material->surface_set		(t_material_surf);
+			//R_CHK						(D3DXCreateVolumeTexture(HW.pDevice,TEX_material_LdotN,TEX_material_LdotH,4,1,0,D3DFMT_A8L8,D3DPOOL_MANAGED,&t_material_surf));
+			//t_material					= Device.Resources->_CreateTexture(r2_material);
+			//t_material->surface_set		(t_material_surf);
 
 			// Fill it (addr: x=dot(L,N),y=dot(L,H))
-			D3DLOCKED_BOX				R;
-			R_CHK						(t_material_surf->LockBox	(0,&R,0,0));
+			//D3DLOCKED_BOX R;
+			//R_CHK(t_material_surf->LockBox(0, &R, 0, 0));
+			
+			//	Create immutable texture. 
+			u16 tempData[TEX_material_LdotN * TEX_material_LdotH * 4];
+
+			D3D11_TEXTURE3D_DESC desc;
+			desc.Width = TEX_material_LdotN;
+			desc.Height = TEX_material_LdotH;
+			desc.Depth = 4;
+			desc.MipLevels = 1;
+			desc.Format = DXGI_FORMAT_R8G8_UNORM;
+			desc.Usage = D3D11_USAGE_IMMUTABLE;
+			desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+			desc.CPUAccessFlags = 0;
+			desc.MiscFlags = 0;
+
+			D3D11_SUBRESOURCE_DATA subData;
+
+			subData.pSysMem = tempData;
+			subData.SysMemPitch = desc.Width * 2;
+			subData.SysMemSlicePitch = desc.Height * subData.SysMemPitch;
+
+
 			for (u32 slice=0; slice<4; slice++)
 			{
 				for (u32 y=0; y<TEX_material_LdotH; y++)
 				{
 					for (u32 x=0; x<TEX_material_LdotN; x++)
 					{
-						u16*	p	=	(u16*)		(LPBYTE (R.pBits) + slice*R.SlicePitch + y*R.RowPitch + x*2);
+						//u16*	p	=	(u16*)		(LPBYTE (R.pBits) + slice*R.SlicePitch + y*R.RowPitch + x*2);
+						u16* p = (u16*)(LPBYTE(subData.pSysMem)	+ slice * subData.SysMemSlicePitch + y * subData.SysMemPitch + x * 2);
 						float	ld	=	float(x)	/ float	(TEX_material_LdotN-1);
 						float	ls	=	float(y)	/ float	(TEX_material_LdotH-1) + EPS_S;
 						ls			*=	powf(ld,1/32.f);
@@ -441,14 +464,17 @@ CRenderTarget::CRenderTarget		()
 					}
 				}
 			}
-			R_CHK		(t_material_surf->UnlockBox	(0));
+			//R_CHK		(t_material_surf->UnlockBox	(0));
 			// #ifdef DEBUG
 			// R_CHK	(D3DXSaveTextureToFile	("x:\\r2_material.dds",D3DXIFF_DDS,t_material_surf,0));
 			// #endif
+			R_CHK(HW.pDevice11->CreateTexture3D(&desc, &subData, &t_material_surf));
+			t_material = Device.Resources->_CreateTexture(r2_material);
+			t_material->surface_set(t_material_surf);
 		}
 
 		// Build noise table
-		if (1)
+		/* if (1)
 		{
 			// Surfaces
 			D3DLOCKED_RECT				R[TEX_jitter_count];
@@ -479,7 +505,7 @@ CRenderTarget::CRenderTarget		()
 			for (int it=0; it<TEX_jitter_count; it++)	{
 				R_CHK						(t_noise_surf[it]->UnlockRect(0));
 			}
-		}
+		}*/
 	}
 
 	// PP
@@ -505,8 +531,8 @@ CRenderTarget::~CRenderTarget	()
 #endif // DEBUG
 	_RELEASE					(t_material_surf);
 
-	t_LUM_src->surface_set		(NULL);
-	t_LUM_dest->surface_set		(NULL);
+	//t_LUM_src->surface_set		(NULL);
+	//t_LUM_dest->surface_set		(NULL);
 
 #ifdef DEBUG
 	_SHOW_REF("t_envmap_0 - #small",t_envmap_0->pSurface);
@@ -517,16 +543,17 @@ CRenderTarget::~CRenderTarget	()
 	t_envmap_0.destroy			();
 	t_envmap_1.destroy			();
 
-	_RELEASE					(rt_smap_ZB);
+	//_RELEASE					(rt_smap_ZB);
 
 	// Jitter
-	for (int it=0; it<TEX_jitter_count; it++)	{
+	/* for (int it = 0; it < TEX_jitter_count; it++)
+	{
 		t_noise	[it]->surface_set	(NULL);
 #ifdef DEBUG
 		_SHOW_REF("t_noise_surf[it]",t_noise_surf[it]);
 #endif // DEBUG
 		_RELEASE					(t_noise_surf[it]);
-	}
+	}*/
 
 	// 
 	accum_spot_geom_destroy		();

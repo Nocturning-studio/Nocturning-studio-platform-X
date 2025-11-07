@@ -161,3 +161,33 @@ void resptrcode_crt::create(LPCSTR name, u32 w, u32 h, DXGI_FORMAT f, u32 bind_f
 {
 	_set(Device.Resources->_CreateRT(name, w, h, f, bind_flags, samples));
 }
+
+void resptrcode_crt::create(LPCSTR name, u32 w, u32 h, D3DFORMAT f)
+{
+	DXGI_FORMAT _f = DXGI_FORMAT_UNKNOWN;
+	u32 _flags = 0;
+
+	switch (f)
+	{
+	case D3DFMT_A16B16G16R16F:
+		_f = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		_flags = fSR | fRT;
+		break;
+	case D3DFMT_A8R8G8B8:
+		_f = DXGI_FORMAT_R8G8B8A8_UNORM;
+		_flags = fSR | fRT;
+		break;
+	case D3DFMT_D24X8:
+		_f = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		_flags = fDS;
+		break;
+	case D3DFMT_R5G6B5:
+		_f = DXGI_FORMAT_B5G6R5_UNORM;
+		_flags = fSR | fRT;
+		break;
+	}
+
+	R_ASSERT(_f != f);
+
+	create(name, w, h, _f, _flags);
+}

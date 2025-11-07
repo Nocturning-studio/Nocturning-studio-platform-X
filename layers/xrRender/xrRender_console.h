@@ -119,8 +119,8 @@ extern ECORE_API float ps_r2_bloom_factor;
 extern ECORE_API float ps_cas_contrast;
 extern ECORE_API float ps_cas_sharpening;
 
-extern ECORE_API u32 ps_r2_aa;
-extern ECORE_API u32 ps_r2_aa_quality;
+//extern ECORE_API u32 ps_r2_aa;
+//extern ECORE_API u32 ps_r2_aa_quality;
 
 extern ECORE_API float ps_r2_fxaa_subpix;
 extern ECORE_API float ps_r2_fxaa_edge_treshold;
