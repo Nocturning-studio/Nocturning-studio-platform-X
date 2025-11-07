@@ -654,7 +654,7 @@ class CCC_DR_UsePoints : public CCC_Integer
 	virtual void Save(IWriter* F){};
 };
 
-xr_token vid_quality_token[] = {{"renderer_r1_dx11", 0}, {"renderer_r2a_dx11", 1}, {"renderer_r2.5_dx11", 2}, {0, NULL}};
+xr_token vid_quality_token[] = {{"renderer_r1_dx11", 0}, {"renderer_r2_dx11", 2}, {0, NULL}};
 
 u32 ENGINE_API renderer_value = RenderCreationParams::base_value;
 

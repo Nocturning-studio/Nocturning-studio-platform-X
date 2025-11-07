@@ -128,8 +128,11 @@ void CRT::create(LPCSTR name, u32 w, u32 h, DXGI_FORMAT f, u32 _bind_flags, u32 
 		R_ASSERT(pUAView);
 	}
 
-	pTexture = Device.Resources->_CreateTexture(name);
-	pTexture->surface_set(pSurface);
+	if (bind_flags & fSR)
+	{
+		pTexture = Device.Resources->_CreateTexture(name);
+		pTexture->surface_set(pSurface);
+	}
 }
 
 void CRT::destroy()
