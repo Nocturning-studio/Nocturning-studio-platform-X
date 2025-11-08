@@ -7,74 +7,8 @@
     <Filter Include="Core_Target">
       <UniqueIdentifier>{e5fcfc52-ec73-4a43-9ce8-a1941cf7c732}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Debug">
-      <UniqueIdentifier>{bc049c26-20f6-4601-814a-bbc98ac17450}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Details">
       <UniqueIdentifier>{f2fcb440-d3a9-4935-8607-1e4fe26fc91c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations">
-      <UniqueIdentifier>{3022d6a5-1e99-4857-bbe1-5480c015711a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\RenderFactory">
-      <UniqueIdentifier>{efbbc21f-1dc1-443b-a683-975807e9799f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\LensFlare">
-      <UniqueIdentifier>{c02954e0-7956-423f-966e-c5d6fcf1601e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\FactoryPtr">
-      <UniqueIdentifier>{8575a54b-00d9-46f8-bd39-d2e67b3477e3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\ApplicationRender">
-      <UniqueIdentifier>{aea034e6-93d3-48bc-aa67-00da757df3d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\RainRender">
-      <UniqueIdentifier>{79cfb63d-d7c1-4a09-acd6-89cd7f5226b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\ThunderboltRender">
-      <UniqueIdentifier>{1b48a07f-7ac6-4260-b7c5-c1cdceb94cd7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\EnvironmentRender">
-      <UniqueIdentifier>{0a247b39-4cb1-4230-8059-b73c2987e221}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\RenderDeviceRender">
-      <UniqueIdentifier>{47241a99-7ae6-442c-9ff1-d284722f0ee4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\ConsoleRender">
-      <UniqueIdentifier>{f8c05adf-159d-4454-9ad2-a66aca66e5d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\ObjectSpaceRender">
-      <UniqueIdentifier>{e84c0668-0b95-4ddf-9f61-032f7bd7cf14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\FontRender">
-      <UniqueIdentifier>{d8a257b8-5f18-4527-b88b-ebe6f4f1ed4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\StatGraphRender">
-      <UniqueIdentifier>{d613ef24-7c56-47e8-bd9b-564ebcfb42d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\ThunderboltDescRender">
-      <UniqueIdentifier>{f7a177e7-9c48-4991-82f6-62ca1bc3236b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\StatsRender">
-      <UniqueIdentifier>{e7a1ea4b-fa2c-481f-a9e4-62dd05fb6d40}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\Debug">
-      <UniqueIdentifier>{d1058199-1478-4815-82b4-4d2c33f4a62a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\Debug\DebugRender">
-      <UniqueIdentifier>{7bc6842e-ed81-464b-808c-45c93c57aa28}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\UI">
-      <UniqueIdentifier>{0813cb91-0ff9-4d56-8e27-ea978283d6ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\UI\UIRender">
-      <UniqueIdentifier>{85a663d9-c4bb-433d-a704-220f2235b3fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\UI\UIShader">
-      <UniqueIdentifier>{265c1692-0159-465d-a790-a8e30803f2de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interfase implementations\UI\UISequenceVideoItem">
-      <UniqueIdentifier>{f8792ce7-dab5-4795-ae06-24e280cae9ff}</UniqueIdentifier>
     </Filter>
     <Filter Include="Kernel">
       <UniqueIdentifier>{f7adc60b-103b-49c9-93a6-1f4239b2bc30}</UniqueIdentifier>
@@ -224,57 +158,6 @@
     </ClCompile>
     <ClCompile Include="..\xrRender\DetailModel.cpp">
       <Filter>Details</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxRenderFactory.cpp">
-      <Filter>Interfase implementations\RenderFactory</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxLensFlareRender.cpp">
-      <Filter>Interfase implementations\LensFlare</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxApplicationRender.cpp">
-      <Filter>Interfase implementations\ApplicationRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxRainRender.cpp">
-      <Filter>Interfase implementations\RainRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxThunderboltRender.cpp">
-      <Filter>Interfase implementations\ThunderboltRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxEnvironmentRender.cpp">
-      <Filter>Interfase implementations\EnvironmentRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxRenderDeviceRender.cpp">
-      <Filter>Interfase implementations\RenderDeviceRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxConsoleRender.cpp">
-      <Filter>Interfase implementations\ConsoleRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxObjectSpaceRender.cpp">
-      <Filter>Interfase implementations\ObjectSpaceRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxFontRender.cpp">
-      <Filter>Interfase implementations\FontRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxStatGraphRender.cpp">
-      <Filter>Interfase implementations\StatGraphRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxThunderboltDescRender.cpp">
-      <Filter>Interfase implementations\ThunderboltDescRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxStatsRender.cpp">
-      <Filter>Interfase implementations\StatsRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxDebugRender.cpp">
-      <Filter>Interfase implementations\Debug\DebugRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxUIRender.cpp">
-      <Filter>Interfase implementations\UI\UIRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxUIShader.cpp">
-      <Filter>Interfase implementations\UI\UIShader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxUISequenceVideoItem.cpp">
-      <Filter>Interfase implementations\UI\UISequenceVideoItem</Filter>
     </ClCompile>
     <ClCompile Include="..\xrRender\stdafx.cpp">
       <Filter>Kernel</Filter>
@@ -432,9 +315,6 @@
     <ClCompile Include="uber_deffer.cpp">
       <Filter>Shading templates</Filter>
     </ClCompile>
-    <ClCompile Include="dxPixEventWrapper.cpp">
-      <Filter>Debug</Filter>
-    </ClCompile>
     <ClCompile Include="3DFluidGrid.cpp">
       <Filter>3DFluidCore</Filter>
     </ClCompile>
@@ -562,114 +442,6 @@
     </ClInclude>
     <ClInclude Include="..\xrRender\DetailModel.h">
       <Filter>Details</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\RenderFactory.h">
-      <Filter>Interfase implementations\RenderFactory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxRenderFactory.h">
-      <Filter>Interfase implementations\RenderFactory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\LensFlareRender.h">
-      <Filter>Interfase implementations\LensFlare</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxLensFlareRender.h">
-      <Filter>Interfase implementations\LensFlare</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\FactoryPtr.h">
-      <Filter>Interfase implementations\FactoryPtr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\ApplicationRender.h">
-      <Filter>Interfase implementations\ApplicationRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxApplicationRender.h">
-      <Filter>Interfase implementations\ApplicationRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\RainRender.h">
-      <Filter>Interfase implementations\RainRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxRainRender.h">
-      <Filter>Interfase implementations\RainRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\ThunderboltRender.h">
-      <Filter>Interfase implementations\ThunderboltRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxThunderboltRender.h">
-      <Filter>Interfase implementations\ThunderboltRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\EnvironmentRender.h">
-      <Filter>Interfase implementations\EnvironmentRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxEnvironmentRender.h">
-      <Filter>Interfase implementations\EnvironmentRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\RenderDeviceRender.h">
-      <Filter>Interfase implementations\RenderDeviceRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxRenderDeviceRender.h">
-      <Filter>Interfase implementations\RenderDeviceRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\ConsoleRender.h">
-      <Filter>Interfase implementations\ConsoleRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxConsoleRender.h">
-      <Filter>Interfase implementations\ConsoleRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\ObjectSpaceRender.h">
-      <Filter>Interfase implementations\ObjectSpaceRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxObjectSpaceRender.h">
-      <Filter>Interfase implementations\ObjectSpaceRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\FontRender.h">
-      <Filter>Interfase implementations\FontRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxFontRender.h">
-      <Filter>Interfase implementations\FontRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\StatGraphRender.h">
-      <Filter>Interfase implementations\StatGraphRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxStatGraphRender.h">
-      <Filter>Interfase implementations\StatGraphRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\ThunderboltDescRender.h">
-      <Filter>Interfase implementations\ThunderboltDescRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxThunderboltDescRender.h">
-      <Filter>Interfase implementations\ThunderboltDescRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\StatsRender.h">
-      <Filter>Interfase implementations\StatsRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxStatsRender.h">
-      <Filter>Interfase implementations\StatsRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\DebugShader.h">
-      <Filter>Interfase implementations\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\DebugRender.h">
-      <Filter>Interfase implementations\Debug\DebugRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxDebugRender.h">
-      <Filter>Interfase implementations\Debug\DebugRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\UIRender.h">
-      <Filter>Interfase implementations\UI\UIRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxUIRender.h">
-      <Filter>Interfase implementations\UI\UIRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\UIShader.h">
-      <Filter>Interfase implementations\UI\UIShader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxUIShader.h">
-      <Filter>Interfase implementations\UI\UIShader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\UISequenceVideoItem.h">
-      <Filter>Interfase implementations\UI\UISequenceVideoItem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxUISequenceVideoItem.h">
-      <Filter>Interfase implementations\UI\UISequenceVideoItem</Filter>
     </ClInclude>
     <ClInclude Include="..\xrRender\cl_intersect.h">
       <Filter>Kernel</Filter>
@@ -823,9 +595,6 @@
     </ClInclude>
     <ClInclude Include="..\xrRender\WallmarksEngine.h">
       <Filter>Wallmarks</Filter>
-    </ClInclude>
-    <ClInclude Include="dxPixEventWrapper.h">
-      <Filter>Debug</Filter>
     </ClInclude>
     <ClInclude Include="3DFluidGrid.h">
       <Filter>3DFluidCore</Filter>
