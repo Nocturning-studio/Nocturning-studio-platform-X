@@ -15,8 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IBLGen.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
+    <ClCompile Include="IBLGen.cpp" />
   </ItemGroup>
 </Project>
