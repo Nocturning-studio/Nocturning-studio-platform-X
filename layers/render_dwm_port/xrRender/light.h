@@ -1,7 +1,7 @@
 #ifndef LAYERS_XRRENDER_LIGHT_H_INCLUDED
 #define LAYERS_XRRENDER_LIGHT_H_INCLUDED
 
-#include "../xrcdb/ispatial.h"
+//nclude "../xrcdb/ispatial.h"
 
 #if !defined(XRCPU_PIPE_EXPORTS)
 #	include "light_package.h"

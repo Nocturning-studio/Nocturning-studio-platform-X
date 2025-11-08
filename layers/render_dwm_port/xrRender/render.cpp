@@ -358,8 +358,8 @@ void CRender::update_options()
 bool					CRender::is_sun_static()
 {
 	extern	ENGINE_API	u32		renderer_value;
-
-	return renderer_value == RenderCreationParams::R_R4A || renderer_value == RenderCreationParams::R_R1;
+	//return renderer_value == RenderCreationParams::R_R4A || renderer_value == RenderCreationParams::R_R1;
+	return false;
 }
 
 void					CRender::create					()

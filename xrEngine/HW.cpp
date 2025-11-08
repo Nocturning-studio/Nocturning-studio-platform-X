@@ -869,7 +869,7 @@ void CHW::UpdateViews()
 		R_CHK(pDevice11->CreateShaderResourceView(pBaseDepthSurface, &depthSRVDesc, &pBaseDepthReadSRV)); // read SRV
 
 		// legacy mode
-		pBaseZB = pBaseDepthReadWriteDSV;
+		//pBaseZB = pBaseDepthReadWriteDSV;
 	}
 }
 #endif

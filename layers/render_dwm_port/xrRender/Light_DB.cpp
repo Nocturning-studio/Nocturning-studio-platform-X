@@ -5,7 +5,7 @@
 #include "../xrEngine/xrLevel.h"
 #include "../xrEngine/igame_persistent.h"
 #include "../xrEngine/environment.h"
-#include "../utils/xrLC_Light/R_light.h"
+#include "../xrLC/xrLC/R_light.h"
 #include "light_db.h"
 
 CLight_DB::CLight_DB()
@@ -180,7 +180,7 @@ void			CLight_DB::add_light		(light* L)
 
 	bool r4_full_static_lighting = false;
 
-	if (::Render->is_sun_static() && !opt(R__USE_DYN_SHADOWS))
+	if (RImplementation.is_sun_static() && !opt(R__USE_DYN_SHADOWS))
 		L->flags.bShadow = FALSE;
 
 	if (L->flags.bStatic && r4_full_static_lighting == false)
@@ -221,7 +221,7 @@ void CLight_DB::Update			()
 		sun_adapted->set_color		(E.sun_color.x* r__sun_lumscale,E.sun_color.y* r__sun_lumscale,E.sun_color.z* r__sun_lumscale);
 		sun_adapted->set_range		(600.f	);
 
-		if (!::Render->is_sun_static())
+		if (!RImplementation.is_sun_static())
 		{
 			sun_adapted->set_rotation(OD, _sun_original->right);
 			sun_adapted->set_position(OP);

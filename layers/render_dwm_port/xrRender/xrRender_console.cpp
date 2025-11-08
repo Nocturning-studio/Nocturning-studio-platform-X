@@ -5,7 +5,7 @@
 #pragma warning(disable:4482)
 
 #include	"xrRender_console.h"
-#include	"dxRenderDeviceRender.h"
+//nclude	"dxRenderDeviceRender.h"
 
 #include	"../xrEngine/xr_ioconsole.h"
 #include	"../xrEngine/xr_ioc_cmd.h"
@@ -377,7 +377,7 @@ public		:
 		u32 m_lmaps = 0; 
 		u32 c_lmaps = 0;
 
-		dxRenderDeviceRender::Instance().ResourcesGetMemoryUsage( m_base, c_base, m_lmaps, c_lmaps );
+		Device.Resources->_GetMemoryUsage(m_base, c_base, m_lmaps, c_lmaps);
 
 		Msg		("memory usage  mb \t \t video    \t managed      \t system \n" );
 
@@ -558,7 +558,7 @@ public:
 	CCC_DumpResources(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = TRUE; };
 	virtual void Execute(LPCSTR args) {
 		RImplementation.Models->dump();
-		dxRenderDeviceRender::Instance().Resources->Dump(false);
+		Device.Resources->Dump(false);
 	}
 };
 

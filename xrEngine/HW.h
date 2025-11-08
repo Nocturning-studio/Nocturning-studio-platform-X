@@ -122,7 +122,8 @@ class CHW
 	D3D_FEATURE_LEVEL FeatureLevel;
 
 	ID3D11RenderTargetView* pBaseRT; //	combine with DX9 pBaseRT via typedef
-	ID3D11DepthStencilView* pBaseZB; // pBaseDepthReadWriteDSV
+	//ID3D11DepthStencilView* pBaseZB; // pBaseDepthReadWriteDSV
+#define pBaseZB pBaseDepthReadWriteDSV
 
 	/*
 		! Depth-stencil view

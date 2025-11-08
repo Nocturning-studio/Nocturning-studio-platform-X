@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "../xrEngine/igame_persistent.h"
 #include "../xrEngine/environment.h"
-#include "dxEnvironmentRender.h"
+//#include "dxEnvironmentRender.h"
 
 #include "halton.h"
 
@@ -112,9 +112,9 @@ void CRenderTarget::phase_combine()
 		envclr.z *= 2 * r__sun_lumscale_hemi;
 
 		// Setup textures
-		dxEnvDescriptorMixerRender& envdescren = *(dxEnvDescriptorMixerRender*)(&*envdesc.m_pDescriptorMixer);
-		ID3DBaseTexture* e0 = menu_pp ? 0 : envdescren.sky_r_textures_env[0].second->surface_get();
-		ID3DBaseTexture* e1 = menu_pp ? 0 : envdescren.sky_r_textures_env[1].second->surface_get();
+		CEnvDescriptorMixer* envdescren = g_pGamePersistent->Environment().CurrentEnv;
+		ID3DBaseTexture* e0 = menu_pp ? 0 : envdescren->sky_r_textures_env[0].second->surface_get();
+		ID3DBaseTexture* e1 = menu_pp ? 0 : envdescren->sky_r_textures_env[1].second->surface_get();
 		t_envmap_0->surface_set(e0);	_RELEASE(e0);
 		t_envmap_1->surface_set(e1);	_RELEASE(e1);
 	}
@@ -273,18 +273,23 @@ void CRenderTarget::phase_combine()
 		}
 
 		// resolve SSAA
+#ifdef USE_FFX
 		if (RImplementation.o.ssaa > USE_FSR)
 			phase_amd_fsr_port();
-		else if (RImplementation.o.ssaa > USE_SSAA)
+#endif
+		if (RImplementation.o.ssaa > USE_SSAA && 
+			RImplementation.o.ssaa < USE_FSR)
 			resolve_ssaa();
 	}
 
+#ifdef USE_FFX
 	// AMD CAS
 	if(opt(R__USE_CAS))
 	{
 		phase_amd_cas();
 	}
-	
+#endif
+
 	// Final PP
 	{
 		phase_pp();

@@ -7,7 +7,7 @@
 #include "occRasterizer.h"
 #include "../xrEngine/GameFont.h"
 
-#include "dxRenderDeviceRender.h"
+//#include "dxRenderDeviceRender.h"
  
 float	psOSSR		= .001f;
 

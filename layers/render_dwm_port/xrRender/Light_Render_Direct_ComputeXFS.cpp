@@ -54,7 +54,7 @@ void CLight_Compute_XFORM_and_VIS::compute_xf_spot	(light* L)
 	float	factor4				= powf	(widefactor,1.f/2.f);		// make it linear ???
 
 	float r__smap_quality_static = 0.5f;
-	float	shadow_quality		= ::Render->is_sun_static() ? r__smap_quality_static : r__smap_quality;
+	float	shadow_quality		= RImplementation.is_sun_static() ? r__smap_quality_static : r__smap_quality;
 
 	float	factor				= shadow_quality * factor0 * factor1 * factor2 * factor3 * factor4;
 	
