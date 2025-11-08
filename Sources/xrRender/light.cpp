@@ -166,11 +166,12 @@ void light::set_position(const Fvector& P)
 	float eps = EPS_L;
 	if (position.similar(P, eps))
 	{
-		Msg("~ [Debug] set_position skipped - same position");
+		DbgMsg("~ [Debug] set_position skipped - same position");
 		return;
 	}
 
-	Msg("~ [Debug] set_position called: from (%.1f,%.1f,%.1f) to (%.1f,%.1f,%.1f)", position.x, position.y, position.z,
+	DbgMsg("~ [Debug] set_position called: from (%.1f,%.1f,%.1f) to (%.1f,%.1f,%.1f)", position.x, position.y,
+		   position.z,
 		P.x, P.y, P.z);
 
 	position.set(P);
@@ -206,7 +207,7 @@ void light::set_rotation(const Fvector& D, const Fvector& R)
 
 void light::spatial_move()
 {
-	Msg("~ [Debug] spatial_move called for light at (%.1f,%.1f,%.1f)", position.x, position.y, position.z);
+	DbgMsg("~ [Debug] spatial_move called for light at (%.1f,%.1f,%.1f)", position.x, position.y, position.z);
 
 	// ѕроверка валидности позиции перед обновлением
 	Fvector zero = {0, -1000, 0};

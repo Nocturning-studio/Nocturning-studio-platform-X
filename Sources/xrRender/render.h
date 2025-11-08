@@ -299,7 +299,7 @@ class CRender : public R_dsgraph_structure
 	void u_DBT_disable();
 	float hclip(float v, float dim);
 	void draw_volume(light* L);
-	void accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev, float fBias);
+	void accumulate_sun(u32 sub_phase, Fmatrix& xform, Fmatrix& xform_prev, float fBias); //, float fSize);
 	void accumulate_volumetric_sun(u32 sub_phase, Fmatrix m_shadow, Fvector L_dir);
 	void accumulate_point_lights(light* L);
 	void accumulate_spot_lights(light* L);
@@ -307,8 +307,8 @@ class CRender : public R_dsgraph_structure
 	void calculate_bloom();
 	void render_bloom();
 	void downsample_scene_luminance();
+	void prepare_scene_luminance();
 	void save_scene_luminance();
-	void prepare_adapted_luminance();
 	void apply_exposure();
 	void render_autoexposure();
 	void combine_additional_postprocess();

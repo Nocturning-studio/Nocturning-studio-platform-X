@@ -215,7 +215,7 @@ void CRender::update_options()
 {
 	OPTICK_EVENT("CRender::update_options");
 
-	o.smapsize = 1024;
+	o.smapsize = 2048;
 
 	o.nvdbt = HW.support((D3DFORMAT)MAKEFOURCC('N', 'V', 'D', 'B'), D3DRTYPE_SURFACE, 0);
 	if (o.nvdbt)
