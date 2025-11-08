@@ -1,7 +1,7 @@
 #pragma once
 
-#include "light.h"
-
+#include "../render_dwm_port/xrRender/light.h"
+/*
 class	light_Package
 {
 public:
@@ -12,3 +12,4 @@ public:
 	void					clear				();
 	void					sort				();
 };
+*/

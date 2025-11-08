@@ -1,13 +1,15 @@
 #ifndef LAYERS_XRRENDER_LIGHT_H_INCLUDED
 #define LAYERS_XRRENDER_LIGHT_H_INCLUDED
 
-//nclude "../xrcdb/ispatial.h"
+#include "ispatial.h"
 
 #if !defined(XRCPU_PIPE_EXPORTS)
 #	include "light_package.h"
 #	include "light_smapvis.h"
 #	include "light_GI.h"
 #endif
+
+class light_Package;
 
 class	light : public IRender_Light, public ISpatial
 {
@@ -138,6 +140,18 @@ public:
 
 	light();
 	virtual ~light();
+};
+
+class light_Package
+{
+  public:
+	xr_vector<light*> v_point;
+	xr_vector<light*> v_spot;
+	xr_vector<light*> v_shadowed;
+
+  public:
+	void clear();
+	void sort();
 };
 
 #endif // #define LAYERS_XRRENDER_LIGHT_H_INCLUDED

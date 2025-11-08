@@ -1,9 +1,9 @@
 // xrRender_R4.cpp : Defines the entry point for the DLL application.
 //
 #include "stdafx.h"
-#include "dxRenderFactory.h"
-#include "dxUIRender.h"
-#include "dxDebugRender.h"
+//#include "dxRenderFactory.h"
+//#include "dxUIRender.h"
+//#include "dxDebugRender.h"
 #include "xrRender_R4.h"
 
 #pragma comment(lib,"xrEngine.lib")

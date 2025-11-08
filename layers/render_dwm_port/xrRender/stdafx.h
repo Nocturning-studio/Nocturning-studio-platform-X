@@ -30,7 +30,7 @@
 
 #include "xrD3DDefs.h"
 
-#include "dxPixEventWrapper.h"
+//#include "dxPixEventWrapper.h"
 
 #include "HW.h"
 #include "Shader.h"

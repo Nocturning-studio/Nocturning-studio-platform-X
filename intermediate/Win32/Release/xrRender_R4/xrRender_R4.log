@@ -109,4 +109,758 @@ D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(1717,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(1862,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(2032,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\stdafx.h(33,10): fatal error C1083: Не удается открыть файл включение: dxPixEventWrapper.h: No such file or directory,
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\LightTrack.h(77,40): warning C4458: объявление "result" скрывает член класса
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\LightTrack.h(49,11): message : см. объявление "CROS_impl::result"
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+  blender_add_effects.cpp
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+  Blender_BmmD.cpp
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+  blender_combine.cpp
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+  blender_deffer_aref.cpp
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+  blender_deffer_flat.cpp
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+  blender_deffer_model.cpp
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+  Blender_detail_still.cpp
+cl : командная строка warning D9035: использование параметра "Zc:forScope-" нежелательно, он будет удален в следующих выпусках
+  Blender_Editor_Selection.cpp
+  Blender_Editor_Wire.cpp
+  blender_light_direct.cpp
+  blender_light_mask.cpp
+  blender_light_occq.cpp
+  blender_light_point.cpp
+  blender_light_reflected.cpp
+  blender_light_spot.cpp
+  Blender_Lm(EbB).cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_combine.cpp(12,114): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_combine.cpp(12,70): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_combine.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_mask.cpp(21,117): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_mask.cpp(21,79): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_occq.cpp(24,32): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_occq.cpp(24,19): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_reflected.cpp(16,87): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_reflected.cpp(16,68): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(21,94): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(21,75): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_mask.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл ..\xrRender\blender_light_occq.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_spot.cpp(26,95): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_spot.cpp(26,76): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_reflected.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_point.cpp(26,95): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_point.cpp(26,76): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_direct.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_combine.cpp(51,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_spot.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_occq.cpp(33,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_occq.cpp(33,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_point.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_reflected.cpp(22,4): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(22,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(22,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл ..\xrRender\blender_light_occq.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Editor_Selection.cpp(37,104): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Editor_Selection.cpp(37,60): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_combine.cpp(71,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл ..\xrRender\blender_light_direct.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_point.cpp(40,91): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_point.cpp(40,72): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Editor_Selection.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_spot.cpp(40,91): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_spot.cpp(40,72): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_combine.cpp(77,117): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_combine.cpp(77,79): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(36,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_detail_still.cpp(50,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_detail_still.cpp(50,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_add_effects.cpp(16,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_deffer_flat.cpp(40,4): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Lm(EbB).cpp(51,120): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Lm(EbB).cpp(51,68): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_deffer_model.cpp(71,114): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_deffer_model.cpp(71,52): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_deffer_aref.cpp(46,119): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_deffer_aref.cpp(46,56): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_point.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_spot.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_combine.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл ..\xrRender\Blender_detail_still.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(40,86): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(40,67): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_add_effects.cpp(34,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Lm(EbB).cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_deffer_model.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_deffer_aref.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_spot.cpp(53,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_point.cpp(53,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_direct.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_detail_still.cpp(57,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_detail_still.cpp(57,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+  blender_luminance.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_deffer_model.cpp(84,5): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_spot.cpp(58,93): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_spot.cpp(58,74): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(41,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(41,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_add_effects.cpp(83,113): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_add_effects.cpp(83,85): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+  Blender_Model_EbB.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_deffer_aref.cpp(58,117): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_deffer_aref.cpp(58,54): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_point.cpp(58,91): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_point.cpp(58,72): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_spot.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл ..\xrRender\Blender_detail_still.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл ..\xrRender\blender_light_direct.cpp)
+  Blender_Particle.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_add_effects.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_deffer_model.cpp(102,130): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_deffer_model.cpp(102,92): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_deffer_aref.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_point.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_detail_still.cpp(62,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_detail_still.cpp(62,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_spot.cpp(71,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(50,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_deffer_model.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_add_effects.cpp(106,5): error C2039: "r_ComputePass": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл ..\xrRender\Blender_detail_still.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_point.cpp(71,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_spot.cpp(76,93): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_spot.cpp(76,74): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(65,102): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(65,74): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_spot.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_point.cpp(76,95): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_point.cpp(76,76): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_direct.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_point.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_spot.cpp(89,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(77,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_point.cpp(89,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(81,109): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(81,81): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_direct.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_add_effects.cpp(219,74): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_add_effects.cpp(219,46): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_add_effects.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(94,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(99,86): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(99,67): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\blender_light_direct.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(100,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(100,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл ..\xrRender\blender_light_direct.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_light_direct.cpp(114,5): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+  Blender_Screen_SET.cpp
+  Blender_sky.cpp
+  Blender_tree.cpp
+  ColorMapManager.cpp
+  DetailManager.cpp
+  DetailManager_CACHE.cpp
+  DetailManager_Decompress.cpp
+  DetailManager_soft.cpp
+  DetailManager_VS.cpp
+  DetailModel.cpp
+  FLOD.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_sky.cpp(24,112): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_sky.cpp(24,59): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_sky.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(67,130): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(67,87): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Model_EbB.cpp(63,123): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Model_EbB.cpp(63,70): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Model_EbB.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(68,129): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(68,75): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_sky.cpp(42,119): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_sky.cpp(42,66): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(69,115): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(69,75): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(70,123): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(70,75): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(71,127): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(71,75): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_sky.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(72,121): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(72,75): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(93,113): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(93,74): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(96,128): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(96,84): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(97,126): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(97,82): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(98,126): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(98,82): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(99,126): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(99,82): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(100,127): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Blender_Particle.cpp(100,83): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл ..\xrRender\Blender_Particle.cpp)
+  FProgressive.cpp
+  FSkinned.cpp
+  FTreeVisual.cpp
+  FVisual.cpp
+  HOM.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\FLOD.cpp(42,16): warning C4457: объявление "N" скрывает параметр функции
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\FLOD.cpp(31,27): message : см. объявление "N"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\FLOD.cpp(62,13): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+  light.cpp
+  D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\light.cpp(61) :  TODO :   "Only shadowed spot implements projective texture"
+  LightTrack.cpp
+  Light_DB.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\HOM.cpp(219,3): warning C4456: объявление "v" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\HOM.cpp(205,13): message : см. объявление "v"
+  light_GI.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\DetailManager.cpp(329,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  Light_Package.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Light_DB.cpp(142,99): error C2039: "falloff": не является членом "R_Light".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrLC\xrLC\R_light.h(7): message : см. объявление "R_Light"
+  Light_Render_Direct.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Light_DB.cpp(142,106): error C2660: light::set_attenuation_params: функция не принимает 3 аргументов
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\light.h(136,9): message : см. объявление "light::set_attenuation_params" (компилируется исходный файл ..\xrRender\Light_DB.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\Light_DB.cpp(143,25): error C2065: STYPE_LIGHTSOURCEHEMI: необъявленный идентификатор
+  Light_Render_Direct_ComputeXFS.cpp
+  light_smapvis.cpp
+  light_vis.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\LightTrack.cpp(411,58): error C2065: STYPE_LIGHTSOURCEHEMI: необъявленный идентификатор
+  ModelPool.cpp
+  NvTriStrip.cpp
+  NvTriStripObjects.cpp
+  occRasterizer.cpp
+  occRasterizer_core.cpp
+  D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\FSkinned.cpp(784) :  TODO :   fix skinning
+  ParticleEffect.cpp
+  ParticleEffectDef.cpp
+  ParticleGroup.cpp
+  rendertarget.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\ParticleCustom.h(6,1): error C2504: IRender_Visual: не определен базовый класс (компилируется исходный файл ..\xrRender\ParticleEffect.cpp)
+  rendertarget_accum_direct.cpp
+  rendertarget_accum_omnipart_geom.cpp
+  rendertarget_accum_point.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(144,5): error C2065: vis: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(148,6): error C2065: vis: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(153,5): error C2065: vis: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(154,5): error C2065: vis: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(154,24): error C2065: vis: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(154,37): error C2065: vis: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(162,3): error C2065: vis: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(163,3): error C2065: vis: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(164,3): error C2065: vis: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(164,22): error C2065: vis: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(164,35): error C2065: vis: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrSE_Factory\smart_cast.h(18,10): fatal error C1083: Не удается открыть файл включение: typelist.h: No such file or directory, (компилируется исходный файл ..\xrRender\ParticleGroup.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(184,11): error C2065: shader: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(211,15): error C2065: shader: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleEffect.cpp(221,4): error C2065: shader: необъявленный идентификатор
+  rendertarget_accum_point_geom.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\ParticleCustom.h(6,1): error C2504: IRender_Visual: не определен базовый класс (компилируется исходный файл ..\xrRender\ParticleEffectDef.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(108,3): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(86,6): message : см. объявление "i"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_accum_direct.cpp(37,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(122,3): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(86,6): message : см. объявление "i"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(133,3): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(86,6): message : см. объявление "i"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_accum_direct.cpp(69,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(162,10): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(86,6): message : см. объявление "i"
+  rendertarget_accum_reflected.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(179,4): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(86,6): message : см. объявление "i"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(193,4): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(86,6): message : см. объявление "i"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(205,2): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(86,6): message : см. объявление "i"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(215,2): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStrip.cpp(86,6): message : см. объявление "i"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_accum_direct.cpp(145,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  rendertarget_accum_spot.cpp
+  rendertarget_accum_spot_geom.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_accum_direct.cpp(418,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_accum_direct.cpp(471,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_accum_direct.cpp(516,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_accum_direct.cpp(545,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_accum_direct.cpp(622,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_accum_direct.cpp(712,19): warning C4456: объявление "pv" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_accum_direct.cpp(550,12): message : см. объявление "pv"
+  rendertarget_async_screenshot.cpp
+  rendertarget_create_minmaxSM.cpp
+  rendertarget_draw_rain.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_draw_rain.cpp(5,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStripObjects.cpp(1052,4): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStripObjects.cpp(954,6): message : см. объявление "i"
+  D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_accum_spot.cpp(417) :  TODO :   "Implement spot RSM"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_create_minmaxSM.cpp(5,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  rendertarget_draw_volume.cpp
+  rendertarget_enable_scissor.cpp
+  rendertarget_phase_accumulator.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget.cpp(174,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  rendertarget_phase_add_effects.cpp
+  rendertarget_phase_bloom.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStripObjects.cpp(1308,23): warning C4456: объявление "experimentId" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\NvTriStripObjects.cpp(1225,6): message : см. объявление "experimentId"
+  rendertarget_phase_combine.cpp
+  rendertarget_phase_luminance.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_add_effects.cpp(8,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_bloom.cpp(67,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_add_effects.cpp(44,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_add_effects.cpp(65,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_add_effects.cpp(194,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_combine.cpp(10,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_add_effects.cpp(221,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_add_effects.cpp(230,9): error C2039: "set_ComputeShader": не является членом "CBackend".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(69): message : см. объявление "CBackend"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_add_effects.cpp(235,9): error C2039: "ComputeUAVWithRestore": не является членом "CBackend".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(69): message : см. объявление "CBackend"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_add_effects.cpp(246,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_add_effects.cpp(264,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  rendertarget_phase_msaa_mark_edges.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_add_effects.cpp(292,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  rendertarget_phase_occq.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_add_effects.cpp(307,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_combine.cpp(125,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  rendertarget_phase_PP.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_combine.cpp(194,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_msaa_mark_edges.cpp(5,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  rendertarget_phase_rain.cpp
+  rendertarget_phase_scene.cpp
+  rendertarget_phase_smap_D.cpp
+  rendertarget_phase_smap_S.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget.cpp(1068,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget.cpp(1081,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget.cpp(1111,20): warning C4244: =: преобразование "float" в "u32", возможна потеря данных
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget.cpp(1112,21): warning C4244: =: преобразование "float" в "u32", возможна потеря данных
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_PP.cpp(108,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_combine.cpp(308,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_combine.cpp(367,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_combine.cpp(392,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  rendertarget_phase_wallmarks.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_combine.cpp(526,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_scene.cpp(6,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_combine.cpp(548,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_smap_S.cpp(3) :  TODO :   "!!! implement R2 spot shadow mapping"
+  D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_smap_S.cpp(38) :  TODO :   "can optimize for multi-lights covering more than say 50%..."
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\rendertarget_phase_smap_D.cpp(43,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  VertexCache.cpp
+  WallmarksEngine.cpp
+  xrRender_console.cpp
+  xrRender_R4.cpp
+  xrStripify.cpp
+  3DFluidBlenders.cpp
+  3DFluidData.cpp
+  3DFluidEmitters.cpp
+  3DFluidGrid.cpp
+  3DFluidManager.cpp
+  3DFluidObstacles.cpp
+  3DFluidRenderer.cpp
+  3DFluidVolume.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(215,81): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(215,76): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+  blender_bloom_build.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(218,87): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(218,82): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(221,86): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(221,81): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(224,92): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(224,87): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(227,85): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(227,80): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(231,28): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(231,15): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(248,85): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(248,80): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(251,87): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(251,82): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(255,28): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(255,15): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(272,84): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(272,79): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(276,115): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(276,81): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(279,85): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(279,80): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(282,81): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(282,76): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(285,82): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(285,77): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(289,28): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(289,15): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(309,102): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(309,97): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(313,111): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(313,106): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(317,28): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(317,15): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(334,128): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(334,78): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(340,28): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(340,15): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(357,80): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(357,75): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(364,28): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(364,15): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(381,88): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(381,83): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(382,30): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(382,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(385,119): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(385,85): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(397,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(397,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(400,92): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(400,87): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_bloom_build.cpp(12,125): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_bloom_build.cpp(12,81): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл blender_bloom_build.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(401,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(401,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(422,86): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(422,81): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(423,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(423,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(426,88): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(426,83): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(427,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(427,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(430,137): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(430,87): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(432,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(432,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(435,93): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(435,88): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(436,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(436,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(439,142): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "int" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(439,92): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(441,29): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidBlenders.cpp(441,16): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл 3DFluidBlenders.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ParticleGroup.h(68,2): error C2504: IParticleCustom: не определен базовый класс (компилируется исходный файл ..\xrRender\ModelPool.cpp)
+  blender_minmax.cpp
+  blender_msaa.cpp
+  blender_rain.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrODE\include\ode\common.h(102,1): fatal error C1189: #error:  You must #define dSINGLE or dDOUBLE (компилируется исходный файл 3DFluidObstacles.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidRenderer.cpp(172,2): warning C4305: аргумент: усечение из "D3D11_BIND_FLAG" в "bool"
+  halton.cpp
+  PSLibrary.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ModelPool.cpp(61,36): error C2440: =: невозможно преобразовать "T *" в "IRender_Visual *"
+          with
+          [
+              T=PS::CParticleGroup
+          ]
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ModelPool.cpp(61,34): message : Типы, на которые указывают указатели, не связаны; для преобразования требуется reinterpret_cast, приведение в стиле С или приведение в стиле функции в круглых скобках
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_rain.cpp(29,6): error C2039: "Jitter": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_rain.cpp(49,117): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\blender_rain.cpp(49,89): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл blender_rain.cpp)
+  render.cpp
+  rendertarget_phase_ffx.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(267,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(371,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(386,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(409,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(507,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(541,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(570,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(604,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(615,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(633,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  render_blenders.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(704,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(721,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\3DFluidManager.cpp(755,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  render_dsgraph_build.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\ParticleCustom.h(6,1): error C2504: IRender_Visual: не определен базовый класс (компилируется исходный файл PSLibrary.cpp)
+  render_dsgraph_render.cpp
+  render_dsgraph_render_lods.cpp
+  render_loader.cpp
+  render_occlusion.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ModelPool.cpp(410,10): error C2440: return: невозможно преобразовать "PS::CParticleGroup *" в "IRender_Visual *"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\ModelPool.cpp(410,9): message : Типы, на которые указывают указатели, не связаны; для преобразования требуется reinterpret_cast, приведение в стиле С или приведение в стиле функции в круглых скобках
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\WallmarksEngine.cpp(347,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render_lods.cpp(18,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  render_R_calculate.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(260,21): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\PSLibrary.cpp(115,18): warning C4456: объявление "it" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\PSLibrary.cpp(107,12): message : см. объявление "it"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(261,7): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(292,13): error C2039: "set_GS": не является членом "CBackend".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(69): message : см. объявление "CBackend"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(304,14): error C2039: "set_HS": не является членом "CBackend".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(69): message : см. объявление "CBackend"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(305,14): error C2039: "set_DS": не является членом "CBackend".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(69): message : см. объявление "CBackend"
+  render_R_lights.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(379,12): error C2039: "set_GS": не является членом "CBackend".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(69): message : см. объявление "CBackend"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(391,13): error C2039: "set_HS": не является членом "CBackend".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(69): message : см. объявление "CBackend"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(392,13): error C2039: "set_DS": не является членом "CBackend".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\R_Backend.h(69): message : см. объявление "CBackend"
+  render_R_planar.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(450,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(501,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(549,9): error C2039: "RenderActiveItemUI": не является членом "CCustomHUD".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\CustomHUD.h(20): message : см. объявление "CCustomHUD"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(12,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(567,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(577,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(629,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  render_R_rain.cpp
+  render_R_render.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(67,4): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(122,10): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(150,16): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(152,16): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(162,7): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(168,7): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(172,15): warning C4456: объявление "L" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(100,11): message : см. объявление "L"
+  render_R_sun.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(179,7): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(183,15): warning C4456: объявление "L" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(100,11): message : см. объявление "L"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(191,7): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(196,10): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(202,4): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(209,10): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(220,4): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_lights.cpp(233,4): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_planar.cpp(6,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_rain.cpp(32,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(17,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  render_R_sun_support.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(148,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(201,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render.cpp(614,1): error C2084: функция "void CRender::add_StaticWallmark(ref_shader &,const Fvector &,float,CDB::TRI *,Fvector *)" уже имеет текст реализации
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render.cpp(606): message : см. предыдущее определение "add_StaticWallmark"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(241,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render.cpp(639,1): error C2084: функция "void CRender::add_SkeletonWallmark(const Fmatrix *,CKinematics *,ref_shader &,const Fvector &,const Fvector &,float)" уже имеет текст реализации
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render.cpp(632): message : см. предыдущее определение "add_SkeletonWallmark"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(287,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(306,4): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(314,4): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(340,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(383,4): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(394,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(402,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(410,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(427,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(433,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(440,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(449,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(466,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(474,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(480,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+  render_screenshot.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_render.cpp(489,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\particlegroup.h(68,2): error C2504: IParticleCustom: не определен базовый класс (компилируется исходный файл render_dsgraph_build.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_rain.cpp(232,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_screenshot.cpp(153,22): warning C4456: объявление "saved" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_screenshot.cpp(141,13): message : см. объявление "saved"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_screenshot.cpp(157,18): warning C4456: объявление "fs" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_screenshot.cpp(145,12): message : см. объявление "fs"
+  render_sector.cpp
+  render_sector_detect.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_sun.cpp(331,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(93,26): warning C4456: объявление "N" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(84,17): message : см. объявление "N"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_sun.cpp(355,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(158,54): error C2039: "gs": не является членом "SPass".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\shader.h(92): message : см. объявление "SPass"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(167,22): error C2039: "hs": не является членом "SPass".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\shader.h(92): message : см. объявление "SPass"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(168,22): error C2039: "ds": не является членом "SPass".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\shader.h(92): message : см. объявление "SPass"
+  render_sector_traversal.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(275,54): error C2039: "gs": не является членом "SPass".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\shader.h(92): message : см. объявление "SPass"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(284,22): error C2039: "hs": не является членом "SPass".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\shader.h(92): message : см. объявление "SPass"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(285,22): error C2039: "ds": не является членом "SPass".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\shader.h(92): message : см. объявление "SPass"
+  render_TAA.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(327,39): warning C4456: объявление "I" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(319,39): message : см. объявление "I"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_sun.cpp(604,4): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_sun.cpp(655,4): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_sun.cpp(718,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(393,39): warning C4456: объявление "I" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(385,39): message : см. объявление "I"
+  TextureDX11.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(779,24): warning C4456: объявление "E" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_render.cpp(736,42): message : см. объявление "E"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_sun.cpp(737,2): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(482,39): warning C4456: объявление "I" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(473,39): message : см. объявление "I"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_sun.cpp(988,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_R_sun.cpp(1027,3): warning C4002: слишком много аргументов для вызова макроса, подобного функции, "PIX_EVENT"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(519,23): warning C4456: объявление "Tpos" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(465,11): message : см. объявление "Tpos"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(577,39): warning C4456: объявление "I" скрывает предыдущее локальное объявление
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_dsgraph_build.cpp(569,39): message : см. объявление "I"
+  tga.cpp
+  D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_TAA.cpp(8) :  TODO :   Fix TAA matrices & backend
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_TAA.cpp(86,43): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+  uber_deffer.cpp
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(108,59): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(112,57): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\_fbox2.h(33,19): warning C4458: объявление "x1" скрывает член класса (компилируется исходный файл render_sector_traversal.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(117,9): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\_fbox2.h(22,6): message : см. объявление "_box2<float>::<unnamed-tag>::x1" (компилируется исходный файл render_sector_traversal.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(117,41): error C2039: "TESS_PN": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(117,6): error C2065: TESS_PN: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\_fbox2.h(34): message : во время компиляции функции-члена класс шаблон "_box2<float> &_box2<float>::set(T,T,T,T)"
+          with
+          [
+              T=float
+          ] (компилируется исходный файл render_sector_traversal.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_sector_traversal.cpp(40): message : выполняется компиляция ссылки на экземпляр шаблон функции "_box2<float> &_box2<float>::set(T,T,T,T)"
+          with
+          [
+              T=float
+          ]
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(117,54): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\render_sector.h(13): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "_box2<float>" (компилируется исходный файл render_sector_traversal.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\_fbox2.h(33,25): warning C4458: объявление "y1" скрывает член класса (компилируется исходный файл render_sector_traversal.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(117,86): error C2039: "TESS_PN_HM": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\_fbox2.h(22,10): message : см. объявление "_box2<float>::<unnamed-tag>::y1" (компилируется исходный файл render_sector_traversal.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(117,96): error C2065: TESS_PN_HM: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\_fbox2.h(33,31): warning C4458: объявление "x2" скрывает член класса (компилируется исходный файл render_sector_traversal.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\_fbox2.h(23,6): message : см. объявление "_box2<float>::<unnamed-tag>::x2" (компилируется исходный файл render_sector_traversal.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(124,9): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\_fbox2.h(33,37): warning C4458: объявление "y2" скрывает член класса (компилируется исходный файл render_sector_traversal.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(124,41): error C2039: "TESS_HM": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(124,6): error C2065: TESS_HM: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrCore\_fbox2.h(23,10): message : см. объявление "_box2<float>::<unnamed-tag>::y2" (компилируется исходный файл render_sector_traversal.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(124,54): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(124,86): error C2039: "TESS_PN_HM": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(124,96): error C2065: TESS_PN_HM: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(181,36): error C2039: "r_TessPass": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(182,10): error C2039: "r_TessPass": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(334,50): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(339,9): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(339,41): error C2039: "TESS_PN": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(339,6): error C2065: TESS_PN: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(339,54): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(339,86): error C2039: "TESS_PN_HM": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(339,96): error C2065: TESS_PN_HM: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(346,9): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(346,41): error C2039: "TESS_HM": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(346,6): error C2065: TESS_HM: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(346,54): error C2039: "TessMethod": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(346,86): error C2039: "TESS_PN_HM": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(346,96): error C2065: TESS_PN_HM: необъявленный идентификатор
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(384,6): error C2039: "r_TessPass": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(386,6): error C2039: "r_TessPass": не является членом "CBlender_Compile".
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(16): message : см. объявление "CBlender_Compile"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(421,88): error C2664: "void CBlender_Compile::r_Pass(LPCSTR,LPCSTR,bool,BOOL,BOOL,BOOL,D3DBLEND,D3DBLEND,BOOL,u32)": невозможно преобразовать аргумент 7 из "D3D11_BLEND" в "D3DBLEND"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(421,44): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(126,7): message : см. объявление "CBlender_Compile::r_Pass" (компилируется исходный файл uber_deffer.cpp)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(451,28): error C2664: "void CBlender_Compile::r_CullMode(D3DCULL)": невозможно преобразовать аргумент 1 из "D3D11_CULL_MODE" в "D3DCULL"
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\uber_deffer.cpp(451,15): message : Для преобразования в перечисляемый тип требуется явное приведение (static_cast, приведение в стиле С или приведение в стиле функции в круглых скобках)
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\xrEngine\blenders\Blender_Recorder.h(133,7): message : см. объявление "CBlender_Compile::r_CullMode" (компилируется исходный файл uber_deffer.cpp)

@@ -315,9 +315,8 @@ public:
 	//virtual void					add_StaticWallmark			(const wm_shader& S, const Fvector& P, float s, CDB::TRI* T, Fvector* V);
 	virtual void					clear_static_wallmarks		();
 	virtual void					add_SkeletonWallmark		(intrusive_ptr<CSkeletonWallmark> wm);
+	//virtual void					add_SkeletonWallmark		(const Fmatrix* xf, CKinematics* obj, ref_shader& sh, const Fvector& start, const Fvector& dir, float size);
 	virtual void					add_SkeletonWallmark		(const Fmatrix* xf, CKinematics* obj, ref_shader& sh, const Fvector& start, const Fvector& dir, float size);
-	virtual void add_SkeletonWallmark(const Fmatrix* xf, CKinematics* obj, ref_shader& sh, const Fvector& start,
-									  const Fvector& dir, float size);
 	//
 	virtual IBlender*				blender_create				(CLASS_ID cls);
 	virtual void					blender_destroy				(IBlender* &);
@@ -355,7 +354,7 @@ public:
 	virtual void					Screenshot					(ScreenshotMode mode, CMemoryWriter& memory_writer);
 	virtual void					ScreenshotAsyncBegin		();
 	virtual void					ScreenshotAsyncEnd			(CMemoryWriter& memory_writer);
-	virtual void		__stdcall		OnFrame						();
+	virtual void				OnFrame						();
 
 	// Render mode
 	virtual void					rmNear						();

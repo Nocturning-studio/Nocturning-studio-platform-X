@@ -4,6 +4,7 @@
 #define PIX_EVENT()
 
 #define RDEVICE Device
+#define DEV RDEVICE.Resources
 
 #define xr_strcpy strcpy_s
 #define xr_strcat strcat_s
