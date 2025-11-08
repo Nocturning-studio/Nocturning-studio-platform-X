@@ -19,13 +19,13 @@ CRT::~CRT()
 	Device.Resources->_DeleteRT(this);
 }
 
-void CRT::create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f)
+void CRT::create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f, u32 levels)
 {
 	if (pSurface)
 		return;
 
 	R_ASSERT(HW.pDevice && Name && Name[0] && w && h);
-	_order = CPU::GetCLK(); // Device.GetTimerGlobal()->GetElapsed_clk();
+	_order = CPU::GetCLK(); 
 
 	HRESULT _hr;
 
@@ -83,13 +83,13 @@ void CRT::create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f)
 
 	// Try to create texture/surface
 	Device.Resources->Evict();
-	_hr = HW.pDevice->CreateTexture(w, h, 1, usage, f, D3DPOOL_DEFAULT, &pSurface, NULL);
+	_hr = HW.pDevice->CreateTexture(w, h, levels, usage, f, D3DPOOL_DEFAULT, &pSurface, NULL);
 	if (FAILED(_hr) || (0 == pSurface))
 		return;
 
 		// OK
 #ifdef DEBUG
-	Msg("* created RT(%s), %dx%d", Name, w, h);
+	Msg("* created RT(%s), %dx%d, %d", Name, w, h, levels);
 #endif // DEBUG
 	R_CHK(pSurface->GetSurfaceLevel(0, &pRT));
 	pTexture = Device.Resources->_CreateTexture(Name);
@@ -114,9 +114,9 @@ void CRT::reset_end()
 {
 	create(*cName, dwWidth, dwHeight, fmt);
 }
-void resptrcode_crt::create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f)
+void resptrcode_crt::create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f, u32 levels)
 {
-	_set(Device.Resources->_CreateRT(Name, w, h, f));
+	_set(Device.Resources->_CreateRT(Name, w, h, f, levels));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -138,10 +138,10 @@ CRTC::~CRTC()
 	Device.Resources->_DeleteRTC(this);
 }
 
-void CRTC::create(LPCSTR Name, u32 size, D3DFORMAT f)
+void CRTC::create(LPCSTR Name, u32 size, D3DFORMAT f, u32 levels)
 {
 	R_ASSERT(HW.pDevice && Name && Name[0] && size && btwIsPow2(size));
-	_order = CPU::GetCLK(); // Device.GetTimerGlobal()->GetElapsed_clk();
+	_order = CPU::GetCLK(); 
 
 	HRESULT _hr;
 
@@ -159,14 +159,13 @@ void CRTC::create(LPCSTR Name, u32 size, D3DFORMAT f)
 		return;
 
 	// Validate render-target usage
-	_hr = HW.pD3D->CheckDeviceFormat(HW.DevAdapter, HW.DevT, HW.Caps.fTarget, D3DUSAGE_RENDERTARGET,
-									 D3DRTYPE_CUBETEXTURE, f);
+	_hr = HW.pD3D->CheckDeviceFormat(HW.DevAdapter, HW.DevT, HW.Caps.fTarget, D3DUSAGE_RENDERTARGET, D3DRTYPE_CUBETEXTURE, f);
 	if (FAILED(_hr))
 		return;
 
 	// Try to create texture/surface
 	Device.Resources->Evict();
-	_hr = HW.pDevice->CreateCubeTexture(size, 1, D3DUSAGE_RENDERTARGET, f, D3DPOOL_DEFAULT, &pSurface, NULL);
+	_hr = HW.pDevice->CreateCubeTexture(size, levels, D3DUSAGE_RENDERTARGET, f, D3DPOOL_DEFAULT, &pSurface, NULL);
 	if (FAILED(_hr) || (0 == pSurface))
 		return;
 
@@ -195,7 +194,7 @@ void CRTC::reset_end()
 	create(*cName, dwSize, fmt);
 }
 
-void resptrcode_crtc::create(LPCSTR Name, u32 size, D3DFORMAT f)
+void resptrcode_crtc::create(LPCSTR Name, u32 size, D3DFORMAT f, u32 levels)
 {
-	_set(Device.Resources->_CreateRTC(Name, size, f));
+	_set(Device.Resources->_CreateRTC(Name, size, f, levels));
 }

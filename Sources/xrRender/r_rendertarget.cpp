@@ -46,7 +46,7 @@ void CRenderTarget::create_textures()
 		rt_GBuffer_4.create(r_RT_GBuffer_4, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	}
 
-	rt_Bent_Normals.create(r_RT_Bent_Normals, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	//rt_Bent_Normals.create(r_RT_Bent_Normals, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	
 	rt_Volumetric_Sun.create(r_RT_Volumetric_Sun, dwWidth * 0.5f, dwHeight * 0.5f, D3DFMT_A8);
 
@@ -56,14 +56,11 @@ void CRenderTarget::create_textures()
 
 	rt_Generic_0.create(r_RT_generic0, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	rt_Generic_1.create(r_RT_generic1, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
-	
-	//rt_Generic_Prev.create(r_RT_generic_prev, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
 	rt_Motion_Blur_Previous_Frame_Depth.create(r_RT_mblur_previous_frame_depth, dwWidth, dwHeight, D3DFMT_R16F);
 	rt_Motion_Blur_Dilation_Map_0.create(r_RT_mblur_dilation_map_0, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
 	rt_Motion_Blur_Dilation_Map_1.create(r_RT_mblur_dilation_map_1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
 
-	//rt_ReflectionsRaw.create(r_RT_reflections_raw, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F);
 	rt_Reflections.create(r_RT_reflections, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F);
 
 	rt_Radiation_Noise0.create(r_RT_radiation_noise0, dwWidth, dwHeight, D3DFMT_L8);
@@ -87,13 +84,7 @@ void CRenderTarget::create_textures()
 	rt_Bloom_Blades_2.create(r_RT_bloom_blades2, w, h, D3DFMT_A16B16G16R16F);
 
 	// autoexposure
-	rt_LUM_64.create(r_RT_autoexposure_64, 64, 64, D3DFMT_R16F);
-	rt_LUM_32.create(r_RT_autoexposure_32, 32, 32, D3DFMT_R16F);
-	rt_LUM_16.create(r_RT_autoexposure_16, 16, 16, D3DFMT_R16F);
-	rt_LUM_8.create(r_RT_autoexposure_8, 8, 8, D3DFMT_R16F);
-	rt_LUM_4.create(r_RT_autoexposure_4, 4, 4, D3DFMT_R16F);
-	rt_LUM_1.create(r_RT_autoexposure_1, 1, 1, D3DFMT_R16F);
-
+	rt_LUM_Mip_Chain.create(r_RT_autoexposure_mip_chain, dwWidth, dwWidth, D3DFMT_R16F, 9);
 	rt_SceneLuminance.create(r_RT_autoexposure_luminance, 1, 1, D3DFMT_R16F);
 	rt_SceneLuminancePrevious.create(r_RT_autoexposure_luminance_previous, 1, 1, D3DFMT_R16F);
 }

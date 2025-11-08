@@ -75,6 +75,34 @@ void CBackend::Invalidate()
 #endif
 }
 
+void CBackend::SaveRenderState()
+{
+	for (int i = 0; i < 4; i++)
+		HW.pDevice->GetRenderTarget(i, &saved_state.rt[i]);
+	HW.pDevice->GetDepthStencilSurface(&saved_state.zb);
+	HW.pDevice->GetViewport(&saved_state.viewport);
+}
+
+void CBackend::RestoreRenderState()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (saved_state.rt[i])
+		{
+			setRenderTarget(saved_state.rt[i], i);
+			saved_state.rt[i]->Release();
+		}
+	}
+
+	if (saved_state.zb)
+	{
+		setDepthBuffer(saved_state.zb);
+		saved_state.zb->Release();
+	}
+
+	HW.pDevice->SetViewport(&saved_state.viewport);
+}
+
 void CBackend::set_ClipPlanes(u32 _enable, Fplane* _planes /*=NULL */, u32 count /* =0*/)
 {
 	OPTICK_EVENT("CBackend::set_ClipPlanes");
@@ -479,6 +507,88 @@ void CBackend::RenderViewportSurface(float w, float h, IDirect3DSurface9* _1, ID
 	u32 Offset = 0;
 	set_viewport_geometry(w, h, Offset);
 	RenderBackend.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+}
+
+void CBackend::RenderToMipLevel(ref_rt target, u32 mip_level)
+{
+	 OPTICK_EVENT("CBackend::RenderToMipLevel");
+
+	 if (!target || !target->valid())
+		 return;
+
+	 IDirect3DSurface9* mip_surface = target->get_surface_level(mip_level);
+	 if (!mip_surface)
+		 return;
+
+	 u32 width, height;
+	 target->get_level_desc(mip_level, width, height);
+
+	 // Сохраняем состояние
+	 SaveRenderState();
+
+	 // Рендерим
+	 RenderViewportSurface((float)width, (float)height, mip_surface);
+
+	 // Восстанавливаем состояние
+	 RestoreRenderState();
+
+	 mip_surface->Release();
+ }
+
+void CBackend::RenderToMipLevel(ref_rt target, u32 mip_level, ShaderElement* shader, u32 pass)
+{
+	OPTICK_EVENT("CBackend::RenderToMipLevel");
+
+	if (!target || !target->valid())
+		return;
+
+	IDirect3DSurface9* mip_surface = target->get_surface_level(mip_level);
+	if (!mip_surface)
+		return;
+
+	u32 width, height;
+	target->get_level_desc(mip_level, width, height);
+
+	// Сохраняем состояние
+	SaveRenderState();
+
+	// Устанавливаем шейдер
+	set_Element(shader, pass);
+
+	// Рендерим
+	RenderViewportSurface((float)width, (float)height, mip_surface);
+
+	// Восстанавливаем состояние
+	RestoreRenderState();
+
+	mip_surface->Release();
+}
+
+// Генерация mip-цепочки
+void CBackend::GenerateMipChain(ref_rt source, ref_rt mip_chain, ShaderElement* downsample_shader, u32 pass)
+{
+	OPTICK_EVENT("CBackend::GenerateMipChain");
+
+	if (!source || !mip_chain || !source->valid() || !mip_chain->valid())
+		return;
+
+	// Копируем исходное изображение в уровень 0
+	IDirect3DSurface9* src_surface = source->pRT;
+	IDirect3DSurface9* dst_level0 = mip_chain->get_surface_level(0);
+
+	if (src_surface && dst_level0)
+	{
+		RECT src_rect = {0, 0, (LONG)source->dwWidth, (LONG)source->dwHeight};
+		RECT dst_rect = {0, 0, 64, 64};
+		HW.pDevice->StretchRect(src_surface, &src_rect, dst_level0, &dst_rect, D3DTEXF_LINEAR);
+		dst_level0->Release();
+	}
+
+	// Генерируем остальные mip-уровни
+	for (u32 i = 1; i < mip_chain->get_levels_count(); i++)
+	{
+		RenderToMipLevel(mip_chain, i, downsample_shader, pass);
+	}
 }
 
 void CBackend::ClearTexture(const ref_rt& _1, u32 color)

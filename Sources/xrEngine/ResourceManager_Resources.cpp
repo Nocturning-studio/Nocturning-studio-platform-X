@@ -157,7 +157,7 @@ void CResourceManager::_DeleteConstantTable(const R_constant_table* C)
 }
 
 //--------------------------------------------------------------------------------------------------------------
-CRT* CResourceManager::_CreateRT(LPCSTR Name, u32 w, u32 h, D3DFORMAT f)
+CRT* CResourceManager::_CreateRT(LPCSTR Name, u32 w, u32 h, D3DFORMAT f, u32 levels)
 {
 	R_ASSERT(Name && Name[0] && w && h);
 
@@ -176,7 +176,7 @@ CRT* CResourceManager::_CreateRT(LPCSTR Name, u32 w, u32 h, D3DFORMAT f)
 		m_rtargets.insert(mk_pair(RT->set_name(Name), RT));
 
 		if (Device.b_is_Ready)
-			RT->create(Name, w, h, f);
+			RT->create(Name, w, h, f, levels);
 
 		return RT;
 	}
@@ -196,7 +196,7 @@ void CResourceManager::_DeleteRT(const CRT* RT)
 	Msg("! ERROR: Failed to find render-target '%s'", *RT->cName);
 }
 //--------------------------------------------------------------------------------------------------------------
-CRTC* CResourceManager::_CreateRTC(LPCSTR Name, u32 size, D3DFORMAT f)
+CRTC* CResourceManager::_CreateRTC(LPCSTR Name, u32 size, D3DFORMAT f, u32 levels)
 {
 	R_ASSERT(Name && Name[0] && size);
 
@@ -215,7 +215,7 @@ CRTC* CResourceManager::_CreateRTC(LPCSTR Name, u32 size, D3DFORMAT f)
 		m_rtargets_c.insert(mk_pair(RT->set_name(Name), RT));
 
 		if (Device.b_is_Ready)
-			RT->create(Name, size, f);
+			RT->create(Name, size, f, levels);
 
 		return RT;
 	}

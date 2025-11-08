@@ -2,6 +2,14 @@
 #include "stdafx.h"
 #include "blender_autoexposure.h"
 ///////////////////////////////////////////////////////////////////////////////////
+void CRender::save_scene_luminance()
+{
+	OPTICK_EVENT("CRender::save_scene_luminance");
+
+	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_AUTOEXPOSURE_SAVE_LUMINANCE]);
+	RenderBackend.RenderViewportSurface(1, 1, RenderTarget->rt_SceneLuminancePrevious);
+}
+///////////////////////////////////////////////////////////////////////////////////
 void CRender::downsample_scene_luminance()
 {
 	OPTICK_EVENT("CRender::downsample_scene_luminance");
@@ -9,44 +17,35 @@ void CRender::downsample_scene_luminance()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	float input_w = float(Device.dwWidth);
-	float input_h = float(Device.dwHeight);
+	// Копируем исходное изображение в уровень 0
+	ref_rt MipChain = RenderTarget->rt_LUM_Mip_Chain;
+	IDirect3DSurface9* dst_level0 = MipChain->get_surface_level(0);
+	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_AUTOEXPOSURE_GENERATE_MIP_CHAIN], 0);
+	RenderBackend.RenderViewportSurface((LONG)MipChain->dwWidth, (LONG)MipChain->dwHeight, dst_level0);
 
-	// Проход 0: полноразмерный -> 64x64 (максимальное размытие)
-	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_DOWNSAMPLE_PART_1], 0);
-	RenderBackend.set_Constant("image_resolution", input_w, input_h, 1.0f / input_w, 1.0f / input_h);
-	RenderBackend.RenderViewportSurface(64.0f, 64.0f, RenderTarget->rt_LUM_64);
+	// Генерируем остальные mip-уровни
+	for (u32 i = 1; i < MipChain->get_levels_count(); i++)
+	{
+		// Устанавливаем шейдер
+		RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_AUTOEXPOSURE_GENERATE_MIP_CHAIN], 1);
 
-	// Проход 1: 64x64 -> 32x32
-	input_w = input_h = 64.0f;
-	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_DOWNSAMPLE_PART_1], 1);
-	RenderBackend.set_Constant("image_resolution", input_w, input_h, 1.0f / input_w, 1.0f / input_h);
-	RenderBackend.RenderViewportSurface(32.0f, 32.0f, RenderTarget->rt_LUM_32);
+		u32 prev_mip, prev_mip_width, prev_mip_height;
+		prev_mip = i - 1;
+		MipChain->get_level_desc(prev_mip, prev_mip_width, prev_mip_height);
+		RenderBackend.set_Constant("mip_data", 0.0f, prev_mip, 1.0f / prev_mip_width, 1.0f / prev_mip_height);
 
-	// Проход 2: 32x32 -> 16x16
-	input_w = input_h = 32.0f;
-	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_DOWNSAMPLE_PART_1], 2);
-	RenderBackend.set_Constant("image_resolution", input_w, input_h, 1.0f / input_w, 1.0f / input_h);
-	RenderBackend.RenderViewportSurface(16.0f, 16.0f, RenderTarget->rt_LUM_16);
+		// Рендерим
+		u32 width, height;
+		MipChain->get_level_desc(i, width, height);
+		IDirect3DSurface9* mip_surface = MipChain->get_surface_level(i);
+		RenderBackend.RenderViewportSurface((float)width, (float)height, mip_surface);
 
-	// Проход 3: 16x16 -> 8x8
-	input_w = input_h = 16.0f;
-	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_DOWNSAMPLE_PART_2], 0);
-	RenderBackend.set_Constant("image_resolution", input_w, input_h, 1.0f / input_w, 1.0f / input_h);
-	RenderBackend.RenderViewportSurface(8.0f, 8.0f, RenderTarget->rt_LUM_8);
-
-	// Проход 4: 8x8 -> 4x4
-	input_w = input_h = 8.0f;
-	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_DOWNSAMPLE_PART_2], 1);
-	RenderBackend.set_Constant("image_resolution", input_w, input_h, 1.0f / input_w, 1.0f / input_h);
-	RenderBackend.RenderViewportSurface(4.0f, 4.0f, RenderTarget->rt_LUM_4);
-
-	// Проход 5: 4x4 -> 1x1 (финальное усреднение)
-	input_w = input_h = 4.0f;
-
-	float w = 1.0f;
-	float h = 1.0f;
-
+		mip_surface->Release();
+	}
+}
+///////////////////////////////////////////////////////////////////////////////////
+void CRender::prepare_scene_luminance()
+{
 	// Параметры автоэкспозиции
 	float TimeDelta = Device.fTimeDelta;
 	float adaptation_speed = ps_r_autoexposure_adaptation;
@@ -58,18 +57,9 @@ void CRender::downsample_scene_luminance()
 	Fvector4 adaptation_params;
 	adaptation_params.set(adaptation_speed, TimeDelta, 0.0f, 0.0f);
 
-	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_DOWNSAMPLE_PART_2], 2);
-	RenderBackend.set_Constant("image_resolution", input_w, input_h, 1.0f / input_w, 1.0f / input_h);
+	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_AUTOEXPOSURE_PREPARE_LUMINANCE]);
 	RenderBackend.set_Constant("adaptation_params", adaptation_params);
 	RenderBackend.RenderViewportSurface(1.0f, 1.0f, RenderTarget->rt_SceneLuminance);
-}
-///////////////////////////////////////////////////////////////////////////////////
-void CRender::save_scene_luminance()
-{
-	OPTICK_EVENT("CRender::save_scene_luminance");
-
-	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_SAVE_LUMINANCE], 0); // Pass 0
-	RenderBackend.RenderViewportSurface(1, 1, RenderTarget->rt_SceneLuminancePrevious);
 }
 ///////////////////////////////////////////////////////////////////////////////////
 void CRender::apply_exposure()
@@ -96,13 +86,17 @@ void CRender::apply_exposure()
 	Fvector4 adaptation_params;
 	adaptation_params.set(_result.x, _result.z, adaptation_speed, TimeDelta);
 
+	u32 mip_width, mip_height;
+	RenderTarget->rt_LUM_Mip_Chain->get_level_desc(8, mip_width, mip_height);
+	RenderBackend.set_Constant("mip_data", 0.0f, 8, 1.0f / mip_width, 1.0f / mip_height);
+
 	// Применяем экспозицию
-	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_APPLY_EXPOSURE]);
+	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_AUTOEXPOSURE_APPLY_EXPOSURE]);
 	RenderBackend.set_Constant("autoexposure_params", adaptation_params);
 	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Generic_0);
 
 	// Копируем результат обратно в основной буфер
-	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_DUMMY]);
+	RenderBackend.set_Element(RenderTarget->s_autoexposure->E[SE_PASS_AUTOEXPOSURE_COPY_RENDERTARGET]);
 	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Generic_1);
 }
 ///////////////////////////////////////////////////////////////////////////////////
@@ -111,10 +105,8 @@ void CRender::render_autoexposure()
 	OPTICK_EVENT("CRender::render_autoexposure");
 
 	save_scene_luminance();
-
 	downsample_scene_luminance();
-
+	prepare_scene_luminance();
 	apply_exposure();
 }
 ///////////////////////////////////////////////////////////////////////////////////
-

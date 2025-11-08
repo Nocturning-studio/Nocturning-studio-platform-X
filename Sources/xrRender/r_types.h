@@ -52,20 +52,13 @@
 #define r_RT_ao_raw "$user$ao_raw"
 
 // Autoexposure
-#define r_RT_autoexposure_64 "$user$r_RT_autoexposure_64"
-#define r_RT_autoexposure_32 "$user$r_RT_autoexposure_32"
-#define r_RT_autoexposure_16 "$user$r_RT_autoexposure_16"
-#define r_RT_autoexposure_8 "$user$r_RT_autoexposure_8"
-#define r_RT_autoexposure_4 "$user$r_RT_autoexposure_4"
-#define r_RT_autoexposure_1 "$user$r_RT_autoexposure_1"
+#define r_RT_autoexposure_mip_chain "$user$r_RT_autoexposure_mip_chain"
 #define r_RT_autoexposure_luminance "$user$autoexposure_luminance"
 #define r_RT_autoexposure_luminance_previous "$user$autoexposure_luminance_previous"
 
 // Shadow map
-#define r_RT_smap_surf "$user$smap_surf"	// --- directional
-#define r_RT_smap_depth "$user$smap_depth" // ---directional
-
-//#define r_material "$user$material" // ---
+#define r_RT_smap_surf "$user$smap_surf"
+#define r_RT_smap_depth "$user$smap_depth"
 
 #define r_jitter "$user$jitter_"
 
@@ -82,8 +75,6 @@ const u32 SMAP_adapt_min = 32;
 const u32 SMAP_adapt_optimal = 768;
 const u32 SMAP_adapt_max = 1536;
 
-//const u32 TEX_material_LdotN = 128; // diffuse,		X, almost linear = small res
-//const u32 TEX_material_LdotH = 256; // specular,	Y
 const u32 TEX_jitter = 64;
 const u32 TEX_jitter_count = 4;
 

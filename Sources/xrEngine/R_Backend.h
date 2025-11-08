@@ -58,6 +58,15 @@ class ENGINE_API CBackend
 	ref_geom g_viewport;
 
   private:
+	struct RenderState
+	{
+		IDirect3DSurface9* rt[4];
+		IDirect3DSurface9* zb;
+		D3DVIEWPORT9 viewport;
+	};
+
+	RenderState saved_state;
+
 	BOOL bBlend;
 	D3DBLEND srcBlend;
 	D3DBLEND dstBlend;
@@ -135,6 +144,9 @@ class ENGINE_API CBackend
 	} stat;
 
   public:
+	void SaveRenderState();
+	void RestoreRenderState();
+
 	IC CTexture* get_ActiveTexture(u32 stage)
 	{
 		if (stage >= 256)
@@ -467,6 +479,10 @@ class ENGINE_API CBackend
 
 	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1);
 	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1, IDirect3DSurface9* zb);
+
+	void RenderToMipLevel(ref_rt target, u32 mip_level);
+	void RenderToMipLevel(ref_rt target, u32 mip_level, ShaderElement* shader, u32 pass);
+	void GenerateMipChain(ref_rt source, ref_rt mip_chain, ShaderElement* downsample_shader, u32 pass = 0);
 
 	void ClearTexture(const ref_rt& _1, u32 color = color_rgba(0, 0, 0, 0));
 	void ClearTexture(const ref_rt& _1, const ref_rt& _2 = NULL, u32 color = color_rgba(0, 0, 0, 0));
