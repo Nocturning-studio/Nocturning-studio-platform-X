@@ -6,6 +6,7 @@ class light;
 
 #define	VOLUMETRIC_SLICES 100
 
+#ifdef USE_FFX
 struct CAS_const
 {
 	uint32_t const0[4], const1[4];
@@ -26,6 +27,7 @@ struct FSR_const
 	FSR_EASU_const EASU_const;
 	FSR_RCAS_const RCAS_const;
 };
+#endif
 
 struct SSAA_params
 {
@@ -35,9 +37,11 @@ struct SSAA_params
 	// mip bias
 	float mip;
 	
+#ifdef USE_FFX
 	// constants
 	CAS_const CAS_const;
 	FSR_const FSR_const;
+#endif
 
 	// scaled screen size
 	u32 w, h;
@@ -307,9 +311,12 @@ public:
 	void						enable_SSAA		();
 	void						disable_SSAA	();
 	IC const SSAA_params&		get_SSAA_params	()	{ return SSAA; }
+
+#ifdef USE_FFX
 	void						phase_amd_cas();
 	void						phase_amd_cas_port();
 	void						phase_amd_fsr_port();
+#endif
 
 	void						build_textures();
 	void						destroy_textures();

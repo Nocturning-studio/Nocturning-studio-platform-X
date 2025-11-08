@@ -171,10 +171,12 @@ xr_token r__ssaa_token[] =
 	{ "opt_off",			0			},
 	{ "opt_ssaa_2x",		SSAA2X		},
 	{ "opt_ssaa_4x",		SSAA4X		},
+#ifdef USE_FFX
 	{ "opt_ultra_quality",	FSR_SSAA169	},
 	{ "opt_quality",		FSR_SSAA225	},
 	{ "opt_balanced",		FSR_SSAA289	},
 	{ "opt_performance",	FSR_SSAA400	},
+#endif
 	{ 0,					0			}
 };
 
@@ -261,7 +263,7 @@ class CCC_tf_Aniso		: public CCC_Integer
 {
 public:
 	void	apply	()	{
-		if (0==HW.pDevice)	return	;
+		if (0==HW.pDevice11)	return	;
 		int	val = *value;	clamp(val,1,16);
 
 		SSManager.SetMaxAnisotropy(val);
@@ -283,9 +285,9 @@ class CCC_tf_MipBias: public CCC_Float
 {
 public:
 	void	apply	()	{
-		if (0==HW.pDevice)	return	;
+		if (0==HW.pDevice11)	return	;
 
-		SSManager.SetMipBias(*value);
+		//SSManager.SetMipBias(*value);
 
 	}
 

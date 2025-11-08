@@ -1,7 +1,7 @@
 #pragma once
 
-#define FEATURE_LEVELS_DEBUG
-
+//#define FEATURE_LEVELS_DEBUG
+/*
 namespace RenderCreationParams
 {
 	static LPCSTR DLL = "xrRender_R4.dll";
@@ -40,4 +40,4 @@ namespace RenderCreationParams
 	};
 
 	static const UINT count12 = sizeof levels12 / sizeof levels12[0];
-}
+}*/

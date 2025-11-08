@@ -44,6 +44,7 @@
 
 #pragma warning(disable:4505 4995)
 
+#ifdef USE_FFX
 #include "stdintport\stdintport.h"
 
 float AExp2F1(float a)
@@ -55,6 +56,7 @@ float AExp2F1(float a)
 #include "FidelityFX/ffx_a.h"
 #include "FidelityFX/ffx_cas.h"
 #include "FidelityFX/ffx_fsr1.h"
+#endif
 
 bool CRenderTarget::need_to_render_sunshafts(r__sunshafts_mode_values type)
 {
@@ -215,7 +217,7 @@ void	CRenderTarget::u_compute_texgen_screen	(Fmatrix& m_Texgen)
 		0.0f,				0.0f,				1.0f,			0.0f,
 		0.5f,				0.5f ,				0.0f,			1.0f
 	};
-	m_Texgen.mul	(m_TexelAdjust,RCache.get_xform_wvp());
+	m_Texgen.mul	(m_TexelAdjust,RCache.xforms.m_wvp);
 }
 
 // 2D texgen for jitter (texture adjustment matrix)
@@ -229,7 +231,7 @@ void	CRenderTarget::u_compute_texgen_jitter	(Fmatrix&		m_Texgen_J)
 		0.0f,				0.0f,				1.0f,			0.0f,
 		0.5f,				0.5f,				0.0f,			1.0f
 	};
-	m_Texgen_J.mul	(m_TexelAdjust,RCache.get_xform_wvp());
+	m_Texgen_J.mul	(m_TexelAdjust,RCache.xforms.m_wvp);
 
 	// rescale - tile it
 	float	scale_X			= RImplementation.fWidth	/ float(TEX_jitter);
@@ -365,7 +367,7 @@ void CRenderTarget::build_textures()
 		desc.CPUAccessFlags = D3D_CPU_ACCESS_READ;
 		desc.MiscFlags = 0;
 
-		R_CHK(HW.pDevice->CreateTexture2D(&desc, 0, &t_ss_async));
+		R_CHK(HW.pDevice11->CreateTexture2D(&desc, 0, &t_ss_async));
 	}
 
 	// Build material(s)
@@ -439,7 +441,7 @@ void CRenderTarget::build_textures()
 			}
 		}
 
-		R_CHK(HW.pDevice->CreateTexture3D(&desc, &subData, &t_material_surf));
+		R_CHK(HW.pDevice11->CreateTexture3D(&desc, &subData, &t_material_surf));
 		t_material = dxRenderDeviceRender::Instance().Resources->_CreateTexture(tex_t_material);
 		t_material->surface_set(t_material_surf);
 
@@ -496,7 +498,7 @@ void CRenderTarget::build_textures()
 		{
 			string_path					name;
 			xr_sprintf(name, "%s%d", tex_t_noise_, it);
-			R_CHK(HW.pDevice->CreateTexture2D(&desc, &subData[it], &t_noise_surf[it]));
+			R_CHK(HW.pDevice11->CreateTexture2D(&desc, &subData[it], &t_noise_surf[it]));
 			t_noise[it] = dxRenderDeviceRender::Instance().Resources->_CreateTexture(name);
 			t_noise[it]->surface_set(t_noise_surf[it]);
 		}
@@ -544,7 +546,7 @@ void CRenderTarget::build_textures()
 
 		string_path					name;
 		xr_sprintf(name, "%s%d", tex_t_noise_, it);
-		R_CHK(HW.pDevice->CreateTexture2D(&descHBAO, &subData[it], &t_noise_surf[it]));
+		R_CHK(HW.pDevice11->CreateTexture2D(&descHBAO, &subData[it], &t_noise_surf[it]));
 		t_noise[it] = dxRenderDeviceRender::Instance().Resources->_CreateTexture(name);
 		t_noise[it]->surface_set(t_noise_surf[it]);
 
@@ -553,15 +555,15 @@ void CRenderTarget::build_textures()
 		{
 			//	Autogen mipmaps
 			desc.MipLevels = 0;
-			R_CHK(HW.pDevice->CreateTexture2D(&desc, 0, &t_noise_surf_mipped));
+			R_CHK(HW.pDevice11->CreateTexture2D(&desc, 0, &t_noise_surf_mipped));
 			t_noise_mipped = dxRenderDeviceRender::Instance().Resources->_CreateTexture(tex_t_noise_mipped_);
 			t_noise_mipped->surface_set(t_noise_surf_mipped);
 
 			//	Update texture. Generate mips.
 
-			HW.pContext->CopySubresourceRegion(t_noise_surf_mipped, 0, 0, 0, 0, t_noise_surf[0], 0, 0);
+			HW.pContext11->CopySubresourceRegion(t_noise_surf_mipped, 0, 0, 0, 0, t_noise_surf[0], 0, 0);
 
-			D3DX11FilterTexture(HW.pContext, t_noise_surf_mipped, 0, D3DX11_FILTER_POINT);
+			D3DX11FilterTexture(HW.pContext11, t_noise_surf_mipped, 0, D3DX11_FILTER_POINT);
 		}
 
 	}
@@ -1110,6 +1112,7 @@ void CRenderTarget::SSAA_create()
 		SSAA.h = dwHeight * SSAA.amount;
 	}
 
+#ifdef USE_FFX
 	// FSR
 	if (RImplementation.o.ssaa > USE_FSR)
 	{
@@ -1160,12 +1163,13 @@ void CRenderTarget::SSAA_create()
 			fsr_rcas_sharpening
 		);
 	}
+#endif
 
 	// disable SSAA
 	disable_SSAA();
 
 	// apply mip
-	SSManager.SetMipBias(r__tf_mipbias + SSAA.mip);
+	//SSManager.SetMipBias(r__tf_mipbias + SSAA.mip);
 
 	// AMD CAS params
 	//SSAA.sharpness = 0;

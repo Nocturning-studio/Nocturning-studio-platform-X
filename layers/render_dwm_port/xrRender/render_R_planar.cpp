@@ -142,7 +142,7 @@ void CRender::planar_render(ref_texture t_env_0, ref_texture t_env_1, Fvector4 e
 	// MSAA partial
 	if (s1 > 1 && s1 != s)
 	{
-		HW.pContext->ResolveSubresource(Target->rt_Planar_color->pTexture->surface_get(), 0,
+		HW.pContext11->ResolveSubresource(Target->rt_Planar_color->pTexture->surface_get(), 0,
 			Target->rt_Planar_color_ms->pTexture->surface_get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
 	}
 }
@@ -154,7 +154,7 @@ void CRender::planar_save_shadow(Fmatrix xf_project, Fmatrix bias_t)
 	if (HW.FeatureLevel <= D3D_FEATURE_LEVEL_10_0) return;
 
 	// copy z buffer
-	HW.pContext->CopyResource(Target->rt_Planar_shadow->pTexture->surface_get(), Target->rt_smap_depth->pTexture->surface_get());
+	HW.pContext11->CopyResource(Target->rt_Planar_shadow->pTexture->surface_get(), Target->rt_smap_depth->pTexture->surface_get());
 
 	// save matrices
 	m_planar_shadow_project.set(xf_project);

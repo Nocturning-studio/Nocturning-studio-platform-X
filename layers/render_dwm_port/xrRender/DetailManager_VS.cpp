@@ -97,7 +97,7 @@ void CDetailManager::hw_Load_Geom()
 			}
 		}
 
-		R_CHK(BufferUtils::CreateBuffer(&hw_VB, pVOriginal, dwVerts*vSize, D3D_BIND_VERTEX_BUFFER));
+		R_CHK(BufferUtils::CreateVertexBuffer(&hw_VB, pVOriginal, dwVerts*vSize));
 		HW.stats_manager.increment_stats_vb		( hw_VB);
 		xr_free(pVOriginal);
 
@@ -124,7 +124,7 @@ void CDetailManager::hw_Load_Geom()
 			}
 		}
 
-		R_CHK(BufferUtils::CreateBuffer(&hw_IB, pIOriginal, dwIndices*2, D3D_BIND_INDEX_BUFFER));
+		R_CHK(BufferUtils::CreateIndexBuffer(&hw_IB, pIOriginal, dwIndices*2));
 		HW.stats_manager.increment_stats_ib		(hw_IB);
 		xr_free(pIOriginal);
 

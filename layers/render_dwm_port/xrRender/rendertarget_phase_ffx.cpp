@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "blender_add_effects.h"
 
+#ifdef USE_FFX
 void CRenderTarget::phase_amd_cas()
 {
 	PIX_EVENT(AMD_CAS);
@@ -117,3 +118,4 @@ void CRenderTarget::phase_amd_fsr_port()
 
 	RCache.Render(D3DPT_TRIANGLELIST, bias, 0, 4, 0, 2);
 }
+#endif

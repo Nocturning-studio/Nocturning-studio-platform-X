@@ -74,7 +74,8 @@ void CRenderTarget::draw_rain( light &RainSetup )
 		//	Patch normal
 		RCache.set_Element(s_rain->E[0]);
 		RCache.set_c("m_shadow", m_shadow);
-		RCache.set_c("wetness_params", g_pGamePersistent->Environment().CurrentEnv->rain_density, g_pGamePersistent->Environment().wetness_accum, fRainFar, 0);
+		//RCache.set_c("wetness_params", g_pGamePersistent->Environment().CurrentEnv->rain_density, g_pGamePersistent->Environment().wetness_accum, fRainFar, 0);
+		RCache.set_c("wetness_params", g_pGamePersistent->Environment().CurrentEnv->rain_density, 1.0, fRainFar, 0);
 		//RCache.set_c("wetness_params", g_pGamePersistent->Environment().CurrentEnv->rain_density, g_pGamePersistent->Environment().CurrentEnv->rain_density, fRainFar, 0);
 
 		// nvidia 8000, 9000 and 200 series

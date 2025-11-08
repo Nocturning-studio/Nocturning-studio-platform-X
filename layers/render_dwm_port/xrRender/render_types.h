@@ -1,6 +1,12 @@
 #pragma once
 #include "xrRender_console.h"
 
+#define RDEVICE Device
+
+#define xr_strcpy strcpy_s
+#define xr_strcat strcat_s
+#define xr_sprintf sprintf_s
+
 const float	SMAP_near_plane		= 0.1;
 const u32	SMAP_adapt_min		= 32;
 const u32	SMAP_adapt_optimal	= 768;
@@ -99,6 +105,72 @@ const FLOAT rgba_alpha[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 #define tex_rt_SSAA_color			"$user$ssaacolor"
 #define tex_rt_SSAA_distort			"$user$ssaadistort"
 
+enum
+{
+	SE_UNKNOWN // unknown case, use 0 by default
+};
+
+enum SE_FORWARD
+{
+	SE_FORWARD_NORMAL_HQ = 0, // high quality/detail
+	SE_FORWARD_NORMAL_LQ,	  // normal or low quality
+	SE_FORWARD_LPOINT,		  // add: point light
+	SE_FORWARD_LSPOT,		  // add:	spot light
+	SE_FORWARD_LMODELS,		  // lighting info for models or shadowing from models
+};
+
+enum SE_DEFFERED
+{
+	SE_NORMAL_HQ = 0, // high quality/detail
+	SE_NORMAL_LQ,	  // low quality
+	SE_SHADOW,		  // shadow generation
+	SE_PLANAR,		  // low quality & flat
+	SE_ZPREPASS,	  // zprepass
+	SE_RSM_FILL_RTS,  // reflective smap generation
+
+	// spot
+	SE_L_FILL = 0,
+	SE_L_UNSHADOWED,
+	SE_L_NORMAL,	 // typical, scaled
+	SE_L_FULLSIZE,	 // full texture coverage
+	SE_L_TRANSLUENT, // with opacity/color mask
+
+	// mask
+	SE_MASK_SPOT = 0,
+	SE_MASK_POINT,
+	SE_MASK_DIRECT,
+
+	// sun
+	SE_SUN_NEAR = 0,
+	SE_SUN_MIDDLE,
+	SE_SUN_FAR,
+	SE_SUN_FAR_VOLUMETRIC,
+	SE_SUN_FAR_VOL_MINMAX,
+	SE_SUN_VSM,
+
+	// antialiasing
+	SE_FXAA = 0,
+	SE_FXAA2,
+	SE_MSAA_RESOLVE,
+	SE_MLAA_0,
+	SE_MLAA_1,
+	SE_MLAA_2,
+
+	// temporal antialiasing
+	SE_TAA = 0,
+	SE_TAA_FSR,
+	SE_TAA_UPSCALE,
+	SE_TXAA_MOTION,
+	SE_TAA_V2_ANTIALIASING,
+	SE_TAA_V2_COPY_FRAME,
+
+	// RSM
+	SE_RSM_SPOT = 0,
+	SE_RSM_DIRECT,
+	SE_RSM_SPATIAL_FILTER,
+	SE_RSM_TEMPORAL_FILTER,
+};
+
 #define TAA_FEEDBACK_SIZE 7
 
 struct rt_TAA_params_type
@@ -136,12 +208,14 @@ enum r__ssaa_values // for RImplementation.o.ssaa
 {
 	USE_SSAA	= 1,
 	SSAA2X		= 2,
-	SSAA4X		= 4,
-	USE_FSR		= 1000000,
+	SSAA4X = 4,
+	USE_FSR = 1000000,
+#ifdef USE_FFX
 	FSR_SSAA169	= 5050169,
 	FSR_SSAA225	= 6035225,
 	FSR_SSAA289	= 7025289,
 	FSR_SSAA400	= 8015400,
+#endif
 };
 
 // Sunshafts

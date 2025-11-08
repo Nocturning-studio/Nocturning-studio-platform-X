@@ -1017,7 +1017,7 @@ void CRender::render_sun_vsm()
 		}
 	}
 
-	HW.pContext->ResolveSubresource(Target->rt_vsm_depth->pTexture->surface_get(), 0, Target->rt_vsm_depthms->pTexture->surface_get(), 0, DXGI_FORMAT_R32G32_FLOAT);
+	HW.pContext11->ResolveSubresource(Target->rt_vsm_depth->pTexture->surface_get(), 0, Target->rt_vsm_depthms->pTexture->surface_get(), 0, DXGI_FORMAT_R32G32_FLOAT);
 
 	// Accumulate
 	Target->phase_accumulator();

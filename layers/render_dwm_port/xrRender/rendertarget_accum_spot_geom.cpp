@@ -11,7 +11,7 @@ void CRenderTarget::accum_spot_geom_create	()
 		u32		vCount		= DU_CONE_NUMVERTEX;
 		u32		vSize		= 3*4;
 
-		R_CHK(BufferUtils::CreateBuffer( &g_accum_spot_vb, du_cone_vertices,vCount*vSize, D3D_BIND_VERTEX_BUFFER));
+		R_CHK(BufferUtils::CreateVertexBuffer( &g_accum_spot_vb, du_cone_vertices,vCount*vSize));
 
 	}
 
@@ -19,7 +19,7 @@ void CRenderTarget::accum_spot_geom_create	()
 	{
 		u32		iCount		= DU_CONE_NUMFACES*3;
 
-		R_CHK(BufferUtils::CreateBuffer( &g_accum_spot_ib, du_cone_faces, iCount*2, D3D_BIND_INDEX_BUFFER ) );
+		R_CHK(BufferUtils::CreateIndexBuffer( &g_accum_spot_ib, du_cone_faces, iCount*2 ) );
 
 	}
 }
@@ -64,7 +64,7 @@ void CRenderTarget::accum_volumetric_geom_create()
 			t += dt;
 		}
 
-		R_CHK( BufferUtils::CreateBuffer( &g_accum_volumetric_vb, &pSlice, vCount*vSize, D3D_BIND_VERTEX_BUFFER) );
+		R_CHK( BufferUtils::CreateVertexBuffer( &g_accum_volumetric_vb, &pSlice, vCount*vSize) );
 
 	}
 
@@ -87,7 +87,7 @@ void CRenderTarget::accum_volumetric_geom_create()
 			pInd[5] = basevert+3;
 		}
 
-		R_CHK(BufferUtils::CreateBuffer( &g_accum_volumetric_ib, &pData, iCount*2, D3D_BIND_INDEX_BUFFER ) );
+		R_CHK(BufferUtils::CreateIndexBuffer( &g_accum_volumetric_ib, &pData, iCount*2 ) );
 
 	}
 }

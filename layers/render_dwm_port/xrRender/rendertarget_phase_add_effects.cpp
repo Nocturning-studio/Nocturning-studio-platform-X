@@ -30,7 +30,7 @@ void CRenderTarget::phase_rsm_filter()
 	RCache.set_Geometry(g_simple_quad);
 	RCache.Render(D3DPT_TRIANGLELIST, bias, 0, 4, 0, 2);
 
-	HW.pContext->CopyResource(rt_RSM_prev->pTexture->surface_get(), rt_RSM->pTexture->surface_get());
+	HW.pContext11->CopyResource(rt_RSM_prev->pTexture->surface_get(), rt_RSM->pTexture->surface_get());
 	//HW.pContext->CopyResource(rt_RSM_depth_prev->pTexture->surface_get(), rt_RSM_depth->pTexture->surface_get());
 
 	//m_vp_prev = Device.mFullTransform;
@@ -101,7 +101,7 @@ void CRenderTarget::phase_ssao_path_tracing()
 	//m_vp_prev = Device.mFullTransform;
 
 	// copy buffer
-	HW.pContext->CopyResource(rt_SSAO_prev->pTexture->surface_get(), rt_SSAO->pTexture->surface_get());
+	HW.pContext11->CopyResource(rt_SSAO_prev->pTexture->surface_get(), rt_SSAO->pTexture->surface_get());
 
 	// blur
 	if (opt(R__USE_SSAO_PT_BLUR))
@@ -255,8 +255,8 @@ void CRenderTarget::phase_TAA()
 	RCache.set_Geometry(g_simple_quad);
 	RCache.Render(D3DPT_TRIANGLELIST, bias, 0, 4, 0, 2);
 
-	HW.pContext->CopyResource(rt_Color->pTexture->surface_get(), rt_PPTemp->pTexture->surface_get());
-	HW.pContext->CopyResource(rt_Generic_0_feedback->pTexture->surface_get(), rt_PPTemp->pTexture->surface_get());
+	HW.pContext11->CopyResource(rt_Color->pTexture->surface_get(), rt_PPTemp->pTexture->surface_get());
+	HW.pContext11->CopyResource(rt_Generic_0_feedback->pTexture->surface_get(), rt_PPTemp->pTexture->surface_get());
 }
 
 void CRenderTarget::phase_TAA_V2()
@@ -280,7 +280,7 @@ void CRenderTarget::phase_TAA_V2()
 	RCache.set_Element(s_taa->E[SE_TAA_V2_COPY_FRAME]);
 	RCache.Render(D3DPT_TRIANGLELIST, bias, 0, 4, 0, 2);
 
-	HW.pContext->CopyResource(rt_Color->pTexture->surface_get(), rt_Generic->pTexture->surface_get());
+	HW.pContext11->CopyResource(rt_Color->pTexture->surface_get(), rt_Generic->pTexture->surface_get());
 
 	m_TAA[Device.dwFrame % TAA_FEEDBACK_SIZE] = Device.mFullTransform;
 }
@@ -299,7 +299,7 @@ void CRenderTarget::phase_FXAA()
 	RCache.set_Geometry(g_simple_quad);
 	RCache.Render(D3DPT_TRIANGLELIST, bias, 0, 4, 0, 2);
 
-	HW.pContext->CopyResource(rt_Color->pTexture->surface_get(), rt_PPTemp->pTexture->surface_get());
+	HW.pContext11->CopyResource(rt_Color->pTexture->surface_get(), rt_PPTemp->pTexture->surface_get());
 }
 
 void CRenderTarget::phase_MLAA()
@@ -329,5 +329,5 @@ void CRenderTarget::phase_MLAA()
 	RCache.set_Geometry(g_simple_quad);
 	RCache.Render(D3DPT_TRIANGLELIST, bias, 0, 4, 0, 2);
 
-	HW.pContext->CopyResource(rt_Color->pTexture->surface_get(), rt_PPTemp->pTexture->surface_get());
+	HW.pContext11->CopyResource(rt_Color->pTexture->surface_get(), rt_PPTemp->pTexture->surface_get());
 }

@@ -214,7 +214,8 @@ void CRender::Render()
 	};
 
 	IMainMenu* pMainMenu = g_pGamePersistent ? g_pGamePersistent->m_pMainMenu : 0;
-	bool	bMenu = pMainMenu ? pMainMenu->CanSkipSceneRendering() : false;
+	//bool	bMenu = pMainMenu ? pMainMenu->CanSkipSceneRendering() : false;
+	bool	bMenu = pMainMenu ? pMainMenu->IsActive() : false;
 
 	if (!(g_pGameLevel && g_hud)
 		|| bMenu)
@@ -298,7 +299,7 @@ void CRender::RenderDeffered()
 	u32 need_split = opt(R__USE_SPLIT_SCENE);
 
 	//******* Main render :: PART-0	-- first
-	Device.Statistic->RenderDump_New[0].Begin();
+	//Device.Statistic->RenderDump_New[0].Begin();
 	{
 		if (need_split)
 		{
@@ -321,7 +322,7 @@ void CRender::RenderDeffered()
 			Target->phase_scene_end();
 		}
 	}
-	Device.Statistic->RenderDump_New[0].End();
+	//Device.Statistic->RenderDump_New[0].End();
 
 	//******* Occlusion testing of volume-limited light-sources
 	Target->disable_SSAA();
@@ -388,7 +389,7 @@ void CRender::RenderDeffered()
 		}
 	}
 
-	if (g_hud && g_hud->RenderActiveItemUIQuery())
+	if (g_hud /* && g_hud->RenderActiveItemUIQuery()*/)
 	{
 		PIX_EVENT(DEFFER_HUD_UI);
 		Target->phase_wallmarks();

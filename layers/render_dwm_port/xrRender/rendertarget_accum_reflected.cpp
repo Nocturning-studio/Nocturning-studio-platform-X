@@ -37,7 +37,7 @@ void CRenderTarget::accum_reflected		(light* L)
 			0.0f,				0.0f,				1.0f,			0.0f,
 			0.5f + o_w,			0.5f + o_h,			0.0f,			1.0f
 		};
-		m_Texgen.mul	(m_TexelAdjust,RCache.get_xform_wvp());
+		m_Texgen.mul	(m_TexelAdjust,RCache.xforms.m_wvp);
 	}
 
 	// Common constants

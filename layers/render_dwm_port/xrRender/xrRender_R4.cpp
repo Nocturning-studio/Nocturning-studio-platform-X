@@ -19,14 +19,14 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 		//	Can't call CreateDXGIFactory from DllMain
 		//if (!xrRender_test_hw())	return FALSE;
 		::Render					= &RImplementation;
-		::RenderFactory				= &RenderFactoryImpl;
-		::DU						= &DUImpl;
+		//::RenderFactory				= &RenderFactoryImpl;
+		//::DU						= &DUImpl;
 		//::vid_mode_token			= inited by HW;
-		UIRender					= &UIRenderImpl;
+		//UIRender					= &UIRenderImpl;
 #ifdef DEBUG
 		DRender						= &DebugRenderImpl;
 #endif	//	DEBUG
-		xrRender_initconsole		();
+		xrRender_initconsole();
 		break	;
 	case DLL_THREAD_ATTACH	:
 	case DLL_THREAD_DETACH	:
@@ -35,7 +35,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 	}
 	return TRUE;
 }
-
+/*
 extern "C"
 {
 	RenderCreationParams::RendererSupport _declspec(dllexport) SupportsDX11Rendering();
@@ -59,11 +59,10 @@ typedef HRESULT(__stdcall* FuncPtrD3D11CreateDeviceAndSwapChain)(
 	ID3D11Device** ppDevice,
 	D3D_FEATURE_LEVEL* pFeatureLevel,
 	ID3D11DeviceContext** ppImmediateContext);
-
 RenderCreationParams::RendererSupport _declspec(dllexport) SupportsDX11Rendering()
 {
 	RenderCreationParams::RendererSupport support;
-	support.dx11 = false;
+	//support.dx11 = false;
 
 	HMODULE hD3D11 = LoadLibrary("d3d11.dll");
 
@@ -147,8 +146,8 @@ RenderCreationParams::RendererSupport _declspec(dllexport) SupportsDX11Rendering
 	if (FAILED(hr))
 		Msg("! D3D11: device creation failed with hr=0x%08x", hr);
 
-	if (SUCCEEDED(hr))
-		support.dx11 = true;
+	//if (SUCCEEDED(hr))
+	//	support.dx11 = true;
 
 	if (pContext) pContext->Release();
 	if (pSwapChain) pSwapChain->Release();
@@ -159,4 +158,4 @@ RenderCreationParams::RendererSupport _declspec(dllexport) SupportsDX11Rendering
 	DestroyWindow(hWnd);
 
 	return support;
-}
+}*/

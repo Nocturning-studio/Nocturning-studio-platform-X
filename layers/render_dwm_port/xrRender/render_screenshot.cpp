@@ -60,16 +60,16 @@ void CRender::ScreenshotImpl(ScreenshotMode mode, LPCSTR name, CMemoryWriter* me
 		desc.SampleDesc.Count = 1;
 		desc.Usage = D3D_USAGE_DEFAULT;
 		desc.BindFlags = D3D_BIND_SHADER_RESOURCE;
-		CHK_DX(HW.pDevice->CreateTexture2D(&desc, NULL, &pSrcSmallTexture));
+		CHK_DX(HW.pDevice11->CreateTexture2D(&desc, NULL, &pSrcSmallTexture));
 
-		CHK_DX(D3DX11LoadTextureFromTexture(HW.pContext, pSrcTexture,
+		CHK_DX(D3DX11LoadTextureFromTexture(HW.pContext11, pSrcTexture,
 			NULL, pSrcSmallTexture));
 
 
 		// save (logical & physical)
 		ID3DBlob* saved = 0;
 
-		HRESULT hr = D3DX11SaveTextureToMemory(HW.pContext, pSrcSmallTexture, D3DX11_IFF_DDS, &saved, 0);
+		HRESULT hr = D3DX11SaveTextureToMemory(HW.pContext11, pSrcSmallTexture, D3DX11_IFF_DDS, &saved, 0);
 
 		if (hr == D3D_OK)
 		{
@@ -86,7 +86,7 @@ void CRender::ScreenshotImpl(ScreenshotMode mode, LPCSTR name, CMemoryWriter* me
 		_RELEASE(pSrcSmallTexture);
 	}
 	break;
-	case IRender_interface::SM_FOR_MPSENDING:
+	/* case IRender_interface::SM_FOR_MPSENDING :
 	{
 		ID3DTexture2D* pSrcSmallTexture;
 
@@ -132,7 +132,7 @@ void CRender::ScreenshotImpl(ScreenshotMode mode, LPCSTR name, CMemoryWriter* me
 		_RELEASE(pSrcSmallTexture);
 
 	}
-	break;
+	break;*/
 	case IRender_interface::SM_NORMAL:
 	{
 		string64			t_stemp;
@@ -140,7 +140,7 @@ void CRender::ScreenshotImpl(ScreenshotMode mode, LPCSTR name, CMemoryWriter* me
 		xr_sprintf(buf, sizeof(buf), "ss_%s_%s_(%s).jpg", Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
 		ID3DBlob* saved = 0;
 
-		CHK_DX(D3DX11SaveTextureToMemory(HW.pContext, pSrcTexture, D3DX11_IFF_JPG, &saved, 0));
+		CHK_DX(D3DX11SaveTextureToMemory(HW.pContext11, pSrcTexture, D3DX11_IFF_JPG, &saved, 0));
 
 		IWriter* fs = FS.w_open("$screenshots$", buf); R_ASSERT(fs);
 		fs->w(saved->GetBufferPointer(), (u32)saved->GetBufferSize());
@@ -152,7 +152,7 @@ void CRender::ScreenshotImpl(ScreenshotMode mode, LPCSTR name, CMemoryWriter* me
 			xr_sprintf(buf, sizeof(buf), "ssq_%s_%s_(%s).tga", Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
 			ID3DBlob* saved = 0;
 
-			CHK_DX(D3DX11SaveTextureToMemory(HW.pContext, pSrcTexture, D3DX11_IFF_BMP, &saved, 0));
+			CHK_DX(D3DX11SaveTextureToMemory(HW.pContext11, pSrcTexture, D3DX11_IFF_BMP, &saved, 0));
 
 			IWriter* fs = FS.w_open("$screenshots$", buf); R_ASSERT(fs);
 			fs->w(saved->GetBufferPointer(), (u32)saved->GetBufferSize());
@@ -184,11 +184,11 @@ void CRender::Screenshot(ScreenshotMode mode, LPCSTR name)
 
 void CRender::Screenshot(ScreenshotMode mode, CMemoryWriter& memory_writer)
 {
-	if (mode != SM_FOR_MPSENDING)
+	/* if (mode != SM_FOR_MPSENDING)
 	{
 		Log("~ Not implemented screenshot mode...");
 		return;
-	}
+	}*/
 	ScreenshotImpl(mode, NULL, &memory_writer);
 }
 
@@ -207,7 +207,7 @@ void CRender::ScreenshotAsyncEnd(CMemoryWriter& memory_writer)
 
 	D3D_MAPPED_SUBRESOURCE	MappedData;
 
-	HW.pContext->Map(pTex, 0, D3D_MAP_READ, 0, &MappedData);
+	HW.pContext11->Map(pTex, 0, D3D_MAP_READ, 0, &MappedData);
 
 	{
 
@@ -230,7 +230,7 @@ void CRender::ScreenshotAsyncEnd(CMemoryWriter& memory_writer)
 		memory_writer.w(MappedData.pData, (Device.dwWidth * Device.dwHeight) * 4);
 	}
 
-	HW.pContext->Unmap(pTex, 0);
+	HW.pContext11->Unmap(pTex, 0);
 }
 
 

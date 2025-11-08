@@ -32,8 +32,8 @@ void CRender::level_Load(IReader* fs)
 	IReader*						chunk;
 
 	// Shaders
-//	g_pGamePersistent->LoadTitle		("st_loading_shaders");
-	g_pGamePersistent->LoadTitle		();
+	g_pGamePersistent->LoadTitle		("st_loading_shaders");
+	//g_pGamePersistent->LoadTitle		();
 	{
 		chunk = fs->open_chunk		(fsL_SHADERS);
 		R_ASSERT2					(chunk,"Level doesn't builded correctly.");
@@ -60,8 +60,8 @@ void CRender::level_Load(IReader* fs)
 
 	if	(!g_dedicated_server)	{
 		// VB,IB,SWI
-//		g_pGamePersistent->LoadTitle("st_loading_geometry");
-		g_pGamePersistent->LoadTitle();
+		g_pGamePersistent->LoadTitle("st_loading_geometry");
+		//g_pGamePersistent->LoadTitle();
 		{
 			CStreamReader			*geom = FS.rs_open("$level$","level.geom");
 			R_ASSERT2				(geom, "level.geom");
@@ -79,21 +79,21 @@ void CRender::level_Load(IReader* fs)
 		}
 
 		// Visuals
-//		g_pGamePersistent->LoadTitle("st_loading_spatial_db");
-		g_pGamePersistent->LoadTitle();
+		g_pGamePersistent->LoadTitle("st_loading_spatial_db");
+		//g_pGamePersistent->LoadTitle();
 		chunk						= fs->open_chunk(fsL_VISUALS);
 		LoadVisuals					(chunk);
 		chunk->close				();
 
 		// Details
-//		g_pGamePersistent->LoadTitle("st_loading_details");
-		g_pGamePersistent->LoadTitle();
+		g_pGamePersistent->LoadTitle("st_loading_details");
+		//g_pGamePersistent->LoadTitle();
 		Details->Load				();
 	}
 
 	// Sectors
-//	g_pGamePersistent->LoadTitle("st_loading_sectors_portals");
-	g_pGamePersistent->LoadTitle();
+	g_pGamePersistent->LoadTitle("st_loading_sectors_portals");
+	//g_pGamePersistent->LoadTitle();
 	LoadSectors					(fs);
 
 	// 3D Fluid
@@ -223,7 +223,7 @@ void CRender::LoadBuffers		(CStreamReader *base_fs,	BOOL _alternative)
 			//	Check if buffer is less then 2048 kb
 			BYTE*	pData		= xr_alloc<BYTE>(vCount*vSize);
 			fs->r				(pData,vCount*vSize);
-			BufferUtils::CreateBuffer(&_VB[i], pData, vCount*vSize, D3D_BIND_VERTEX_BUFFER);
+			BufferUtils::CreateVertexBuffer(&_VB[i], pData, vCount*vSize);
 			xr_free(pData);
 
 //			fs->advance			(vCount*vSize);
@@ -245,7 +245,7 @@ void CRender::LoadBuffers		(CStreamReader *base_fs,	BOOL _alternative)
 			//	Check if buffer is less then 2048 kb
 			BYTE*	pData		= xr_alloc<BYTE>(iCount*2);
 			fs->r				(pData,iCount*2);
-			BufferUtils::CreateBuffer(&_IB[i], pData, iCount*2, D3D_BIND_INDEX_BUFFER);
+			BufferUtils::CreateIndexBuffer(&_IB[i], pData, iCount*2);
 			xr_free(pData);
 
 //			fs().advance		(iCount*2);
@@ -406,7 +406,7 @@ void CRender::Load3DFluid()
 				pVolume->Load("", F, 0);
 
 				//	Attach to sector's static geometry
-				CSector *pSector = (CSector*)detectSector(pVolume->getVisData().sphere.P);
+				CSector *pSector = (CSector*)detectSector(pVolume->vis.sphere.P);
 				//	3DFluid volume must be in render sector
 				VERIFY(pSector);
 

@@ -195,7 +195,7 @@ void CRenderTarget::phase_combine()
 
 		if (RImplementation.o.aa_mode == AA_MSAA)
 		{
-			if (RImplementation.o.advanced_mode) HW.pContext->ResolveSubresource(rt_Generic->pTexture->surface_get(), 0, 
+			if (RImplementation.o.advanced_mode) HW.pContext11->ResolveSubresource(rt_Generic->pTexture->surface_get(), 0, 
 				rt_Generic_0_ms->pTexture->surface_get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
 			if (RImplementation.o.ssr_replace) u_setrt(rt_Generic_0_ms, rt_Depth_1);
 			else u_setrt(rt_Generic_0_ms);
@@ -203,7 +203,7 @@ void CRenderTarget::phase_combine()
 		}
 		else
 		{
-			if (RImplementation.o.advanced_mode) HW.pContext->CopyResource(rt_Generic->pTexture->surface_get(), 
+			if (RImplementation.o.advanced_mode) HW.pContext11->CopyResource(rt_Generic->pTexture->surface_get(), 
 				rt_Generic_0->pTexture->surface_get());
 			if (RImplementation.o.ssr_replace) u_setrt(rt_Generic_0, rt_Depth_1);
 			else u_setrt(rt_Generic_0);
@@ -244,7 +244,7 @@ void CRenderTarget::phase_combine()
 
 	// Save G-Buffer
 	if (RImplementation.o.gbd_save)
-		HW.pContext->CopyResource(rt_Position_prev->pTexture->surface_get(), rt_Position->pTexture->surface_get());
+		HW.pContext11->CopyResource(rt_Position_prev->pTexture->surface_get(), rt_Position->pTexture->surface_get());
 
 	// Tonemap and Bloom 
 	{
@@ -385,9 +385,9 @@ void CRenderTarget::phase_combine_volumetric(Fvector4& sun_direction, Fvector4& 
 void CRenderTarget::resolve_msaa(void)
 {
 	PIX_EVENT(resolve_msaa);
-	HW.pContext->ResolveSubresource(rt_Generic_0->pTexture->surface_get(), 0, 
+	HW.pContext11->ResolveSubresource(rt_Generic_0->pTexture->surface_get(), 0, 
 		rt_Generic_0_ms->pTexture->surface_get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
-	HW.pContext->ResolveSubresource(rt_Generic_1->pTexture->surface_get(), 0, 
+	HW.pContext11->ResolveSubresource(rt_Generic_1->pTexture->surface_get(), 0, 
 		rt_Generic_1_ms->pTexture->surface_get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
 }
 #ifdef __GFSDK_DX11__
@@ -534,7 +534,7 @@ void CRenderTarget::resolve_fxaa(void)
 	RCache.set_Geometry(g_simple_quad);
 	RCache.Render(D3DPT_TRIANGLELIST, bias, 0, 4, 0, 2);
 
-	HW.pContext->ResolveSubresource(rt_Generic_1->pTexture->surface_get(), 0,
+	HW.pContext11->ResolveSubresource(rt_Generic_1->pTexture->surface_get(), 0,
 		rt_Generic_1_ms->pTexture->surface_get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
 }
 
