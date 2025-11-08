@@ -150,9 +150,6 @@ void CRender::render_menu	()
 	// Main Render
 	{
 		Target->u_setrt						(Target->rt_Generic_0,0,0,HW.pBaseZB);		// LDR RT
-		IRender_Target* T = getTarget();
-		D3D11_VIEWPORT VP = {0, 0, (float)T->get_width(), (float)T->get_height(), 0, 1.f};
-		HW.pContext11->RSSetViewports(1, &VP);
 		g_pGamePersistent->OnRenderPPUI_main()	;	// PP-UI
 	}
 	// Distort
@@ -194,6 +191,12 @@ void CRender::Render		()
 	g_r						= 1;
 	VERIFY					(0==mapDistort.size());
 
+	// DX11: set viewport and render target
+	rmNormal();
+	RCache.set_RT(HW.pBaseRT);
+	float color[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+	RCache.clear_CurrentRenderTargetView(color);
+
 	bool	_menu_pp		= g_pGamePersistent?g_pGamePersistent->OnRenderPPUI_query():false;
 	if (_menu_pp)			{
 		render_menu			()	;
@@ -202,13 +205,8 @@ void CRender::Render		()
 	if( !(g_pGameLevel && g_pGameLevel->pHUD) )	return;
 //.	VERIFY					(g_pGameLevel && g_pGameLevel->pHUD);
 
-	rmNormal();
-	RCache.set_RT(HW.pBaseRT);
-	float color[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-	RCache.clear_CurrentRenderTargetView(color);
-
 	// временно
-	return;
+	//return;
 
 	// Configure
 	RImplementation.o.distortion				= FALSE;		// disable distorion
@@ -221,8 +219,8 @@ void CRender::Render		()
 	ViewBase.CreateFromMatrix					(Device.mFullTransform, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
 	View										= 0;
 	if (!ps_r2_ls_flags.test(RFLAG_EXP_MT_CALC))	{
-		HOM.Enable									();
-		HOM.Render									(ViewBase);
+	//	HOM.Enable									();
+	//	HOM.Render									(ViewBase);
 	}
 
 	//******* Z-prefill calc - DEFERRER RENDERER
@@ -292,10 +290,10 @@ void CRender::Render		()
 	{
 		// level, DO NOT SPLIT
 		Target->phase_scene_begin				();
-		r_dsgraph_render_hud					();
-		r_dsgraph_render_graph					(0);
-		r_dsgraph_render_lods					(true,true);
-		if(Details)	Details->Render				();
+		r_dsgraph_render_hud();
+		//r_dsgraph_render_graph					(0);
+		//r_dsgraph_render_lods					(true,true);
+		//if(Details)	Details->Render				();
 		Target->phase_scene_end					();
 	} /* else
 	{
@@ -306,10 +304,10 @@ void CRender::Render		()
 	}*/
 
 	//******* Occlusion testing of volume-limited light-sources
-	Target->phase_occq							();
+	//Target->phase_occq							();
 	LP_normal.clear								();
 	LP_pending.clear							();
-	{
+	/* {
 		// perform tests
 		u32	count			= 0;
 		light_Package&	LP	= Lights.package;
@@ -345,7 +343,7 @@ void CRender::Render		()
 		}
 	}
 	LP_normal.sort							();
-	LP_pending.sort							();
+	LP_pending.sort							();*/
 
 	//******* Main render :: PART-1 (second)
 	/* if (split_the_scene_to_minimize_wait)
@@ -373,14 +371,15 @@ void CRender::Render		()
 	}*/
 
 	// Wall marks
-	if(Wallmarks)	{
+	/* if (Wallmarks)
+	{
 		Target->phase_wallmarks					();
 		g_r										= 0;
 		Wallmarks->Render						();				// wallmarks has priority as normal geometry
-	}
+	}*/
 
 	// Update incremental shadowmap-visibility solver
-	{
+	/* {
 		u32 it=0;
 		for (it=0; it<Lights_LastFrame.size(); it++)	{
 			if (0==Lights_LastFrame[it])	continue	;
@@ -392,10 +391,11 @@ void CRender::Render		()
 			}
 		}
 		Lights_LastFrame.clear	();
-	}
+	}*/
 
 	// Directional light - fucking sun
-	if (bSUN)	{
+	/* if (bSUN)
+	{
 		RImplementation.stats.l_visible		++;
 		if (ps_r2_ls_flags.test(R2FLAG_SUN_DETAILS))
 			Details->UpdateVisibleM();
@@ -403,15 +403,15 @@ void CRender::Render		()
 		render_sun							();
 		render_sun_filtered					();
 		Target->accum_direct_blend			();
-	}
+	}*/
 
 	// Lighting, non dependant on OCCQ
-	Target->phase_accumulator				();
+	/* Target->phase_accumulator();
 	HOM.Disable								();
 	render_lights							(LP_normal);
 	
 	// Lighting, dependant on OCCQ
-	render_lights							(LP_pending);
+	render_lights							(LP_pending);*/
 
 	// Postprocess
 	Target->phase_combine					();
