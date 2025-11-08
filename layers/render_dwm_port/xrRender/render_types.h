@@ -1,6 +1,8 @@
 #pragma once
 #include "xrRender_console.h"
 
+#define PIX_EVENT()
+
 #define RDEVICE Device
 
 #define xr_strcpy strcpy_s

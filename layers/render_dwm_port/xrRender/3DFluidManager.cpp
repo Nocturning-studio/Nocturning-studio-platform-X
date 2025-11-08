@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "3DFluidManager.h"
 
-#include "dxRenderDeviceRender.h"
+//#include "dxRenderDeviceRender.h"
 
 #include "3DFluidBlenders.h"
 #include "3DFluidData.h"
@@ -219,7 +219,7 @@ void dx103DFluidManager::DestroyShaders()
 
 void dx103DFluidManager::PrepareTexture(int rtIndex)
 {
-	pRTTextures[rtIndex] = dxRenderDeviceRender::Instance().Resources->_CreateTexture(m_pEngineTextureNames[rtIndex]);
+	pRTTextures[rtIndex] = Device.Resources->_CreateTexture(m_pEngineTextureNames[rtIndex]);
 }
 
 void dx103DFluidManager::CreateRTTextureAndViews(int rtIndex, D3D_TEXTURE3D_DESC TexDesc)

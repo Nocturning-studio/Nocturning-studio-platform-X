@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "ColorMapManager.h"
 
-#include "dxRenderDeviceRender.h"
+//#include "dxRenderDeviceRender.h"
 
 
 ColorMapManager::ColorMapManager()
 {
-	m_CMap[0]	= dxRenderDeviceRender::Instance().Resources->_CreateTexture("$user$cmap0");
-	m_CMap[1]	= dxRenderDeviceRender::Instance().Resources->_CreateTexture("$user$cmap1");
+	m_CMap[0]	= Device.Resources->_CreateTexture("$user$cmap0");
+	m_CMap[1]	= Device.Resources->_CreateTexture("$user$cmap1");
 }
 
 void ColorMapManager::SetTextures(const shared_str &tex0, const shared_str &tex1)

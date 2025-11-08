@@ -5,7 +5,7 @@
 
 #include "BufferUtils.h"
 
-#include "dxRenderDeviceRender.h"
+//#include "dxRenderDeviceRender.h"
 
 #include "3DFluidData.h"
 
@@ -233,7 +233,7 @@ void dx103DFluidRenderer::CreateJitterTexture()
 
 	CHK_DX( HW.pDevice11->CreateTexture2D(&desc, &dataDesc, &NoiseTexture));
 
-	m_JitterTexture = dxRenderDeviceRender::Instance().Resources->_CreateTexture("$user$NVjitterTex");
+	m_JitterTexture = Device.Resources->_CreateTexture("$user$NVjitterTex");
 	m_JitterTexture->surface_set(NoiseTexture);
 
 	_RELEASE(NoiseTexture);
@@ -322,7 +322,7 @@ void dx103DFluidRenderer::CreateHHGGTexture()
 
 	CHK_DX( HW.pDevice11->CreateTexture1D(&desc, &dataDesc, &HHGGTexture));
 
-	m_HHGGTexture = dxRenderDeviceRender::Instance().Resources->_CreateTexture("$user$NVHHGGTex");
+	m_HHGGTexture = Device.Resources->_CreateTexture("$user$NVHHGGTex");
 	m_HHGGTexture->surface_set(HHGGTexture);
 
 	_RELEASE(HHGGTexture);

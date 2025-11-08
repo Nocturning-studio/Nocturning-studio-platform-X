@@ -453,7 +453,7 @@ void R_dsgraph_structure::r_dsgraph_render_hud	()
 
 	if (opt(R__USE_DYNAMIC_HUD))
 	{
-		HW.pContext->CopyResource(RImplementation.Target->rt_Accumulator->pTexture->surface_get(), RImplementation.Target->rt_Position->pTexture->surface_get());
+		HW.pContext11->CopyResource(RImplementation.Target->rt_Accumulator->pTexture->surface_get(), RImplementation.Target->rt_Position->pTexture->surface_get());
 		RImplementation.m_object_id = 2;
 	}
 
@@ -506,7 +506,7 @@ void R_dsgraph_structure::r_dsgraph_render_hud_ui()
 
 	if (opt(R__USE_DYNAMIC_HUD))
 	{
-		HW.pContext->CopyResource(RImplementation.Target->rt_Generic_0->pTexture->surface_get(), RImplementation.Target->rt_Position->pTexture->surface_get());
+		HW.pContext11->CopyResource(RImplementation.Target->rt_Generic_0->pTexture->surface_get(), RImplementation.Target->rt_Position->pTexture->surface_get());
 		RImplementation.m_object_id = 2;
 	}
 

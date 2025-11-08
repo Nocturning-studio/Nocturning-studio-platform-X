@@ -8,7 +8,7 @@
 #include "../xrEngine/xr_object.h"
 #include "fbasicvisual.h"
 #include "../xrEngine/IGame_Persistent.h"
-#include "dxRenderDeviceRender.h"
+//#include "dxRenderDeviceRender.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

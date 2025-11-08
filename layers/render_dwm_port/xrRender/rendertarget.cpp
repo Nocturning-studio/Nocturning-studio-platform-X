@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "resourcemanager.h"
-#include "dxRenderDeviceRender.h"
+//#include "dxRenderDeviceRender.h"
 
 #include <D3DX11Core.h>
 
@@ -442,7 +442,7 @@ void CRenderTarget::build_textures()
 		}
 
 		R_CHK(HW.pDevice11->CreateTexture3D(&desc, &subData, &t_material_surf));
-		t_material = dxRenderDeviceRender::Instance().Resources->_CreateTexture(tex_t_material);
+		t_material = Device.Resources->_CreateTexture(tex_t_material);
 		t_material->surface_set(t_material_surf);
 
 	}
@@ -499,7 +499,7 @@ void CRenderTarget::build_textures()
 			string_path					name;
 			xr_sprintf(name, "%s%d", tex_t_noise_, it);
 			R_CHK(HW.pDevice11->CreateTexture2D(&desc, &subData[it], &t_noise_surf[it]));
-			t_noise[it] = dxRenderDeviceRender::Instance().Resources->_CreateTexture(name);
+			t_noise[it] = Device.Resources->_CreateTexture(name);
 			t_noise[it]->surface_set(t_noise_surf[it]);
 		}
 
@@ -547,7 +547,7 @@ void CRenderTarget::build_textures()
 		string_path					name;
 		xr_sprintf(name, "%s%d", tex_t_noise_, it);
 		R_CHK(HW.pDevice11->CreateTexture2D(&descHBAO, &subData[it], &t_noise_surf[it]));
-		t_noise[it] = dxRenderDeviceRender::Instance().Resources->_CreateTexture(name);
+		t_noise[it] = Device.Resources->_CreateTexture(name);
 		t_noise[it]->surface_set(t_noise_surf[it]);
 
 
@@ -556,7 +556,7 @@ void CRenderTarget::build_textures()
 			//	Autogen mipmaps
 			desc.MipLevels = 0;
 			R_CHK(HW.pDevice11->CreateTexture2D(&desc, 0, &t_noise_surf_mipped));
-			t_noise_mipped = dxRenderDeviceRender::Instance().Resources->_CreateTexture(tex_t_noise_mipped_);
+			t_noise_mipped = Device.Resources->_CreateTexture(tex_t_noise_mipped_);
 			t_noise_mipped->surface_set(t_noise_surf_mipped);
 
 			//	Update texture. Generate mips.
@@ -591,7 +591,7 @@ void CRenderTarget::destroy_textures()
 void CRenderTarget::CRenderTargetDefferedCreate()
 {
 	dwAccumulatorClearMark			= 0;
-	dxRenderDeviceRender::Instance().Resources->Evict			();
+	Device.Resources->Evict();
 
 	u32 s = RImplementation.o.msaa_samples;
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "xr_effgamma.h"
-#include "dxRenderDeviceRender.h"
+//#include "dxRenderDeviceRender.h"
 #include "tga.h"
 #include "../xrEngine/xrImage_Resampler.h"
 

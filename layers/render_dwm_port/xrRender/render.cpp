@@ -7,9 +7,9 @@
 #include "../xrEngine/environment.h"
 #include "SkeletonCustom.h"
 #include "LightTrack.h"
-#include "dxRenderDeviceRender.h"
+//#include "dxRenderDeviceRender.h"
 //#include "dxWallMarkArray.h"
-#include "dxUIShader.h"
+//#include "dxUIShader.h"
 #include "ShaderResourceTraits.h"
 
 #include "3DFluidManager.h"
@@ -378,10 +378,10 @@ void					CRender::create					()
 	update_options();
 
 	// constants
-	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup("sun_shafts_intensity",		&binder_sun_shafts_intensity);
-	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup("pos_decompression_params",	&binder_pos_decompress_params);
-	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup("screen_res",					&binder_screen_res);
-	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup("triLOD",						&binder_LOD);
+	Device.Resources->RegisterConstantSetup("sun_shafts_intensity",		&binder_sun_shafts_intensity);
+	Device.Resources->RegisterConstantSetup("pos_decompression_params",	&binder_pos_decompress_params);
+	Device.Resources->RegisterConstantSetup("screen_res",					&binder_screen_res);
+	Device.Resources->RegisterConstantSetup("triLOD",						&binder_LOD);
 
 	c_lmaterial					= "L_material";
 	c_sbase						= "s_base";

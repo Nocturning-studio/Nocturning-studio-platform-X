@@ -7,7 +7,7 @@
 
 #include <D3DX11Core.h>
 
-#include "dxRenderDeviceRender.h"
+//#include "dxRenderDeviceRender.h"
 
 // #include "std_classes.h"
 // #include "xr_avi.h"

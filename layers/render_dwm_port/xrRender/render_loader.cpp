@@ -8,7 +8,7 @@
 #include "../xrEngine/IGame_Persistent.h"
 #include "../xrCore/stream_reader.h"
 
-#include "dxRenderDeviceRender.h"
+//#include "dxRenderDeviceRender.h"
 
 #include "BufferUtils.h"
 
@@ -28,7 +28,7 @@ void CRender::level_Load(IReader* fs)
 
 	// Begin
 	pApp->LoadBegin					();
-	dxRenderDeviceRender::Instance().Resources->DeferredLoad	(TRUE);
+	Device.Resources->DeferredLoad	(TRUE);
 	IReader*						chunk;
 
 	// Shaders
@@ -49,7 +49,7 @@ void CRender::level_Load(IReader* fs)
 			LPSTR			delim	= strchr(n_sh,'/');
 			*delim					= 0;
 			xr_strcpy					(n_tlist,delim+1);
-			Shaders[i]				= dxRenderDeviceRender::Instance().Resources->Create(n_sh,n_tlist);
+			Shaders[i] = Device.Resources->Create(n_sh, n_tlist);
 		}
 		chunk->close();
 	}
@@ -180,8 +180,8 @@ void CRender::level_Unload()
 void CRender::LoadBuffers		(CStreamReader *base_fs,	BOOL _alternative)
 {
 	R_ASSERT2					(base_fs,"Could not load geometry. File not found.");
-	dxRenderDeviceRender::Instance().Resources->Evict		();
-//	u32	dwUsage					= D3DUSAGE_WRITEONLY;
+	Device.Resources->Evict();
+	//	u32	dwUsage					= D3DUSAGE_WRITEONLY;
 
 	xr_vector<VertexDeclarator>				&_DC	= _alternative?xDC:nDC;
 	xr_vector<ID3DBuffer*>					&_VB	= _alternative?xVB:nVB;
