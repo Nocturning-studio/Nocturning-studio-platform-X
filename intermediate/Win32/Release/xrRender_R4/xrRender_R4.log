@@ -109,4 +109,4 @@ D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(1717,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(1862,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
 D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\third-party\include\DXSDK\d3dx9math.inl(2032,12): warning C4995: sqrtf: имя помечено как #pragma deprecated
-D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\light.h(4,10): fatal error C1083: Не удается открыть файл включение: ../xrcdb/ispatial.h: No such file or directory,
+D:\Games\STALKER Nocturning Mihan323\Engine Mihan323\layers\render_dwm_port\xrRender\stdafx.h(33,10): fatal error C1083: Не удается открыть файл включение: dxPixEventWrapper.h: No such file or directory,

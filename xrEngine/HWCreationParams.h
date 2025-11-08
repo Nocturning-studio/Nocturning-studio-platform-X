@@ -14,7 +14,7 @@ struct RendererSupport
 enum
 {
 	R_R1, // xrRender_R1
-	R_R4A, // xrRender_R4
+	R_R2, // xrRender_R2
 	R_R4 // xrRender_R4
 };
 

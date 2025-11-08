@@ -109,10 +109,13 @@ void CEngineAPI::Initialize(void)
 
 	switch (renderer_value)
 	{
-	case RenderCreationParams::R_R4A:
-	case RenderCreationParams::R_R4:
+	case RenderCreationParams::R_R2:
 		Log("Loading DLL:", "xrRender_R2.dll");
 		hRender = LoadLibrary("xrRender_R2.dll");
+		break;
+	case RenderCreationParams::R_R4:
+		Log("Loading DLL:", "xrRender_R4.dll");
+		hRender = LoadLibrary("xrRender_R4.dll");
 		break;
 	case RenderCreationParams::R_R1:
 		Log("Loading DLL:", "xrRender_R1.dll");
