@@ -2,7 +2,7 @@
 #ifndef ParticleGroupH
 #define ParticleGroupH
 
-#include "dxParticleCustom.h"
+//#include "dxParticleCustom.h"
 
 namespace PS
 {
@@ -64,7 +64,7 @@ namespace PS
 #endif
 	};
 
-	class ECORE_API CParticleGroup: public dxParticleCustom
+	class ECORE_API CParticleGroup: public IParticleCustom
 	{
 		const CPGDef*		m_Def;
 		float				m_CurrentTime;

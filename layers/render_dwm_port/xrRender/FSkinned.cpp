@@ -528,7 +528,7 @@ void CSkeletonX_ext::_Load_hw	(Fvisual& V, void *	_verts_)
 				dst++; src++;
 			}
 			//R_CHK				(HW.pDevice->CreateVertexBuffer(V.vCount*vStride,dwUsage,0,D3DPOOL_MANAGED,&V.p_rm_Vertices,0));
-			R_CHK(BufferUtils::CreateBuffer	(&V.p_rm_Vertices, dstOriginal, V.vCount*vStride, D3D_BIND_VERTEX_BUFFER));
+			R_CHK(BufferUtils::CreateVertexBuffer	(&V.p_rm_Vertices, dstOriginal, V.vCount*vStride));
 			HW.stats_manager.increment_stats_vb			(V.p_rm_Vertices);
 			xr_free(dstOriginal);
 
@@ -556,13 +556,13 @@ void CSkeletonX_ext::_Load_hw	(Fvisual& V, void *	_verts_)
 				dst->set	(src->P,src->N,src->T,src->B,uv,int(src->matrix0)*3,int(src->matrix1)*3,src->w);
 				dst++;		src++;
 			}
-			R_CHK(BufferUtils::CreateBuffer	(&V.p_rm_Vertices, dstOriginal, V.vCount*vStride, D3D_BIND_VERTEX_BUFFER));
+			R_CHK(BufferUtils::CreateVertexBuffer	(&V.p_rm_Vertices, dstOriginal, V.vCount*vStride));
 			HW.stats_manager.increment_stats_vb			(V.p_rm_Vertices);
 			xr_free(dstOriginal);
 
 			V.rm_geom.create		(dwDecl_2W, V.p_rm_Vertices, V.p_rm_Indices);
 		}break;
-	case RM_SKINNING_3B:
+		/* case RM_SKINNING_3B :
 		{
 			{	//	Back up vertex data since we can't read vertex buffer in DX10
 				u32 size				= V.vCount*sizeof(vertBoned3W);
@@ -619,7 +619,7 @@ void CSkeletonX_ext::_Load_hw	(Fvisual& V, void *	_verts_)
 			xr_free(dstOriginal);
 
 			V.rm_geom.create		(dwDecl_4W, V.p_rm_Vertices, V.p_rm_Indices);
-		}break;
+		}break;*/
 	}
 }
 
@@ -689,7 +689,7 @@ void CSkeletonX_ext::_CollectBoneFaces(Fvisual* V, u32 iBase, u32 iCount)
 					BD1.AppendFace	(ChildIDX,(u16)(idx/3));
 				}
 			}else
-			if(*Vertices3W)
+			/*if(*Vertices3W)
 			{
 				vertBoned3W* vertices	= *Vertices3W;
 				for (u32 idx=0; idx<iCount; ++idx)
@@ -724,7 +724,7 @@ void CSkeletonX_ext::_CollectBoneFaces(Fvisual* V, u32 iBase, u32 iCount)
 					CBoneData& BD3	= Parent->LL_GetData((u16)v.m[3]);
 					BD3.AppendFace	(ChildIDX,(u16)(idx/3));
 				}
-			}else
+			}else*/
 			R_ASSERT2(0,"not implemented yet");
 		}
 		
@@ -749,25 +749,29 @@ IC void get_pos_bones(const T& v, Fvector& p, CKinematics* Parent )
 	v.get_pos_bones( p, Parent );
 }
 
-BOOL CSkeletonX_ext::_PickBoneHW1W		(IKinematics::pick_result &r, float dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
+BOOL CSkeletonX_ext::_PickBoneHW1W(_pick_result &r, float dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
 {
-	return pick_bone<vertHW_1W>(Parent,r, dist, S, D, V, indices, faces);
+	//return pick_bone<vertHW_1W>(Parent,r, dist, S, D, V, indices, faces);
+	VERIFY(!"Not implemented");
+	return FALSE;
 }
-BOOL CSkeletonX_ext::_PickBoneHW2W		(IKinematics::pick_result &r, float dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
+BOOL CSkeletonX_ext::_PickBoneHW2W(_pick_result &r, float dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
 {
-	return pick_bone<vertHW_2W>(Parent,r, dist, S, D, V, indices, faces);
+	//return pick_bone<vertHW_2W>(Parent,r, dist, S, D, V, indices, faces);
+	VERIFY(!"Not implemented");
+	return FALSE;
 }
-
-BOOL CSkeletonX_ext::_PickBoneHW3W(IKinematics::pick_result &r, float dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
+/*
+BOOL CSkeletonX_ext::_PickBoneHW3W(_pick_result &r, float dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
 {
 	return pick_bone<vertHW_3W>(Parent,r, dist, S, D, V, indices, faces);
 }
-BOOL CSkeletonX_ext::_PickBoneHW4W(IKinematics::pick_result &r, float dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
+BOOL CSkeletonX_ext::_PickBoneHW4W(_pick_result &r, float dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
 {
 	return pick_bone<vertHW_4W>(Parent,r, dist, S, D, V, indices, faces);
 }
-
-BOOL CSkeletonX_ext::_PickBone		(IKinematics::pick_result &r, float dist, const Fvector& start, const Fvector& dir, Fvisual* V, u16 bone_id, u32 iBase, u32 iCount)
+*/
+BOOL CSkeletonX_ext::_PickBone		(_pick_result &r, float dist, const Fvector& start, const Fvector& dir, Fvisual* V, u16 bone_id, u32 iBase, u32 iCount)
 {
 	VERIFY							(Parent && (ChildIDX!=u16(-1)));
 	CBoneData& BD					= Parent->LL_GetData(bone_id);
@@ -777,25 +781,27 @@ BOOL CSkeletonX_ext::_PickBone		(IKinematics::pick_result &r, float dist, const 
 
 	indices = *m_Indices;
 
+#pragma todo(fix skinning)
 
+	r.dist = dist;
 	if		(*Vertices1W)		
-				result = _PickBoneSoft1W	(r,dist,start,dir,indices+iBase,*faces);
+				result = _PickBoneSoft1W	(r.normal,r.dist,start,dir,indices+iBase,*faces);
 	else if	(*Vertices2W)		
-				result = _PickBoneSoft2W	(r,dist,start,dir,indices+iBase,*faces);
-	else if	(*Vertices3W)		
+				result = _PickBoneSoft2W	(r.normal,r.dist,start,dir,indices+iBase,*faces);
+	/* else if (*Vertices3W)		
 				result = _PickBoneSoft3W	(r,dist,start,dir,indices+iBase,*faces);
 	else {
 				VERIFY(!!(*Vertices4W));
 				result = _PickBoneSoft4W	(r,dist,start,dir,indices+iBase,*faces);
-		}
+		}*/
 
 	return result;
 }
-BOOL CSkeletonX_ST::PickBone		(IKinematics::pick_result &r, float dist, const Fvector& start, const Fvector& dir, u16 bone_id)
+BOOL CSkeletonX_ST::PickBone		(_pick_result &r, float dist, const Fvector& start, const Fvector& dir, u16 bone_id)
 {
 	return inherited2::_PickBone	(r, dist,start,dir,this,bone_id,iBase,iCount);
 }
-BOOL CSkeletonX_PM::PickBone		(IKinematics::pick_result &r, float dist, const Fvector& start, const Fvector& dir, u16 bone_id)
+BOOL CSkeletonX_PM::PickBone		(_pick_result &r, float dist, const Fvector& start, const Fvector& dir, u16 bone_id)
 {
 	FSlideWindow& SW				= nSWI.sw[0];
 	return inherited2::_PickBone	(r,dist,start,dir,this,bone_id,iBase+SW.offset,SW.num_tris*3);
@@ -821,7 +827,7 @@ void CSkeletonX_ext::_FillVerticesHW2W(const Fmatrix& view, CSkeletonWallmark& w
 {
 	R_ASSERT2(0,"CSkeletonX_ext::_FillVerticesHW2W not implemented");
 }
-
+/*
 void CSkeletonX_ext::_FillVerticesHW3W(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
 {
 	R_ASSERT2(0,"CSkeletonX_ext::_FillVerticesHW3W not implemented");
@@ -831,7 +837,7 @@ void CSkeletonX_ext::_FillVerticesHW4W(const Fmatrix& view, CSkeletonWallmark& w
 {
 	R_ASSERT2(0,"CSkeletonX_ext::_FillVerticesHW4W not implemented");
 }
-
+*/
 void CSkeletonX_ext::_FillVertices(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, Fvisual* V, u16 bone_id, u32 iBase, u32 iCount)
 {
 	R_ASSERT2(0,"CSkeletonX_ext::_FillVertices not implemented");
@@ -877,11 +883,11 @@ void	CSkeletonX_ext::_EnumBoneVertices	( SEnumVerticesCallback &C, Fvisual* V, u
 				TEnumBoneVertices( Vertices1W, indices+iBase, *faces, C );
 			else if(*Vertices2W)
 				TEnumBoneVertices( Vertices2W, indices+iBase, *faces, C  );	
-			else if(*Vertices3W)
+			/* else if (*Vertices3W)
 				TEnumBoneVertices( Vertices3W, indices+iBase, *faces, C  );
 			else {
 					VERIFY( !!(*Vertices4W) );
 					TEnumBoneVertices( Vertices4W, indices+iBase, *faces, C  );
-				 }
+				 }*/
 
 }

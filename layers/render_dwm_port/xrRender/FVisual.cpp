@@ -122,7 +122,7 @@ void Fvisual::Load		(const char* N, IReader *data, u32 dwFlags)
 
 
 			VERIFY				(NULL==p_rm_Vertices);
-			R_CHK				(BufferUtils::CreateBuffer(&p_rm_Vertices, data->pointer(), vCount*vStride, D3D_BIND_VERTEX_BUFFER));
+			R_CHK				(BufferUtils::CreateVertexBuffer(&p_rm_Vertices, data->pointer(), vCount*vStride));
 			HW.stats_manager.increment_stats_vb						(p_rm_Vertices);
 
 		}
@@ -149,7 +149,7 @@ void Fvisual::Load		(const char* N, IReader *data, u32 dwFlags)
 			dwPrimitives		= iCount/3;
 
 			VERIFY				(NULL==p_rm_Indices);
-			R_CHK				(BufferUtils::CreateBuffer(&p_rm_Indices, data->pointer(), iCount*2, D3D_BIND_INDEX_BUFFER));
+			R_CHK				(BufferUtils::CreateIndexBuffer(&p_rm_Indices, data->pointer(), iCount*2));
 			HW.stats_manager.increment_stats_ib		( p_rm_Indices);
 
 		}

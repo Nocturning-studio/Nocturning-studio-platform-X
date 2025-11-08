@@ -3,7 +3,7 @@
 
 #include "ParticleEffect.h"
 
-#ifndef _EDITOR
+#ifdef USE_TTAPI
 #include <xmmintrin.h>
 #include "../xrCPU_Pipe/ttapi.h"
 #pragma comment(lib,"xrCPU_Pipe.lib")
@@ -223,7 +223,7 @@ void CParticleEffect::OnDeviceDestroy()
 	}
 }
 
-#ifndef _EDITOR
+#ifdef USE_TTAPI
 //----------------------------------------------------
 IC void FillSprite_fpu	(FVF::LIT*& pv, const Fvector& T, const Fvector& R, const Fvector& pos, const Fvector2& lt, const Fvector2& rb, float r1, float r2, u32 clr, float angle)
 {

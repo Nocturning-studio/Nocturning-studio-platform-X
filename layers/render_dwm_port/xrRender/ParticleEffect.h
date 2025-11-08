@@ -4,18 +4,19 @@
 //---------------------------------------------------------------------------
 
 #include "ParticleEffectDef.h"
+#include "ParticleCustom.h"
 
 #ifdef _EDITOR
 #	include "FBasicVisual.h"
 #	include "dxParticleCustom.h"
 #else // _EDITOR
 #	include "FBasicVisual.h"
-#	include "dxParticleCustom.h"
+//#	include "dxParticleCustom.h"
 #endif // _EDITOR
 
 namespace PS
 {
-	class ECORE_API CParticleEffect: public dxParticleCustom
+class ECORE_API CParticleEffect : public IParticleCustom
 	{
 //		friend void ParticleRenderStream( LPVOID lpvParams );
 		friend class CPEDef;
@@ -43,8 +44,8 @@ namespace PS
 		};
 		Flags8				m_RT_Flags;
 	protected:
-		BOOL 				SaveActionList		(IWriter& F);
-		BOOL 				LoadActionList		(IReader& F);
+		//BOOL 				SaveActionList		(IWriter& F);
+		//BOOL 				LoadActionList		(IReader& F);
 
 		void				RefreshShader		();
 	public:
@@ -53,7 +54,7 @@ namespace PS
 
 		void	 			OnFrame				(u32 dt);
 
-		u32					RenderTO			();
+		//u32					RenderTO			();
 		virtual void		Render				(float LOD);
 		virtual void		Copy				(IRender_Visual* pFrom);
 
