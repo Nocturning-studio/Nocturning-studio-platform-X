@@ -27,7 +27,7 @@ void	CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_Sampler_clf		("sky_s1",			r2_T_sky1			);
 		C.r_End				();
 		break;
-	case 1:	// aa-edge-detection + AA :)
+	/* case 1: // aa-edge-detection + AA :)
 		C.r_Pass			("null",			"combine_2_AA",		FALSE,	FALSE,	FALSE);
 		C.r_Sampler_rtf		("s_position",		r2_RT_P);
 		C.r_Sampler_rtf		("s_normal",		r2_RT_N);
@@ -35,7 +35,7 @@ void	CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_Sampler_clf		("s_bloom",			r2_RT_bloom1);
 		C.r_Sampler_clf		("s_distort",		r2_RT_generic1);
 		C.r_End				();
-		break;
+		break;*/
 	case 2:	// non-AA
 		//C.r_Pass			("null",			"combine_2_NAA",	FALSE,	FALSE,	FALSE);
 		C.r_Pass			("stub_notransform_aa_AA",			"combine_2_NAA",	FALSE,	FALSE,	FALSE);
@@ -46,7 +46,7 @@ void	CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_Sampler_clf		("s_distort",		r2_RT_generic1);
 		C.r_End				();
 		break;
-	case 3:	// aa-edge-detection + AA :) + DISTORTION
+	/* case 3: // aa-edge-detection + AA :) + DISTORTION
 		C.r_Pass			("null",			"combine_2_AA_D",	FALSE,	FALSE,	FALSE);
 		C.r_Sampler_rtf		("s_position",		r2_RT_P);
 		C.r_Sampler_rtf		("s_normal",		r2_RT_N);
@@ -54,7 +54,7 @@ void	CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_Sampler_clf		("s_bloom",			r2_RT_bloom1);
 		C.r_Sampler_clf		("s_distort",		r2_RT_generic1);
 		C.r_End				();
-		break;
+		break;*/
 	case 4:	// non-AA + DISTORTION
 		//C.r_Pass			("null",			"combine_2_NAA_D",	FALSE,	FALSE,	FALSE);
 		C.r_Pass			("stub_notransform_aa_AA",			"combine_2_NAA_D",	FALSE,	FALSE,	FALSE);

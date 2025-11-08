@@ -12,7 +12,7 @@ void	CBlender_luminance::Compile(CBlender_Compile& C)
 
 	switch (C.iElement) 
 	{
-	case 0:				// 256x256	=> 64x64
+	/* case 0: // 256x256	=> 64x64
 		C.r_Pass		("null", "bloom_luminance_1",false,FALSE,FALSE,	FALSE);
 		C.r_Sampler_clf	("s_image",	r2_RT_bloom1);
 		C.r_End			();
@@ -27,6 +27,6 @@ void	CBlender_luminance::Compile(CBlender_Compile& C)
 		C.r_Sampler_clf	("s_image",		r2_RT_luminance_t8	);
 		C.r_Sampler_clf	("s_tonemap",	r2_RT_luminance_src	);
 		C.r_End			();
-		break;
+		break;*/
 	}
 }

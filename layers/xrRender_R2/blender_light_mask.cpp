@@ -12,7 +12,7 @@ void	CBlender_accum_direct_mask::Compile(CBlender_Compile& C)
 
 	switch (C.iElement) 
 	{
-	case SE_MASK_SPOT:		// spot or omni-part
+	/* case SE_MASK_SPOT: // spot or omni-part
 		C.r_Pass			("accum_mask",		"dumb",				false,	TRUE,FALSE);
 		C.r_Sampler_rtf		("s_position",		r2_RT_P);
 		C.r_End				();
@@ -41,6 +41,6 @@ void	CBlender_accum_direct_mask::Compile(CBlender_Compile& C)
 		C.r_Pass			("null",			"copy",				false,	FALSE,FALSE);
 		C.r_Sampler_rtf		("s_base",			r2_RT_accum			);
 		C.r_End				();
-		break;
+		break;*/
 	}
 }

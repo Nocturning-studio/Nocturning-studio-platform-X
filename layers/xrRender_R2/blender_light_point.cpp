@@ -16,7 +16,7 @@ void	CBlender_accum_point::Compile(CBlender_Compile& C)
 	D3DBLEND	dest		= blend?D3DBLEND_ONE:D3DBLEND_ZERO;
 	switch (C.iElement)
 	{
-	case SE_L_FILL:			// fill projective
+	/* case SE_L_FILL: // fill projective
 		C.r_Pass			("null", 			"copy",						false,	FALSE,	FALSE);
 		C.r_Sampler			("s_base",			C.L_textures[0]	);
 		C.r_End				();
@@ -74,6 +74,6 @@ void	CBlender_accum_point::Compile(CBlender_Compile& C)
 		jitter				(C);
 		C.r_Sampler_rtf		("s_accumulator",	r2_RT_accum		);
 		C.r_End				();
-		break;
+		break;*/
 	}
 }

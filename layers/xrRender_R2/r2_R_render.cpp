@@ -291,8 +291,8 @@ void CRender::Render		()
 		// level, DO NOT SPLIT
 		Target->phase_scene_begin				();
 		r_dsgraph_render_hud();
-		//r_dsgraph_render_graph					(0);
-		//r_dsgraph_render_lods					(true,true);
+		r_dsgraph_render_graph					(0);
+		r_dsgraph_render_lods					(true,true);
 		//if(Details)	Details->Render				();
 		Target->phase_scene_end					();
 	} /* else

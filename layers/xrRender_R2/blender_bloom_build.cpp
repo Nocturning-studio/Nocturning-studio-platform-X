@@ -12,7 +12,7 @@ void	CBlender_bloom_build::Compile			(CBlender_Compile& C)
 
 	switch (C.iElement)
 	{
-	case 0:		// transfer into bloom-target
+	/* case 0: // transfer into bloom-target
 		C.r_Pass			("null",			"bloom_build",	FALSE,	FALSE,	FALSE, FALSE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA);
 		C.r_Sampler_clf		("s_image",			r2_RT_generic1);
 		C.r_End				();
@@ -36,6 +36,6 @@ void	CBlender_bloom_build::Compile			(CBlender_Compile& C)
 		C.r_Pass			("null",			"bloom_filter_f",	FALSE,	FALSE,	FALSE);
 		C.r_Sampler_clf		("s_bloom",			r2_RT_bloom2);
 		C.r_End				();
-		break;
+		break;*/
 	}
 }
