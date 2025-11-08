@@ -390,19 +390,10 @@
     <ClCompile Include="render_screenshot.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="render_sector_detect.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="tga.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="TextureDX11.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="render_sector_traversal.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="render_sector.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="render_TAA.cpp">
@@ -422,6 +413,15 @@
     </ClCompile>
     <ClCompile Include="halton.cpp">
       <Filter>Core\halton</Filter>
+    </ClCompile>
+    <ClCompile Include="render_sector.cpp">
+      <Filter>Visibility\Sector/Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="render_sector_detect.cpp">
+      <Filter>Visibility\Sector/Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="render_sector_traversal.cpp">
+      <Filter>Visibility\Sector/Portal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -650,9 +650,6 @@
     <ClInclude Include="render_R_sun_support.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="render_sector.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="tga.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -693,5 +690,8 @@
       <Filter>Graphic features\FidelityFX</Filter>
     </ClInclude>
     <ClInclude Include="dxHashHelper.h" />
+    <ClInclude Include="render_sector.h">
+      <Filter>Visibility\Sector/Portal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
