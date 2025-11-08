@@ -10,7 +10,7 @@ void CRender::RenderMenu()
 {
 	OPTICK_EVENT("CRender::RenderMenu");
 
-	u32 FrameStartTime = Device.TimerGlobal.GetElapsed_ms();
+	//u32 FrameStartTime = Device.TimerGlobal.GetElapsed_ms();
 
 	// Globals
 	RenderBackend.set_CullMode(CULL_CCW);
@@ -35,10 +35,10 @@ void CRender::RenderMenu()
 	RenderBackend.RenderViewportSurface(Device.dwWidth, Device.dwHeight, HW.pBaseRT, HW.pBaseZB);
 
 	// Fucking frame limiter
-	u32 FrameEndTime = Device.TimerGlobal.GetElapsed_ms();
-	u32 FrameTime = (FrameEndTime - FrameStartTime);
-	u32 UpdateDelta = 13.0f;
-	if (FrameTime < UpdateDelta)
-		Sleep(UpdateDelta - FrameTime);
+	//u32 FrameEndTime = Device.TimerGlobal.GetElapsed_ms();
+	//u32 FrameTime = (FrameEndTime - FrameStartTime);
+	//u32 UpdateDelta = 13.0f;
+	//if (FrameTime < UpdateDelta)
+	//	Sleep(UpdateDelta - FrameTime);
 }
 ////////////////////////////////////////////////////////////////////////////////
