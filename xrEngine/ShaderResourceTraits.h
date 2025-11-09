@@ -98,9 +98,10 @@ template <> struct ShaderTypeTraits<SVS>
 	{
 		return "vs";
 	}
-	static inline void GetShaderTarget(string32 c_target)
+	static inline LPCSTR GetShaderTarget()
 	{
-		sprintf_s(c_target, sizeof c_target, "vs_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		// sprintf_s(c_target, sizeof c_target, "cs_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		return "vs_5_0";
 	}
 	static inline BOOL IsSupported()
 	{
@@ -128,9 +129,10 @@ template <> struct ShaderTypeTraits<SPS>
 	{
 		return "ps";
 	}
-	static inline void GetShaderTarget(string32 c_target)
+	static inline LPCSTR GetShaderTarget()
 	{
-		sprintf_s(c_target, sizeof c_target, "ps_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		// sprintf_s(c_target, sizeof c_target, "cs_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		return "ps_5_0";
 	}
 	static inline BOOL IsSupported()
 	{
@@ -158,9 +160,10 @@ template <> struct ShaderTypeTraits<SGS>
 	{
 		return "gs";
 	}
-	static inline void GetShaderTarget(string32 c_target)
+	static inline LPCSTR GetShaderTarget()
 	{
-		sprintf_s(c_target, sizeof c_target, "gs_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		// sprintf_s(c_target, sizeof c_target, "cs_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		return "gs_5_0";
 	}
 	static inline BOOL IsSupported()
 	{
@@ -188,9 +191,10 @@ template <> struct ShaderTypeTraits<SDS>
 	{
 		return "ds";
 	}
-	static inline void GetShaderTarget(string32 c_target)
+	static inline LPCSTR GetShaderTarget()
 	{
-		sprintf_s(c_target, sizeof c_target, "ds_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		// sprintf_s(c_target, sizeof c_target, "cs_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		return "ds_5_0";
 	}
 	static inline BOOL IsSupported()
 	{
@@ -218,9 +222,10 @@ template <> struct ShaderTypeTraits<SHS>
 	{
 		return "hs";
 	}
-	static inline void GetShaderTarget(string32 c_target)
+	static inline LPCSTR GetShaderTarget()
 	{
-		sprintf_s(c_target, sizeof c_target, "hs_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		// sprintf_s(c_target, sizeof c_target, "cs_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		return "hs_5_0";
 	}
 	static inline BOOL IsSupported()
 	{
@@ -248,9 +253,10 @@ template <> struct ShaderTypeTraits<SCS>
 	{
 		return "cs";
 	}
-	static inline void GetShaderTarget(string32 c_target)
+	static inline LPCSTR GetShaderTarget()
 	{
-		sprintf_s(c_target, sizeof c_target, "cs_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		//sprintf_s(c_target, sizeof c_target, "cs_%u_%u", HW.Caps.raster_major, HW.Caps.raster_minor);
+		return "cs_5_0";
 	}
 	static inline BOOL IsSupported()
 	{

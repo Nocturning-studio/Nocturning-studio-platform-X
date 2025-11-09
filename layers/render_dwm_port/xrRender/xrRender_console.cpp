@@ -751,12 +751,12 @@ void xrRender_initconsole()
 	Fvector	tw_min = {-10000, -10000, 0};
 	Fvector	tw_max = { 10000,10000,10000 };
 
-	CMD4(CCC_Dof,		"r__dof",			&r__dof,					tw_min,			tw_max);
-	CMD4(CCC_DofNear,	"r__dof_near",		&r__dof.x,					tw_min.x,		tw_max.x);
-	CMD4(CCC_DofFocus,	"r__dof_focus",		&r__dof.y,					tw_min.y,		tw_max.y);
-	CMD4(CCC_DofFar,	"r__dof_far",		&r__dof.z,					tw_min.z,		tw_max.z);
-	CMD4(CCC_Float,		"r__dof_kernel",	&r__dof_kernel,				0.0f,			10.f);
-	CMD4(CCC_Float,		"r__dof_sky",		&r__dof_sky,				-10000.f,		10000.f);
+	CMD4(CCC_Dof,		"r2_dof",			&r__dof,					tw_min,			tw_max);
+	CMD4(CCC_DofNear,	"r2_dof_near",		&r__dof.x,					tw_min.x,		tw_max.x);
+	CMD4(CCC_DofFocus,	"r2_dof_focus",		&r__dof.y,					tw_min.y,		tw_max.y);
+	CMD4(CCC_DofFar,	"r2_dof_far",		&r__dof.z,					tw_min.z,		tw_max.z);
+	CMD4(CCC_Float,		"r2_dof_kernel",	&r__dof_kernel,				0.0f,			10.f);
+	CMD4(CCC_Float,		"r2_dof_sky",		&r__dof_sky,				-10000.f,		10000.f);
 
 	CMD1(CCC_memory_stats,	"render_memory_stats");
 }
