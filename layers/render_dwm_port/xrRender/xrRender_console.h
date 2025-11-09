@@ -167,7 +167,7 @@ extern ECORE_API u32		r__ssao_mode;
 extern ECORE_API u32		r__parallax_mode;
 extern ECORE_API u32		r__sunshafts_mode;
 
-extern ECORE_API int		psSkeletonUpdate;
+//extern ECORE_API int		psSkeletonUpdate;
 
 extern ECORE_API void		xrRender_initconsole();
 extern ECORE_API void		xrRender_apply_tf();

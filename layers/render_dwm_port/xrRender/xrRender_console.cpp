@@ -56,6 +56,8 @@ xr_token psPreset_token[] =
 	{ 0,					0 }
 };
 
+float r__dtex_range = 30;
+
 Fvector4 r__free_vector = { 0, 0, 0, 0 };
 
 Fvector4 r__sun_il_params_0 = { 5, 3, 50, 1 };
@@ -567,7 +569,7 @@ void xrRender_initconsole()
 {
 	CMD3(CCC_Preset, "_preset", &psPreset, psPreset_token);
 
-	CMD4(CCC_Integer, "rs_skeleton_update", &psSkeletonUpdate, 2, 128);
+	//CMD4(CCC_Integer, "rs_skeleton_update", &psSkeletonUpdate, 2, 128);
 
 #ifdef	DEBUG
 	CMD1(CCC_DumpResources,		"dump_resources");

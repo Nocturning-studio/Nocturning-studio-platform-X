@@ -282,7 +282,7 @@ public:
 	virtual void					level_Unload				();
 
 	ID3DBaseTexture*				texture_load				(LPCSTR	fname, u32& msize, bool bStaging = false);
-
+	/*
 	virtual HRESULT					shader_compile(
 		LPCSTR							name,
 		DWORD const*					pSrcData,
@@ -291,7 +291,7 @@ public:
 		LPCSTR                          pTarget,
 		DWORD                           Flags,
 		void*& result);
-	
+	*/
 	// Information
 	virtual void					Statistics					(CGameFont* F);
 	virtual LPCSTR					getShaderPath				()									{ return "r4_t6638_dwm_2021\\";	}

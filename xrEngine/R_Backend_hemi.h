@@ -2,7 +2,7 @@
 #define r_backend_hemiH
 #pragma once
 
-class ECORE_API R_hemi
+class ENGINE_API R_hemi
 {
   public:
 	R_constant* c_pos_faces;

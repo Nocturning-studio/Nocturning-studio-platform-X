@@ -2,7 +2,7 @@
 #define r_backend_treeH
 #pragma once
 
-class ECORE_API R_tree
+class ENGINE_API R_tree
 {
   public:
 	R_constant* c_m_xform_v;

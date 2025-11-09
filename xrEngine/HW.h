@@ -16,7 +16,7 @@ enum enum_stats_buffer_type
 	enum_stats_buffer_type_COUNT
 };
 
-class stats_manager
+class ENGINE_API stats_manager
 {
 
   public:
