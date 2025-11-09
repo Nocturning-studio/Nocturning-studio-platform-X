@@ -431,3 +431,8 @@ void CBlender_Compile::r_ComputePass(LPCSTR cs)
 	dest.cs = Device.Resources->CreateShader<SCS>(cs, macros);
 	ctable.merge(&dest.cs->constants);
 }
+
+void CBlender_Compile::r_CullMode(D3D11_CULL_MODE Mode)
+{
+	RS.SetRS(D3DRS_CULLMODE, (u32)Mode);
+}

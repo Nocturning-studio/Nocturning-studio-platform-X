@@ -97,7 +97,7 @@ void CLight_DB::Load			(IReader *fs)
 	}
 	*/
 }
-
+/*
 void	CLight_DB::LoadHemi	()
 {
 	string_path fn_game;
@@ -152,7 +152,7 @@ void	CLight_DB::LoadHemi	()
 		FS.r_close(F);
 	}
 }
-
+*/
 void			CLight_DB::Unload	()
 {
 	v_static.clear			();

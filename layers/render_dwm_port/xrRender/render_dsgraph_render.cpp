@@ -546,7 +546,8 @@ void R_dsgraph_structure::r_dsgraph_render_hud_ui()
 	// Rendering
 	RImplementation.Target->enable_SSAA();
 	rmNear();
-	g_hud->RenderActiveItemUI	();
+#pragma todo(check active item UI)
+	//g_hud->RenderActiveItemUI	();
 
 	rmNormal();
 

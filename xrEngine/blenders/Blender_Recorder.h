@@ -189,7 +189,8 @@ class ENGINE_API CBlender_Compile
 	void r_Pass       (LPCSTR vs, LPCSTR ps,                                  BOOL bFog, BOOL bZtest=TRUE, BOOL	bZwrite=TRUE, BOOL bABlend=FALSE, D3D_BLEND	abSRC= D3D_BLEND_ONE, D3D_BLEND abDST= D3D_BLEND_ZERO, BOOL aTest=FALSE, u32 aRef=0);
 	void r_Pass       (LPCSTR vs, LPCSTR gs, LPCSTR ps,                       BOOL bFog, BOOL bZtest=TRUE, BOOL	bZwrite=TRUE, BOOL bABlend=FALSE, D3D_BLEND	abSRC= D3D_BLEND_ONE, D3D_BLEND abDST= D3D_BLEND_ZERO, BOOL aTest=FALSE, u32 aRef=0);
 	void r_TessPass   (LPCSTR vs, LPCSTR hs, LPCSTR ds, LPCSTR gs, LPCSTR ps, BOOL bFog, BOOL bZtest=TRUE, BOOL bZwrite=TRUE, BOOL bABlend=FALSE, D3D_BLEND abSRC= D3D_BLEND_ONE, D3D_BLEND abDST= D3D_BLEND_ZERO, BOOL aTest=FALSE, u32 aRef=0);
-	void r_ComputePass(LPCSTR cs );
+	void r_ComputePass(LPCSTR cs);
+	void r_CullMode(D3D11_CULL_MODE Mode);
 
 	CBlender_Compile();
 	~CBlender_Compile();

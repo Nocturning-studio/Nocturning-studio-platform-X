@@ -17,7 +17,7 @@ public:
 
 	void					Load				(IReader*	fs	);
 
-	void					LoadHemi			();
+	//void					LoadHemi			();
 
 	void					Unload				();
 
