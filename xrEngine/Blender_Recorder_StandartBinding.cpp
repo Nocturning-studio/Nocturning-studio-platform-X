@@ -156,7 +156,12 @@ class cl_fog_params : public R_constant_setup
 		if (marker != Device.dwFrame)
 		{
 			CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
-			result.set(desc->fog_color.x, desc->fog_color.y, desc->fog_color.z, desc->fog_density);
+			//result.set(desc->fog_color.x, desc->fog_color.y, desc->fog_color.z, desc->fog_density);
+			// Near/Far
+			float n = desc->far_plane * (1.0f - desc->fog_density * 0.5);
+			float f = desc->far_plane;
+			float r = 1 / (f - n);
+			result.set(-n * r, r, r, r);
 		}
 		RCache.set_c(C, result);
 	}
