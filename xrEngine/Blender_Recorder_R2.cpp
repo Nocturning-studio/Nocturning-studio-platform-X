@@ -32,13 +32,17 @@ void CBlender_Compile::r_Pass(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest, BO
 	PassSET_LightFog(FALSE, bFog);
 
 	// Create shaders
-	SPS* ps = Device.Resources->CreateShader<SPS>(_ps, macros);
-	SVS* vs = Device.Resources->CreateShader<SVS>(_vs, macros);
+	dest.ps = Device.Resources->CreateShader<SPS>(_ps, macros);
+	dest.vs = Device.Resources->CreateShader<SVS>(_vs, macros);
 	macros.clear();
-	dest.ps = ps;
-	dest.vs = vs;
-	ctable.merge(&ps->constants);
-	ctable.merge(&vs->constants);
+
+	dest.gs = Device.Resources->CreateShader<SGS>("null", macros);
+	dest.hs = Device.Resources->CreateShader<SHS>("null", macros);
+	dest.ds = Device.Resources->CreateShader<SDS>("null", macros);
+	dest.cs = Device.Resources->CreateShader<SCS>("null", macros);
+
+	ctable.merge(&dest.ps->constants);
+	ctable.merge(&dest.vs->constants);
 
 	// Last Stage - disable
 	if (0 == stricmp(_ps, "null"))
@@ -308,4 +312,122 @@ void CBlender_Compile::r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_Pr
 	r_dx10Texture(name, texture);
 	// trilinear
 	r_dx10Sampler("smp_linear");
+}
+
+void CBlender_Compile::r_Pass(LPCSTR _vs, LPCSTR _ps, BOOL bFog, BOOL bZtest, BOOL bZwrite, BOOL bABlend,
+							  D3D_BLEND abSRC, D3D_BLEND abDST, BOOL aTest, u32 aRef)
+{
+	RS.Invalidate();
+	ctable.clear();
+	passTextures.clear();
+	passMatrices.clear();
+	passConstants.clear();
+	dwStage = 0;
+
+	// Setup FF-units (Z-buffer, blender)
+	PassSET_ZB(bZtest, bZwrite);
+	PassSET_Blend(bABlend, abSRC, abDST, aTest, aRef);
+	PassSET_LightFog(FALSE, bFog);
+
+	// Create shaders
+	dest.ps = Device.Resources->CreateShader<SPS>(_ps, macros);
+	dest.vs = Device.Resources->CreateShader<SVS>(_vs, macros);
+	macros.clear();
+
+	dest.gs = Device.Resources->CreateShader<SGS>("null", macros);
+	dest.hs = Device.Resources->CreateShader<SHS>("null", macros);
+	dest.ds = Device.Resources->CreateShader<SDS>("null", macros);
+	dest.cs = Device.Resources->CreateShader<SCS>("null", macros);
+
+	ctable.merge(&dest.ps->constants);
+	ctable.merge(&dest.vs->constants);
+
+	// Last Stage - disable
+	if (0 == stricmp(_ps, "null"))
+	{
+		RS.SetTSS(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
+		RS.SetTSS(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+	}
+}
+
+void CBlender_Compile::r_Pass(LPCSTR _vs, LPCSTR _gs, LPCSTR _ps, BOOL bFog, BOOL bZtest, BOOL bZwrite, BOOL bABlend,
+							  D3D_BLEND abSRC, D3D_BLEND abDST, BOOL aTest, u32 aRef)
+{
+	RS.Invalidate();
+	ctable.clear();
+	passTextures.clear();
+	passMatrices.clear();
+	passConstants.clear();
+	dwStage = 0;
+
+	// Setup FF-units (Z-buffer, blender)
+	PassSET_ZB(bZtest, bZwrite);
+	PassSET_Blend(bABlend, abSRC, abDST, aTest, aRef);
+	PassSET_LightFog(FALSE, bFog);
+
+	// Create shaders
+	dest.ps = Device.Resources->CreateShader<SPS>(_ps, macros);
+	dest.vs = Device.Resources->CreateShader<SVS>(_vs, macros);
+	dest.gs = Device.Resources->CreateShader<SGS>(_gs, macros);
+	macros.clear();
+
+	dest.hs = Device.Resources->CreateShader<SHS>("null", macros);
+	dest.ds = Device.Resources->CreateShader<SDS>("null", macros);
+	dest.cs = Device.Resources->CreateShader<SCS>("null", macros);
+
+	ctable.merge(&dest.ps->constants);
+	ctable.merge(&dest.vs->constants);
+	ctable.merge(&dest.gs->constants);
+
+	// Last Stage - disable
+	if (0 == stricmp(_ps, "null"))
+	{
+		RS.SetTSS(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
+		RS.SetTSS(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+	}
+}
+
+void CBlender_Compile::r_TessPass(LPCSTR vs, LPCSTR hs, LPCSTR ds, LPCSTR gs, LPCSTR ps, BOOL bFog, BOOL bZtest,
+								  BOOL bZwrite, BOOL bABlend, D3D_BLEND abSRC, D3D_BLEND abDST, BOOL aTest, u32 aRef)
+{
+	RS.Invalidate();
+	ctable.clear();
+	passTextures.clear();
+	passMatrices.clear();
+	passConstants.clear();
+	dwStage = 0;
+
+	// Setup FF-units (Z-buffer, blender)
+	PassSET_ZB(bZtest, bZwrite);
+	PassSET_Blend(bABlend, abSRC, abDST, aTest, aRef);
+	PassSET_LightFog(FALSE, bFog);
+
+	// Create shaders
+	dest.ps = Device.Resources->CreateShader<SPS>(ps, macros);
+	dest.vs = Device.Resources->CreateShader<SVS>(vs, macros);
+	dest.gs = Device.Resources->CreateShader<SGS>(gs, macros);
+	dest.hs = Device.Resources->CreateShader<SHS>(hs, macros);
+	dest.ds = Device.Resources->CreateShader<SDS>(ds, macros);
+	macros.clear();
+
+	dest.cs = Device.Resources->CreateShader<SCS>("null", macros);
+
+	ctable.merge(&dest.ps->constants);
+	ctable.merge(&dest.vs->constants);
+	ctable.merge(&dest.gs->constants);
+	ctable.merge(&dest.hs->constants);
+	ctable.merge(&dest.ds->constants);
+
+	// Last Stage - disable
+	if (0 == stricmp(ps, "null"))
+	{
+		RS.SetTSS(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
+		RS.SetTSS(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+	}
+}
+
+void CBlender_Compile::r_ComputePass(LPCSTR cs)
+{
+	dest.cs = Device.Resources->CreateShader<SCS>(cs, macros);
+	ctable.merge(&dest.cs->constants);
 }

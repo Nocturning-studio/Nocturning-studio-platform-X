@@ -24,12 +24,13 @@ public:
 
 	void	VSApplySamplers(HArray &samplers);
 	void	PSApplySamplers(HArray &samplers);
-	//void	GSApplySamplers(HArray &samplers);
-	//void	HSApplySamplers(HArray &samplers);
-	//void	DSApplySamplers(HArray &samplers);
-	//void	CSApplySamplers(HArray &samplers);
+	void	GSApplySamplers(HArray &samplers);
+	void	HSApplySamplers(HArray &samplers);
+	void	DSApplySamplers(HArray &samplers);
+	void	CSApplySamplers(HArray &samplers);
 
-	void	SetMaxAnisotropy( UINT uiMaxAniso);
+	void SetMaxAnisotropy(UINT uiMaxAniso);
+	void SetMipBias(float uiMipBias);
 
 	//	Marks all device sample as unused
 	void	ResetDeviceState();
@@ -64,12 +65,13 @@ private:
 
 	SHandle					m_aPSSamplers[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT];
 	SHandle					m_aVSSamplers[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT];
-	//SHandle					m_aGSSamplers[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT];
-	//SHandle					m_aHSSamplers[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT];
-	//SHandle					m_aDSSamplers[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT];
-	//SHandle					m_aCSSamplers[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT];
+	SHandle					m_aGSSamplers[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT];
+	SHandle					m_aHSSamplers[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT];
+	SHandle					m_aDSSamplers[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT];
+	SHandle					m_aCSSamplers[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT];
 
 	u32						m_uiMaxAnisotropy;
+	float					m_uiMipBias;
 };
 
 extern ENGINE_API	dx10SamplerStateCache	SSManager;

@@ -38,10 +38,10 @@ public:
 
 	tSamplerHArray				m_VSSamplers;
 	tSamplerHArray				m_PSSamplers;
-	//tSamplerHArray				m_GSSamplers;
-	//tSamplerHArray				m_CSSamplers;
-	//tSamplerHArray				m_HSSamplers;
-	//tSamplerHArray				m_DSSamplers;
+	tSamplerHArray				m_GSSamplers;
+	tSamplerHArray				m_CSSamplers;
+	tSamplerHArray				m_HSSamplers;
+	tSamplerHArray				m_DSSamplers;
 
 	UINT						m_uiStencilRef;
 	UINT						m_uiAlphaRef;

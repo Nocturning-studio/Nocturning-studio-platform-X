@@ -16,13 +16,12 @@ class ENGINE_API CTexture : public xr_resource_named
 	{
 		rstPixel = 0, //	Default texture offset
 		rstVertex = D3DVERTEXTEXTURESAMPLER0,
-		//rstGeometry = rstVertex + 256,
-		//rstHull = rstGeometry + 256,
-		//rstDomain = rstHull + 256,
-		//rstCompute = rstDomain + 256,
-		//rstInvalid = rstCompute + 256
-
-		rstInvalid = rstVertex + 256
+		rstGeometry = rstVertex + 256,
+		rstHull = rstGeometry + 256,
+		rstDomain = rstHull + 256,
+		rstCompute = rstDomain + 256,
+		rstInvalid = rstCompute + 256
+		//rstInvalid = rstVertex + 256
 	};
 
   public:

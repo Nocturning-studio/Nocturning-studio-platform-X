@@ -34,10 +34,10 @@ dx10State* dx10State::Create(SimulatorStates& state_code)
 	{
 		InitSamplers( pState->m_VSSamplers, state_code, CTexture::rstVertex);
 		InitSamplers( pState->m_PSSamplers, state_code, CTexture::rstPixel);
-		//InitSamplers( pState->m_GSSamplers, state_code, CTexture::rstGeometry);
-		//InitSamplers( pState->m_HSSamplers, state_code, CTexture::rstHull);
-		//InitSamplers( pState->m_DSSamplers, state_code, CTexture::rstDomain);
-		//InitSamplers( pState->m_CSSamplers, state_code, CTexture::rstCompute);
+		InitSamplers( pState->m_GSSamplers, state_code, CTexture::rstGeometry);
+		InitSamplers( pState->m_HSSamplers, state_code, CTexture::rstHull);
+		InitSamplers( pState->m_DSSamplers, state_code, CTexture::rstDomain);
+		InitSamplers( pState->m_CSSamplers, state_code, CTexture::rstCompute);
 	}
 
 
@@ -79,12 +79,12 @@ HRESULT dx10State::Apply()
 
 	//Msg("samplers: %d", m_VSSamplers.size());
 
-	//SSManager.GSApplySamplers(m_GSSamplers);
+	SSManager.GSApplySamplers(m_GSSamplers);
 	SSManager.VSApplySamplers(m_VSSamplers);
 	SSManager.PSApplySamplers(m_PSSamplers);
-	//SSManager.HSApplySamplers(m_HSSamplers);
-	//SSManager.DSApplySamplers(m_DSSamplers);
-	//SSManager.CSApplySamplers(m_CSSamplers);
+	SSManager.HSApplySamplers(m_HSSamplers);
+	SSManager.DSApplySamplers(m_DSSamplers);
+	SSManager.CSApplySamplers(m_CSSamplers);
 
 //	static const FLOAT BlendFactor[4] = {0.000f, 0.000f, 0.000f, 0.000f};
 //	static const UINT SampleMask = 0xffffffff;

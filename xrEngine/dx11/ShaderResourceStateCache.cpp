@@ -11,31 +11,31 @@ dx10ShaderResourceStateCache::dx10ShaderResourceStateCache()
 void dx10ShaderResourceStateCache::ResetDeviceState()
 {
 	ZeroMemory(m_PSViews, sizeof(m_PSViews));
-	//ZeroMemory(m_GSViews, sizeof(m_GSViews));
+	ZeroMemory(m_GSViews, sizeof(m_GSViews));
 	ZeroMemory(m_VSViews, sizeof(m_VSViews));
-	//ZeroMemory(m_HSViews, sizeof(m_HSViews));
-	//ZeroMemory(m_DSViews, sizeof(m_DSViews));
+	ZeroMemory(m_HSViews, sizeof(m_HSViews));
+	ZeroMemory(m_DSViews, sizeof(m_DSViews));
 
 	m_uiMinPSView = 0xFFFFFFFF;
 	m_uiMaxPSView = 0xFFFFFFFF;
 
-	//m_uiMinGSView = 0xFFFFFFFF;
-	//m_uiMaxGSView = 0xFFFFFFFF;
+	m_uiMinGSView = 0xFFFFFFFF;
+	m_uiMaxGSView = 0xFFFFFFFF;
 
 	m_uiMinVSView = 0xFFFFFFFF;
 	m_uiMaxVSView = 0xFFFFFFFF;
 
-	//m_uiMinHSView = 0xFFFFFFFF;
-	//m_uiMaxHSView = 0xFFFFFFFF;
+	m_uiMinHSView = 0xFFFFFFFF;
+	m_uiMaxHSView = 0xFFFFFFFF;
 
-	//m_uiMinDSView = 0xFFFFFFFF;
-	//m_uiMaxDSView = 0xFFFFFFFF;
+	m_uiMinDSView = 0xFFFFFFFF;
+	m_uiMaxDSView = 0xFFFFFFFF;
 
 	m_bUpdatePSViews = false;
-	//m_bUpdateGSViews = false;
+	m_bUpdateGSViews = false;
 	m_bUpdateVSViews = false;
-	//m_bUpdateDSViews = false;
-	//m_bUpdateHSViews = false;
+	m_bUpdateDSViews = false;
+	m_bUpdateHSViews = false;
 }
 
 void dx10ShaderResourceStateCache::Apply()
@@ -48,13 +48,13 @@ void dx10ShaderResourceStateCache::Apply()
 		m_bUpdatePSViews = false;
 	}
 
-	/* if (m_bUpdateGSViews)
+	if (m_bUpdateGSViews)
 	{
 		HW.pContext11->GSSetShaderResources( m_uiMinGSView, m_uiMaxGSView-m_uiMinGSView+1, &m_GSViews[m_uiMinGSView]);
 		m_uiMinGSView = 0xFFFFFFFF;
 		m_uiMaxGSView = 0xFFFFFFFF;
 		m_bUpdateGSViews = false;
-	}*/
+	}
 
 	if (m_bUpdateVSViews)
 	{
@@ -64,7 +64,7 @@ void dx10ShaderResourceStateCache::Apply()
 		m_bUpdateVSViews = false;
 	}
 
-	/* if (m_bUpdateHSViews)
+	if (m_bUpdateHSViews)
 	{
 		HW.pContext11->HSSetShaderResources( m_uiMinHSView, m_uiMaxHSView-m_uiMinHSView+1, &m_HSViews[m_uiMinHSView]);
 		m_uiMinHSView = 0xFFFFFFFF;
@@ -86,7 +86,7 @@ void dx10ShaderResourceStateCache::Apply()
 		m_uiMinCSView = 0xFFFFFFFF;
 		m_uiMaxCSView = 0xFFFFFFFF;
 		m_bUpdateCSViews = false;
-	}*/
+	}
 }
 
 void dx10ShaderResourceStateCache::SetPSResource( u32 uiSlot, ID3D11ShaderResourceView	*pRes )
@@ -109,7 +109,7 @@ void dx10ShaderResourceStateCache::SetPSResource( u32 uiSlot, ID3D11ShaderResour
 		}
 	}
 }
-/*
+
 void dx10ShaderResourceStateCache::SetGSResource( u32 uiSlot, ID3D11ShaderResourceView	*pRes )
 {
 	VERIFY(uiSlot<CBackend::mtMaxGeometryShaderTextures);
@@ -130,7 +130,7 @@ void dx10ShaderResourceStateCache::SetGSResource( u32 uiSlot, ID3D11ShaderResour
 		}
 	}
 }
-*/
+
 void dx10ShaderResourceStateCache::SetVSResource( u32 uiSlot, ID3D11ShaderResourceView	*pRes )
 {
 	VERIFY(uiSlot<CBackend::mtMaxVertexShaderTextures);
@@ -151,7 +151,7 @@ void dx10ShaderResourceStateCache::SetVSResource( u32 uiSlot, ID3D11ShaderResour
 		}
 	}
 }
-/*
+
 void dx10ShaderResourceStateCache::SetHSResource( u32 uiSlot, ID3D11ShaderResourceView	*pRes )
 {
 	VERIFY(uiSlot<CBackend::mtMaxHullShaderTextures);
@@ -214,4 +214,3 @@ void dx10ShaderResourceStateCache::SetCSResource( u32 uiSlot, ID3D11ShaderResour
 		}
 	}
 }
-*/

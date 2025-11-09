@@ -31,10 +31,10 @@ enum MaxTextures
 	//	Actually these values are 128
 	mtMaxPixelShaderTextures = 16,
 	mtMaxVertexShaderTextures = 4,
-	//mtMaxGeometryShaderTextures = 16,
-	//mtMaxHullShaderTextures = 16,
-	//mtMaxDomainShaderTextures = 16,
-	//mtMaxComputeShaderTextures = 16,
+	mtMaxGeometryShaderTextures = 16,
+	mtMaxHullShaderTextures = 16,
+	mtMaxDomainShaderTextures = 16,
+	mtMaxComputeShaderTextures = 16,
 };
 enum
 {
@@ -84,6 +84,11 @@ class ENGINE_API CBackend
 
 	ref_cbuffer m_aVertexConstants[MaxCBuffers];
 	ref_cbuffer m_aPixelConstants[MaxCBuffers];
+	ref_cbuffer m_aGeometryConstants[MaxCBuffers];
+	ref_cbuffer m_aHullConstants[MaxCBuffers];
+	ref_cbuffer m_aDomainConstants[MaxCBuffers];
+	ref_cbuffer m_aComputeConstants[MaxCBuffers];
+
 	D3D_PRIMITIVE_TOPOLOGY m_PrimitiveTopology;
 	ID3D11InputLayout* m_pInputLayout;
 
@@ -107,6 +112,10 @@ class ENGINE_API CBackend
 	dx10State* state;
 	ID3D11PixelShader* ps;
 	ID3D11VertexShader* vs;
+	ID3D11GeometryShader* gs;
+	ID3D11HullShader* hs;
+	ID3D11DomainShader* ds;
+	ID3D11ComputeShader* cs;
 
 #ifdef DEBUG
 	LPCSTR ps_name;
@@ -134,6 +143,10 @@ class ENGINE_API CBackend
 	// Lists-expanded
 	CTexture* textures_ps[mtMaxPixelShaderTextures]; // stages
 	CTexture* textures_vs[mtMaxVertexShaderTextures]; // 4 vs
+	CTexture* textures_gs[mtMaxGeometryShaderTextures];
+	CTexture* textures_hs[mtMaxHullShaderTextures];	   
+	CTexture* textures_ds[mtMaxDomainShaderTextures];  
+	CTexture* textures_cs[mtMaxComputeShaderTextures]; 
 
 #ifdef _EDITOR
 	CMatrix* matrices[8]; // matrices are supported only for FFP
@@ -168,11 +181,29 @@ class ENGINE_API CBackend
   public:
 	IC CTexture* get_ActiveTexture(u32 stage)
 	{
-		if (stage < CTexture::rstVertex)
+		/* if (stage < CTexture::rstVertex)
 			return textures_ps[stage];
 		//else if (stage < CTexture::rstGeometry)
 		else if (stage < CTexture::rstInvalid)
 			return textures_vs[stage - CTexture::rstVertex];
+		else
+		{
+			VERIFY(!"Invalid texture stage");
+			return 0;
+		}*/
+		if (stage < CTexture::rstVertex)
+			return textures_ps[stage];
+		else if (stage < CTexture::rstGeometry)
+			return textures_vs[stage - CTexture::rstVertex];
+
+		else if (stage < CTexture::rstHull)
+			return textures_gs[stage - CTexture::rstGeometry];
+		else if (stage < CTexture::rstDomain)
+			return textures_hs[stage - CTexture::rstHull];
+		else if (stage < CTexture::rstCompute)
+			return textures_ds[stage - CTexture::rstDomain];
+		else if (stage < CTexture::rstInvalid)
+			return textures_cs[stage - CTexture::rstCompute];
 		else
 		{
 			VERIFY(!"Invalid texture stage");
@@ -304,11 +335,46 @@ class ENGINE_API CBackend
 		set_PS(_ps->sh, _ps->cName.c_str());
 	}
 
+	ICF void set_GS(ID3D11GeometryShader* _gs, LPCSTR _n = 0);
+	ICF void set_GS(ref_gs& _gs)
+	{
+		set_GS(_gs->sh, _gs->cName.c_str());
+	}
 
-	ICF bool is_TessEnabled();
+	ICF void set_HS(ID3D11HullShader* _hs, LPCSTR _n = 0);
+	ICF void set_HS(ref_hs& _hs)
+	{
+		set_HS(_hs->sh, _hs->cName.c_str());
+	}
+
+	ICF void set_DS(ID3D11DomainShader* _ds, LPCSTR _n = 0);
+	ICF void set_DS(ref_ds& _ds)
+	{
+		set_DS(_ds->sh, _ds->cName.c_str());
+	}
+
+	ICF void set_CS(ID3D11ComputeShader* _cs, LPCSTR _n = 0);
+	ICF void set_CS(ref_cs& _cs)
+	{
+		set_CS(_cs->sh, _cs->cName.c_str());
+	}
 
 	ICF void set_VS(ref_vs& _vs);
 	ICF void set_VS(SVS* _vs);
+
+	IC void set_ComputeElement(ShaderElement* S, u32 pass = 0);
+	IC void set_ComputeShader(Shader* S, u32 pass = 0);
+
+	IC void set_ComputeElement(ref_selement& S, u32 pass = 0)
+	{
+		set_ComputeElement(&*S, pass);
+	}
+	IC void set_ComputeShader(ref_shader& S, u32 pass = 0)
+	{
+		set_ComputeShader(&*S, pass);
+	}
+
+	ICF bool is_TessEnabled();
 
   protected: //	In DX10 we need input shader signature which is stored in ref_vs
 		 //
@@ -485,6 +551,9 @@ class ENGINE_API CBackend
 	ICF void Render(D3DPRIMITIVETYPE T, u32 startV, u32 PC);
 
 	ICF void Compute(UINT ThreadGroupCountX, UINT ThreadGroupCountY, UINT ThreadGroupCountZ);
+	ICF void ComputeUAVWithRestore(ID3D11UnorderedAccessView* pUAV, int ThreadGroupCountX, int ThreadGroupCountY,
+								   int ThreadGroupCountZ);
+	ICF void ComputeWithRestore(ref_rt& _1, int ThreadGroupCountX, int ThreadGroupCountY, int ThreadGroupCountZ);
 
 	// Device create / destroy / frame signaling
 	void RestoreQuadIBData(); // Igor: is used to test bug with rain, particles corruption

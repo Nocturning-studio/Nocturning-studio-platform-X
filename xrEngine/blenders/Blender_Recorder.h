@@ -7,6 +7,8 @@
 #pragma once
 
 #include "..\tss.h"
+#include "..\..\layers\render_dwm_port\xrRender\render_types.h"
+#include "..\..\layers\render_dwm_port\xrRender\xrD3DDefs.h"
 //#include "r2_types.h"
 
 #pragma pack(push, 4)
@@ -35,6 +37,15 @@ class ENGINE_API CBlender_Compile
 	IBlender* BT;
 	ShaderElement* SH;
 
+	enum
+	{
+		NO_TESS = 0,
+		TESS_PN = 1,
+		TESS_HM = 2,
+		TESS_PN_HM = 3
+	};
+	u32 TessMethod;
+
 	CShaderMacros macros;
 
   private:
@@ -48,6 +59,10 @@ class ENGINE_API CBlender_Compile
 
 	string128 pass_vs;
 	string128 pass_ps;
+	string128 pass_gs;
+	string128 pass_hs;
+	string128 pass_ds;
+	string128 pass_cs;
 
 	u32 BC(BOOL v)
 	{
@@ -156,7 +171,7 @@ class ENGINE_API CBlender_Compile
 	void r_End();
 
 	//
-	/*void Jitter()
+	void Jitter()
 	{
 		r_dx10Texture("jitter0", JITTER(0));
 		r_dx10Texture("jitter1", JITTER(1));
@@ -165,8 +180,12 @@ class ENGINE_API CBlender_Compile
 		r_dx10Texture("jitter4", JITTER(4));
 		r_dx10Texture("jitterMipped", tex_t_noise_mipped_);
 		r_dx10Sampler("smp_jitter");
-	}*/
-
+	}
+	
+	void r_Pass       (LPCSTR vs, LPCSTR ps,                                  BOOL bFog, BOOL bZtest=TRUE, BOOL	bZwrite=TRUE, BOOL bABlend=FALSE, D3D_BLEND	abSRC= D3D_BLEND_ONE, D3D_BLEND abDST= D3D_BLEND_ZERO, BOOL aTest=FALSE, u32 aRef=0);
+	void r_Pass       (LPCSTR vs, LPCSTR gs, LPCSTR ps,                       BOOL bFog, BOOL bZtest=TRUE, BOOL	bZwrite=TRUE, BOOL bABlend=FALSE, D3D_BLEND	abSRC= D3D_BLEND_ONE, D3D_BLEND abDST= D3D_BLEND_ZERO, BOOL aTest=FALSE, u32 aRef=0);
+	void r_TessPass   (LPCSTR vs, LPCSTR hs, LPCSTR ds, LPCSTR gs, LPCSTR ps, BOOL bFog, BOOL bZtest=TRUE, BOOL bZwrite=TRUE, BOOL bABlend=FALSE, D3D_BLEND abSRC= D3D_BLEND_ONE, D3D_BLEND abDST= D3D_BLEND_ZERO, BOOL aTest=FALSE, u32 aRef=0);
+	void r_ComputePass(LPCSTR cs );
 
 	CBlender_Compile();
 	~CBlender_Compile();

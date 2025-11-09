@@ -39,6 +39,10 @@ class ENGINE_API CResourceManager
 	DEFINE_MAP_PRED(const char*, CConstant*, map_Constant, map_ConstantIt, str_pred);
 	DEFINE_MAP_PRED(const char*, CRT*, map_RT, map_RTIt, str_pred);
 	DEFINE_MAP_PRED(const char*, SVS*, map_VS, map_VSIt, str_pred);
+	DEFINE_MAP_PRED(const char*, SGS*, map_GS, map_GSIt, str_pred);
+	DEFINE_MAP_PRED(const char*, SHS*, map_HS, map_HSIt, str_pred);
+	DEFINE_MAP_PRED(const char*, SDS*, map_DS, map_DSIt, str_pred);
+	DEFINE_MAP_PRED(const char*, SCS*, map_CS, map_CSIt, str_pred);
 	DEFINE_MAP_PRED(const char*, SPS*, map_PS, map_PSIt, str_pred);
 	DEFINE_MAP_PRED(const char*, texture_detail, map_TD, map_TDIt, str_pred);
 
@@ -52,6 +56,10 @@ class ENGINE_API CResourceManager
 	//	DX10 cut map_RTC												m_rtargets_c;
 	map_VS m_vs;
 	map_PS m_ps;
+	map_GS m_gs;
+	map_DS m_ds;
+	map_HS m_hs;
+	map_CS m_cs;
 	map_TD m_td;
 
 	xr_vector<SState*> v_states;
@@ -211,9 +219,17 @@ class ENGINE_API CResourceManager
 };
 
 template SPS* CResourceManager::CreateShader<SPS>(LPCSTR _name, CShaderMacros& macros);
+template SGS* CResourceManager::CreateShader<SGS>(LPCSTR _name, CShaderMacros& macros);
+template SHS* CResourceManager::CreateShader<SHS>(LPCSTR _name, CShaderMacros& macros);
+template SDS* CResourceManager::CreateShader<SDS>(LPCSTR _name, CShaderMacros& macros);
+template SCS* CResourceManager::CreateShader<SCS>(LPCSTR _name, CShaderMacros& macros);
 template SVS* CResourceManager::CreateShader<SVS>(LPCSTR _name, CShaderMacros& macros);
 
 template void CResourceManager::DestroyShader<SPS>(const SPS* sh);
+template void CResourceManager::DestroyShader<SGS>(const SGS* sh);
+template void CResourceManager::DestroyShader<SHS>(const SHS* sh);
+template void CResourceManager::DestroyShader<SDS>(const SDS* sh);
+template void CResourceManager::DestroyShader<SCS>(const SCS* sh);
 template void CResourceManager::DestroyShader<SVS>(const SVS* sh);
 
 #endif // ResourceManagerH

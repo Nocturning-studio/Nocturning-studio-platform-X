@@ -130,7 +130,7 @@ void dx10SamplerStateCache::PSApplySamplers(HArray &samplers)
 	PrepareSamplerStates( samplers, pSS, m_aPSSamplers, uiMin, uiMax);
 	HW.pContext11->PSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
 }
-/*
+
 void dx10SamplerStateCache::GSApplySamplers(HArray &samplers)
 {
 	ID3D11SamplerState	*pSS[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT];
@@ -165,7 +165,7 @@ void dx10SamplerStateCache::CSApplySamplers(HArray &samplers)
 	u32 uiMax;
 	PrepareSamplerStates( samplers, pSS, m_aCSSamplers, uiMin, uiMax);
 	HW.pContext11->CSSetSamplers(uiMin, uiMax-uiMin+1, &pSS[uiMin]);
-}*/
+}
 
 void dx10SamplerStateCache::SetMaxAnisotropy( UINT uiMaxAniso)
 {
@@ -202,9 +202,32 @@ void dx10SamplerStateCache::ResetDeviceState()
 	{
 		m_aPSSamplers[i] = (SHandle)hInvalidHandle;
 		m_aVSSamplers[i] = (SHandle)hInvalidHandle;
-		//m_aGSSamplers[i] = (SHandle)hInvalidHandle;
-		//m_aHSSamplers[i] = (SHandle)hInvalidHandle;
-		//m_aDSSamplers[i] = (SHandle)hInvalidHandle;
-		//m_aCSSamplers[i] = (SHandle)hInvalidHandle;
+		m_aGSSamplers[i] = (SHandle)hInvalidHandle;
+		m_aHSSamplers[i] = (SHandle)hInvalidHandle;
+		m_aDSSamplers[i] = (SHandle)hInvalidHandle;
+		m_aCSSamplers[i] = (SHandle)hInvalidHandle;
+	}
+}
+
+void dx10SamplerStateCache::SetMipBias(float uiMipBias)
+{
+	if (m_uiMipBias == uiMipBias)
+		return;
+
+	m_uiMipBias = uiMipBias;
+
+	for (u32 i = 0; i < m_StateArray.size(); ++i)
+	{
+		StateRecord& rec = m_StateArray[i];
+		StateDecs desc;
+
+		rec.m_pState->GetDesc(&desc);
+
+		desc.MipLODBias = m_uiMipBias;
+		dx10StateUtils::ValidateState(desc);
+
+		// This can cause fragmentation if called too often
+		rec.m_pState->Release();
+		CreateState(desc, &rec.m_pState);
 	}
 }

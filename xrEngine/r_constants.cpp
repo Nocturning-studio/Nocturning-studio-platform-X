@@ -227,10 +227,10 @@ void R_constant_table::merge(R_constant_table* T)
 			C->type = src->type;
 			C->ps = src->ps;
 			C->vs = src->vs;
-			//C->gs = src->gs;
-			//C->hs = src->hs;
-			//C->ds = src->ds;
-			//C->cs = src->cs;
+			C->gs = src->gs;
+			C->hs = src->hs;
+			C->ds = src->ds;
+			C->cs = src->cs;
 			C->samp = src->samp;
 			table.push_back(C);
 		}
@@ -505,9 +505,9 @@ BOOL R_constant_table::parseResources(ID3D11ShaderReflection* pReflection, int R
 		case D3D_SIT_SAMPLER:
 			type = RC_sampler;
 			break;
-		//case D3D_SIT_UAV_RWTYPED:
-		//	type = RC_dx11UAV;
-		//	break;
+		case D3D_SIT_UAV_RWTYPED:
+			type = RC_dx11UAV;
+			break;
 		default:
 			continue;
 		}
@@ -526,7 +526,7 @@ BOOL R_constant_table::parseResources(ID3D11ShaderReflection* pReflection, int R
 		{
 			r_index = u16(ResDesc.BindPoint + CTexture::rstVertex);
 		}
-		/* else if (destination & RC_dest_geometry)
+		else if (destination & RC_dest_geometry)
 		{
 			r_index = u16(ResDesc.BindPoint + CTexture::rstGeometry);
 		}
@@ -541,7 +541,7 @@ BOOL R_constant_table::parseResources(ID3D11ShaderReflection* pReflection, int R
 		else if (destination & RC_dest_compute)
 		{
 			r_index = u16(ResDesc.BindPoint + CTexture::rstCompute);
-		}*/
+		}
 		else
 		{
 			VERIFY(0);
@@ -579,14 +579,14 @@ IC u32 dest_to_shift_value(u32 destination)
 		return RC_dest_vertex_cb_index_shift;
 	case RC_dest_pixel:
 		return RC_dest_pixel_cb_index_shift;
-	/* case RC_dest_geometry:
+	case RC_dest_geometry:
 		return RC_dest_geometry_cb_index_shift;
 	case RC_dest_hull:
 		return RC_dest_hull_cb_index_shift;
 	case RC_dest_domain:
 		return RC_dest_domain_cb_index_shift;
 	case RC_dest_compute:
-		return RC_dest_compute_cb_index_shift;*/
+		return RC_dest_compute_cb_index_shift;
 	default:
 		FATAL("invalid enumeration for shader");
 	}
@@ -601,14 +601,14 @@ IC u32 dest_to_cbuf_type(u32 destination)
 		return CB_BufferVertexShader;
 	case RC_dest_pixel:
 		return CB_BufferPixelShader;
-	/* case RC_dest_geometry:
+	case RC_dest_geometry:
 		return CB_BufferGeometryShader;
 	case RC_dest_hull:
 		return CB_BufferHullShader;
 	case RC_dest_domain:
 		return CB_BufferDomainShader;
 	case RC_dest_compute:
-		return CB_BufferComputeShader;*/
+		return CB_BufferComputeShader;
 	default:
 		FATAL("invalid enumeration for shader");
 	}

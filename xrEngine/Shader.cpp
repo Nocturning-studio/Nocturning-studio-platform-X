@@ -71,14 +71,14 @@ BOOL SPass::equal(const SPass& other)
 		return FALSE;
 	if (vs != other.vs)
 		return FALSE;
-	//if (gs != other.gs)
-	//	return FALSE;
-	//if (hs != other.hs)
-	//	return FALSE;
-	//if (ds != other.ds)
-	//	return FALSE;
-	//if (cs != other.cs)
-	//	return FALSE;
+	if (gs != other.gs)
+		return FALSE;
+	if (hs != other.hs)
+		return FALSE;
+	if (ds != other.ds)
+		return FALSE;
+	if (cs != other.cs)
+		return FALSE;
 	if (constants != other.constants)
 		return FALSE; // is this nessesary??? (ps+vs already combines)
 

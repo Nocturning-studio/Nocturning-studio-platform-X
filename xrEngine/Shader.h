@@ -19,6 +19,7 @@ typedef xr_vector<shared_str> sh_list;
 class CBlender_Compile;
 class IBlender;
 #define SHADER_PASSES_MAX 3
+#define R_BLRENDER_STAGES 6
 
 #pragma pack(push, 4)
 
@@ -92,15 +93,13 @@ typedef resptr_core<SGeometry, resptrcode_geom> ref_geom;
 struct ENGINE_API SPass : public xr_resource_flagged
 {
 	ref_state state; // Generic state, like Z-Buffering, samplers, etc
-	ref_ps ps;		 // may be NULL = FFP, in that case "state" must contain TSS setup
-	ref_vs vs; // may be NULL = FFP, in that case "state" must contain RS setup, *and* FVF-compatible declaration must
-			   // be used
+	ref_ps ps; // may be NULL = FFP, in that case "state" must contain TSS setup
+	ref_vs vs; // may be NULL = FFP, in that case "state" must contain RS setup, *and* FVF-compatible declaration must be used
+	ref_gs gs; // may be NULL = don't use geometry shader at all
+	ref_hs hs; // may be NULL = don't use hull shader at all
+	ref_ds ds; // may be NULL = don't use domain shader at all
+	ref_cs cs; // may be NULL = don't use compute shader at all
 
-	//ref_gs gs;			  // may be NULL = don't use geometry shader at all
-	//ref_hs hs;			  // may be NULL = don't use hull shader at all
-	//ref_ds ds;			  // may be NULL = don't use domain shader at all
-	//ref_cs cs;			  // may be NULL = don't use compute shader at all
-					  //
 	ref_ctable constants; // may be NULL
 
 	ref_texture_list T;
@@ -143,7 +142,7 @@ typedef resptr_core<ShaderElement, resptr_base<ShaderElement>> ref_selement;
 struct ENGINE_API Shader : public xr_resource_flagged
 {
   public:
-	ref_selement E[6]; // R1 - 0=norm_lod0(det),	1=norm_lod1(normal),	2=L_point,		3=L_spot,	4=L_for_models,
+	ref_selement E[R_BLRENDER_STAGES]; // R1 - 0=norm_lod0(det),	1=norm_lod1(normal),	2=L_point,		3=L_spot,	4=L_for_models,
 					   // R2 - 0=deffer,			1=norm_lod1(normal),	2=psm,			3=ssm,		4=dsm
 	~Shader();
 	BOOL equal(Shader& S);

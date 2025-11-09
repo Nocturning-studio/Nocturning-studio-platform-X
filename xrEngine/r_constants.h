@@ -15,7 +15,7 @@ enum
 	RC_bool = 2,
 	RC_sampler = 99,	  //	DX9 shares index for sampler and texture
 	RC_dx10texture = 100, //	For DX10 sampler and texture are different resources
-	//RC_dx11UAV = 101
+	RC_dx11UAV = 101
 };
 enum
 {
@@ -36,22 +36,22 @@ enum
 	RC_dest_pixel = (1 << 0),
 	RC_dest_vertex = (1 << 1),
 	RC_dest_sampler = (1 << 2),					//	For DX10 it's either sampler or texture
-	//RC_dest_geometry = (1 << 3),				//	DX10 only
-	//RC_dest_hull = (1 << 4),					//	DX11 only
-	//RC_dest_domain = (1 << 5),					//	DX11 only
-	////RC_dest_compute = (1 << 6),					//	DX11 only
-	//RC_dest_compute_cb_index_mask = 0xF0000000, //	Buffer index == 0..14
-	//RC_dest_compute_cb_index_shift = 28,
-	//RC_dest_domain_cb_index_mask = 0x0F000000, //	Buffer index == 0..14
-	//RC_dest_domain_cb_index_shift = 24,
-	//RC_dest_hull_cb_index_mask = 0x00F00000, //	Buffer index == 0..14
-	//RC_dest_hull_cb_index_shift = 20,
+	RC_dest_geometry = (1 << 3),				//	DX10 only
+	RC_dest_hull = (1 << 4),					//	DX11 only
+	RC_dest_domain = (1 << 5),					//	DX11 only
+	RC_dest_compute = (1 << 6),					//	DX11 only
+	RC_dest_compute_cb_index_mask = 0xF0000000, //	Buffer index == 0..14
+	RC_dest_compute_cb_index_shift = 28,
+	RC_dest_domain_cb_index_mask = 0x0F000000, //	Buffer index == 0..14
+	RC_dest_domain_cb_index_shift = 24,
+	RC_dest_hull_cb_index_mask = 0x00F00000, //	Buffer index == 0..14
+	RC_dest_hull_cb_index_shift = 20,
 	RC_dest_pixel_cb_index_mask = 0x000F0000, //	Buffer index == 0..14
 	RC_dest_pixel_cb_index_shift = 16,
 	RC_dest_vertex_cb_index_mask = 0x0000F000, //	Buffer index == 0..14
 	RC_dest_vertex_cb_index_shift = 12,
-	//RC_dest_geometry_cb_index_mask = 0x00000F00, //	Buffer index == 0..14
-	//RC_dest_geometry_cb_index_shift = 8,
+	RC_dest_geometry_cb_index_mask = 0x00000F00, //	Buffer index == 0..14
+	RC_dest_geometry_cb_index_shift = 8,
 };
 
 enum //	Constant buffer index masks
@@ -61,10 +61,10 @@ enum //	Constant buffer index masks
 	CB_BufferTypeMask = 0x70,
 	CB_BufferPixelShader = 0x10,
 	CB_BufferVertexShader = 0x20,
-	//CB_BufferGeometryShader = 0x30,
-	//CB_BufferHullShader = 0x40,
-	//CB_BufferDomainShader = 0x50,
-	//CB_BufferComputeShader = 0x60,
+	CB_BufferGeometryShader = 0x30,
+	CB_BufferHullShader = 0x40,
+	CB_BufferDomainShader = 0x50,
+	CB_BufferComputeShader = 0x60,
 };
 
 struct ENGINE_API R_constant_load
@@ -88,10 +88,10 @@ struct ENGINE_API R_constant : public xr_resource
 
 	R_constant_load ps;
 	R_constant_load vs;
-	//R_constant_load gs;
-	//R_constant_load hs;
-	//R_constant_load ds;
-	//R_constant_load cs;
+	R_constant_load gs;
+	R_constant_load hs;
+	R_constant_load ds;
+	R_constant_load cs;
 
 	R_constant_load samp;
 	R_constant_setup* handler;
@@ -107,14 +107,14 @@ struct ENGINE_API R_constant : public xr_resource
 			return vs;
 		case RC_dest_pixel:
 			return ps;
-		//case RC_dest_geometry:
-		//	return gs;
-		//case RC_dest_hull:
-		//	return hs;
-		//case RC_dest_domain:
-		//	return ds;
-		//case RC_dest_compute:
-		//	return cs;
+		case RC_dest_geometry:
+			return gs;
+		case RC_dest_hull:
+			return hs;
+		case RC_dest_domain:
+			return ds;
+		case RC_dest_compute:
+			return cs;
 		default:
 			FATAL("invalid enumeration for shader");
 		}

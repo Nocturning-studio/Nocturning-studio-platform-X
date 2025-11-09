@@ -239,29 +239,29 @@ void CTexture::Apply(u32 dwStage)
 		// HW.pDevice->PSSetShaderResources(dwStage, 1, &m_pSRView);
 		SRVSManager.SetPSResource(dwStage, m_pSRView);
 	}
-	//else if (dwStage < rstGeometry) //	Vertex shader stage resources
-	else if (dwStage < rstInvalid) //	Vertex shader stage resources
+	else if (dwStage < rstGeometry) //	Vertex shader stage resources
+	//else if (dwStage < rstInvalid) //	Vertex shader stage resources
 	{
 		// HW.pDevice->VSSetShaderResources(dwStage-rstVertex, 1, &m_pSRView);
 		SRVSManager.SetVSResource(dwStage - rstVertex, m_pSRView);
 	}
-	//else if (dwStage < rstHull) //	Geometry shader stage resources
-	//{
-	//	// HW.pDevice->GSSetShaderResources(dwStage-rstGeometry, 1, &m_pSRView);
-	//	SRVSManager.SetGSResource(dwStage - rstGeometry, m_pSRView);
-	//}
-	//else if (dwStage < rstDomain) //	Geometry shader stage resources
-	//{
-	//	SRVSManager.SetHSResource(dwStage - rstHull, m_pSRView);
-	//}
-	//else if (dwStage < rstCompute) //	Geometry shader stage resources
-	//{
-	//	SRVSManager.SetDSResource(dwStage - rstDomain, m_pSRView);
-	//}
-	//else if (dwStage < rstInvalid) //	Geometry shader stage resources
-	//{
-	//	SRVSManager.SetCSResource(dwStage - rstCompute, m_pSRView);
-	//}
+	else if (dwStage < rstHull) //	Geometry shader stage resources
+	{
+		// HW.pDevice->GSSetShaderResources(dwStage-rstGeometry, 1, &m_pSRView);
+		SRVSManager.SetGSResource(dwStage - rstGeometry, m_pSRView);
+	}
+	else if (dwStage < rstDomain) //	Geometry shader stage resources
+	{
+		SRVSManager.SetHSResource(dwStage - rstHull, m_pSRView);
+	}
+	else if (dwStage < rstCompute) //	Geometry shader stage resources
+	{
+		SRVSManager.SetDSResource(dwStage - rstDomain, m_pSRView);
+	}
+	else if (dwStage < rstInvalid) //	Geometry shader stage resources
+	{
+		SRVSManager.SetCSResource(dwStage - rstCompute, m_pSRView);
+	}
 	else
 		VERIFY("Invalid stage");
 }

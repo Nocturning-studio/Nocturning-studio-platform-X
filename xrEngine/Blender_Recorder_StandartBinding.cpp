@@ -483,6 +483,51 @@ static class cl_v2w final : public R_constant_setup
 	}
 } binder_v2w;
 
+class cl_dwframe : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, (int)Device.dwFrame);
+	}
+};
+static cl_dwframe binder_dwframe;
+
+class cl_depth_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		float nearPlane = float(VIEWPORT_NEAR);
+		float farPlane = g_pGamePersistent->Environment().CurrentEnv->far_plane;
+		//RCache.set_c(C, nearPlane, farPlane, 0, r__dbg_planar_h);
+#pragma todo(fix planar height)
+		RCache.set_c(C, nearPlane, farPlane, 0, -7.2f);
+	}
+};
+static cl_depth_params binder_depth_params;
+
+class cl_sky_color : public R_constant_setup
+{
+	u32 marker;
+	Fvector4 result;
+	virtual void setup(R_constant* C)
+	{
+		CEnvDescriptor& desc = *g_pGamePersistent->Environment().CurrentEnv;
+		result.set(desc.sky_color.x, desc.sky_color.y, desc.sky_color.z, desc.m_fWaterIntensity);
+		RCache.set_c(C, result);
+	}
+};
+static cl_sky_color binder_sky_color;
+
+static class cl_msaa_sample_pattern : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+#pragma todo(fix TAA constants)
+		//RCache.set_c(C, CTAA::calc_jitter_x(), CTAA::calc_jitter_y(), 0, 0);
+		RCache.set_c(C, 0, 0, 0, 0);
+	}
+} binder_msaa_sample_pattern;
+
 // Standart constant-binding
 void CBlender_Compile::SetMapping()
 {
@@ -562,6 +607,11 @@ void CBlender_Compile::SetMapping()
 
 	if (bDetail && bDetail_Diffuse && detail_scaler)
 		r_Constant("dt_params", detail_scaler);
+
+	r_Constant("dwframe", &binder_dwframe);
+	r_Constant("depth_params", &binder_depth_params);
+	r_Constant("wea_sky_color", &binder_sky_color);
+	r_Constant("taa_jitter", &binder_msaa_sample_pattern);
 
 	// other common
 	for (u32 it = 0; it < Device.Resources->v_constant_setup.size(); it++)
