@@ -7,9 +7,13 @@
 #pragma once
 
 #include "..\tss.h"
-#include "..\..\layers\render_dwm_port\xrRender\render_types.h"
+//#include "..\..\layers\render_dwm_port\xrRender\render_types.h"
 #include "..\..\layers\render_dwm_port\xrRender\xrD3DDefs.h"
 //#include "r2_types.h"
+
+#define JITTER(a) tex_t_noise_ #a
+#define tex_t_noise_ "$user$jitter_"
+#define tex_t_noise_mipped_ "$user$jitter_mipped"
 
 #pragma pack(push, 4)
 

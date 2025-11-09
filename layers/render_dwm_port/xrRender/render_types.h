@@ -71,8 +71,8 @@ const FLOAT rgba_alpha[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 #define tex_rt_LUM_8			"$user$lum_t8"
 #define tex_rt_LUM_64			"$user$lum_t64"
 #define tex_rt_LUM_pool			"$user$luminance"
-#define tex_t_noise_mipped_		"$user$jitter_mipped"
-#define tex_t_noise_			"$user$jitter_"
+//#define tex_t_noise_mipped_		"$user$jitter_mipped"
+//#define tex_t_noise_			"$user$jitter_"
 #define tex_t_LUM_src			"$user$tonemap_src"
 #define tex_t_LUM_dest			"$user$tonemap"
 #define tex_t_envmap_0			"$user$env_s0"
@@ -247,7 +247,7 @@ enum r__ssao_mode_values
 #define TEX_POINT_ATT	"internal\\internal_light_attpoint"
 #define TEX_SPOT_ATT	"internal\\internal_light_attclip"
 
-#define JITTER(a) tex_t_noise_ #a
+//#define JITTER(a) tex_t_noise_ #a
 
 IC	float	u_diffuse2s(float x, float y, float z) { float	v = (x + y + z) / 3.f;	return r__gloss * ((v < 1) ? powf(v, 2.f / 3.f) : v); }
 IC	float	u_diffuse2s(Fvector3& c) { return u_diffuse2s(c.x, c.y, c.z); }
