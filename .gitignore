@@ -1,8 +1,7 @@
-
 *.db
 .vs/*
 *.db-shm
 *.db-wal
 *.opendb
 *.ipch
-intermediate/*
+../intermediate/*
