@@ -245,18 +245,18 @@ public:
 	}
 	IC void							apply_lmaterial				()
 	{
-		R_constant*		C	= &*RCache.get_c	(c_sbase);		// get sampler
+		/* R_constant* C = &*RCache.get_c(c_sbase); // get sampler
 		if (0==C)			return;
 		VERIFY				(RC_dest_sampler	== C->destination);
 		VERIFY				(RC_dx10texture		== C->type);
 		CTexture*		T	= RCache.get_ActiveTexture	(u32(C->samp.index));
-		VERIFY				(T);
+		VERIFY				(T);*/
 		float	mtl			= 2.2;
-		if (T != NULL)
+		/* if (T != NULL)
 			mtl = T->m_material;
 		else
 			Log("! warning: can't read material from texture, set default");
-		if (!mtl) mtl = 2.2;
+		if (!mtl) mtl = 2.2;*/
 		/* RCache.hemi.set_material(o_hemi, o_sun, 0, (mtl + .5f) / 4.f);
 		RCache.hemi.set_pos_faces(o_hemi_cube[CROS_impl::CUBE_FACE_POS_X],
 			o_hemi_cube[CROS_impl::CUBE_FACE_POS_Y],

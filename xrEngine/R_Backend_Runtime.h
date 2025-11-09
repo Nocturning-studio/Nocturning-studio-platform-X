@@ -18,8 +18,8 @@ IC void R_xforms::set_c_w(R_constant* C)
 };
 IC void R_xforms::set_c_invw(R_constant* C)
 {
-	c_invw = C;
-	apply_invw();
+	//c_invw = C;
+	//apply_invw();
 };
 IC void R_xforms::set_c_v(R_constant* C)
 {

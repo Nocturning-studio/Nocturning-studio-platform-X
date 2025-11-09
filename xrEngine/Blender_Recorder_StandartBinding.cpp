@@ -24,7 +24,7 @@
 	};                                                                                                                 \
 	static cl_xform_##xf binder_##xf
 BIND_DECLARE(w);
-BIND_DECLARE(invw);
+//BIND_DECLARE(invw);
 BIND_DECLARE(v);
 BIND_DECLARE(p);
 BIND_DECLARE(wv);
@@ -533,7 +533,7 @@ void CBlender_Compile::SetMapping()
 {
 	// matrices
 	r_Constant("m_W", &binder_w);
-	r_Constant("m_invW", &binder_invw);
+	//r_Constant("m_invW", &binder_invw);
 	r_Constant("m_V", &binder_v);
 	r_Constant("m_P", &binder_p);
 	r_Constant("m_WV", &binder_wv);

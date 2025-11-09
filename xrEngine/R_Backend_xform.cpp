@@ -15,8 +15,8 @@ void R_xforms::set_W(const Fmatrix& m)
 	if (c_wvp)
 		RCache.set_c(c_wvp, m_wvp);
 	m_bInvWValid = false;
-	if (c_invw)
-		apply_invw();
+	//if (c_invw)
+	//	apply_invw();
 	RCache.set_xform(D3DTS_WORLD, m);
 }
 void R_xforms::set_V(const Fmatrix& m)
@@ -56,11 +56,11 @@ void R_xforms::apply_invw()
 
 	if (!m_bInvWValid)
 	{
-		m_invw.invert_b(m_w);
+		//m_invw.invert_b(m_w);
 		m_bInvWValid = true;
 	}
 
-	RCache.set_c(c_invw, m_invw);
+	//RCache.set_c(c_invw, m_invw);
 }
 
 void R_xforms::unmap()
@@ -76,7 +76,7 @@ R_xforms::R_xforms()
 {
 	unmap();
 	m_w.identity();
-	m_invw.identity();
+	//m_invw.identity();
 	m_v.identity();
 	m_p.identity();
 	m_wv.identity();
