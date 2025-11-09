@@ -26,7 +26,7 @@
 #define r_RT_generic0 "$user$generic0"
 #define r_RT_generic1 "$user$generic1"
 
-#define r_RT_generic_prev "$user$generic_prev"
+#define r_RT_backbuffer_mip "$user$r_RT_backbuffer_mip"
 
 #define r_RT_distortion_mask "$user$distortion"
 

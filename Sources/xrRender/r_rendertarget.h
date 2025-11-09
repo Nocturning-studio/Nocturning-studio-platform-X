@@ -75,7 +75,7 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_SceneLuminance;
 	ref_rt rt_SceneLuminancePrevious;
 
-	ref_rt rt_ReflectionsRaw;
+	ref_rt rt_BackbufferMip;
 	ref_rt rt_Reflections;
 
 	ref_rt rt_Radiation_Noise0;

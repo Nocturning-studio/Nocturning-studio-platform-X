@@ -41,14 +41,23 @@ void CRT::create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f, u32 levels)
 	if (!btwIsPow2(w) || !btwIsPow2(h))
 	{
 		if (!HW.Caps.raster.bNonPow2)
+		{
+			Msg("!Resolution of RT(%s), %dx%d, %d is not can be devided by 2!!!", Name, w, h, levels);
 			return;
+		}
 	}
 
 	// Check width-and-height of render target surface
 	if (w > caps.MaxTextureWidth)
+	{
+		Msg("*!Resolution of RT(%s), %dx%d, %d is bigger the maximal!!!", Name, w, h, levels);
 		return;
+	}
 	if (h > caps.MaxTextureHeight)
+	{
+		Msg("*!Resolution of RT(%s), %dx%d, %d is bigger the maximal!!!", Name, w, h, levels);
 		return;
+	}
 	
 #pragma todo("NSDeathman to ALL: Разобраться с предупреждением")
 #pragma warning(disable: 4063)
@@ -79,18 +88,24 @@ void CRT::create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f, u32 levels)
 	// Validate render-target usage
 	_hr = HW.pD3D->CheckDeviceFormat(HW.DevAdapter, HW.DevT, HW.Caps.fTarget, usage, D3DRTYPE_TEXTURE, f);
 	if (FAILED(_hr))
+	{
+		Msg("*!Can't create RT(%s), %dx%d, %d (CheckDeviceFormat)!!!", Name, w, h, levels);
 		return;
+	}
 
 	// Try to create texture/surface
 	Device.Resources->Evict();
 	_hr = HW.pDevice->CreateTexture(w, h, levels, usage, f, D3DPOOL_DEFAULT, &pSurface, NULL);
 	if (FAILED(_hr) || (0 == pSurface))
+	{
+		Msg("*!Can't create RT(%s), %dx%d, %d (CreateTexture)!!!", Name, w, h, levels);
 		return;
+	}
 
 		// OK
-#ifdef DEBUG
+//#ifdef DEBUG
 	Msg("* created RT(%s), %dx%d, %d", Name, w, h, levels);
-#endif // DEBUG
+//#endif // DEBUG
 	R_CHK(pSurface->GetSurfaceLevel(0, &pRT));
 	pTexture = Device.Resources->_CreateTexture(Name);
 	pTexture->surface_set(pSurface);

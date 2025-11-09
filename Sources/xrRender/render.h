@@ -317,6 +317,7 @@ class CRender : public R_dsgraph_structure
 	void precombine_scene();
 	void combine_scene_lighting();
 	void clear_reflections();
+	void create_backbuffer_mip_chain();
 	void render_reflections();
 	void render_screen_space_reflections();
 	void render_screen_overlays();

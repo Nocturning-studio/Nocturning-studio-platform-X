@@ -472,17 +472,26 @@ class ENGINE_API CBackend
 	void set_viewport_geometry(ref_geom geometry, u32& vOffset);
 	void set_viewport_geometry(u32& vOffset);
 
+	void render_viewport_geometry(float w, float h);
+
 	void RenderViewportSurface();
-	void RenderViewportSurface(const ref_rt& _1);
-	void RenderViewportSurface(const ref_rt& _1, IDirect3DSurface9* zb);
+	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1, IDirect3DSurface9* zb = NULL);
+	void RenderViewportSurface(IDirect3DSurface9* _1);
+	void RenderViewportSurface(const ref_rt& _1, IDirect3DSurface9* zb = NULL);
 	void RenderViewportSurface(float w, float h, const ref_rt& _1, const ref_rt& _2 = NULL, const ref_rt& _3 = NULL, const ref_rt& _4 = NULL);
 
-	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1);
-	void RenderViewportSurface(float w, float h, IDirect3DSurface9* _1, IDirect3DSurface9* zb);
 
 	void RenderToMipLevel(ref_rt target, u32 mip_level);
 	void RenderToMipLevel(ref_rt target, u32 mip_level, ShaderElement* shader, u32 pass);
 	void GenerateMipChain(ref_rt source, ref_rt mip_chain, ShaderElement* downsample_shader, u32 pass = 0);
+
+	void CopyViewportSurface(ref_rt source, ref_rt destination);
+	void CopyViewportSurface(ref_rt source, ref_rt destination, D3DTEXTUREFILTERTYPE filter);
+	void CopyViewportSurface(ref_rt source, RECT src_rect, ref_rt destination, RECT dst_rect, D3DTEXTUREFILTERTYPE filter);
+
+	void CopySurface(IDirect3DSurface9* source, IDirect3DSurface9* destination);
+	void CopySurface(IDirect3DSurface9* source, IDirect3DSurface9* destination, D3DTEXTUREFILTERTYPE filter);
+	void CopySurface(IDirect3DSurface9* source, RECT src_rect, IDirect3DSurface9* destination, RECT dst_rect, D3DTEXTUREFILTERTYPE filter);
 
 	void ClearTexture(const ref_rt& _1, u32 color = color_rgba(0, 0, 0, 0));
 	void ClearTexture(const ref_rt& _1, const ref_rt& _2 = NULL, u32 color = color_rgba(0, 0, 0, 0));
