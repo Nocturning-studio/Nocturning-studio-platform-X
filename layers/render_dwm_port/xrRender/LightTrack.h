@@ -58,8 +58,8 @@ public:
 	u32						shadow_recv_frame	;
 	int						shadow_recv_slot	;
 private:
-	float					hemi_cube		[NUM_FACES];
-	float					hemi_cube_smooth[NUM_FACES];
+	//float					hemi_cube		[NUM_FACES];
+	//float					hemi_cube_smooth[NUM_FACES];
 
 	float					hemi_value			;
 	float					hemi_smooth			;
@@ -76,7 +76,7 @@ public:
 	virtual	void			force_mode			(u32 mode)		{ MODE = mode;															};
 	virtual float			get_luminocity		()				{ float result = _max(approximate.x, _max(approximate.y, approximate.z)); clamp(result, 0.f, 1.f); return (result); };
 	virtual float			get_luminocity_hemi	()				{ return get_hemi();}
-	virtual float*			get_luminocity_hemi_cube		()				{ return hemi_cube_smooth;}
+	//virtual float*			get_luminocity_hemi_cube		()				{ return hemi_cube_smooth;}
 
 	void					add					(light*			L);
 	void					update				(IRenderable*	O);
@@ -95,10 +95,11 @@ public:
 		return									approximate;
 	}
 
-	const float*			get_hemi_cube		(){
+	/* const float* get_hemi_cube()
+	{
 		if (dwFrameSmooth!=Device.dwFrame)		update_smooth();
 		return									hemi_cube_smooth;
-	}
+	}*/
 
 	CROS_impl				();
 	virtual ~CROS_impl	()	{};
@@ -113,10 +114,10 @@ private:
 	void calc_sun_value(Fvector& position, CObject* _object);
 
 	//Calculates sky part of ambient occlusion
-	void calc_sky_hemi_value(Fvector& position, CObject* _object);
+	//void calc_sky_hemi_value(Fvector& position, CObject* _object);
 
 	//prepares static or hemisphere lights for ambient occlusion calculations
-	void prepare_lights(Fvector& position, IRenderable* O);
+	//void prepare_lights(Fvector& position, IRenderable* O);
 
 	//	Updates only if makes a desizion that update is necessary
 	void smart_update(IRenderable* O);

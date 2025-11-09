@@ -4,6 +4,8 @@
 
 #pragma once
 
+#define dSINGLE
+
 #pragma warning(disable:4995)
 #include "../xrEngine/stdafx.h"
 #pragma warning(disable:4995)
@@ -24,13 +26,25 @@
 //#define __GFSDK_DX11__
 
 #ifdef __GFSDK_DX11__
-#include <GFSDK/GFSDK_TXAA.h>
+
+// HBAO+
 #include <GFSDK/GFSDK_SSAO.h>
+#pragma comment(lib, "GFSDK_SSAO_D3D11.win32.lib")
+
+// TXAA
+#include <GFSDK/GFSDK_TXAA.h>
+#pragma comment(lib,"GFSDK_Txaa.win32.lib")
+
 #endif
 
 #include "xrD3DDefs.h"
 
 //#include "dxPixEventWrapper.h"
+
+#define R_R1 0
+#define R_R2 1
+#define R_R4 1
+#define RENDER R_R4
 
 #include "HW.h"
 #include "Shader.h"

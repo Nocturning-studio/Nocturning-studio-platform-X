@@ -66,7 +66,7 @@ bool det_render_debug = false;
 #endif
 #endif
 
-#include "../xrgame/gamemtllib.h"
+//#include "../xrgame/gamemtllib.h"
 
 //#define		DBG_SWITCHOFF_RANDOMIZE
 void		CDetailManager::cache_Decompress(Slot* S)
@@ -202,9 +202,9 @@ RDEVICE.Statistic->TEST0.End		();
 				}
 #else
 				CDB::TRI&	T		= tris[xrc.r_begin()[tid].id];
-				SGameMtl* mtl		= GMLib.GetMaterialByIdx(T.material);
-				if(mtl->Flags.test(SGameMtl::flPassable))	
-					continue;
+				//SGameMtl* mtl		= GMLib.GetMaterialByIdx(T.material);
+				//if(mtl->Flags.test(SGameMtl::flPassable))	
+				//	continue;
 
 				Fvector		Tv[3]	= { verts[T.verts[0]],verts[T.verts[1]],verts[T.verts[2]] };
 				if (CDB::TestRayTri(Item_P,dir,Tv,r_u,r_v,r_range,TRUE))

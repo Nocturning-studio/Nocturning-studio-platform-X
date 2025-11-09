@@ -34,41 +34,53 @@ IRender_Visual* CModelPool::Instance_Create(u32 type)
 	// Check types
 	switch (type) {
 	case MT_NORMAL:				// our base visual
-		V	= xr_new<Fvisual>				();
+		//V	= xr_new<Fvisual>				();
+		V	= new Fvisual 				();
 		break;
 	case MT_HIERRARHY:
-		V	= xr_new<FHierrarhyVisual>		();
+		//V	= xr_new<FHierrarhyVisual>		();
+		V	= new FHierrarhyVisual 		();
 		break;
 	case MT_PROGRESSIVE:		// dynamic-resolution visual
-		V	= xr_new<FProgressive>			();
+		//V	= xr_new<FProgressive>			();
+		V	= new FProgressive 			();
 		break;
 	case MT_SKELETON_ANIM:
-		V	= xr_new<CKinematicsAnimated>	();
+		//V	= xr_new<CKinematicsAnimated>	();
+		V	= new CKinematicsAnimated 	();
 		break;
 	case MT_SKELETON_RIGID:
-		V	= xr_new<CKinematics>			();
+		//V	= xr_new<CKinematics>			();
+		V	= new CKinematics 			();
 		break;
 	case MT_SKELETON_GEOMDEF_PM:
-		V	= xr_new<CSkeletonX_PM>			();
+		//V	= xr_new<CSkeletonX_PM>			();
+		V	= new CSkeletonX_PM 			();
 		break;
 	case MT_SKELETON_GEOMDEF_ST:
-		V	= xr_new<CSkeletonX_ST>			();
+		//V	= xr_new<CSkeletonX_ST>			();
+		V	= new CSkeletonX_ST 			();
 		break;
 	case MT_PARTICLE_EFFECT:
-		V	= xr_new<PS::CParticleEffect>	();
+		//V	= xr_new<PS::CParticleEffect>	();
+		V	= new PS::CParticleEffect		();
 		break;
 	case MT_PARTICLE_GROUP:
-		V	= xr_new<PS::CParticleGroup>	();
+		//V	= xr_new<PS::CParticleGroup>	();
+		V	= new PS::CParticleGroup		();
 		break;
 #ifndef _EDITOR
 	case MT_LOD:
-		V	= xr_new<FLOD>					();
+		//V	= xr_new<FLOD>					();
+		V	= new FLOD						();
 		break;
 	case MT_TREE_ST:
-		V	= xr_new<FTreeVisual_ST>		();
+		//V	= xr_new<FTreeVisual_ST>		();
+		V	= new FTreeVisual_ST			();
 		break;
 	case MT_TREE_PM:
-		V	= xr_new<FTreeVisual_PM>		();
+		//V	= xr_new<FTreeVisual_PM>		();
+		V	= new FTreeVisual_PM			();
 		break;
 #endif
 	default:
@@ -185,7 +197,8 @@ void CModelPool::Destroy()
 	for (; I!=E; I++)
 	{
 		I->model->Release();
-		xr_delete(I->model);
+		//xr_delete(I->model);
+		delete I->model;
 	}
 	
 	Models.clear();
@@ -298,7 +311,8 @@ void	CModelPool::DeleteInternal	(IRender_Visual* &V, BOOL bDiscard)
 			Pool.insert			(mk_pair(it->second,V));
 		} else {
 			// Registry entry not-found - just special type of visual / particles / etc.
-			xr_delete			(V);
+			//xr_delete			(V);
+			delete				V;
 		}
 	}
 	V	=	NULL;
@@ -348,7 +362,8 @@ void	CModelPool::Discard	(IRender_Visual* &V, BOOL b_complete)
 						{
                 			bForceDiscard		= TRUE;
 	            			I->model->Release	();
-							xr_delete			(I->model);	
+							//xr_delete			(I->model);	
+							delete				I->model;	
 							Models.erase		(I);
 							bForceDiscard		= FALSE;
 						}
@@ -361,12 +376,14 @@ void	CModelPool::Discard	(IRender_Visual* &V, BOOL b_complete)
 				}
 			}
 		// Registry
-		xr_delete		(V);	
+		//xr_delete		(V);	
+		delete			V;	
 //.		xr_free			(name);
 		Registry.erase	(it);
 	} else {
 		// Registry entry not-found - just special type of visual / particles / etc.
-		xr_delete		(V);
+		//xr_delete		(V);
+		delete			V;
 	}
 	V	=	NULL;
 }

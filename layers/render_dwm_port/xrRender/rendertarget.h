@@ -445,6 +445,15 @@ public:
 	virtual void				set_color_base			(u32	f)		{ param_color_base=f;				}
 	virtual void				set_color_gray			(u32	f)		{ param_color_gray=f;				}
 	virtual void				set_color_add			(const Fvector	&f)		{ param_color_add=f;		}
+
+	// DX9 to DX11 color
+	virtual void				set_color_add			(u32 f)		
+	{ 
+		float r = color_get_R(f);	
+		float g = color_get_G(f);	
+		float b = color_get_B(f);	
+		param_color_add.set(r / 255.0f, g / 255.0f, b / 255.0f);
+	}
 	
 	virtual u32					get_width				()				{ return dwWidth;					}
 	virtual u32					get_height				()				{ return dwHeight;					}
