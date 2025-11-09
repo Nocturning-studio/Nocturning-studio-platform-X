@@ -505,7 +505,7 @@ class cl_depth_params : public R_constant_setup
 		float farPlane = g_pGamePersistent->Environment().CurrentEnv->far_plane;
 		//RCache.set_c(C, nearPlane, farPlane, 0, r__dbg_planar_h);
 #pragma todo(fix planar height)
-		RCache.set_c(C, nearPlane, farPlane, 0, -7.2f);
+		RCache.set_c(C, nearPlane, farPlane, 0, -4.9f);
 	}
 };
 static cl_depth_params binder_depth_params;
