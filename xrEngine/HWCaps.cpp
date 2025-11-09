@@ -120,14 +120,20 @@ void CHWCaps::Update()
 	case D3D_FEATURE_LEVEL_11_0:
 		geometry_major = 5;
 		geometry_minor = 0;
+		raster_major = 5;
+		raster_minor = 0;
 		break;
 	case D3D_FEATURE_LEVEL_10_1:
 		geometry_major = 4;
 		geometry_minor = 1;
+		raster_major = 4;
+		raster_minor = 1;
 		break;
 	case D3D_FEATURE_LEVEL_10_0:
 		geometry_major = 4;
 		geometry_minor = 0;
+		raster_major = 4;
+		raster_minor = 0;
 		break;
 	}
 
@@ -142,8 +148,8 @@ void CHWCaps::Update()
 	geometry.bVTF = TRUE;
 
 	// ***************** PIXEL processing
-	raster_major = 4;
-	raster_minor = 0;
+	//raster_major = 4;
+	//raster_minor = 0;
 	raster.dwStages = 16;
 	raster.bNonPow2 = TRUE;
 	raster.bCubemap = TRUE;
