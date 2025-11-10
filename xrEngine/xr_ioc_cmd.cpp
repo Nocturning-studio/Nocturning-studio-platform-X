@@ -656,7 +656,7 @@ class CCC_DR_UsePoints : public CCC_Integer
 
 xr_token vid_quality_token[] = {
 	{"renderer_r1_dx11", RenderCreationParams::R_R1}, 
-	{"renderer_r2_dx11", RenderCreationParams::R_R2}, 
+	//{"renderer_r2_dx11", RenderCreationParams::R_R2}, 
 	{"renderer_r4_dx11", RenderCreationParams::R_R4},
 								{0, NULL}};
 
