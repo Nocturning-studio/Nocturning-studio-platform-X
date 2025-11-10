@@ -351,6 +351,8 @@ void CHW::CreateDevice(HWND m_hWnd, bool move_window)
 	//	Additional set up
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 
+	bool dx11_fatal_warnings = false;
+
 	UINT createDeviceFlags = 0;
 //#ifdef DEBUG
 	createDeviceFlags |= D3D10_CREATE_DEVICE_DEBUG;
@@ -400,26 +402,67 @@ void CHW::CreateDevice(HWND m_hWnd, bool move_window)
 	}
 #endif
 
+//#ifdef DEBUG
+	if (dx11_fatal_warnings)
+	{
+		ID3D11InfoQueue* pInfoQueue = NULL;
+		HRESULT hr = pDevice11->QueryInterface(IID_PPV_ARGS(&pInfoQueue));
+
+		if (SUCCEEDED(hr))
+		{
+			pInfoQueue->SetMuteDebugOutput(FALSE);
+			pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, TRUE);
+			pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+			pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, TRUE);
+			pInfoQueue->Release();
+		}
+	}
+	//#endif
+
 	switch (FeatureLevel)
 	{
 	case D3D_FEATURE_LEVEL_10_0:
+		Caps.geometry_major = 4;
+		Caps.geometry_minor = 0;
+		Caps.raster_major = 4;
+		Caps.raster_minor = 0;
 		Msg("* Current DX11 feature level: 10.0");
 		break;
 	case D3D_FEATURE_LEVEL_10_1:
+		Caps.geometry_major = 4;
+		Caps.geometry_minor = 1;
+		Caps.raster_major = 4;
+		Caps.raster_minor = 1;
 		Msg("* Current DX11 feature level: 10.1");
 		break;
 	case D3D_FEATURE_LEVEL_11_0:
+		Caps.geometry_major = 5;
+		Caps.geometry_minor = 0;
+		Caps.raster_major = 5;
+		Caps.raster_minor = 0;
 		Msg("* Current DX11 feature level: 11.0");
 		break;
 #ifdef USE_DX11_3
 	case D3D_FEATURE_LEVEL_11_1:
 		Msg("* Current DX11 feature level: 11.1");
+		Caps.geometry_major = 5;
+		Caps.geometry_minor = 0;
+		Caps.raster_major = 5;
+		Caps.raster_minor = 0;
 		break;
 	case D3D_FEATURE_LEVEL_12_0:
 		Msg("* Current DX11 feature level: 12.0");
+		Caps.geometry_major = 5;
+		Caps.geometry_minor = 1;
+		Caps.raster_major = 5;
+		Caps.raster_minor = 1;
 		break;
 	case D3D_FEATURE_LEVEL_12_1:
 		Msg("* Current DX11 feature level: 12.1");
+		Caps.geometry_major = 5;
+		Caps.geometry_minor = 1;
+		Caps.raster_major = 5;
+		Caps.raster_minor = 1;
 		break;
 #endif
 	default:

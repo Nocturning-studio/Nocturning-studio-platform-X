@@ -115,27 +115,6 @@ void CHWCaps::Update()
 	// ***************** GEOMETRY
 	//geometry_major = 4;
 	//geometry_minor = 0;
-	switch (HW.FeatureLevel)
-	{
-	case D3D_FEATURE_LEVEL_11_0:
-		geometry_major = 5;
-		geometry_minor = 0;
-		raster_major = 5;
-		raster_minor = 0;
-		break;
-	case D3D_FEATURE_LEVEL_10_1:
-		geometry_major = 4;
-		geometry_minor = 1;
-		raster_major = 4;
-		raster_minor = 1;
-		break;
-	case D3D_FEATURE_LEVEL_10_0:
-		geometry_major = 4;
-		geometry_minor = 0;
-		raster_major = 4;
-		raster_minor = 0;
-		break;
-	}
 
 	geometry.bSoftware = FALSE;
 	geometry.bPointSprites = FALSE;
