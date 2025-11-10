@@ -27,7 +27,7 @@
 #include "DXSDK/d3d11shader.h"
 #include <d3d9.h>
 #include <DPlay\dplay8.h>
-//#include <d3d11_3.h>
+#include <d3d11_3.h>
 #pragma warning(default : 4995)
 
 // you must define ENGINE_BUILD then building the engine itself

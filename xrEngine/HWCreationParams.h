@@ -1,5 +1,7 @@
 #pragma once
 
+#define USE_DX11_3
+
 //#define FEATURE_LEVELS_DEBUG
 
 namespace RenderCreationParams
