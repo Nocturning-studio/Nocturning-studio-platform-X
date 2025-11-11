@@ -18,7 +18,8 @@ class R_occlusion
 	struct _Q
 	{
 		u32 order;
-		IDirect3DQuery9* Q;
+		//IDirect3DQuery9* Q;
+		ID3D11Query* Q;
 	};
 
 	BOOL enabled;		 //

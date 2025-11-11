@@ -1,13 +1,11 @@
 #include "StdAfx.h"
 #include ".\r_occlusion.h"
 
+static const u32 iInvalidHandle = 0xFFFFFFFF;
+
 R_occlusion::R_occlusion(void)
 {
-#if RENDER != R_R2
 	enabled = ps_render_flags.test(RFLAG_EXP_HW_OCC);
-#else
-	enabled = FALSE;
-#endif
 }
 R_occlusion::~R_occlusion(void)
 {
@@ -15,7 +13,10 @@ R_occlusion::~R_occlusion(void)
 }
 void R_occlusion::occq_create(u32 limit)
 {
-#if RENDER != R_R2
+	D3D11_QUERY_DESC desc;
+	desc.MiscFlags = 0;
+	desc.Query = D3D11_QUERY_OCCLUSION;
+
 	pool.reserve(limit);
 	used.reserve(limit);
 	fids.reserve(limit);
@@ -23,17 +24,16 @@ void R_occlusion::occq_create(u32 limit)
 	{
 		_Q q;
 		q.order = it;
-#pragma message(Reminder("fix occq"))
-		//if (FAILED(HW.pDevice11->CreateQuery(D3DQUERYTYPE_OCCLUSION, &q.Q)))
+		// if (FAILED(HW.pDevice11->CreateQuery(D3DQUERYTYPE_OCCLUSION, &q.Q)))
 		//	break;
+		if (HW.pDevice11->CreateQuery(&desc, &q.Q))
+			break;
 		pool.push_back(q);
 	}
 	std::reverse(pool.begin(), pool.end());
-#endif
 }
 void R_occlusion::occq_destroy()
 {
-#if RENDER != R_R2
 	while (!used.empty())
 	{
 		_RELEASE(used.back().Q);
@@ -47,12 +47,20 @@ void R_occlusion::occq_destroy()
 	used.clear();
 	pool.clear();
 	fids.clear();
-#endif
 }
 u32 R_occlusion::occq_begin(u32& ID)
 {
 	if (!enabled)
 		return 0;
+
+	//	Igor: prevent release crash if we issue too many queries
+	if (pool.empty())
+	{
+		if ((Device.dwFrame % 40) == 0)
+			Msg(" RENDER [Warning]: Too many occlusion queries were issued(>1536)!!!");
+		ID = iInvalidHandle;
+		return 0;
+	}
 
 	RImplementation.stats.o_queries++;
 	if (!fids.empty())
@@ -69,7 +77,8 @@ u32 R_occlusion::occq_begin(u32& ID)
 		used.push_back(pool.back());
 	}
 	pool.pop_back();
-	CHK_DX(used[ID].Q->Issue(D3DISSUE_BEGIN));
+	//CHK_DX(used[ID].Q->Issue(D3DISSUE_BEGIN));
+	CHK_DX(HW.pContext11->Begin(used[ID].Q));
 
 	// Msg				("begin: [%2d] - %d", used[ID].order, ID);
 
@@ -80,13 +89,22 @@ void R_occlusion::occq_end(u32& ID)
 	if (!enabled)
 		return;
 
+	//	Igor: prevent release crash if we issue too many queries
+	if (ID == iInvalidHandle)
+		return;
+
 	// Msg				("end  : [%2d] - %d", used[ID].order, ID);
-	CHK_DX(used[ID].Q->Issue(D3DISSUE_END));
+	//CHK_DX(used[ID].Q->Issue(D3DISSUE_END));
+	CHK_DX(HW.pContext11->End(used[ID].Q));
 }
 u32 R_occlusion::occq_get(u32& ID)
 {
 	if (!enabled)
-		return 0xffffffff;
+		return iInvalidHandle;
+
+	//	Igor: prevent release crash if we issue too many queries
+	if (ID == iInvalidHandle)
+		return iInvalidHandle;
 
 	DWORD fragments = 0;
 	HRESULT hr;
@@ -95,19 +113,21 @@ u32 R_occlusion::occq_get(u32& ID)
 	CTimer T;
 	T.Start();
 	Device.Statistic->RenderDUMP_Wait.Begin();
-	while ((hr = used[ID].Q->GetData(&fragments, sizeof(fragments), D3DGETDATA_FLUSH)) == S_FALSE)
+	//while ((hr = used[ID].Q->GetData(&fragments, sizeof(fragments), D3DGETDATA_FLUSH)) == S_FALSE)
+	VERIFY2(ID < used.size(), make_string("_Pos = %d, size() = %d ", ID, used.size()));
+	while ((hr = HW.pContext11->GetData(used[ID].Q, &fragments, sizeof(fragments), 0)) == S_FALSE) 
 	{
 		if (!SwitchToThread())
 			Sleep(ps_r_thread_wait_sleep);
 		if (T.GetElapsed_ms() > 500)
 		{
-			fragments = 0xffffffff;
+			fragments = iInvalidHandle;
 			break;
 		}
 	}
 	Device.Statistic->RenderDUMP_Wait.End();
 	if (hr == D3DERR_DEVICELOST)
-		fragments = 0xffffffff;
+		fragments = iInvalidHandle;
 
 	if (0 == fragments)
 		RImplementation.stats.o_culled++;
