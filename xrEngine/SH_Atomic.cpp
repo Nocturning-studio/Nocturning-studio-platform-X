@@ -22,10 +22,10 @@ SVS::SVS() : sh(0)
 
 SVS::~SVS()
 {
-	Device.Resources->DestroyShader(this);
 	//_RELEASE(signature);
 	//	Now it is release automatically
 	_RELEASE(sh);
+	Device.Resources->DestroyShader(this);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -42,22 +42,26 @@ SGS::~SGS()
 {
 	_RELEASE(sh);
 	//Device.Resources->_DeleteGS(this);
+	Device.Resources->DestroyShader(this);
 }
 
 SHS::~SHS()
 {
 	_RELEASE(sh);
 	//Device.Resources->_DeleteHS(this);
+	Device.Resources->DestroyShader(this);
 }
 SDS::~SDS()
 {
 	_RELEASE(sh);
 	//Device.Resources->_DeleteDS(this);
+	Device.Resources->DestroyShader(this);
 }
 SCS::~SCS()
 {
 	_RELEASE(sh);
 	//Device.Resources->_DeleteCS(this);
+	Device.Resources->DestroyShader(this);
 }
 
 ///////////////////////////////////////////////////////////////////////
