@@ -24,7 +24,7 @@ void CBackend::OnFrameBegin()
 	Vertex.Flush();
 	Index.Flush();
 	set_Stencil(FALSE);
-#pragma message(Reminder("DX11 set base targets and viewport if need"))
+	// дх11 нужно вручную устанавливать таргеты и вью порт
 	HW.pContext11->OMSetRenderTargets(1, &HW.pBaseRT, HW.pBaseZB);
 	D3D11_VIEWPORT viewport = {0, 0,
 		(float)HW.m_ChainDesc.BufferDesc.Width,
