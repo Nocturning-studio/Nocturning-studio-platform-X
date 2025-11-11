@@ -41,6 +41,7 @@ BOOL CRenderDevice::Begin()
 {
 #ifndef DEDICATED_SERVER
 	HW.Validate();
+	// в дх11 это не нужно
 	/* HRESULT _hr = HW.pDevice->TestCooperativeLevel();
 	if (FAILED(_hr))
 	{
@@ -57,7 +58,6 @@ BOOL CRenderDevice::Begin()
 			Reset();
 		}
 	}*/
-#pragma message(Reminder("Not implemented!"))
 	// CHK_DX(HW.pDevice->BeginScene());
 	RCache.OnFrameBegin();
 	RCache.set_CullMode(CULL_CW);
@@ -72,7 +72,7 @@ BOOL CRenderDevice::Begin()
 
 void CRenderDevice::Clear()
 {
-#pragma message(Reminder("Not implemented!"))
+	// в дх11 это не нужно
 	// CHK_DX(HW.pDevice->Clear(0, 0,
 	//						 D3DCLEAR_ZBUFFER | (psDeviceFlags.test(rsClearBB) ? D3DCLEAR_TARGET : 0) |
 	//							 (HW.Caps.bStencil ? D3DCLEAR_STENCIL : 0),
@@ -118,7 +118,7 @@ void CRenderDevice::End(void)
 	// end scene
 	RCache.OnFrameEnd();
 	Memory.dbg_check();
-#pragma message(Reminder("Not implemented!"))
+	// в дх11 это не нужно, просто делаем пресент
 	// CHK_DX(HW.pDevice->EndScene());
 	HW.m_pSwapChain->Present(0,0);
 	/* HRESULT _hr = HW.pDevice->Present(NULL, NULL, NULL, NULL);
@@ -224,7 +224,6 @@ void CRenderDevice::Run()
 
 	seqAppStart.Process(rp_AppStart);
 
-	#pragma message(Reminder("Not implemented!"))
 	// CHK_DX(HW.pDevice->Clear(0, 0, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1, 0));
 
 	while (WM_QUIT != msg.message)

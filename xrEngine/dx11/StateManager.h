@@ -2,6 +2,9 @@
 #define	dx10StateManager_included
 #pragma once
 
+#define D3D11_CULL_CCW D3D11_CULL_BACK
+#define D3D11_CULL_CW D3D11_CULL_FRONT
+
 class ENGINE_API dx10StateManager
 {
 public:

@@ -14,7 +14,7 @@ void CGammaControl::Update()
 	{
 		D3DGAMMARAMP G;
 		GenLUT(G);
-#pragma message(Reminder("Not implemented!"))
+#pragma message(Reminder("Переделать через шейдеры, в дх11 нет аппаратной гаммы"))
 		// HW.pDevice->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &G);
 	}
 }

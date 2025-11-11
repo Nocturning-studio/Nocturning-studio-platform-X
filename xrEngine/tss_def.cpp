@@ -7,9 +7,9 @@
 #include "tss.h"
 #include "tss_def.h"
 
+// в дх11 нельзя записывать состояния в объект и потом их применять
 IDirect3DStateBlock9* SimulatorStates::record()
 {
-#pragma message(Reminder("Not implemented!"))
 	//CHK_DX(HW.pDevice->BeginStateBlock());
 	for (u32 it = 0; it < States.size(); it++)
 	{
@@ -17,15 +17,12 @@ IDirect3DStateBlock9* SimulatorStates::record()
 		switch (S.type)
 		{
 		case 0:
-#pragma message(Reminder("Not implemented!"))
 			//CHK_DX(HW.pDevice->SetRenderState((D3DRENDERSTATETYPE)S.v1, S.v2));
 			break;
 		case 1:
-#pragma message(Reminder("Not implemented!"))
 			//CHK_DX(HW.pDevice->SetTextureStageState(S.v1, (D3DTEXTURESTAGESTATETYPE)S.v2, S.v3));
 			break;
 		case 2: {
-#pragma message(Reminder("Not implemented!"))
 			//CHK_DX(HW.pDevice->SetSamplerState(
 			//	S.v1, (D3DSAMPLERSTATETYPE)S.v2,
 			//	((D3DSAMPLERSTATETYPE)S.v2 == D3DSAMP_MAGFILTER && S.v3 == D3DTEXF_ANISOTROPIC) ? D3DTEXF_LINEAR
@@ -35,7 +32,6 @@ IDirect3DStateBlock9* SimulatorStates::record()
 		}
 	}
 	IDirect3DStateBlock9* SB = 0;
-#pragma message(Reminder("Not implemented!"))
 	//CHK_DX(HW.pDevice->EndStateBlock(&SB));
 	return SB;
 }

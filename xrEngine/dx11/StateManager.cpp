@@ -111,15 +111,13 @@ void dx10StateManager::SetAlphaRef(UINT uiAlphaRef)
 	if ( m_uiAlphaRef != uiAlphaRef)
 	{
 		m_uiAlphaRef = uiAlphaRef;
-#pragma message(Reminder("Not implemented!"))
-		//if (m_cAlphaRef) RCache.set_c( m_cAlphaRef, (float)m_uiAlphaRef/255.0f );
+		// if (m_cAlphaRef) RCache.set_c( m_cAlphaRef, (float)m_uiAlphaRef/255.0f );
 	}
 }
 
 void dx10StateManager::BindAlphaRef(R_constant* C)
 {
 	m_cAlphaRef = C;
-#pragma message(Reminder("Not implemented!"))
 	// if (m_cAlphaRef) RCache.set_c( m_cAlphaRef, (float)m_uiAlphaRef/255.0f );
 }
 
