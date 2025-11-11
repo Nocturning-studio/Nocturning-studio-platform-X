@@ -160,6 +160,9 @@
     <Filter Include="Render\Execution &amp; 3D\Shaders\ShaderManager\doug_lea_memory_allocator\dllmalloc">
       <UniqueIdentifier>{7a5db675-c732-4f0b-8d58-d39a5c050ecf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Render\Execution &amp; 3D\Shaders\ShaderManager\ShaderCompiler">
+      <UniqueIdentifier>{6732556c-5ca6-4a6e-b2b0-fdb10d6becee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_d3d_extensions.h">
@@ -555,15 +558,6 @@
     <ClInclude Include="xrHemisphere.h">
       <Filter>Game API\Environment\Hemisphere</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderCompile.h">
-      <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderResourceTraits.h">
-      <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderMacros.h">
-      <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager</Filter>
-    </ClInclude>
     <ClInclude Include="dx11\SamplerStateCache.h">
       <Filter>Render\DX11</Filter>
     </ClInclude>
@@ -608,6 +602,18 @@
     </ClInclude>
     <ClInclude Include="HWCreationParams.h">
       <Filter>Render\Execution &amp; 3D\HW</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderMacros.h">
+      <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager\ShaderCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCompile.h">
+      <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager\ShaderCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderIncluder.h">
+      <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager\ShaderCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderResourceTraits.h">
+      <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager\ShaderCompiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1016,9 +1022,6 @@
     <ClCompile Include="xrHemisphere.cpp">
       <Filter>Game API\Environment\Hemisphere</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderMacros.cpp">
-      <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager</Filter>
-    </ClCompile>
     <ClCompile Include="dx11\ShaderResourceStateCache.cpp">
       <Filter>Render\DX11</Filter>
     </ClCompile>
@@ -1057,6 +1060,9 @@
     </ClCompile>
     <ClCompile Include="ptmalloc3\sysdeps\win32\win32.c">
       <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager\doug_lea_memory_allocator\dllmalloc</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderMacros.cpp">
+      <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager\ShaderCompiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

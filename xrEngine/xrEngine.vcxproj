@@ -2250,6 +2250,7 @@
     <ClInclude Include="R_DStreams.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderCompile.h" />
+    <ClInclude Include="ShaderIncluder.h" />
     <ClInclude Include="ShaderMacros.h" />
     <ClInclude Include="ShaderResourceTraits.h" />
     <ClInclude Include="Shader_xrLC.h" />

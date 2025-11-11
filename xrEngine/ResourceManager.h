@@ -206,12 +206,20 @@ class ENGINE_API CResourceManager
 	void StoreNecessaryTextures();
 	void DestroyNecessaryTextures();
 	void Dump(bool bBrief);
-
+	
+	template <typename T> 
+	struct ShaderCompileElementProps
+	{
+		string_path name, reg_name;
+		string32 target, entry, ext;
+		CShaderMacros macros;
+		T* result;
+	};
+	 
 	template <typename T> T& GetShaderMap();
 	template <typename T> T* FindShader(const char* _name);
 	template <typename T> T* RegisterShader(const char* _name);
-	template <typename T> HRESULT CompileShader(LPCSTR name, LPCSTR ext, LPCSTR src, 
-		UINT size, LPCSTR target, LPCSTR entry, CShaderMacros& macros, T*& result);
+	template <typename T> void CompileShader(ShaderCompileElementProps<T> props);
 	template <typename T> T* CreateShader(const char* _name, CShaderMacros& macros);
 	template <typename T> void DestroyShader(const T* sh);
 	template <typename T> HRESULT ReflectShader(DWORD const* src, UINT size, T*& result);

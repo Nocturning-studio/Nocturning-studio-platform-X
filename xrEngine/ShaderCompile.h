@@ -7,87 +7,13 @@
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dxerr.lib")
 
+#include "ShaderIncluder.h"
+
+#include <boost/crc.hpp>
+#include "ResourceManager.h"
+
 ENGINE_API bool g_shader_compiled = false;
 
-//----------------------------------------------------------------
-class CShaderIncluder : public ID3DInclude
-{
-  private:
-	u32 counter = 0;
-	static const u32 max_size = 64; // KB
-	static const u32 max_guard_size = 1; // KB
-	char data[max_size * 1024];
-
-  public:
-	HRESULT __stdcall Open(D3D_INCLUDE_TYPE type, LPCSTR pName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes)
-	{
-		bool shared = type == D3DXINC_SYSTEM;
-		LPCSTR shaders_path = shared ? "shared\\" : ::Render->getShaderPath();
-
-		static string_path full_path;
-		sprintf_s(full_path, "%s%s", shaders_path, pName);
-
-		IReader* R = FS.r_open("$game_shaders$", full_path);
-
-		if (R == NULL)
-			return E_FAIL;
-
-		if (R->length() + 1 + max_guard_size >= max_size * 1024)
-		{
-			Msg("! max shader file size: %uKB", max_size);
-			return E_FAIL;
-		}
-			
-		static string_path hash;
-		int i = 0;
-		for (i = 0; i < strlen(full_path); i++)
-		{
-			hash[i] = (full_path[i] >= '0' && full_path[i] <= '9')
-				  ||  (full_path[i] >= 'a' && full_path[i] <= 'z')
-				  ||  (full_path[i] >= 'A' && full_path[i] <= 'Z')
-				? full_path[i] : '_';
-		}
-		hash[i] = 0;
-
-		char* offset = data;
-
-		sprintf(offset, "#ifndef _%s_included\n", hash);
-		offset = strchr(offset, 0);
-
-		memcpy(offset, R->pointer(), R->length());
-		offset += R->length();
-
-		sprintf(offset, "\n#define _%s_included\n", hash);
-		offset = strchr(offset, 0);
-
-		sprintf(offset, "\n#endif");
-		offset = strchr(offset, 0);
-
-		FS.r_close(R);
-
-		*ppData = data;
-		*pBytes = strlen(data);
-
-#ifdef DEBUG_SHADER_COMPILATION
-		Msg("*   includer open: (id:%u): %s", counter, pName);
-		Msg("FILE BEGIN");
-		Log(data);
-		Msg("FILE END");
-		Msg("*   guard                  _%s_included", hash);
-#endif
-
-		counter++;
-
-		return D3D_OK;
-	}
-
-	HRESULT __stdcall Close(LPCVOID pData)
-	{
-		return D3D_OK;
-	}
-};
-
-//----------------------------------------------------------------
 template<typename T>
 T* CResourceManager::RegisterShader(const char* _name)
 {
@@ -155,94 +81,89 @@ T* CResourceManager::CreateShader(const char* _name, CShaderMacros& _macros)
 	// create a new shader
 	sh = RegisterShader<T>(name);
 
-	// open file
-	string_path file_source;
-	const char* ext = ShaderTypeTraits<T>::GetShaderExt();
-	sprintf_s(file_source, sizeof file_source, "%s%s.%s", ::Render->getShaderPath(), _name, ext);
-	FS.update_path(file_source, "$game_shaders$", file_source);
-	IReader* file = FS.r_open(file_source);
-	R_ASSERT2(file, file_source);
+	// fill props
+	ShaderCompileElementProps<T> props;
+	strcpy_s(props.name, _name); // shader name from blender
+	strcpy_s(props.entry, "main");
+	strcpy_s(props.ext, ShaderTypeTraits<T>::GetShaderExt());
+	strcpy_s(props.reg_name, name); // shader unique reg name
+	sprintf_s(props.target, sizeof props.target, "%s_%u_%u", 
+		props.ext, HW.Caps.raster_major, HW.Caps.raster_minor);
+	props.result = sh;
+	props.macros.add(macros);
 
-	// select target
-	string32 c_entry;sprintf_s(c_entry, sizeof c_entry, "main");
-	string32 c_target;
-	sprintf_s(c_target, sizeof c_target, "%s_%u_%u", ext, HW.Caps.raster_major, HW.Caps.raster_minor);
-	//ShaderTypeTraits<T>::GetShaderTarget(c_target);
-
-//#ifndef MASTER_GOLD
-	Msg("* Compiling shader: target=%s, source=%s.%s", c_target, _name, ext);
-//#endif
-
-//#ifdef DEBUG_SHADER_COMPILATION
-	print_macros(_macros);
-//#endif
-
-	// compile and create
-	HRESULT _hr = CompileShader(_name, ext, (LPCSTR)file->pointer(), file->length(), c_target, c_entry, macros, (T*&)sh);
-	R_ASSERT(!FAILED(_hr));
-
-	FS.r_close(file);
+	// send to compiler
+	CompileShader<T>(props);
 
 	return sh;
 }
 
-#include <boost/crc.hpp>
-
-template<typename T>
-HRESULT CResourceManager::CompileShader(
-	LPCSTR			name,
-	LPCSTR			ext,
-	LPCSTR			src,
-	UINT			size,
-	LPCSTR			target,
-	LPCSTR			entry,
-	CShaderMacros&	macros,
-	T*&				result)
+template <typename T> 
+void CResourceManager::CompileShader(ShaderCompileElementProps<T> props)
 {
+	// open file
+	string_path file_source;
+	sprintf_s(file_source, sizeof file_source, "%s%s.%s", 
+		::Render->getShaderPath(), props.name, props.ext);
+	FS.update_path(file_source, "$game_shaders$", file_source);
+	IReader* file = FS.r_open(file_source);
+	R_ASSERT2(file, file_source);
+
+//#ifndef MASTER_GOLD
+	Msg("* Compiling shader: target=%s, source=%s.%s", props.target, props.name, props.ext);
+//#endif
+
+//#ifdef DEBUG_SHADER_COMPILATION
+	print_macros(props.macros);
+//#endif
+
 	string_path cache_dest;
-	sprintf_s(cache_dest, sizeof cache_dest, "shaders_cache\\%s%s.%s\\%s", ::Render->getShaderPath(), name, ext, macros.get_name().c_str());
+	sprintf_s(cache_dest, sizeof cache_dest, "shaders_cache\\%s%s.%s\\%s", 
+		::Render->getShaderPath(), props.name, props.ext, props.macros.get_name().c_str());
 	FS.update_path(cache_dest, "$app_data_root$", cache_dest);
 
 	// TODO: fix shader log name
 	char name_ext[256];
-	sprintf_s(name_ext, "%s.%s", name, ext);
+	sprintf_s(name_ext, "%s.%s", props.reg_name, props.ext);
 
 #ifndef MASTER_GOLD
-	Msg("*   cache: %s.%s", cache_dest, ext);
+	Msg("*   cache: %s.%s", cache_dest, props.ext);
 #endif
 
-	CShaderIncluder	Includer;
+	CShaderIncluder Includer;
 	ID3DBlob* pShaderBuf = NULL;
 	ID3DBlob* pErrorBuf = NULL;
 
-	D3D_SHADER_MACRO* _macros = (D3D_SHADER_MACRO*)&macros.get_macros()[0];
-	
-	//u32 flags = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR | D3DCOMPILE_OPTIMIZATION_LEVEL3;
-	u32 flags = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR | D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY | D3DCOMPILE_OPTIMIZATION_LEVEL3;
+	D3D_SHADER_MACRO* _macros = (D3D_SHADER_MACRO*)&props.macros.get_macros()[0];
+
+	// u32 flags = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR | D3DCOMPILE_OPTIMIZATION_LEVEL3;
+	u32 flags =
+		D3DCOMPILE_PACK_MATRIX_ROW_MAJOR | D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY | D3DCOMPILE_OPTIMIZATION_LEVEL3;
 #if defined DEBUG || defined RELEASE_NOOPT
 	flags |= D3DCOMPILE_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG;
 #endif
 
-	HRESULT _result = D3DCompile(src, size, name_ext, _macros, 
-		&Includer, entry, target, flags, 0, &pShaderBuf, &pErrorBuf);
-	
+	HRESULT _result = D3DCompile(file->pointer(), file->length(), name_ext, _macros, 
+		&Includer, props.entry, props.target, flags, 0, &pShaderBuf, &pErrorBuf);
+
 	if (SUCCEEDED(_result))
 	{
-		IWriter* file			= FS.w_open(cache_dest);
+		IWriter* file = FS.w_open(cache_dest);
 
-		boost::crc_32_type		processor;
-		processor.process_block	( pShaderBuf->GetBufferPointer(), ((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize() );
-		u32 const crc			= processor.checksum( );
+		boost::crc_32_type processor;
+		processor.process_block(pShaderBuf->GetBufferPointer(),
+								((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize());
+		u32 const crc = processor.checksum();
 
-		file->w_u32				(crc);
-		file->w					(pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
-		FS.w_close				(file);
+		file->w_u32(crc);
+		file->w(pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
+		FS.w_close(file);
 
-		_result					= ReflectShader((DWORD*)pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize(), result);
+		_result = ReflectShader((DWORD*)pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize(), props.result);
 
 		if (FAILED(_result))
 		{
-			Msg("! D3DReflectShader %s.%s hr == 0x%08x", name, ext, _result);
+			Msg("! D3DReflectShader %s.%s hr == 0x%08x", props.reg_name, props.ext, _result);
 			Msg("%s", DXGetErrorString(_result));
 			R_ASSERT(NULL);
 		}
@@ -260,8 +181,8 @@ HRESULT CResourceManager::CompileShader(
 #endif
 			D3DDisassemble(pShaderBuf->GetBufferPointer(), pShaderBuf->GetBufferSize(), flags, "", &pDisasm);
 			string_path disasm_dest;
-			sprintf_s(disasm_dest, sizeof disasm_dest, "shaders_disasm\\%s%s.%s\\%s.html", 
-				::Render->getShaderPath(), name, ext, macros.get_name().c_str());
+			sprintf_s(disasm_dest, sizeof disasm_dest, "shaders_disasm\\%s%s.%s\\%s.html", ::Render->getShaderPath(),
+					  props.reg_name, props.ext, props.macros.get_name().c_str());
 			if (pDisasm)
 			{
 				IWriter* W = FS.w_open("$app_data_root$", disasm_dest);
@@ -280,7 +201,8 @@ HRESULT CResourceManager::CompileShader(
 
 		std::string message = std::string(pErrorBuf ? (char*)pErrorBuf->GetBufferPointer() : "");
 
-		std::string error = make_string("! Can't compile shader %s\nfile: %s.%s, target: %s\n", code, name, ext, target);
+		std::string error = make_string("! Can't compile shader %s\nfile: %s.%s, target: %s\n", 
+			code, props.reg_name, props.ext, props.target);
 		error += message;
 
 		Log(error.c_str());
@@ -288,7 +210,7 @@ HRESULT CResourceManager::CompileShader(
 		CHECK_OR_EXIT(!FAILED(_result), error);
 	}
 
-	return _result;
+	FS.r_close(file);
 }
 
 template<typename T>
