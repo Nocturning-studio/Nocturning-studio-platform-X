@@ -347,11 +347,11 @@ class CCC_tf_MipBias : public CCC_Float
   public:
 	void apply()
 	{
-#pragma message(Reminder("fix mip bias options"))
-		//if (0 == HW.pDevice11)
-		//	return;
+		if (0 == HW.pDevice11)
+			return;
 		//for (u32 i = 0; i < HW.Caps.raster.dwStages; i++)
 		//	CHK_DX(HW.pDevice11->SetSamplerState(i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD)value)));
+		SSManager.SetMipBias(*value);
 	}
 
 	CCC_tf_MipBias(LPCSTR N, float* v) : CCC_Float(N, v, -0.5f, +0.5f){};
