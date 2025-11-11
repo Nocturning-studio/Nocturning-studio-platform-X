@@ -1218,12 +1218,12 @@ void doBenchmark(LPCSTR name)
 #pragma optimize("g", off)
 void CApplication::load_draw_internal()
 {
-	D3D11_VIEWPORT VP = {0, 0, (float)Device.dwWidth, (float)Device.dwHeight, 0, 1.f};
-	HW.pContext11->RSSetViewports(1, &VP);
+	//D3D11_VIEWPORT VP = {0, 0, (float)Device.dwWidth, (float)Device.dwHeight, 0, 1.f};
+	//HW.pContext11->RSSetViewports(1, &VP);
 
-	RCache.set_RT(HW.pBaseRT);
+	//RCache.set_RT(HW.pBaseRT);
 	//RCache.set_ZB(HW.pBaseZB);
-	RCache.set_ZB(HW.pBaseDepthReadDSV);
+	//RCache.set_ZB(HW.pBaseDepthReadDSV);
 
 	//FLOAT ColorRGBA[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 	//HW.pContext11->ClearRenderTargetView(RCache.get_RT(), ColorRGBA);
