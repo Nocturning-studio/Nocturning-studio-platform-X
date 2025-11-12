@@ -73,7 +73,7 @@ void CBlender_BmmD::Compile(CBlender_Compile& C)
 		switch (C.iElement)
 		{
 		case SE_R1_NORMAL_HQ:
-			if (HW.Caps.raster_major >= 2)
+			/* if (HW.Caps.raster_major >= 2)
 			{
 				C.r_Pass("impl_dt_adv", "impl_dt_adv", TRUE);
 				C.r_Sampler("s_base", C.L_textures[0]);
@@ -88,7 +88,7 @@ void CBlender_BmmD::Compile(CBlender_Compile& C)
 							D3DTEXF_ANISOTROPIC);
 				C.r_Sampler("s_mask", mask);
 			}
-			else
+			else*/
 			{
 				C.r_Pass("impl_dt", "impl_dt", TRUE);
 				C.r_Sampler("s_base", C.L_textures[0]);
