@@ -43,59 +43,14 @@
     <Filter Include="Blenders">
       <UniqueIdentifier>{ee40513a-b9f2-4dea-9569-b7e599e4d532}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blenders\Editor Wire">
-      <UniqueIdentifier>{7b1fcb00-cc41-4687-a303-6dc67c96ba09}</UniqueIdentifier>
+    <Filter Include="Blenders\broken">
+      <UniqueIdentifier>{43bee474-2074-4575-8650-0855f12cd84e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blenders\Editor Selection">
-      <UniqueIdentifier>{a357537b-5cbf-454c-817a-72949d48a8db}</UniqueIdentifier>
+    <Filter Include="Blenders\ok">
+      <UniqueIdentifier>{b487ba73-bf3a-4e06-a0ae-baac066d3c0f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blenders\Vertex %28Static geom. Vertex lit.%29">
-      <UniqueIdentifier>{10c7950a-0391-4e3b-8b2b-6ecb5484ff79}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Default %28Static geom. Lightmap lit.%29">
-      <UniqueIdentifier>{b02df454-1616-4ed0-9c3a-c5364dc12da1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Vertex aref %28Static geom. Vertex lit. A-Test%255cA-Blend%29">
-      <UniqueIdentifier>{1c69c276-81df-4c59-8562-dbc77c9a5750}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Default aref %28Static geom. Lightmap lit. A-Test%255cA-Blend%29">
-      <UniqueIdentifier>{4dad2363-b8b7-4b20-b70d-08e8bf28a2fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Screen set">
-      <UniqueIdentifier>{a99fd33e-c863-45c2-b028-f15f51dd9f5e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Screen gray">
-      <UniqueIdentifier>{ee156918-613f-45b8-abc5-1df783809d33}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\LaEmB %28%28lmap+env%2aconst%29%2abase%29">
-      <UniqueIdentifier>{2f54024c-7b8d-4c69-abba-323f192a7da2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\BmmD %28Implicit%2adetail%29 %28Terrain%29">
-      <UniqueIdentifier>{c2a26d07-90ce-47b4-8902-2738ce9f973d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Shdow world %28Light projector%29">
-      <UniqueIdentifier>{d2aad335-7e90-42f2-b479-48c3452bc332}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Blur">
-      <UniqueIdentifier>{25e9cc90-8339-4d0a-9033-9ac99b15b32d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Model %28Dynamic geom.%29">
-      <UniqueIdentifier>{1c8ac294-416c-458a-a2a0-e75fa255d01e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Detail">
-      <UniqueIdentifier>{5196b93d-a644-4462-882a-7ce6686ac7ab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Model %28EbB%29 %28Dynamic geom. env^base%29">
-      <UniqueIdentifier>{157e97bb-be87-4525-8184-7e37bd409f2b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Lm%28EbB%29 %28Static geom. lmap%2a%28env^base%29%29">
-      <UniqueIdentifier>{9edce46a-2fb5-4365-abba-b646778840ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Particle">
-      <UniqueIdentifier>{e205f8ee-ec02-4a79-a98e-8c75f4d50439}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blenders\Tree">
-      <UniqueIdentifier>{9fe58d4f-1792-46f4-b307-c67e164a0022}</UniqueIdentifier>
+    <Filter Include="Blenders\absolutely dead x_x">
+      <UniqueIdentifier>{3a0d1a81-4134-4bfe-9e17-7dc093e673e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -213,59 +168,59 @@
     <ClInclude Include="..\xrRender\r_occlusion.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrRender\Blender_Editor_Selection.h">
-      <Filter>Blenders\Editor Selection</Filter>
+    <ClInclude Include="Blender_Blur.h">
+      <Filter>Blenders\broken</Filter>
     </ClInclude>
     <ClInclude Include="Blender_default.h">
-      <Filter>Blenders\Default %28Static geom. Lightmap lit.%29</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\Blender_Editor_Wire.h">
-      <Filter>Blenders\Editor Wire</Filter>
+      <Filter>Blenders\ok</Filter>
     </ClInclude>
     <ClInclude Include="Blender_default_aref.h">
-      <Filter>Blenders\Default aref %28Static geom. Lightmap lit. A-Test%255cA-Blend%29</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Vertex.h">
-      <Filter>Blenders\Vertex %28Static geom. Vertex lit.%29</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Vertex_aref.h">
-      <Filter>Blenders\Vertex aref %28Static geom. Vertex lit. A-Test%255cA-Blend%29</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\Blender_Screen_SET.h">
-      <Filter>Blenders\Screen set</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Screen_GRAY.h">
-      <Filter>Blenders\Screen gray</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_LaEmB.h">
-      <Filter>Blenders\LaEmB %28%28lmap+env%2aconst%29%2abase%29</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\Blender_BmmD.h">
-      <Filter>Blenders\BmmD %28Implicit%2adetail%29 %28Terrain%29</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Shadow_World.h">
-      <Filter>Blenders\Shdow world %28Light projector%29</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Blur.h">
-      <Filter>Blenders\Blur</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Model.h">
-      <Filter>Blenders\Model %28Dynamic geom.%29</Filter>
+      <Filter>Blenders\ok</Filter>
     </ClInclude>
     <ClInclude Include="..\xrRender\Blender_detail.h">
-      <Filter>Blenders\Detail</Filter>
+      <Filter>Blenders\ok</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\Blender_BmmD.h">
+      <Filter>Blenders\ok</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_LaEmB.h">
+      <Filter>Blenders\broken</Filter>
     </ClInclude>
     <ClInclude Include="..\xrRender\Blender_Lm(EbB).h">
-      <Filter>Blenders\Lm%28EbB%29 %28Static geom. lmap%2a%28env^base%29%29</Filter>
+      <Filter>Blenders\ok</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Model.h">
+      <Filter>Blenders\ok</Filter>
     </ClInclude>
     <ClInclude Include="..\xrRender\Blender_Model_EbB.h">
-      <Filter>Blenders\Model %28EbB%29 %28Dynamic geom. env^base%29</Filter>
+      <Filter>Blenders\ok</Filter>
     </ClInclude>
     <ClInclude Include="..\xrRender\Blender_Particle.h">
-      <Filter>Blenders\Particle</Filter>
+      <Filter>Blenders\ok</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Screen_GRAY.h">
+      <Filter>Blenders\broken</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\Blender_Screen_SET.h">
+      <Filter>Blenders\ok</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Shadow_World.h">
+      <Filter>Blenders\broken</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\Blender_Editor_Selection.h">
+      <Filter>Blenders\absolutely dead x_x</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRender\Blender_Editor_Wire.h">
+      <Filter>Blenders\absolutely dead x_x</Filter>
     </ClInclude>
     <ClInclude Include="..\xrRender\Blender_tree.h">
-      <Filter>Blenders\Tree</Filter>
+      <Filter>Blenders\ok</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Vertex.h">
+      <Filter>Blenders\ok</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Vertex_aref.h">
+      <Filter>Blenders\ok</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -419,59 +374,59 @@
     <ClCompile Include="..\xrRender\r_occlusion.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\xrRender\Blender_Editor_Selection.cpp">
-      <Filter>Blenders\Editor Selection</Filter>
+    <ClCompile Include="Blender_Blur.cpp">
+      <Filter>Blenders\broken</Filter>
     </ClCompile>
     <ClCompile Include="Blender_default.cpp">
-      <Filter>Blenders\Default %28Static geom. Lightmap lit.%29</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\Blender_Editor_Wire.cpp">
-      <Filter>Blenders\Editor Wire</Filter>
+      <Filter>Blenders\ok</Filter>
     </ClCompile>
     <ClCompile Include="Blender_default_aref.cpp">
-      <Filter>Blenders\Default aref %28Static geom. Lightmap lit. A-Test%255cA-Blend%29</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Vertex.cpp">
-      <Filter>Blenders\Vertex %28Static geom. Vertex lit.%29</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Vertex_aref.cpp">
-      <Filter>Blenders\Vertex aref %28Static geom. Vertex lit. A-Test%255cA-Blend%29</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\Blender_Screen_SET.cpp">
-      <Filter>Blenders\Screen set</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Screen_GRAY.cpp">
-      <Filter>Blenders\Screen gray</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_LaEmB.cpp">
-      <Filter>Blenders\LaEmB %28%28lmap+env%2aconst%29%2abase%29</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\Blender_BmmD.cpp">
-      <Filter>Blenders\BmmD %28Implicit%2adetail%29 %28Terrain%29</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Shadow_World.cpp">
-      <Filter>Blenders\Shdow world %28Light projector%29</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Blur.cpp">
-      <Filter>Blenders\Blur</Filter>
-    </ClCompile>
-    <ClCompile Include="Blender_Model.cpp">
-      <Filter>Blenders\Model %28Dynamic geom.%29</Filter>
+      <Filter>Blenders\ok</Filter>
     </ClCompile>
     <ClCompile Include="..\xrRender\Blender_detail.cpp">
-      <Filter>Blenders\Detail</Filter>
+      <Filter>Blenders\ok</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\Blender_BmmD.cpp">
+      <Filter>Blenders\ok</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_LaEmB.cpp">
+      <Filter>Blenders\broken</Filter>
     </ClCompile>
     <ClCompile Include="..\xrRender\Blender_Lm(EbB).cpp">
-      <Filter>Blenders\Lm%28EbB%29 %28Static geom. lmap%2a%28env^base%29%29</Filter>
+      <Filter>Blenders\ok</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_Model.cpp">
+      <Filter>Blenders\ok</Filter>
     </ClCompile>
     <ClCompile Include="..\xrRender\Blender_Model_EbB.cpp">
-      <Filter>Blenders\Model %28EbB%29 %28Dynamic geom. env^base%29</Filter>
+      <Filter>Blenders\ok</Filter>
     </ClCompile>
     <ClCompile Include="..\xrRender\Blender_Particle.cpp">
-      <Filter>Blenders\Particle</Filter>
+      <Filter>Blenders\ok</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_Screen_GRAY.cpp">
+      <Filter>Blenders\broken</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\Blender_Screen_SET.cpp">
+      <Filter>Blenders\ok</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_Shadow_World.cpp">
+      <Filter>Blenders\broken</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\Blender_Editor_Selection.cpp">
+      <Filter>Blenders\absolutely dead x_x</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\Blender_Editor_Wire.cpp">
+      <Filter>Blenders\absolutely dead x_x</Filter>
     </ClCompile>
     <ClCompile Include="..\xrRender\Blender_tree.cpp">
-      <Filter>Blenders\Tree</Filter>
+      <Filter>Blenders\ok</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_Vertex.cpp">
+      <Filter>Blenders\ok</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender_Vertex_aref.cpp">
+      <Filter>Blenders\ok</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
