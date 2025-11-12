@@ -351,7 +351,7 @@ void CHW::CreateDevice(HWND m_hWnd, bool move_window)
 	//	Additional set up
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 
-	bool dx11_fatal_warnings = false;
+	bool dx11_fatal_warnings = 0;
 
 	UINT createDeviceFlags = 0;
 //#ifdef DEBUG

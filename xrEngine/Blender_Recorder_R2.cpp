@@ -304,6 +304,7 @@ void CBlender_Compile::r_Sampler_clf(LPCSTR name, LPCSTR texture, bool b_ps1x_Pr
 	r_dx10Texture(name, texture);
 	// bilinear
 	r_dx10Sampler("smp_rtlinear");
+	r_dx10Sampler("smp_base");
 }
 
 void CBlender_Compile::r_Sampler_clw(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide)
