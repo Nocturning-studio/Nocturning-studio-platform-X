@@ -2,6 +2,8 @@
 #define R_BACKEND_RUNTIMEH
 #pragma once
 
+#define DEGUB_RBACKEND_SHADERS_NAME
+
 #include "sh_texture.h"
 #include "sh_matrix.h"
 #include "sh_constant.h"
@@ -228,6 +230,9 @@ ICF void CBackend::set_PS(ID3D11PixelShader* _ps, LPCSTR _n)
 #ifdef DEBUG
 		ps_name = _n;
 #endif
+#ifdef DEGUB_RBACKEND_SHADERS_NAME 
+		Msg("set_PS: %s", _n);
+#endif
 	}
 }
 
@@ -245,6 +250,9 @@ ICF void CBackend::set_GS(ID3D11GeometryShader* _gs, LPCSTR _n)
 #ifdef DEBUG
 		gs_name = _n;
 #endif
+#ifdef DEGUB_RBACKEND_SHADERS_NAME
+		Msg("set_GS: %s", _n);
+#endif
 	}
 }
 
@@ -260,6 +268,9 @@ ICF void CBackend::set_HS(ID3D11HullShader* _hs, LPCSTR _n)
 
 #ifdef DEBUG
 		hs_name = _n;
+#endif
+#ifdef DEGUB_RBACKEND_SHADERS_NAME
+		Msg("set_HS: %s", _n);
 #endif
 	}
 }
@@ -277,6 +288,9 @@ ICF void CBackend::set_DS(ID3D11DomainShader* _ds, LPCSTR _n)
 #ifdef DEBUG
 		ds_name = _n;
 #endif
+#ifdef DEGUB_RBACKEND_SHADERS_NAME
+		Msg("set_DS: %s", _n);
+#endif
 	}
 }
 
@@ -292,6 +306,9 @@ ICF void CBackend::set_CS(ID3D11ComputeShader* _cs, LPCSTR _n)
 
 #ifdef DEBUG
 		cs_name = _n;
+#endif
+#ifdef DEGUB_RBACKEND_SHADERS_NAME
+		Msg("set_CS: %s", _n);
 #endif
 	}
 }
@@ -313,6 +330,9 @@ ICF void CBackend::set_VS(ID3D11VertexShader* _vs, LPCSTR _n)
 		HW.pContext11->VSSetShader(vs, 0, 0);
 #ifdef DEBUG
 		vs_name = _n;
+#endif
+#ifdef DEGUB_RBACKEND_SHADERS_NAME
+		Msg("set_VS: %s", _n);
 #endif
 	}
 }

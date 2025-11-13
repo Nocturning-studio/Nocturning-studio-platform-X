@@ -126,7 +126,7 @@ void CBlender_Compile::r_dx10Texture(LPCSTR ResourceName, LPCSTR texture)
 	// debug
 	if (g_shader_compiled)
 	{
-		Msg("*   - set tex: %d, %s (%s)", stage, ResourceName, texture);
+		//Msg("*   - set tex: %d, %s (%s)", stage, ResourceName, texture);
 	}
 
 	passTextures.push_back(mk_pair(stage, ref_texture(Device.Resources->_CreateTexture(TexName))));
@@ -255,7 +255,7 @@ u32 CBlender_Compile::r_dx10Sampler(LPCSTR ResourceName)
 	// debug
 	if (g_shader_compiled)
 	{
-		Msg("*   - set smp: %d, %s", stage, ResourceName);
+		//Msg("*   - set smp: %d, %s", stage, ResourceName);
 	}
 
 	return stage;

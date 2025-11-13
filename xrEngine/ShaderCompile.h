@@ -109,13 +109,13 @@ void CResourceManager::CompileShader(ShaderCompileElementProps<T> props)
 	IReader* file = FS.r_open(file_source);
 	R_ASSERT2(file, file_source);
 
-//#ifndef MASTER_GOLD
+#ifndef MASTER_GOLD
 	Msg("* Compiling shader: target=%s, source=%s.%s", props.target, props.name, props.ext);
-//#endif
+#endif
 
-//#ifdef DEBUG_SHADER_COMPILATION
+#ifdef DEBUG_SHADER_COMPILATION
 	print_macros(props.macros);
-//#endif
+#endif
 
 	string_path cache_dest;
 	sprintf_s(cache_dest, sizeof cache_dest, "shaders_cache\\%s%s.%s\\%s", 
@@ -223,7 +223,7 @@ HRESULT CResourceManager::ReflectShader(
 
 	ID3D11ShaderReflection* pReflection = 0;
 	HRESULT const _hr = D3DReflect(src, size, IID_ID3D11ShaderReflection, (void**)&pReflection);
-	Msg("*   reflect shader: %u", SUCCEEDED(_hr));
+	//Msg("*   reflect shader: %u", SUCCEEDED(_hr));
 
 	if (SUCCEEDED(_hr) && pReflection)
 	{
@@ -245,7 +245,7 @@ template <> void CResourceManager::CreateSignature<SVS>(DWORD const* src, UINT s
 	//	Store input signature (need only for VS)
 	ID3DBlob* pSignatureBlob;
 	HRESULT const _hr = D3DGetInputSignatureBlob(src, size, &pSignatureBlob);
-	Msg("*   get signature shader: %u", SUCCEEDED(_hr));
+	//Msg("*   get signature shader: %u", SUCCEEDED(_hr));
 	CHK_DX(_hr);
 	VERIFY(pSignatureBlob);
 	result->signature = _CreateInputSignature(pSignatureBlob);
