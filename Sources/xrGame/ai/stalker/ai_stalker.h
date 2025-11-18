@@ -604,6 +604,7 @@ class CAI_Stalker : public CCustomMonster, public CObjectHandler, public CAI_Phr
 	float m_previous_yaw;  // Куда смотрел корпус в прошлом кадре (для штрафа)
 	u32 m_suppression_end_time; // До какого времени сталкер "прижат" и боится высовываться
 	bool m_is_counter_attacking; // Флаг режима контратаки
+	u32 m_counter_attack_end_time; 
 
   public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION

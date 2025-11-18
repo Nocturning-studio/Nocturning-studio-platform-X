@@ -87,7 +87,7 @@ CAI_Stalker::CAI_Stalker()
 	m_rage_end_time = 0;
 	m_body_block_time = 0;
 	m_previous_yaw = 0.f;
-
+	m_counter_attack_end_time = 0;
 #ifdef DEBUG
 	m_debug_planner = 0;
 #endif // DEBUG
@@ -196,6 +196,7 @@ void CAI_Stalker::reinit()
 	m_rage_end_time = 0;
 	m_body_block_time = 0;
 	m_previous_yaw = 0.f;
+	m_counter_attack_end_time = 0;
 }
 
 void CAI_Stalker::LoadSounds(LPCSTR section)
@@ -791,6 +792,38 @@ CPHDestroyable* CAI_Stalker::ph_destroyable()
 void CAI_Stalker::shedule_Update(u32 DT)
 {
 	OPTICK_EVENT("CAI_Stalker::shedule_Update");
+
+	// --- [IMPROVEMENT START] ---
+	if (g_Alive())
+	{
+		// 1. Окончание контратаки
+		if (m_is_counter_attacking && Device.dwTimeGlobal > m_counter_attack_end_time)
+		{
+			m_is_counter_attacking = false;
+		}
+
+		// 2. Выход из подавления (Ускоренный)
+		if (!m_is_counter_attacking && m_suppression_end_time != 0 && Device.dwTimeGlobal > m_suppression_end_time)
+		{
+			// Ждем всего 0.3 - 0.8 сек после подавления (было 1 сек)
+			// Это делает их реактивнее
+			u32 reaction_delay = 300 + (1000 - Rank() * 10); // Мастера реагируют быстрее
+
+			if (Device.dwTimeGlobal > m_suppression_end_time + reaction_delay)
+			{
+				// Повышаем шанс контратаки до 80%
+				if (memory().enemy().selected() && ::Random.randF() < 0.8f)
+				{
+					sound().play(eStalkerSoundNeedBackup);
+					m_is_counter_attacking = true;
+					m_counter_attack_end_time = Device.dwTimeGlobal + 4000;
+				}
+
+				m_suppression_end_time = 0;
+			}
+		}
+	}
+	// --- [IMPROVEMENT END] ---
 
 	START_PROFILE("stalker")
 	START_PROFILE("stalker/schedule_update")

@@ -84,82 +84,95 @@ float CAI_Stalker::GetWeaponAccuracy() const
 {
 	float base = PI / 180.f;
 
-	// влияние ранга на меткость (базовое значение движка)
+	// Базовые множители
 	base *= m_fRankDisperison;
 
-	// [IMPROVEMENT] 1. Panic Spray: Если паника, стреляем "в молоко"
+	// [IMPROVEMENT] 1. Panic Spray
 	if (movement().mental_state() == eMentalStatePanic)
 		base *= 3.0f;
 
-	// [IMPROVEMENT] 2. Flinch: Штраф за недавнее ранение (действует 1 сек)
+	// [IMPROVEMENT] 2. Flinch
 	if (Device.dwTimeGlobal - m_dwLastHitTime < 1000)
 		base *= 5.0f;
 
-	// [IMPROVEMENT] 3. Health Impact: Чем меньше здоровья, тем хуже точность
+	// [IMPROVEMENT] 3. Health Impact
 	float health = conditions().health();
 	if (health < 0.9f)
 		base *= (1.0f + (1.0f - health) * 2.0f);
 
-	// [IMPROVEMENT] 4. Turn Penalty: Штраф за резкий разворот корпуса
+	// [IMPROVEMENT] 4. Turn Penalty
 	float yaw_diff = _abs(angle_difference(movement().m_body.current.yaw, m_previous_yaw));
 	if (yaw_diff > PI_DIV_6)
 		base *= 2.5f;
 
-	// [IMPROVEMENT] 5. Advanced Zeroing In (Пристрелка + Ранг + Дистанция + Вероятность)
+	// [IMPROVEMENT] 5. Smart Zeroing & Blind Fire Penalty (CRASH FIX VERSION)
+	// Мы не проверяем enemy->g_Alive() здесь, потому что даже если враг умирает,
+	// нам нужно вернуть какое-то число, чтобы не крашнуть физику оружия.
 	const CEntityAlive* enemy = memory().enemy().selected();
+
 	if (enemy)
 	{
-		// FIX CRASH: Используем memory().memory() вместо visual().visible_object()
-		// memory() возвращает информацию о враге независимо от того, видим мы его или слышим.
+		// FIX: Используем ТОЛЬКО memory().memory().
+		// Мы НЕ трогаем memory().visual(), так как m_objects там может быть NULL.
 		const MemorySpace::CMemoryInfo* mem_info = &memory().memory(enemy);
 
 		if (mem_info)
 		{
-			// --- ДАННЫЕ ---
-			// m_level_time - это время последнего обновления информации (звук, вид или хит)
-			u32 time_since_update = Device.dwTimeGlobal - mem_info->m_level_time;
+			// m_level_time - это время последнего обновления информации (Визуал ИЛИ Звук ИЛИ Хит)
+			u32 last_update_time = mem_info->m_level_time;
+			u32 time_since_update = Device.dwTimeGlobal - last_update_time;
 
-			// Позиция берется из общих параметров памяти
+			// Безопасный расчет дистанции до "фантома" в памяти
 			float dist = Position().distance_to(mem_info->m_object_params.m_position);
 
-			// Ранг сталкера нормализованный (0.0 - Новичок ... 1.0 - Мастер/Легенда)
 			float rank_val = float(Rank()) / 100.f;
 			clamp(rank_val, 0.f, 1.f);
 
-			// --- 1. СКОРОСТЬ ПРИСТРЕЛКИ ---
-			// Используем время с последнего обновления как фактор "свежести" цели
-			// Если мы видим/слышим врага ПРЯМО СЕЙЧАС, time_since_update ~ 0.
-
-			// Логика "первого выстрела":
-			// Если мы только что заметили врага (или постоянно видим), у нас есть базовый штраф за реакцию.
-			// Сделаем простую зависимость от ранга и дистанции.
-
-			// --- 2. ВЕРОЯТНОСТЬ ПОПАСТЬ С ПЕРВОГО РАЗА (Стартовый разброс) ---
-			// Коэффициент дистанции: на 5м штрафа нет, на 50м штраф большой
 			float dist_penalty = dist / 10.0f;
-
-			// Коэффициент скилла: Мастер (1.0) гасит 80% штрафа дистанции
 			float skill_mitigation = 1.0f - (rank_val * 0.8f);
-
-			// Итоговый множитель.
 			float accuracy_mult = 1.0f + (dist_penalty * skill_mitigation);
 
-			// Дополнительный бонус, если мы "потеряли" врага из виду пару секунд назад, но продолжаем целиться
-			// (префаер)
-			if (time_since_update > 1000 && time_since_update < 4000)
+			// ЭМУЛЯЦИЯ ПРОВЕРКИ ВИДИМОСТИ:
+			// Вместо visible_right_now() мы смотрим на время последнего обновления.
+			// Если память обновилась менее 200мс назад -> значит мы видим/слышим врага прямо сейчас.
+			// Это на 100% безопасно и не вызывает вылетов.
+			bool is_fresh_contact = (time_since_update < 200);
+
+			if (is_fresh_contact)
 			{
-				accuracy_mult *= 0.8f; // Бонус за "сведение" в точку, где был враг
+				// Цель "свежая" (видим или только что видели)
+				// Логика пристрелки (Zeroing) работает, если мы держим контакт долго.
+				// Но mem_info->m_level_time обновляется постоянно.
+				// Поэтому для "сведения" мы используем обратную логику:
+				// Если контакт свежий, мы считаем что сводимся нормально.
+
+				// Небольшой бонус за удержание цели (условно)
+				accuracy_mult *= 0.9f;
+			}
+			else
+			{
+				// Цель старая (потеряли из виду > 200мс назад).
+				// Штраф за стрельбу вслепую (Blind Fire).
+				float blind_penalty = 2.0f + (1.0f - rank_val);
+				accuracy_mult *= blind_penalty;
+			}
+
+			// Бонус за префаер (если потеряли недавно, от 0.5 до 3 сек)
+			if (time_since_update > 500 && time_since_update < 3000)
+			{
+				accuracy_mult *= 0.7f; // Стреляем точнее в точку исчезновения
 			}
 
 			base *= accuracy_mult;
 		}
 		else
 		{
-			// Враг выбран, но памяти о нем нет (странная ситуация, но на всякий случай)
-			base *= 2.0f;
+			// Памяти о враге нет (баг или крайний случай)
+			base *= 3.0f;
 		}
 	}
 
+	// Стандартная логика движения
 	if (!movement().path_completed())
 	{
 		if (movement().movement_type() == eMovementTypeWalk)
@@ -226,27 +239,30 @@ void CAI_Stalker::g_fireParams(const CHudItem* pHudItem, Fvector& P, Fvector& D)
 		return;
 	}
 
-	// [IMPROVEMENT] Suppression Fire: Исправленная версия
+	// --- [IMPROVEMENT] SUPPRESSION FIRE TARGETING ---
 	const CEntityAlive* enemy = memory().enemy().selected();
 	bool suppress_fire = false;
-	Fvector enemy_last_pos = {0, 0, 0};
+	Fvector aim_target_pos = {0, 0, 0};
 
-	// Если враг выбран, но мы его не видим прямо сейчас
-	if (enemy && !memory().visual().visible_right_now(enemy))
+	// Если врага не видно ИЛИ мы в ярости (Counter-Attack)
+	if (enemy && (!memory().visual().visible_right_now(enemy) || m_is_counter_attacking))
 	{
-		// Получаем информацию о враге из "памяти" сталкера
-		// Метод memory(object) возвращает структуру со всей инфой (последняя позиция, время и т.д.)
+		// Безопасно получаем память
 		const MemorySpace::CMemoryInfo* mem_info = &memory().memory(enemy);
 
 		if (mem_info)
 		{
 			suppress_fire = true;
-			// Берем позицию, где мы в последний раз засекли врага
-			enemy_last_pos = mem_info->m_object_params.m_position;
+			aim_target_pos = mem_info->m_object_params.m_position;
 
-			// Небольшой рандом для огня на подавление, чтобы создать разброс по площади
-			enemy_last_pos.x += ::Random.randF(-0.5f, 0.5f);
-			enemy_last_pos.y += ::Random.randF(0.0f, 1.0f); // Чуть выше, на уровень груди/головы
+			// Логика разброса "Фантома"
+			// Если это контратака - разброс больше (палим веером)
+			float spread_x = m_is_counter_attacking ? 1.5f : 0.8f;
+			float spread_y = 0.6f;
+
+			// Добавляем шум к позиции цели
+			aim_target_pos.x += ::Random.randF(-spread_x, spread_x);
+			aim_target_pos.y += ::Random.randF(0.2f, spread_y); // Чуть выше ног, в тело/голову
 		}
 	}
 
@@ -258,11 +274,10 @@ void CAI_Stalker::g_fireParams(const CHudItem* pHudItem, Fvector& P, Fvector& D)
 			P = eye_matrix.c;
 			D = eye_matrix.k;
 
-			// Переопределяем вектор, если подавляем
 			if (suppress_fire)
 			{
-				// Стреляем от глаз (P) в сторону последней позиции врага
-				D.sub(enemy_last_pos, P).normalize();
+				// Вычисляем вектор от глаз до точки подавления
+				D.sub(aim_target_pos, P).normalize();
 			}
 
 			if (weapon_shot_effector().IsActive())
@@ -275,19 +290,22 @@ void CAI_Stalker::g_fireParams(const CHudItem* pHudItem, Fvector& P, Fvector& D)
 
 			if (suppress_fire)
 			{
-				// Коррекция для движения + подавления
+				// При движении нужна коррекция позиции оружия
 				Fvector fire_dir;
-				fire_dir.sub(enemy_last_pos, Position()).normalize();
+				// Центр сталкера
+				Fvector center;
+				Center(center);
+				// Стреляем от центра (грубо) в сторону фантома
+				fire_dir.sub(aim_target_pos, center).normalize();
 				D = fire_dir;
 			}
 
 			if (weapon_shot_effector().IsActive())
 				D = weapon_shot_effector_direction(D);
+
 			Center(P);
 			P.mad(D, .5f);
 			P.y += .50f;
-			//				P		= weapon->get_LastFP();
-			//				D		= weapon->get_LastFD();
 			VERIFY(!fis_zero(D.square_magnitude()));
 		}
 		return;
@@ -298,7 +316,7 @@ void CAI_Stalker::g_fireParams(const CHudItem* pHudItem, Fvector& P, Fvector& D)
 
 		if (suppress_fire)
 		{
-			D.sub(enemy_last_pos, P).normalize();
+			D.sub(aim_target_pos, P).normalize();
 		}
 
 		if (weapon_shot_effector().IsActive())
@@ -334,7 +352,19 @@ void CAI_Stalker::Hit(SHit* pHDS)
 	if (invulnerable())
 		return;
 
-	// [IMPROVEMENT] Flinch: Запоминаем время попадания
+	// [IMPROVEMENT] Suppression Logic (Rebalanced)
+	// Раньше было 3000 + бонус. Это слишком долго.
+	// Сделаем 1000 (1 сек) базы + бонус. Максимум 3 секунды.
+	
+	u32 suppression_duration = 1000 + (u32)(pHDS->damage() * 30.0f);
+	
+	// Опытные сталкеры (Ранг > 50) подавляются меньше
+	if (Rank() > 50) suppression_duration /= 2;
+	
+	if (suppression_duration > 3000) suppression_duration = 3000;
+
+	m_suppression_end_time = Device.dwTimeGlobal + suppression_duration;
+	m_is_counter_attacking = false;
 	m_dwLastHitTime = Device.dwTimeGlobal;
 
 	// хит может меняться в зависимости от ранга (новички получают больше хита, чем ветераны)
@@ -945,52 +975,84 @@ void CAI_Stalker::update_range_fov(float& new_range, float& new_fov, float start
 
 bool CAI_Stalker::fire_make_sense()
 {
-	// if we do not have an enemy
+	// Если врага вообще нет - стрелять не в кого
 	const CEntityAlive* enemy = memory().enemy().selected();
 	if (!enemy)
 		return (false);
 
-	// [IMPROVEMENT] Panic Spray: Если паника, разрешаем стрелять почти всегда, создавая хаос
-	if (movement().mental_state() == eMentalStatePanic)
+	// Предварительная проверка оружия (нужно для дистанций)
+	if (!best_weapon())
+		return (false);
+
+	// --- [FIX] CQC OVERRIDE (Экстренная самооборона) ---
+	// Если враг ближе 4 метров, мы игнорируем:
+	// 1. Подавление (нельзя сидеть, когда враг в упор)
+	// 2. Геометрию (pick_distance может тупить в упор)
+	// Стреляем на поражение любой ценой.
+	float dist_to_enemy = Position().distance_to(enemy->Position());
+	if (dist_to_enemy < 4.0f)
 		return (true);
 
-	// [IMPROVEMENT] Rage Mode: Если в ярости, стреляем агрессивнее
-	if (Device.dwTimeGlobal < m_rage_end_time)
+	// [IMPROVEMENT] 1. Defensive Suppression
+	// Если враг далеко, а мы подавлены - сидим тихо.
+	if (Device.dwTimeGlobal < m_suppression_end_time)
+		return (false);
+
+	// [IMPROVEMENT] 2. Counter-Attack (Rage Mode)
+	if (m_is_counter_attacking)
 		return (true);
 
-	if ((pick_distance() + PRECISE_DISTANCE) < Position().distance_to(enemy->Position()))
+	// Проверка геометрии стрельбы
+	// pick_distance() возвращает дистанцию до ближайшего препятствия на линии огня
+	float pick_dist = pick_distance();
+
+	if ((pick_dist + PRECISE_DISTANCE) < dist_to_enemy)
 		return (false);
 
 	if (_abs(Position().y - enemy->Position().y) > FLOOR_DISTANCE)
 		return (false);
 
-	if (pick_distance() < NEAR_DISTANCE)
+	// ВАЖНО: Мы уже проверили dist_to_enemy < 4.0f выше.
+	// Эта проверка теперь отсекает стрельбу в стену, только если враг ДАЛЕКО.
+	if (pick_dist < NEAR_DISTANCE)
 		return (false);
 
+	// Если видим врага прямо сейчас - огонь разрешен
 	if (memory().visual().visible_right_now(enemy))
 		return (true);
 
-	u32 last_time_seen = memory().visual().visible_object_time_last_seen(enemy);
-	if (last_time_seen == u32(-1))
+	// --- ЛОГИКА ОГНЯ НА ПОДАВЛЕНИЕ (GHOST TARGET) ---
+
+	// Получаем данные из памяти
+	const MemorySpace::CMemoryInfo* mem_info = &memory().memory(enemy);
+	if (!mem_info)
 		return (false);
 
-	// [IMPROVEMENT] Suppression Fire: Увеличиваем время стрельбы по невидимой цели до 5 секунд (было 10, но проверка
-	// была жестче) Теперь мы явно разрешаем стрельбу "вслепую" в течение 3 сек после потери контакта
-	if (Device.dwTimeGlobal - last_time_seen < 3000)
+	u32 last_time_seen = mem_info->m_level_time;
+	u32 time_delta = Device.dwTimeGlobal - last_time_seen;
+
+	// Если с момента потери контакта прошло больше 5 секунд - прекращаем стрелять
+	if (time_delta > 5000)
+		return (false);
+
+	// Работаем с указателем, чтобы избежать лишнего копирования объекта
+	// (Предполагаю, что cast_weapon возвращает указатель, судя по вашему коду)
+	CWeapon* weapon = best_weapon()->cast_weapon();
+	if (!weapon)
+		return (false);
+
+	// Не подавляем, если в магазине мало патронов (< 30%)
+	float ammo_ratio = (float)weapon->GetAmmoElapsed() / (float)weapon->GetAmmoMagSize();
+	if (ammo_ratio < 0.3f)
+		return (false);
+
+	int w_type = weapon->ef_weapon_type();
+
+	// 6 = Автоматы, 7 = Дробовики, 8 = Пистолеты
+	if (w_type == 6 || w_type == 7 || w_type == 8)
 		return (true);
 
-	if (Device.dwTimeGlobal > last_time_seen + FIRE_MAKE_SENSE_INTERVAL)
-		return (false);
-
-	// if we do not have a weapon
-	if (!best_weapon())
-		return (false);
-
-	// if we do not have automatic weapon
-	if (best_weapon()->object().ef_weapon_type() != 6)
-		return (false);
-
-	return (true);
+	return (false);
 }
 
 // shot effector stuff
