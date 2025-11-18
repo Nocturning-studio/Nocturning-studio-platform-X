@@ -59,6 +59,7 @@
 #include "../../stalker_decision_space.h"
 #include "../../agent_member_manager.h"
 #include "../../location_manager.h"
+#include "../../torch.h" // [IMPROVEMENT] Needed for flashlight logic
 
 #ifdef DEBUG
 #include "../../alife_simulator.h"
@@ -80,6 +81,13 @@ CAI_Stalker::CAI_Stalker()
 	m_boneHitProtection = NULL;
 	m_power_fx_factor = flt_max;
 	m_wounded = false;
+
+	// [IMPROVEMENT] Инициализация переменных
+	m_dwLastHitTime = 0;
+	m_rage_end_time = 0;
+	m_body_block_time = 0;
+	m_previous_yaw = 0.f;
+
 #ifdef DEBUG
 	m_debug_planner = 0;
 #endif // DEBUG
@@ -182,6 +190,12 @@ void CAI_Stalker::reinit()
 
 	m_sight_enabled_before_animation_controller = true;
 	m_update_rotation_on_frame = false;
+
+	// [IMPROVEMENT] Сброс переменных при реините
+	m_dwLastHitTime = 0;
+	m_rage_end_time = 0;
+	m_body_block_time = 0;
+	m_previous_yaw = 0.f;
 }
 
 void CAI_Stalker::LoadSounds(LPCSTR section)
@@ -686,6 +700,10 @@ void CAI_Stalker::UpdateCL()
 	START_PROFILE("stalker/client_update")
 	VERIFY2(PPhysicsShell() || getEnabled(), *cName());
 
+	// [IMPROVEMENT] Turn Penalty: Обновляем значение предыдущего угла поворота
+	// Это используется в ai_stalker_fire.cpp для штрафа к точности при резком развороте
+	m_previous_yaw = movement().m_body.current.yaw;
+
 	if (g_Alive())
 	{
 		if (g_mt_config.test(mtObjectHandler) && CObjectHandler::planner().initialized())
@@ -810,6 +828,38 @@ void CAI_Stalker::shedule_Update(u32 DT)
 #if 0 // def DEBUG
 		memory().visual().check_visibles();
 #endif
+
+		// [IMPROVEMENT] Flashlight Reaction: Проверка на фонарик игрока
+		// Если игрок светит на сталкера - он становится видимым
+		CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
+		if (pActor)
+		{
+			// Проверяем включен ли фонарь (предполагаем наличие CTorch или аттача)
+			// В оригинале доступ может отличаться, используем общий подход
+			CTorch* torch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
+			if (torch && torch->IsSwitchedOn())
+			{
+				Fvector actor_pos = pActor->Position();
+				Fvector actor_dir = pActor->Direction();
+				Fvector to_stalker = Position();
+				to_stalker.sub(actor_pos);
+				float dist = to_stalker.magnitude();
+
+				// Если дистанция < 60м
+				if (dist < 60.0f)
+				{
+					to_stalker.normalize();
+					float angle = actor_dir.dotproduct(to_stalker);
+					// Угол примерно 30 градусов (cos > 0.86)
+					if (angle > 0.86f)
+					{
+						// Замечаем игрока принудительно
+						memory().visual().add_visible_object(pActor, 1.0f, true);
+					}
+				}
+			}
+		}
+
 		if (g_mt_config.test(mtAiVision))
 			Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(this, &CCustomMonster::Exec_Visibility));
 		else
@@ -833,7 +883,7 @@ void CAI_Stalker::shedule_Update(u32 DT)
 	}
 
 	START_PROFILE("stalker/schedule_update/inherited")
-	inherited::inherited::shedule_Update(DT);
+	inherited::shedule_Update(DT);
 	STOP_PROFILE
 
 	if (Remote())

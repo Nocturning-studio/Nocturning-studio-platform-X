@@ -50,6 +50,11 @@ class CTorch : public CInventoryItemObject
 	void Switch();
 	void Switch(bool light_on);
 
+	bool IsSwitchedOn()
+	{
+		return m_switched_on;
+	}
+
 	virtual bool can_be_attached() const;
 
   public:

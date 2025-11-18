@@ -14,6 +14,9 @@
 #include "../../cover_manager.h"
 #include "../../stalker_movement_restriction.h"
 #include "../../level_graph.h"
+#include "../../inventory_item.h" 
+#include "../../weapon.h"
+#include "../../inventory.h"
 
 extern const float MIN_SUITABLE_ENEMY_DISTANCE = 3.f;
 
@@ -62,7 +65,21 @@ const CCoverPoint* CAI_Stalker::find_best_cover(const Fvector& position_to_cover
 	++g_far_cover_search_count;
 #endif
 	m_ce_best->setup(position_to_cover_from, 10.f, 170.f, 10.f);
-	point = ai().cover_manager().best_cover(Position(), 30.f, *m_ce_best, CStalkerMovementRestrictor(this, true));
+
+	// [IMPROVEMENT] Aggressive Cover: Если у нас дробовик и мы здоровы,
+	// ищем укрытия более агрессивно (в более широком радиусе или ближе к врагу, если бы писали свой эвалуатор)
+	// Здесь мы просто увеличиваем радиус поиска, если в руках дробовик, чтобы найти путь вперед
+	float search_radius = 30.f;
+	if (inventory().ActiveItem() && inventory().ActiveItem()->object().ef_weapon_type() >= 7)
+	{ // 7=shotgun generic
+		if (conditions().health() > 0.7f)
+		{
+			search_radius = 50.f; // Ищем укрытия дальше (возможно ближе к врагу)
+		}
+	}
+
+	point =
+		ai().cover_manager().best_cover(Position(), search_radius, *m_ce_best, CStalkerMovementRestrictor(this, true));
 	return (point);
 }
 
@@ -92,6 +109,14 @@ void CAI_Stalker::update_best_cover_actuality(const Fvector& position_to_cover_f
 
 	if (!m_best_cover)
 		return;
+
+	// [IMPROVEMENT] Anti-Bodyblock: Если мы долго блокируем линию огня союзникам
+	// Сбрасиваем актуальность укрытия, чтобы найти новое
+	if (m_body_block_time > 1000)
+	{ // Если блокируем > 1 сек
+		m_best_cover_actual = false;
+		return;
+	}
 
 	if (m_best_cover->position().distance_to_sqr(position_to_cover_from) < _sqr(MIN_SUITABLE_ENEMY_DISTANCE))
 	{

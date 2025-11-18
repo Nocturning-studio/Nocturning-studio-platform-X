@@ -598,6 +598,13 @@ class CAI_Stalker : public CCustomMonster, public CObjectHandler, public CAI_Phr
   private:
 	bool m_can_select_items;
 
+	u32 m_dwLastHitTime;   // Время последнего получения урона
+	u32 m_rage_end_time;   // Время окончания режима "Ярости"
+	u32 m_body_block_time; // Сколько времени мы блокируем линию огня
+	float m_previous_yaw;  // Куда смотрел корпус в прошлом кадре (для штрафа)
+	u32 m_suppression_end_time; // До какого времени сталкер "прижат" и боится высовываться
+	bool m_is_counter_attacking; // Флаг режима контратаки
+
   public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
