@@ -61,6 +61,25 @@ const float FLOOR_DISTANCE = 2.f;
 const float NEAR_DISTANCE = 2.5f;
 const u32 FIRE_MAKE_SENSE_INTERVAL = 10000;
 
+#define HIT_FRONT 0
+#define HIT_BACK 1
+#define HIT_LEFT 2
+#define HIT_RIGHT 3
+#define HIT_UNKNOWN 4
+
+// Вспомогательная функция для определения направления попадания
+int GetHitDirection(const Fvector& hit_dir_local)
+{
+	if (_abs(hit_dir_local.z) > _abs(hit_dir_local.x))
+	{
+		return (hit_dir_local.z > 0) ? HIT_FRONT : HIT_BACK;
+	}
+	else
+	{
+		return (hit_dir_local.x > 0) ? HIT_RIGHT : HIT_LEFT;
+	}
+}
+
 float CAI_Stalker::GetWeaponAccuracy() const
 {
 	float base = PI / 180.f;
@@ -195,8 +214,6 @@ void CAI_Stalker::Hit(SHit* pHDS)
 	if (invulnerable())
 		return;
 
-	//	pHDS->power						*= .1f;
-
 	// хит может меняться в зависимости от ранга (новички получают больше хита, чем ветераны)
 	SHit HDS = *pHDS;
 	HDS.power *= m_fRankImmunity;
@@ -231,8 +248,6 @@ void CAI_Stalker::Hit(SHit* pHDS)
 		{
 			if (is_relation_enemy(entity_alive))
 				sound().play(eStalkerSoundInjuring);
-			//			else
-			//				sound().play		(eStalkerSoundInjuringByFriend);
 		}
 
 		int weapon_type = -1;
@@ -244,27 +259,76 @@ void CAI_Stalker::Hit(SHit* pHDS)
 			bool became_critically_wounded = update_critical_wounded(HDS.boneID, HDS.power);
 			if (!became_critically_wounded && animation().script_animations().empty() && (pHDS->bone() != BI_NONE))
 			{
-				Fvector D;
-				float yaw, pitch;
-				D.getHP(yaw, pitch);
+				// Проверяем, что визуал существует и является анимированным
+				if (!Visual())
+				{
+					inherited::Hit(&HDS);
+					return;
+				}
 
-#pragma todo("Dima to Dima : forward-back bone impulse direction has been determined incorrectly!")
+				CKinematicsAnimated* tpKinematics = smart_cast<CKinematicsAnimated*>(Visual());
+				if (!tpKinematics)
+				{
+					inherited::Hit(&HDS);
+					return;
+				}
+
+				// ПРОВЕРКА БЕЗОПАСНОСТИ: убедимся, что кость существует
+				if (pHDS->bone() >= tpKinematics->LL_BoneCount())
+				{
+#ifdef DEBUG
+					Msg("! WARNING: tpKinematics has no bone_id %d", pHDS->bone());
+					pHDS->_dump();
+#endif
+					inherited::Hit(&HDS);
+					return;
+				}
+
+				// Преобразуем направление попадания в локальные координаты модели
+				Fvector local_hit_dir;
+				XFORM().transform_dir(local_hit_dir, pHDS->direction());
+				local_hit_dir.normalize();
+
+				// Определяем направление попадания
+				int hit_dir = GetHitDirection(local_hit_dir);
+
 				float power_factor = m_power_fx_factor * pHDS->damage() / 100.f;
 				clamp(power_factor, 0.f, 1.f);
 
-				CKinematicsAnimated* tpKinematics = smart_cast<CKinematicsAnimated*>(Visual());
-#ifdef DEBUG
-				tpKinematics->LL_GetBoneInstance(pHDS->bone());
-				if (pHDS->bone() >= tpKinematics->LL_BoneCount())
+				// БЕЗОПАСНОЕ ПОЛУЧЕНИЕ БАЗОВОГО ИНДЕКСА
+				float base_param = tpKinematics->LL_GetBoneInstance(pHDS->bone()).get_param(1);
+				int base_fx_index = iFloor(base_param);
+
+				// ПРОВЕРКА: если базовый индекс невалиден, не воспроизводим анимацию
+				if (base_fx_index == -1)
 				{
-					Msg("tpKinematics has no bone_id %d", pHDS->bone());
-					pHDS->_dump();
+					inherited::Hit(&HDS);
+					return;
+				}
+
+				// Используем правильное определение направления для выбора анимации
+				int direction_offset = 0;
+				if (hit_dir == HIT_FRONT)
+					direction_offset = 0;
+				else if (hit_dir == HIT_BACK)
+					direction_offset = 1;
+				else if (hit_dir == HIT_LEFT)
+					direction_offset = 2;
+				else if (hit_dir == HIT_RIGHT)
+					direction_offset = 3;
+				else
+					direction_offset = 0;
+
+				int fx_index = base_fx_index + direction_offset;
+
+				animation().play_fx(power_factor, fx_index);
+#ifdef DEBUG
+				else
+				{
+					Msg("! WARNING: Invalid fx_index %d (max: %d) for bone %d, body_state %d", fx_index, max_fx_index,
+						pHDS->bone(), body_state);
 				}
 #endif
-				//				int						fx_index =
-				//iFloor(tpKinematics->LL_GetBoneInstance(pHDS->bone()).get_param(1) +
-				//(angle_difference(movement().m_body.current.yaw,-yaw) <= PI_DIV_2 ? 0 : 1)); 				if (fx_index != -1)
-				//					animation().play_fx	(power_factor,fx_index);
 			}
 			else
 			{

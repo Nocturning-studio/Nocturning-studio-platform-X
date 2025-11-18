@@ -95,20 +95,51 @@ void CStalkerAnimationManager::reload(CAI_Stalker* _object)
 
 void CStalkerAnimationManager::play_fx(float power_factor, int fx_index)
 {
-	VERIFY(fx_index >= 0);
-	VERIFY(fx_index <
-		   (int)m_data_storage->m_part_animations.A[object().movement().body_state()].m_global.A[0].A.size());
-#ifdef DEBUG
-	if (psAI_Flags.is(aiAnimation))
+	// Безопасное получение максимального индекса
+	int max_fx_index =
+		(int)m_data_storage->m_part_animations.A[object().movement().body_state()].m_global.A[0].A.size() - 1;
+
+	// Проверка и коррекция индекса
+	int safe_fx_index = fx_index;
+	if (fx_index < 0)
 	{
-		LPCSTR name =
-			m_skeleton_animated
-				->LL_MotionDefName_dbg(
-					m_data_storage->m_part_animations.A[object().movement().body_state()].m_global.A[0].A[fx_index])
-				.first;
-		Msg("%6d [%s][%s][%s][%f]", Device.dwTimeGlobal, *object().cName(), "FX", name, power_factor);
+		Msg("! WARNING: [%s] FX index %d is negative, using 0", *object().cName(), fx_index);
+		safe_fx_index = 0;
 	}
+	else if (fx_index > max_fx_index)
+	{
+		Msg("! WARNING: [%s] FX index %d exceeds maximum %d, using %d", *object().cName(), fx_index, max_fx_index,
+			max_fx_index);
+		safe_fx_index = max_fx_index;
+	}
+
+	// Получаем MotionID для безопасного индекса
+	MotionID motion_id =
+		m_data_storage->m_part_animations.A[object().movement().body_state()].m_global.A[0].A[safe_fx_index];
+
+	// Вывод информации об анимации
+	LPCSTR animation_name = "unknown";
+#ifdef DEBUG
+	// В дебаге получаем настоящее имя анимации
+	animation_name = m_skeleton_animated->LL_MotionDefName_dbg(motion_id).first;
+#else
+	// В релизе используем общее сообщение
+	animation_name = "fx animation not present - try debug build";
 #endif
-	m_skeleton_animated->PlayFX(
-		m_data_storage->m_part_animations.A[object().movement().body_state()].m_global.A[0].A[fx_index], power_factor);
+
+	// Вывод информации в обоих билдах
+	if (safe_fx_index != fx_index)
+	{
+		// Если индекс был скорректирован, выводим предупреждение
+		Msg("%6d [%s][FX][%s][%f] (index corrected %d->%d)", Device.dwTimeGlobal, *object().cName(), animation_name,
+			power_factor, fx_index, safe_fx_index);
+	}
+	else
+	{
+		// Обычное сообщение
+		Msg("%6d [%s][FX][%s][%f]", Device.dwTimeGlobal, *object().cName(), animation_name, power_factor);
+	}
+
+	// Воспроизведение анимации
+	m_skeleton_animated->PlayFX(motion_id, power_factor);
 }
