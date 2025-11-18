@@ -32,7 +32,6 @@ void CRender::create_backbuffer_mip_chain()
 		MipChain->get_level_desc(prev_mip, prev_mip_width, prev_mip_height);
 		RenderBackend.set_Constant("mip_data", 0.0f, prev_mip, 1.0f / prev_mip_width, 1.0f / prev_mip_height);
 		MipChain->get_level_desc(i, prev_mip_width, prev_mip_height);
-		Msg("* Mip level %d: %dx%d", i, prev_mip_width, prev_mip_height);
 
 		RenderBackend.RenderViewportSurface(MipChain->get_surface_level(i));
 	}
