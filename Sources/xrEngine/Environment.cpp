@@ -446,26 +446,34 @@ void CEnvironment::lerp(float& current_weight)
 	CurrentEnv->lerp(this, *Current[0], *Current[1], current_weight, EM, mpower);
 }
 
-float CalcTurbulence(float Time, float Offset, float Turbulence)
+// Генерирует плавную волну порывов ветра (0.0 ... 1.0)
+float CalcGustWave(float Time)
 {
-	const float TurbulenceFrequrencyFactor = 0.1f;
+	// Максимально простая и плавная волна.
+	// Используем всего две близкие частоты.
+	// Это создаст эффект "биения" (медленного нарастания и спада), без резких скачков.
 
-	float OscillationsX = sinf(Time * TurbulenceFrequrencyFactor + Offset);
-	float OscillationsY = cosf(Time * Turbulence * TurbulenceFrequrencyFactor + Offset);
+	float wave1 = sin(Time * 0.05f);		// Основной цикл (медленный)
+	float wave2 = sin(Time * 0.07f) * 0.5f; // Модуляция
 
-	return 1.0f - ((OscillationsX * OscillationsX) * (OscillationsY * OscillationsY) * Turbulence);
-}
+	float result = wave1 + wave2;
 
-float _lerp(float a, float b, float f)
-{
-	return a + f * (b - a);
+	// Мягкая нормализация в 0..1
+	// Используем (sin + 1) / 2, чтобы избежать острых углов
+	return (result / 3.0f) + 0.5f;
 }
 
 void CEnvironment::CalcWindValues()
 {
-	CurrentEnv->wind_turbulence = CalcTurbulence(Device.fTimeGlobal * CurrentEnv->wind_strength, 2, CurrentEnv->wind_gusting + 1);
-	clamp(CurrentEnv->wind_turbulence, -1.0f, 1.0f);
-	CurrentEnv->wind_turbulence = _lerp(CurrentEnv->wind_strength, CurrentEnv->wind_turbulence, CurrentEnv->wind_gusting);
+	float GustFactor = CalcGustWave(Device.fTimeGlobal);
+
+	float BaseStrength = CurrentEnv->wind_strength;
+	// Уменьшили влияние порывов на итоговую цифру, чтобы не было скачков от 0 до 100
+	float GustStrength = CurrentEnv->wind_gusting * BaseStrength * 0.8f;
+
+	CurrentEnv->wind_turbulence = BaseStrength + (GustStrength * GustFactor);
+
+	clamp(CurrentEnv->wind_turbulence, 0.0f, 10.0f);
 }
 
 void CEnvironment::OnFrame()

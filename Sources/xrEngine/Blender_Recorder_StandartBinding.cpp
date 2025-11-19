@@ -472,9 +472,17 @@ class cl_wind_params : public R_constant_setup
 	virtual void setup(R_constant* C)
 	{
 		CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
+
+		// X, Y - Направление ветра
+		float WindDirectionX = cos(desc->wind_direction);
+		float WindDirectionY = sin(desc->wind_direction);
+
+		// Z - Параметр порывистости (для вариативности внутри шейдера)
 		float WindGusting = desc->wind_gusting;
-		float WindDirectionX = cos(desc->wind_direction), WindDirectionY = sin(desc->wind_direction);
+
+		// W - Базовая сила (для справки, если нужно)
 		float WindStrength = desc->wind_strength;
+
 		RenderBackend.set_Constant(C, WindDirectionX, WindDirectionY, WindGusting, WindStrength);
 	}
 };
@@ -485,10 +493,17 @@ class cl_wind_turbulence : public R_constant_setup
 	virtual void setup(R_constant* C)
 	{
 		CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
-		float Turbulence = desc->wind_turbulence;
-		float TurbulencePacked = std::max(std::min(Turbulence, 0.0f), 1.0f);
-		float WindSpeed = Device.fTimeGlobal * 2.5f * (1.0f + TurbulencePacked);
-		RenderBackend.set_Constant(C, Turbulence, TurbulencePacked, WindSpeed, 0);
+
+		float CurrentIntensity = desc->wind_turbulence;
+		clamp(desc->wind_turbulence, 0.0f, 1.0f);
+
+		// СТАБИЛИЗАЦИЯ ВРЕМЕНИ:
+		// Множитель (1.0f + CurrentIntensity * 0.1f) очень маленький.
+		// При урагане анимация ускорится всего на 10-20%, а не в разы.
+		// Базовая скорость 1.2f - подобрана экспериментально для веса дерева.
+		float AnimationTime = Device.fTimeGlobal * 1.2f * (1.0f + CurrentIntensity * 0.1f);
+
+		RenderBackend.set_Constant(C, CurrentIntensity, desc->wind_turbulence, AnimationTime, 0);
 	}
 };
 static cl_wind_turbulence binder_wind_turbulence;
