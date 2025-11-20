@@ -651,6 +651,9 @@
     <ClInclude Include="Sound_environment_calculations.h">
       <Filter>Game API\Sound Environment</Filter>
     </ClInclude>
+    <ClInclude Include="Environment_wind.h">
+      <Filter>Game API\Environment</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IInputReceiver.cpp">
@@ -1135,6 +1138,9 @@
     </ClCompile>
     <ClCompile Include="Sound_environment_calculations.cpp">
       <Filter>Game API\Sound Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment_wind.cpp">
+      <Filter>Game API\Environment</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

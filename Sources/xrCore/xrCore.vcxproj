@@ -342,6 +342,7 @@
       <IncludeInUnityFile>false</IncludeInUnityFile>
       <LanguageStandard>Default</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MaxFilesInUnityFile>8</MaxFilesInUnityFile>
     </ClCompile>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -434,6 +435,7 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <IncludeInUnityFile>false</IncludeInUnityFile>
       <LanguageStandard>Default</LanguageStandard>
+      <MaxFilesInUnityFile>8</MaxFilesInUnityFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -487,6 +489,7 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <IncludeInUnityFile>false</IncludeInUnityFile>
       <LanguageStandard>Default</LanguageStandard>
+      <MaxFilesInUnityFile>8</MaxFilesInUnityFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -541,6 +544,7 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <IncludeInUnityFile>false</IncludeInUnityFile>
       <LanguageStandard>Default</LanguageStandard>
+      <MaxFilesInUnityFile>8</MaxFilesInUnityFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -595,6 +599,7 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>Default</LanguageStandard>
       <IncludeInUnityFile>false</IncludeInUnityFile>
+      <MaxFilesInUnityFile>8</MaxFilesInUnityFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -649,6 +654,7 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <IncludeInUnityFile>false</IncludeInUnityFile>
       <LanguageStandard>Default</LanguageStandard>
+      <MaxFilesInUnityFile>8</MaxFilesInUnityFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
