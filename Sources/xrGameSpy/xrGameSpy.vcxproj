@@ -349,7 +349,7 @@
       <WarningLevel>Level2</WarningLevel>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
       <MaxFilesInUnityFile>8</MaxFilesInUnityFile>
     </ClCompile>
     <Link>
@@ -505,7 +505,7 @@
       <WarningLevel>Level2</WarningLevel>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
       <MaxFilesInUnityFile>8</MaxFilesInUnityFile>
     </ClCompile>
     <Link>

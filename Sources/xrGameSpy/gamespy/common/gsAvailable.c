@@ -27,7 +27,7 @@ static struct
 	int retryCount;
 } AC;
 
-static int get_sockaddrin(const char * hostname, int port, SOCKADDR_IN * saddr)
+static int get_sockaddrin_host(const char * hostname, int port, SOCKADDR_IN * saddr)
 {
 	GS_ASSERT(hostname)
 	GS_ASSERT(saddr)
@@ -77,7 +77,7 @@ void GSIStartAvailableCheckA(const char * gamename)
 		sprintf(hostname, "%s.available." GSI_DOMAIN_NAME, gamename);
 
 	// get the master address
-	rcode = get_sockaddrin(override?GSIACHostname:hostname, MASTER_PORT, &AC.address);
+	rcode = get_sockaddrin_host(override ? GSIACHostname : hostname, MASTER_PORT, &AC.address);
 	if(!rcode)
 		return;
 

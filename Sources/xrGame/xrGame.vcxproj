@@ -766,8 +766,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OrderInUnityFile>100</OrderInUnityFile>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
-      <IncludeInUnityFile>true</IncludeInUnityFile>
-      <MaxFilesInUnityFile>8</MaxFilesInUnityFile>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <MaxFilesInUnityFile>16</MaxFilesInUnityFile>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1010,8 +1010,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OrderInUnityFile>100</OrderInUnityFile>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
-      <IncludeInUnityFile>true</IncludeInUnityFile>
-      <MaxFilesInUnityFile>8</MaxFilesInUnityFile>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <MaxFilesInUnityFile>16</MaxFilesInUnityFile>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
