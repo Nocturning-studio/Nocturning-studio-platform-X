@@ -98,24 +98,24 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <TargetExt>.dll</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Third-party\include\;$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Sources\</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <TargetExt>.dll</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Third-party\include\;$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Sources\</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>$(ProjectName)</TargetName>
@@ -125,8 +125,8 @@
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Sources\</ExternalIncludePath>
     <IncludePath>$(SolutionDir)Third-party\include\;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Third-party\bin\x86\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
     <TargetName>$(ProjectName)</TargetName>
@@ -136,19 +136,19 @@
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Sources\</ExternalIncludePath>
     <IncludePath>$(SolutionDir)Third-party\include\;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Third-party\bin\x86\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <TargetExt>.dll</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Third-party\include\;$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Sources\</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)</TargetName>
@@ -156,10 +156,10 @@
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Third-party\bin\x86\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(SolutionDir)Third-party\include\;$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Sources\</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

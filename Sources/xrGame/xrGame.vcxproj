@@ -340,187 +340,187 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <ExtensionsToDeleteOnClean>*.idb%3b*.obj%3b*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)Third-party\include\</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <ExtensionsToDeleteOnClean>*.idb%3b*.obj%3b*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)\Build\libraries\;$(LibraryPath)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\Build\libraries\;$(LibraryPath)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)Third-party\include\</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)\Build\libraries\;$(LibraryPath)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\Build\libraries\;$(LibraryPath)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)Third-party\include\</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)Third-party\include\</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)Third-party\include\</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)Third-party\include\</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)Third-party\include\</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)\Build\libraries\;$(LibraryPath)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\Build\libraries\;$(LibraryPath)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|x64'">
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)\Build\libraries\;$(LibraryPath)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\Build\libraries\;$(LibraryPath)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|x64'">
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)\Build\libraries\;$(LibraryPath)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\Build\libraries\;$(LibraryPath)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|x64'">
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)\Build\libraries\;$(LibraryPath)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\Build\libraries\;$(LibraryPath)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|x64'">
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)\Build\libraries\;$(LibraryPath)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\Build\libraries\;$(LibraryPath)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Priquel|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <ExtensionsToDeleteOnClean>*.idb%3b*.obj%3b*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(SolutionDir)Third-party\include\</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Priquel|x64'">
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <ExtensionsToDeleteOnClean>*.idb%3b*.obj%3b*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)\Build\libraries\;$(LibraryPath)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\Build\libraries\;$(LibraryPath)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed_Priquel|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(SolutionDir)Third-party\include\</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed_Priquel|x64'">
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)\Build\libraries\;$(LibraryPath)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\Build\libraries\;$(LibraryPath)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Priquel|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(SolutionDir)Third-party\include\</IncludePath>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Priquel|x64'">
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)\Build\libraries\;$(LibraryPath)$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\Build\libraries\;$(LibraryPath)$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -573,7 +573,7 @@
       <MapFileName />
       <MapExports>false</MapExports>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -644,7 +644,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       </MapFileName>
       <MapExports>false</MapExports>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
@@ -690,7 +690,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -758,7 +758,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -815,7 +815,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -891,7 +891,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -967,7 +967,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -1044,7 +1044,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -1120,7 +1120,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -1200,7 +1200,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|x64'">
@@ -1264,7 +1264,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|x64'">
@@ -1328,7 +1328,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|x64'">
@@ -1392,7 +1392,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|x64'">
@@ -1456,7 +1456,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Priquel|Win32'">
@@ -1507,7 +1507,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <MapFileName />
       <MapExports>false</MapExports>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -1577,7 +1577,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       </MapFileName>
       <MapExports>false</MapExports>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed_Priquel|Win32'">
@@ -1623,7 +1623,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -1691,7 +1691,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Priquel|Win32'">
@@ -1746,7 +1746,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -1824,7 +1824,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>$(SolutionDir)\Build\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)..\Build\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

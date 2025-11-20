@@ -211,34 +211,34 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
-    <IntDir>$(SolutionDir)\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|x64'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
