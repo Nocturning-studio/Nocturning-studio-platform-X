@@ -25,7 +25,10 @@
 #include "UIDragDropListEx.h"
 #include "UICellItem.h"
 #include "UICellItemFactory.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #define TRADE_XML "trade.xml"
 #define TRADE_CHARACTER_XML "trade_character.xml"

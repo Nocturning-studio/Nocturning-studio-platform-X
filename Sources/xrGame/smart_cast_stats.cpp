@@ -7,7 +7,10 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #ifdef DEBUG
 #define SMART_CAST_STATS

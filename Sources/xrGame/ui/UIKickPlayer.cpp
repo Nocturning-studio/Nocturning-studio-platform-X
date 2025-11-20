@@ -225,13 +225,13 @@ void CUIKickPlayer::Update()
 	for (; I != E; ++I)
 	{
 		game_PlayerState* pI = I->second;
-		if (m_selected_item_text.size() && !stricmp(pI->name, m_selected_item_text.c_str()))
+		if (m_selected_item_text.size() && !xr_stricmp(pI->name, m_selected_item_text.c_str()))
 			bHasSelected = true;
 
 		fit = std::find(m_current_set.begin(), m_current_set.end(), pI);
 		if (fit == m_current_set.end())
 			bNeedRefresh = true;
-		else if (stricmp((*fit)->name, pI->name))
+		else if (xr_stricmp((*fit)->name, pI->name))
 			bNeedRefresh = true;
 	}
 	if (m_current_set.size() != items.size())

@@ -12,51 +12,92 @@ Copyright (c) 1997-2000 John Robbins -- All rights reserved.
 // The documentation for this function is in BugslayerUtil.h.
 BOOL __stdcall GetLoadedModules(DWORD dwPID, UINT uiCount, HMODULE* paModArray, LPDWORD pdwRealCount)
 {
-	// Do the debug checking.
-	ASSERT(NULL != pdwRealCount);
-	ASSERT(FALSE == IsBadWritePtr(pdwRealCount, sizeof(UINT)));
-#ifdef _DEBUG
-	if (0 != uiCount)
+	// Basic parameter validation
+	if (pdwRealCount == nullptr)
 	{
-		ASSERT(NULL != paModArray);
-		ASSERT(FALSE == IsBadWritePtr(paModArray, uiCount * sizeof(HMODULE)));
-	}
-#endif
-
-	// Do the parameter checking for real.  Note that I only check the
-	// memory in paModArray if uiCount is > 0.  The user can pass zero
-	// in uiCount if they are just interested in the total to be
-	// returned so they could dynamically allocate a buffer.
-	if ((TRUE == IsBadWritePtr(pdwRealCount, sizeof(UINT))) ||
-		((uiCount > 0) && (TRUE == IsBadWritePtr(paModArray, uiCount * sizeof(HMODULE)))))
-	{
-		SetLastErrorEx(ERROR_INVALID_PARAMETER, SLE_ERROR);
-		return (FALSE);
+		SetLastError(ERROR_INVALID_PARAMETER);
+		return FALSE;
 	}
 
-	// Figure out which OS we are on.
-	OSVERSIONINFO stOSVI;
-
-	FillMemory(&stOSVI, sizeof(OSVERSIONINFO), NULL);
-	stOSVI.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-	BOOL bRet = GetVersionEx(&stOSVI);
-	ASSERT(TRUE == bRet);
-	if (FALSE == bRet)
+	if (uiCount > 0 && paModArray == nullptr)
 	{
-		TRACE0("GetVersionEx failed!\n");
-		return (FALSE);
+		SetLastError(ERROR_INVALID_PARAMETER);
+		return FALSE;
 	}
 
-	// Check the version and call the appropriate thing.
-	if ((VER_PLATFORM_WIN32_NT == stOSVI.dwPlatformId) && (4 == stOSVI.dwMajorVersion))
+	// For Windows 7 and above, we can safely use ToolHelp API
+	// Note: We assume the process has appropriate privileges
+	return TLHELPGetLoadedModules(dwPID, uiCount, paModArray, pdwRealCount);
+}
+
+// Alternative modern implementation using EnumProcessModules
+BOOL __stdcall GetLoadedModulesEx(DWORD dwPID, UINT uiCount, HMODULE* paModArray, LPDWORD pdwRealCount)
+{
+	if (pdwRealCount == nullptr)
 	{
-		// This is NT 4 so call its specific version in PSAPI.DLL
-		return (NT4GetLoadedModules(dwPID, uiCount, paModArray, pdwRealCount));
+		SetLastError(ERROR_INVALID_PARAMETER);
+		return FALSE;
 	}
-	else
+
+	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, dwPID);
+	if (hProcess == nullptr)
 	{
-		// Win9x and Win2K go through tool help.
-		return (TLHELPGetLoadedModules(dwPID, uiCount, paModArray, pdwRealCount));
+		// Try with less privileges
+		hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, dwPID);
+		if (hProcess == nullptr)
+		{
+			return FALSE;
+		}
 	}
+
+	BOOL bSuccess = FALSE;
+	HMODULE* hMods = nullptr;
+	DWORD cbNeeded = 0;
+
+	// First call to get the size needed
+	if (EnumProcessModules(hProcess, nullptr, 0, &cbNeeded))
+	{
+		DWORD moduleCount = cbNeeded / sizeof(HMODULE);
+		*pdwRealCount = moduleCount;
+
+		if (uiCount == 0 || paModArray == nullptr)
+		{
+			// Caller just wants the count
+			bSuccess = TRUE;
+		}
+		else if (uiCount >= moduleCount)
+		{
+			// Allocate buffer for the modules
+			hMods = new HMODULE[moduleCount];
+
+			if (EnumProcessModules(hProcess, hMods, cbNeeded, &cbNeeded))
+			{
+				// Copy to caller's array
+				for (DWORD i = 0; i < min(moduleCount, uiCount); i++)
+				{
+					paModArray[i] = hMods[i];
+				}
+				bSuccess = TRUE;
+			}
+
+			delete[] hMods;
+		}
+		else
+		{
+			// Buffer too small
+			SetLastError(ERROR_INSUFFICIENT_BUFFER);
+			bSuccess = FALSE;
+		}
+	}
+
+	CloseHandle(hProcess);
+	return bSuccess;
+}
+
+// Simplified version that just returns the count
+DWORD __stdcall GetLoadedModulesCount(DWORD dwPID)
+{
+	DWORD count = 0;
+	GetLoadedModules(dwPID, 0, nullptr, &count);
+	return count;
 }

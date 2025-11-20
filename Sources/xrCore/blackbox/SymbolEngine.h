@@ -6,7 +6,7 @@ This class is a paper-thin layer around the DBGHELP.DLL symbol engine.
 
 This class wraps only those functions that take the unique
 HANDLE value. Other DBGHELP.DLL symbol engine functions are global in
-scope, so I didn’t wrap them with this class.
+scope, so I didn't wrap them with this class.
 
 ------------------------------------------------------------------------
 Compilation Defines:
@@ -30,12 +30,13 @@ USE_BUGSLAYERUTIL - If defined, the class will have another
 // You could include either IMAGEHLP.DLL or DBGHELP.DLL.
 #include "imagehlp.h"
 #include <tchar.h>
+#include <memory>
 
 // The great Bugslayer idea of creating wrapper classes on structures
 // that have size fields came from fellow MSJ columnist, Paul DiLascia.
 // Thanks, Paul!
 
-// I didn’t wrap IMAGEHLP_SYMBOL because that is a variable-size
+// I didn't wrap IMAGEHLP_SYMBOL because that is a variable-size
 // structure.
 
 // The IMAGEHLP_MODULE wrapper class
@@ -138,23 +139,20 @@ class CSymbolEngine
 		}
 
 		// Got the version size, now get the version information.
-		LPVOID lpData = (LPVOID) new TCHAR[dwVerSize];
-		if (FALSE == GetFileVersionInfo(szImageHlp, dwVerInfoHandle, dwVerSize, lpData))
+		std::unique_ptr<TCHAR[]> lpData = std::make_unique<TCHAR[]>(dwVerSize);
+		if (FALSE == GetFileVersionInfo(szImageHlp, dwVerInfoHandle, dwVerSize, lpData.get()))
 		{
-			delete[] lpData;
 			return (FALSE);
 		}
 
 		VS_FIXEDFILEINFO* lpVerInfo;
 		UINT uiLen;
-		BOOL bRet = VerQueryValue(lpData, _T ( "\\" ), (LPVOID*)&lpVerInfo, &uiLen);
+		BOOL bRet = VerQueryValue(lpData.get(), _T ( "\\" ), (LPVOID*)&lpVerInfo, &uiLen);
 		if (TRUE == bRet)
 		{
 			dwMS = lpVerInfo->dwFileVersionMS;
 			dwLS = lpVerInfo->dwFileVersionLS;
 		}
-
-		delete[] lpData;
 
 		return (bRet);
 	}
@@ -219,11 +217,34 @@ class CSymbolEngine
 						   Public Symbol Manipulation
 	----------------------------------------------------------------------*/
   public:
+	// Modern replacement for deprecated SymEnumerateSymbols
+	BOOL SymEnumSymbols(IN ULONG64 BaseOfDll, IN PCSTR Mask, IN PSYM_ENUMERATESYMBOLS_CALLBACK EnumSymbolsCallback,
+						IN PVOID UserContext)
+	{
+		return (::SymEnumSymbols(m_hProcess, BaseOfDll, Mask, EnumSymbolsCallback, UserContext));
+	}
+
+	// Keep old function for compatibility but mark it as deprecated
+#pragma warning(push)
+#pragma warning(disable : 4996)
 	BOOL SymEnumerateSymbols(IN DWORD BaseOfDll, IN PSYM_ENUMSYMBOLS_CALLBACK EnumSymbolsCallback, IN PVOID UserContext)
 	{
 		return (::SymEnumerateSymbols(m_hProcess, BaseOfDll, EnumSymbolsCallback, UserContext));
 	}
+#pragma warning(pop)
 
+	// Modern symbol functions
+	BOOL SymFromAddr(IN ULONG64 Address, OUT PDWORD64 Displacement, PSYMBOL_INFO Symbol)
+	{
+		return (::SymFromAddr(m_hProcess, Address, Displacement, Symbol));
+	}
+
+	BOOL SymFromName(IN PCSTR Name, PSYMBOL_INFO Symbol)
+	{
+		return (::SymFromName(m_hProcess, Name, Symbol));
+	}
+
+	// Legacy functions with safety wrappers
 	BOOL SymGetSymFromAddr(IN DWORD dwAddr, OUT PDWORD pdwDisplacement, OUT PIMAGEHLP_SYMBOL Symbol)
 	{
 		return (::SymGetSymFromAddr(m_hProcess, dwAddr, pdwDisplacement, Symbol));
@@ -258,7 +279,7 @@ class CSymbolEngine
 #else
 		// The problem is that the symbol engine finds only those source
 		// line addresses (after the first lookup) that fall exactly on
-		// a zero displacement. I’ll walk backward 100 bytes to
+		// a zero displacement. I'll walk backward 100 bytes to
 		// find the line and return the proper displacement.
 		DWORD dwTempDis = 0;
 		while (FALSE == ::SymGetLineFromAddr(m_hProcess, dwAddr - dwTempDis, pdwDisplacement, Line))
@@ -278,6 +299,12 @@ class CSymbolEngine
 		}
 		return (TRUE);
 #endif // DO_NOT_WORK_AROUND_SRCLINE_BUG
+	}
+
+	// Modern line function
+	BOOL SymGetLineFromAddr64(IN ULONG64 dwAddr, OUT PDWORD pdwDisplacement, OUT PIMAGEHLP_LINE64 Line)
+	{
+		return (::SymGetLineFromAddr64(m_hProcess, dwAddr, pdwDisplacement, Line));
 	}
 
 	BOOL SymGetLineFromName(IN LPSTR ModuleName, IN LPSTR FileName, IN DWORD dwLineNumber, OUT PLONG plDisplacement,
@@ -325,12 +352,18 @@ class CSymbolEngine
 		return (::SymRegisterCallback(m_hProcess, CallbackFunction, UserContext));
 	}
 
+	// Modern callback registration
+	BOOL SymRegisterCallback64(IN PSYMBOL_REGISTERED_CALLBACK64 CallbackFunction, IN ULONG64 UserContext)
+	{
+		return (::SymRegisterCallback64(m_hProcess, CallbackFunction, UserContext));
+	}
+
 	/*----------------------------------------------------------------------
 							 Protected Data Members
 	----------------------------------------------------------------------*/
   protected:
 	// The unique value that will be used for this instance of the
-	// symbol engine. This value doesn’t have to be an actual
+	// symbol engine. This value doesn't have to be an actual
 	// process value, just a unique value.
 	HANDLE m_hProcess;
 };

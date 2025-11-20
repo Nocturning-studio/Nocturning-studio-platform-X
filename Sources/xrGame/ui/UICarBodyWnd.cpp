@@ -25,7 +25,10 @@
 #include "../script_callback_ex.h"
 #include "../script_game_object.h"
 #include "../BottleItem.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #define CAR_BODY_XML "carbody_new.xml"
 #define CARBODY_ITEM_XML "carbody_item.xml"

@@ -14,7 +14,10 @@
 #include "../actor.h"
 #include "../xrServer_Objects_ALife_Monsters.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #define STALKERS_RANKING_XML "stalkers_ranking.xml"
 #define STALKERS_RANKING_CHARACTER_XML "stalkers_ranking_character.xml"

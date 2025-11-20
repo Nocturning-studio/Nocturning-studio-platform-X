@@ -103,7 +103,7 @@ void* FileDownload(LPCSTR fn, u32* pdwSize)
 	}
 	R_ASSERT2(hFile > 0, fn);
 #ifdef _EDITOR
-	size = filelength(hFile);
+	size = _filelength(hFile);
 #else
 	size = _filelength(hFile);
 #endif
@@ -125,7 +125,7 @@ void* FileDownload(LPCSTR fn, u32* pdwSize)
 typedef char MARK[9];
 IC void mk_mark(MARK& M, const char* S)
 {
-	strncpy(M, S, 8);
+	strncpy_s(M, sizeof(M), S, 8);
 }
 
 void FileCompress(const char* fn, const char* sign, void* data, u32 size)
@@ -133,7 +133,7 @@ void FileCompress(const char* fn, const char* sign, void* data, u32 size)
 	MARK M;
 	mk_mark(M, sign);
 
-	int H = open(fn, O_BINARY | O_CREAT | O_WRONLY | O_TRUNC, S_IREAD | S_IWRITE);
+	int H = _open(fn, O_BINARY | O_CREAT | O_WRONLY | O_TRUNC, _S_IREAD | _S_IWRITE);
 	R_ASSERT2(H > 0, fn);
 	_write(H, &M, 8);
 	_writeLZ(H, data, size);
@@ -145,7 +145,7 @@ void* FileDecompress(const char* fn, const char* sign, u32* size)
 	MARK M, F;
 	mk_mark(M, sign);
 
-	int H = open(fn, O_BINARY | O_RDONLY);
+	int H = _open(fn, O_BINARY | O_RDONLY, _S_IREAD);
 	R_ASSERT2(H > 0, fn);
 	_read(H, &F, 8);
 	if (strncmp(M, F, 8) != 0)
@@ -157,7 +157,7 @@ void* FileDecompress(const char* fn, const char* sign, u32* size)
 
 	void* ptr = 0;
 	u32 SZ;
-	SZ = _readLZ(H, ptr, filelength(H) - 8);
+	SZ = _readLZ(H, ptr, _filelength(H) - 8);
 	_close(H);
 	if (size)
 		*size = SZ;
@@ -284,7 +284,7 @@ void IWriter::w_printf(const char* format, ...)
 	va_list mark;
 	char buf[1024];
 	va_start(mark, format);
-	vsprintf(buf, format, mark);
+	vsprintf_s(buf, format, mark);
 	va_end(mark);
 	w(buf, xr_strlen(buf));
 }
@@ -395,7 +395,7 @@ void IReader::r_string(char* dest, u32 tgt_sz)
 	char* src = (char*)data + Pos;
 	u32 sz = advance_term_string();
 
-	strncpy(dest, src, sz);
+	strncpy_s(dest, tgt_sz, src, sz);
 	dest[sz] = 0;
 }
 void IReader::r_string(xr_string& dest)

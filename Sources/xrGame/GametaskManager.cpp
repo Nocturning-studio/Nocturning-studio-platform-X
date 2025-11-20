@@ -12,7 +12,10 @@
 #include "ui/UIPDAWnd.h"
 #include "encyclopedia_article.h"
 #include "ui/UIEventsWnd.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #pragma warning(push)
 #pragma warning(disable : 4995)

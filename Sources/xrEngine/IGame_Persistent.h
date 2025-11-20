@@ -48,7 +48,7 @@ class ENGINE_API IGame_Persistent :
 			for (int i = 0; i < n; ++i)
 			{
 				_GetItem(cmd_line, i, m_params[i], '/');
-				strlwr(m_params[i]);
+				xr_strlwr(m_params[i]);
 			}
 		}
 	};

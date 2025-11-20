@@ -574,7 +574,7 @@ struct _uniq_mode
 	LPCSTR _val;
 	bool operator()(LPCSTR _other)
 	{
-		return !stricmp(_val, _other);
+		return !xr_stricmp(_val, _other);
 	}
 };
 

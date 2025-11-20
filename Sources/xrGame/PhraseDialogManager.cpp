@@ -13,7 +13,10 @@
 #include "gameobject.h"
 #include "script_game_object.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 CPhraseDialogManager::CPhraseDialogManager(void)
 {

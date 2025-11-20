@@ -141,13 +141,13 @@ void CBlender_Compile::PassEnd()
 void CBlender_Compile::PassSET_PS(LPCSTR name)
 {
 	strcpy_s(pass_ps, name);
-	strlwr(pass_ps);
+	xr_strlwr(pass_ps);
 }
 
 void CBlender_Compile::PassSET_VS(LPCSTR name)
 {
 	strcpy_s(pass_vs, name);
-	strlwr(pass_vs);
+	xr_strlwr(pass_vs);
 }
 
 void CBlender_Compile::PassSET_ZB(BOOL bZTest, BOOL bZWrite, BOOL bInvertZTest)
@@ -372,7 +372,7 @@ void CBlender_Compile::begin_Pass(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest
 	SetMapping();
 
 	// Last Stage - disable
-	if (0 == stricmp(_ps, "null"))
+	if (0 == xr_stricmp(_ps, "null"))
 	{
 		RS.SetTSS(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
 		RS.SetTSS(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);

@@ -5,7 +5,10 @@
 #include "stdafx.h"
 #pragma hdrstop
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #pragma warning(disable : 4995)
 #include <d3dx9.h>
@@ -84,7 +87,7 @@ void CResourceManager::_ParseList(sh_list& dest, LPCSTR names)
 		{
 			// flush
 			N.push_back(0);
-			strlwr(N.begin());
+			xr_strlwr(N.begin());
 
 			Device.Resources->fix_texture_name(N.begin());
 			dest.push_back(N.begin());
@@ -100,7 +103,7 @@ void CResourceManager::_ParseList(sh_list& dest, LPCSTR names)
 	{
 		// flush
 		N.push_back(0);
-		strlwr(N.begin());
+		xr_strlwr(N.begin());
 
 		Device.Resources->fix_texture_name(N.begin());
 		dest.push_back(N.begin());
@@ -405,11 +408,11 @@ void CResourceManager::fix_texture_name(LPSTR fn)
 {
 	LPSTR _ext = strext(fn);
 	if (_ext && (
-		0 == stricmp(_ext, ".tga") || 
-		0 == stricmp(_ext, ".dds") || 
-		0 == stricmp(_ext, ".bmp") ||
-		0 == stricmp(_ext, ".ogm") || 
-		0 == stricmp(_ext, ".hdr")))
+		0 == xr_stricmp(_ext, ".tga") || 
+		0 == xr_stricmp(_ext, ".dds") || 
+		0 == xr_stricmp(_ext, ".bmp") ||
+		0 == xr_stricmp(_ext, ".ogm") || 
+		0 == xr_stricmp(_ext, ".hdr")))
 		*_ext = 0;
 }
 

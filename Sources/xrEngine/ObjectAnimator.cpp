@@ -4,7 +4,10 @@
 #include "ObjectAnimator.h"
 #include "motion.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 bool motion_sort_pred(COMotion* a, COMotion* b)
 {

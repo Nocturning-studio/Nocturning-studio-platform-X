@@ -31,7 +31,10 @@
 #include <fstream>
 #include <iomanip>
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 //////////////////////////////////////////////////////////////////////////
 // Start of the Platform-specific stuff

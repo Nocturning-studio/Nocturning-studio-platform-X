@@ -32,7 +32,10 @@
 #include "ui\UIBuyWnd.h"
 #endif
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #define DM_TEAM0_MENU "deathmatch_team0"
 

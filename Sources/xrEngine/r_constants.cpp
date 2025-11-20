@@ -10,7 +10,10 @@
 #include "xrPool.h"
 #include "r_constants.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 // pool
 //.static	poolSS<R_constant,512>			g_constant_allocator;

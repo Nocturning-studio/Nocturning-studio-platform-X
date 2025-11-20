@@ -238,7 +238,7 @@ void CInifile::Load(IReader* F, LPCSTR path)
 				}
 			}
 			*strchr(str, ']') = 0;
-			Current->Name = strlwr(str + 1);
+			Current->Name = xr_strlwr(str + 1);
 		}
 		else
 		{
@@ -418,7 +418,7 @@ CInifile::Sect& CInifile::r_section(LPCSTR S)
 {
 	char section[256];
 	strcpy_s(section, sizeof(section), S);
-	strlwr(section);
+	xr_strlwr(section);
 	RootIt I = std::lower_bound(DATA.begin(), DATA.end(), section, sect_pred);
 	if (!(I != DATA.end() && xr_strcmp(*(*I)->Name, section) == 0))
 		Debug.fatal(DEBUG_INFO, "Can't open section '%s'", S);
@@ -552,7 +552,7 @@ BOOL CInifile::r_bool(LPCSTR S, LPCSTR L)
 	LPCSTR C = r_string(S, L);
 	char B[8];
 	strncpy(B, C, 7);
-	strlwr(B);
+	xr_strlwr(B);
 	return IsBOOL(B);
 }
 CLASS_ID CInifile::r_clsid(LPCSTR S, LPCSTR L)
@@ -564,7 +564,7 @@ int CInifile::r_token(LPCSTR S, LPCSTR L, const xr_token* token_list)
 {
 	LPCSTR C = r_string(S, L);
 	for (int i = 0; token_list[i].name; i++)
-		if (!stricmp(C, token_list[i].name))
+		if (!xr_stricmp(C, token_list[i].name))
 			return token_list[i].id;
 	return 0;
 }

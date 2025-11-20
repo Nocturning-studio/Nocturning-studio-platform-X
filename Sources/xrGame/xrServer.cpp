@@ -666,7 +666,7 @@ u32 xrServer::OnMessage(NET_Packet& P, ClientID sender) // Non-Zero means broadc
 		shared_str user;
 		shared_str pass;
 		P.r_stringZ(user);
-		if (0 == stricmp(user.c_str(), "logoff"))
+		if (0 == xr_stricmp(user.c_str(), "logoff"))
 		{
 			CL->m_admin_rights.m_has_admin_rights = FALSE;
 			strcpy(reason, "logged off");

@@ -10,7 +10,10 @@
 #include "profiler.h"
 #include "../xrEngine/gamefont.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #ifdef PROFILE_CRITICAL_SECTIONS
 static volatile LONG critical_section_counter = 0;

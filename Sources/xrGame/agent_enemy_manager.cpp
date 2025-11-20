@@ -29,7 +29,10 @@
 #include <malloc.h>
 #pragma warning(pop)
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 const float wounded_enemy_reached_distance = 3.f;
 

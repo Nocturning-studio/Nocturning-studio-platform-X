@@ -5,6 +5,7 @@
 #include "net_messages.h"
 #include "NET_Log.h"
 #include "../xrGame/battleye.h"
+#include "../xrCore/_std_extensions.h"
 
 #pragma warning(push)
 #pragma warning(disable : 4995)
@@ -486,7 +487,7 @@ BOOL IPureClient::Connect(LPCSTR options)
 
 			R_CHK(NET->SetClientInfo(&Pinfo, 0, 0, DPNSETCLIENTINFO_SYNC));
 		}
-		if (stricmp(server_name, "localhost") == 0)
+		if (xr_stricmp(server_name, "localhost") == 0)
 		{
 			WCHAR SessionPasswordUNICODE[4096];
 			if (xr_strlen(password_str))

@@ -10,7 +10,10 @@
 #include "space_restriction_base.h"
 #include "ai_space.h"
 #include "level_graph.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #define DEFAULT_RADIUS EPS_L
 

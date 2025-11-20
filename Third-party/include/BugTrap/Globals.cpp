@@ -78,7 +78,7 @@ PEXCEPTION_POINTERS g_pExceptionPointers = NULL;
 /// Exception thread ID.
 DWORD g_dwExceptionThreadID = 0;
 /// True if application runs on Windows NT platform.
-BOOL g_bWinNT = IsNT();
+BOOL g_bWinNT = true;
 /// Custom resources manager.
 CResManager* g_pResManager = NULL;
 /// Pointer to Simple MAPI session object.

@@ -240,7 +240,7 @@ IRender_Visual* CModelPool::Create(const char* name, IReader* data)
 	string_path low_name;
 	VERIFY(xr_strlen(name) < sizeof(low_name));
 	strcpy(low_name, name);
-	strlwr(low_name);
+	xr_strlwr(low_name);
 	if (strext(low_name))
 		*strext(low_name) = 0;
 	//	Msg						("-CREATE %s",low_name);
@@ -286,7 +286,7 @@ IRender_Visual* CModelPool::CreateChild(LPCSTR name, IReader* data)
 	string256 low_name;
 	VERIFY(xr_strlen(name) < 256);
 	strcpy(low_name, name);
-	strlwr(low_name);
+	xr_strlwr(low_name);
 	if (strext(low_name))
 		*strext(low_name) = 0;
 

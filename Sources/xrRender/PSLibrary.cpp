@@ -7,7 +7,10 @@
 #include "PSLibrary.h"
 #include "ParticleEffect.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #define _game_data_ "$game_data$"
 

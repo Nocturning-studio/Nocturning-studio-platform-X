@@ -13,7 +13,10 @@
 #include "UIDragDropListEx.h"
 #include "UI3tButton.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 CUICellItem* CUIInventoryWnd::CurrentItem()
 {

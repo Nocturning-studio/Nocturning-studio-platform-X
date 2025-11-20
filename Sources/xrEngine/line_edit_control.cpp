@@ -14,7 +14,10 @@
 
 #include "edit_actions.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 ENGINE_API float g_console_sensitive = 0.15f;
 

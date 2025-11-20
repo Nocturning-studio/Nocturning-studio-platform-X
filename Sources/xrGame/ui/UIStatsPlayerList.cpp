@@ -8,7 +8,10 @@
 #include "../level.h"
 #include "UIStatic.h"
 #include "UIXmlInit.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 IC bool DM_Compare_Players(game_PlayerState* p1, game_PlayerState* p2);
 

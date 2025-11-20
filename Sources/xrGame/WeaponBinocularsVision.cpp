@@ -14,7 +14,10 @@
 #include "game_cl_base.h"
 #include "AI/Monsters/BaseMonster/base_monster.h"
 #include "../xrEngine/igame_persistent.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #define RECT_SIZE 16
 

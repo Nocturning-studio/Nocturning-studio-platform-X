@@ -4,7 +4,10 @@
 #include "../../../level.h"
 #include "../../../actor.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 CPolterTele::CPolterTele(CPoltergeist* polter) : inherited(polter)
 {

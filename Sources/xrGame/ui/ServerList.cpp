@@ -14,7 +14,10 @@
 #include "../GameSpy/GameSpy_Full.h"
 #include "../GameSpy/GameSpy_Browser.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 CGameSpy_Browser* g_gs_browser = NULL;
 

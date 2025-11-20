@@ -2,7 +2,10 @@
 #define xr_collide_defsH
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 class ENGINE_API CObject;
 namespace collide

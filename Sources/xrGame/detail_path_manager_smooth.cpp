@@ -11,7 +11,10 @@
 #include "ai_space.h"
 #include "profiler.h"
 #include "level_graph.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 #ifdef DEBUG
 #include "custommonster.h"
 extern bool show_restrictions(CRestrictedObject* object);

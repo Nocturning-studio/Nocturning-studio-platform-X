@@ -11,7 +11,10 @@
 #include "xrServer.h"
 #include "game_object_space.h"
 #include "script_callback_ex.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 struct FindLocationBySpotID
 {

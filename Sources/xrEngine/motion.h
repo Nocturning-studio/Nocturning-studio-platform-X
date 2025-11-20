@@ -79,7 +79,7 @@ class ENGINE_API CCustomMotion
 		if (n)
 		{
 			strcpy_s(tmp, n);
-			strlwr(tmp);
+			xr_strlwr(tmp);
 		}
 		name = tmp;
 	}

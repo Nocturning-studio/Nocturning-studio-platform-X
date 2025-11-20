@@ -31,7 +31,10 @@
 #include "ai/monsters/basemonster/base_monster.h"
 #include "ai/trader/ai_trader.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 void CActor::AddEncyclopediaArticle(const CInfoPortion* info_portion) const
 {

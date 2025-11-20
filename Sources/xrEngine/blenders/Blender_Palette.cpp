@@ -3,13 +3,16 @@
 
 #include "Blender.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 //////////////////////////////////////////////////////////////////////
 #include "blender_clsid.h"
 IC bool p_sort(IBlender* A, IBlender* B)
 {
-	return stricmp(A->getComment(), B->getComment()) < 0;
+	return xr_stricmp(A->getComment(), B->getComment()) < 0;
 }
 
 #ifdef __BORLANDC__

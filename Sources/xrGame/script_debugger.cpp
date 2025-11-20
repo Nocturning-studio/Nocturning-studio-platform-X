@@ -505,7 +505,7 @@ bool CScriptDebugger::HasBreakPoint(const char* fileName, s32 lineNum)
 		if (bp.nLine == lineNum)
 			if (xr_strlen(bp.fileName) == xr_strlen(sFileName))
 			{
-				if (stricmp(*bp.fileName, sFileName) == 0)
+				if (xr_stricmp(*bp.fileName, sFileName) == 0)
 					return true;
 			}
 	}

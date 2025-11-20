@@ -3,7 +3,10 @@
 #include "UIMotionIcon.h"
 #include "UIXmlInit.h"
 #include "../HUDManager.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 const LPCSTR MOTION_ICON_XML = "motion_icon.xml";
 

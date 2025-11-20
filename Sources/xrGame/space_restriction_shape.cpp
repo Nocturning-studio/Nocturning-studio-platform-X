@@ -13,7 +13,10 @@
 #include "space_restrictor.h"
 #include "graph_engine.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 struct CBorderMergePredicate
 {

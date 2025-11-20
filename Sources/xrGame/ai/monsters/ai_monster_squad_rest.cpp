@@ -3,7 +3,10 @@
 #include "../../entity.h"
 #include "../../ai_object_location.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 void CMonsterSquad::ProcessIdle()
 {

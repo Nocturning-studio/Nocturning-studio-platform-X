@@ -73,7 +73,8 @@ static DWORD low = 0, code = 0, range = 0;
 
 inline void rcEncNormalize(_PPMD_FILE* stream)
 {
-	while ((low ^ (low + range)) < TOP || range < BOT && ((range = -low & (BOT - 1)), 1))
+	while ((low ^ (low + range)) < TOP ||
+		   range < BOT && ((range = (~low + 1) & (BOT - 1)), 1)) // Исправлено: ~low + 1 вместо -low
 	{
 		_PPMD_E_PUTC(low >> 24, stream);
 		range <<= 8;
@@ -84,7 +85,7 @@ inline void rcEncNormalize(_PPMD_FILE* stream)
 static inline void rcInitEncoder()
 {
 	low = 0;
-	range = DWORD(-1);
+	range = ~0U; // Исправлено: ~0U вместо DWORD(-1)
 }
 /*
 #define RC_ENC_NORMALIZE(stream) {                                          \
@@ -109,17 +110,19 @@ static inline void rcFlushEncoder(_PPMD_FILE* stream)
 		low <<= 8;
 	}
 }
+
 static inline void rcInitDecoder(_PPMD_FILE* stream)
 {
 	low = code = 0;
-	range = DWORD(-1);
+	range = ~0U; // Исправлено: ~0U вместо DWORD(-1)
 	for (UINT i = 0; i < 4; i++)
 		code = (code << 8) | _PPMD_D_GETC(stream);
 }
 
 inline void rcDecNormalize(_PPMD_FILE* stream)
 {
-	while ((low ^ (low + range)) < TOP || range < BOT && ((range = -low & (BOT - 1)), 1))
+	while ((low ^ (low + range)) < TOP ||
+		   range < BOT && ((range = (~low + 1) & (BOT - 1)), 1)) // Исправлено: ~low + 1 вместо -low
 	{
 		code = (code << 8) | _PPMD_D_GETC(stream);
 		range <<= 8;
@@ -141,6 +144,7 @@ static inline UINT rcGetCurrentCount()
 {
 	return (code - low) / (range /= SubRange.scale);
 }
+
 static inline void rcRemoveSubrange()
 {
 	low += range * SubRange.low;
@@ -151,14 +155,17 @@ static inline UINT rcBinStart(UINT f0, UINT Shift)
 {
 	return f0 * (range >>= Shift);
 }
+
 static inline UINT rcBinDecode(UINT tmp)
 {
 	return (code - low >= tmp);
 }
+
 static inline void rcBinCorrect0(UINT tmp)
 {
 	range = tmp;
 }
+
 static inline void rcBinCorrect1(UINT tmp, UINT f1)
 {
 	low += tmp;

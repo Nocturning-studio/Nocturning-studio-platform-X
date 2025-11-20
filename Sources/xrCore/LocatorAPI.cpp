@@ -15,7 +15,10 @@
 #include "stream_reader.h"
 #include "file_stream_reader.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 const u32 BIG_FILE_READER_WINDOW_SIZE = 1024 * 1024;
 
@@ -1353,7 +1356,7 @@ BOOL CLocatorAPI::dir_delete(LPCSTR path, LPCSTR nm, BOOL remove_files)
 				//		        const char* entry_begin = entry.name+base_len;
 				if (!remove_files)
 					return FALSE;
-				unlink(entry.name);
+				_unlink(entry.name); // Çàìåíà unlink íà _unlink
 				files.erase(cur_item);
 			}
 			else
@@ -1388,7 +1391,7 @@ void CLocatorAPI::file_delete(LPCSTR path, LPCSTR nm)
 	if (I != files.end())
 	{
 		// remove file
-		unlink(I->name);
+		_unlink(I->name); // Çàìåíà unlink íà _unlink
 		char* str = LPSTR(I->name);
 		xr_free(str);
 		files.erase(I);
@@ -1423,7 +1426,7 @@ void CLocatorAPI::file_rename(LPCSTR src, LPCSTR dest, bool bOwerwrite)
 		{
 			if (!bOwerwrite)
 				return;
-			unlink(D->name);
+			_unlink(D->name); // Çàìåíà unlink íà _unlink
 			char* str = LPSTR(D->name);
 			xr_free(str);
 			files.erase(D);
@@ -1605,7 +1608,7 @@ BOOL CLocatorAPI::can_write_to_folder(LPCSTR path)
 		else
 		{
 			fclose(hf);
-			unlink(temp);
+			_unlink(temp); // Çàìåíà unlink íà _unlink
 			return TRUE;
 		}
 	}

@@ -228,7 +228,7 @@ class ENGINE_API CCC_Token : public IConsole_Command
 		xr_token* tok = tokens;
 		while (tok->name)
 		{
-			if (stricmp(tok->name, args) == 0)
+			if (xr_stricmp(tok->name, args) == 0)
 			{
 				*value = tok->id;
 				break;

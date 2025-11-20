@@ -629,7 +629,7 @@ bool game_sv_mp::OnNextMap()
 	m_bMapSwitched = true;
 
 	/*
-	if (!stricmp(MapName.c_str(), Level().name().c_str()))
+	if (!xr_stricmp(MapName.c_str(), Level().name().c_str()))
 	{
 		m_bMapSwitched		= false;
 		return				false;
@@ -657,7 +657,7 @@ void game_sv_mp::OnPrevMap()
 	Msg("Goint to level %s", MapName.c_str());
 	m_bMapSwitched = true;
 
-	//.	if (!stricmp(MapName.c_str(), Level().name().c_str())) return;
+	//.	if (!xr_stricmp(MapName.c_str(), Level().name().c_str())) return;
 
 	string1024 Command;
 	sprintf_s(Command, "sv_changelevel %s", MapName.c_str());
@@ -701,7 +701,7 @@ void game_sv_mp::OnVoteStart(LPCSTR VoteCommand, ClientID sender)
 	m_bVotingReal = false;
 	while (votecommands[i].command)
 	{
-		if (!stricmp(votecommands[i].name, CommandName))
+		if (!xr_stricmp(votecommands[i].name, CommandName))
 		{
 			m_bVotingReal = true;
 			if (!IsVotingEnabled(votecommands[i].flag))
@@ -722,7 +722,7 @@ void game_sv_mp::OnVoteStart(LPCSTR VoteCommand, ClientID sender)
 	m_uVoteStartTime = CurTime;
 	if (m_bVotingReal)
 	{
-		if (!stricmp(votecommands[i].name, "changeweather"))
+		if (!xr_stricmp(votecommands[i].name, "changeweather"))
 		{
 			string256 WeatherTime = "", WeatherName = "";
 			sscanf(CommandParams, "%s %s", WeatherName, WeatherTime);

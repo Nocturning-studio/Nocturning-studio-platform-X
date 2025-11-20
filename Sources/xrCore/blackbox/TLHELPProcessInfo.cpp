@@ -250,15 +250,15 @@ DWORD __stdcall TLHELPGetModuleFileNameEx(DWORD dwPID, HANDLE /*hProcess*/, HMOD
 			if (hModule == stME32.hModule)
 			{
 				DWORD dwLen = _tcslen(stME32.szExePath);
-				if (dwLen > nSize)
+				if (dwLen >= nSize) // »зменил на >= дл€ безопасности
 				{
-					_tcsncpy(szFilename, stME32.szExePath, nSize - 1);
-					szFilename[nSize] = _T('\0');
-					dwRet = nSize;
+					_tcsncpy_s(szFilename, nSize, stME32.szExePath, _TRUNCATE);
+					// _tcsncpy_s автоматически добавл€ет нулевой терминатор
+					dwRet = nSize - 1; // ¬озвращаем количество скопированных символов без терминатора
 				}
 				else
 				{
-					_tcscpy(szFilename, stME32.szExePath);
+					_tcscpy_s(szFilename, nSize, stME32.szExePath);
 					dwRet = dwLen;
 				}
 				break;

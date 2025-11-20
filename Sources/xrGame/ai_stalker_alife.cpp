@@ -23,7 +23,10 @@
 #include "ef_pattern.h"
 #include "trade_parameters.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 extern u32 get_rank(const shared_str& section);
 

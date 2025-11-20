@@ -13,7 +13,10 @@
 #include "PhysicsCommon.h"
 #include "level_sounds.h"
 #include "GamePersistent.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 ENGINE_API bool g_dedicated_server;
 

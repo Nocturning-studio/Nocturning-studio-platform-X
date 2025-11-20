@@ -10,7 +10,10 @@
 #include <malloc.h>
 #pragma warning(pop)
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 // {DA825E1B-6830-43d7-835D-0B5AD82956A2}
 const GUID CLSID_DirectPlay8Server = {0xda825e1b, 0x6830, 0x43d7, {0x83, 0x5d, 0x0b, 0x5a, 0xd8, 0x29, 0x56, 0xa2}};
@@ -499,7 +502,7 @@ HRESULT IPureServer::net_Handler(u32 dwMessageType, PVOID pMessage)
 		PDPNMSG_ENUM_HOSTS_QUERY msg = PDPNMSG_ENUM_HOSTS_QUERY(pMessage);
 		if (0 == msg->dwReceivedDataSize)
 			return S_FALSE;
-		if (!stricmp((const char*)msg->pvReceivedData, "ToConnect"))
+		if (!xr_stricmp((const char*)msg->pvReceivedData, "ToConnect"))
 			return S_OK;
 		if (*((const GUID*)msg->pvReceivedData) != NET_GUID)
 			return S_FALSE;

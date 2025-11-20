@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "../xrEngine/fmesh.h"
 #include "flod.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 struct _hw
 {

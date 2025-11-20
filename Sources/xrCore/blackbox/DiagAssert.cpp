@@ -599,7 +599,7 @@ void DoStackTrace(LPTSTR szString, DWORD dwSize)
 			{
 				break;
 			}
-			_tcscpy(szCurrPos, szSym);
+			_tcscpy_s(szCurrPos, _tcslen(szSym) + 1, szSym);
 			szCurrPos += dwSymSize;
 			dwSizeLeft -= dwSymSize;
 		}

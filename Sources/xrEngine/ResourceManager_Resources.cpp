@@ -16,7 +16,10 @@
 #include "ShaderResourceTraits.h"
 #include "ShaderCompile.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 //--------------------------------------------------------------------------------------------------------------
 SState* CResourceManager::_CreateState(SimulatorStates& state_code)
@@ -334,7 +337,7 @@ void CResourceManager::_DeleteTexture(const CTexture* T)
 CMatrix* CResourceManager::_CreateMatrix(LPCSTR Name)
 {
 	R_ASSERT(Name && Name[0]);
-	if (0 == stricmp(Name, "$null"))
+	if (0 == xr_stricmp(Name, "$null"))
 		return NULL;
 
 	LPSTR N = LPSTR(Name);
@@ -372,7 +375,7 @@ void CResourceManager::ED_UpdateMatrix(LPCSTR Name, CMatrix* data)
 CConstant* CResourceManager::_CreateConstant(LPCSTR Name)
 {
 	R_ASSERT(Name && Name[0]);
-	if (0 == stricmp(Name, "$null"))
+	if (0 == xr_stricmp(Name, "$null"))
 		return NULL;
 
 	LPSTR N = LPSTR(Name);

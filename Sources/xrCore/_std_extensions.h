@@ -60,6 +60,47 @@ IC int sprintf_s(char* dest, size_t sizeOfBuffer, const char* format, ...)
 }
 #endif
 
+IC u32 xr_strlen(const char* S);
+
+// return pointer to ".ext"
+IC char* strext(const char* S)
+{
+	return (char*)strrchr(S, '.');
+}
+
+IC u32 xr_strlen(const char* S)
+{
+	return (u32)strlen(S);
+}
+
+IC char* xr_strlwr(char* S)
+{
+	if (S)
+	{
+		for (char* p = S; *p; ++p)
+			*p = tolower(static_cast<unsigned char>(*p));
+	}
+	return S;
+}
+
+inline int xr_stricmp(const char* str1, const char* str2)
+{
+#ifdef _MSC_VER
+	return _stricmp(str1, str2);
+#else
+	return stricmp(str1, str2);
+#endif
+}
+
+#ifdef BREAK_AT_STRCMP
+XRCORE_API int xr_strcmp(const char* S1, const char* S2);
+#else
+IC int xr_strcmp(const char* S1, const char* S2)
+{
+	return (int)strcmp(S1, S2);
+}
+#endif
+
 // token type definition
 struct XRCORE_API xr_token
 {
@@ -239,33 +280,6 @@ IC s64 _max(s64 x, s64 y)
 {
 	return x - ((x - y) & ((x - y) >> (sizeof(s64) * 8 - 1)));
 };
-
-IC u32 xr_strlen(const char* S);
-
-// return pointer to ".ext"
-IC char* strext(const char* S)
-{
-	return (char*)strrchr(S, '.');
-}
-
-IC u32 xr_strlen(const char* S)
-{
-	return (u32)strlen(S);
-}
-
-IC char* xr_strlwr(char* S)
-{
-	return strlwr(S);
-}
-
-#ifdef BREAK_AT_STRCMP
-XRCORE_API int xr_strcmp(const char* S1, const char* S2);
-#else
-IC int xr_strcmp(const char* S1, const char* S2)
-{
-	return (int)strcmp(S1, S2);
-}
-#endif
 
 XRCORE_API char* timestamp(string64& dest);
 

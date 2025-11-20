@@ -20,8 +20,8 @@ class cl_dt_scaler : public R_constant_setup
 void fix_texture_thm_name(LPSTR fn)
 {
 	LPSTR _ext = strext(fn);
-	if (_ext && (0 == stricmp(_ext, ".tga") || 0 == stricmp(_ext, ".thm") || 0 == stricmp(_ext, ".dds") ||
-				 0 == stricmp(_ext, ".bmp") || 0 == stricmp(_ext, ".ogm")))
+	if (_ext && (0 == xr_stricmp(_ext, ".tga") || 0 == xr_stricmp(_ext, ".thm") || 0 == xr_stricmp(_ext, ".dds") ||
+				 0 == xr_stricmp(_ext, ".bmp") || 0 == xr_stricmp(_ext, ".ogm")))
 		*_ext = 0;
 }
 

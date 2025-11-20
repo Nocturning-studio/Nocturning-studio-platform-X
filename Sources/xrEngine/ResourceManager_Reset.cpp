@@ -6,7 +6,10 @@
 #include "Render.h"
 #endif
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 void CResourceManager::reset_begin()
 {

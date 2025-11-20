@@ -6,7 +6,10 @@
 #include "SkeletonX.h"
 #include "fmesh.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 extern int psSkeletonUpdate;
 
@@ -140,7 +143,7 @@ u16 CKinematicsAnimated::LL_PartID(LPCSTR B)
 		CPartDef& P = (*m_Partition)[id];
 		if (0 == P.Name)
 			continue;
-		if (0 == stricmp(B, *P.Name))
+		if (0 == xr_stricmp(B, *P.Name))
 			return id;
 	}
 

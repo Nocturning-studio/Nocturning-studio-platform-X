@@ -455,7 +455,7 @@ struct pred_stri
 {
 	IC bool operator()(const char* x, const char* y) const
 	{
-		return stricmp(x, y) < 0;
+		return xr_stricmp(x, y) < 0;
 	}
 };
 

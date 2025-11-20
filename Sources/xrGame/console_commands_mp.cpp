@@ -14,7 +14,10 @@
 #include "game_sv_artefacthunt.h"
 #include "date_time.h"
 #include "game_cl_base_weapon_usage_statistic.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 extern float g_cl_lvInterp;
 extern int g_cl_InterpolationType; // 0 - Linear, 1 - BSpline, 2 - HSpline

@@ -7,7 +7,10 @@
 #include "UIDragDropListEx.h"
 #include "../string_table.h"
 #include "UIMpItemsStoreWnd.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 extern "C" DLL_API DLL_Pure* __cdecl xrFactory_Create(CLASS_ID clsid);
 extern "C" DLL_API void __cdecl xrFactory_Destroy(DLL_Pure* O);

@@ -21,7 +21,10 @@
 #include "level.h"
 #endif // DEBUG
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 using namespace ALife;
 

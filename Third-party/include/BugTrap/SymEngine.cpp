@@ -240,7 +240,7 @@ CSymEngine::CSymEngine(const CEngineParams& rParams)
 			DWORD dwOptions = FSymGetOptions();
 			FSymSetOptions(dwOptions | SYMOPT_DEFERRED_LOADS | SYMOPT_LOAD_LINES | SYMOPT_UNDNAME);
 
-			m_hSymProcess = g_bWinNT ? GetCurrentProcess() : (HANDLE)GetCurrentProcessId();
+			m_hSymProcess = GetCurrentProcess();
 			if (FSymInitialize(m_hSymProcess, NULL, TRUE))
 				SetEngineParameters(rParams);
 			else
@@ -869,26 +869,23 @@ void CSymEngine::GetCpusInfo(CCpusInfo& rCpusInfo)
 	rCpusInfo.m_pszCpuArch = szUnknown;
 	SYSTEM_INFO si;
 	GetSystemInfo(&si);
-	if (g_bWinNT)
+
+	switch (si.wProcessorArchitecture)
 	{
-		switch (si.wProcessorArchitecture)
-		{
-		case PROCESSOR_ARCHITECTURE_INTEL:
-			rCpusInfo.m_pszCpuArch = szIntel;
-			break;
-		case PROCESSOR_ARCHITECTURE_IA64:
-			rCpusInfo.m_pszCpuArch = szIA64;
-			break;
-		case PROCESSOR_ARCHITECTURE_AMD64:
-			rCpusInfo.m_pszCpuArch = szAMD64;
-			break;
-		default: // PROCESSOR_ARCHITECTURE_UNKNOWN
-			rCpusInfo.m_pszCpuArch = szUnknown;
-			break;
-		}
-	}
-	else
+	case PROCESSOR_ARCHITECTURE_INTEL:
 		rCpusInfo.m_pszCpuArch = szIntel;
+		break;
+	case PROCESSOR_ARCHITECTURE_IA64:
+		rCpusInfo.m_pszCpuArch = szIA64;
+		break;
+	case PROCESSOR_ARCHITECTURE_AMD64:
+		rCpusInfo.m_pszCpuArch = szAMD64;
+		break;
+	default: // PROCESSOR_ARCHITECTURE_UNKNOWN
+		rCpusInfo.m_pszCpuArch = szUnknown;
+		break;
+	}
+
 	rCpusInfo.m_dwNumCpus = si.dwNumberOfProcessors;
 }
 
@@ -907,34 +904,33 @@ BOOL CSymEngine::GetCpuInfo(DWORD dwCpuNum, CCpuInfo& rCpuInfo)
 	_tcscpy_s(rCpuInfo.m_szCpuDescription, countof(rCpuInfo.m_szCpuId), szUnknown);
 
 	BOOL bResult = TRUE;
-	if (g_bWinNT)
+
+	TCHAR szCentralProcessorPath[MAX_PATH];
+	_stprintf_s(szCentralProcessorPath, countof(szCentralProcessorPath), _T("HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\%lu"), dwCpuNum);
+	HKEY hKey;
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, szCentralProcessorPath, 0l, KEY_READ, &hKey) == ERROR_SUCCESS)
 	{
-		TCHAR szCentralProcessorPath[MAX_PATH];
-		_stprintf_s(szCentralProcessorPath, countof(szCentralProcessorPath), _T("HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\%lu"), dwCpuNum);
-		HKEY hKey;
-		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, szCentralProcessorPath, 0l, KEY_READ, &hKey) == ERROR_SUCCESS)
-		{
-			DWORD dwValue, dwValueType, dwValueSize;
-			dwValueSize = sizeof(dwValue);
-			if (RegQueryValueEx(hKey, _T("~MHz"), NULL, &dwValueType, (PBYTE)&dwValue, &dwValueSize) == ERROR_SUCCESS && dwValueType == REG_DWORD)
-				_ultot_s(dwValue, rCpuInfo.m_szCpuSpeed, countof(rCpuInfo.m_szCpuSpeed), 10);
-			else
-				*rCpuInfo.m_szCpuSpeed = _T('\0');
-			dwValueSize = sizeof(rCpuInfo.m_szCpuDescription);
-			if (RegQueryValueEx(hKey, _T("ProcessorNameString"), NULL, &dwValueType, (PBYTE)rCpuInfo.m_szCpuDescription, &dwValueSize) == ERROR_SUCCESS && dwValueType == REG_SZ)
-				TrimSpaces(rCpuInfo.m_szCpuDescription);
-			else
-				*rCpuInfo.m_szCpuDescription = _T('\0');
-			dwValueSize = sizeof(rCpuInfo.m_szCpuId);
-			if (RegQueryValueEx(hKey, _T("Identifier"), NULL, &dwValueType, (PBYTE)rCpuInfo.m_szCpuId, &dwValueSize) == ERROR_SUCCESS && dwValueType == REG_SZ)
-				TrimSpaces(rCpuInfo.m_szCpuId);
-			else
-				*rCpuInfo.m_szCpuId = _T('\0');
-			RegCloseKey(hKey);
-		}
+		DWORD dwValue, dwValueType, dwValueSize;
+		dwValueSize = sizeof(dwValue);
+		if (RegQueryValueEx(hKey, _T("~MHz"), NULL, &dwValueType, (PBYTE)&dwValue, &dwValueSize) == ERROR_SUCCESS && dwValueType == REG_DWORD)
+			_ultot_s(dwValue, rCpuInfo.m_szCpuSpeed, countof(rCpuInfo.m_szCpuSpeed), 10);
 		else
-			bResult = FALSE;
+			*rCpuInfo.m_szCpuSpeed = _T('\0');
+		dwValueSize = sizeof(rCpuInfo.m_szCpuDescription);
+		if (RegQueryValueEx(hKey, _T("ProcessorNameString"), NULL, &dwValueType, (PBYTE)rCpuInfo.m_szCpuDescription, &dwValueSize) == ERROR_SUCCESS && dwValueType == REG_SZ)
+			TrimSpaces(rCpuInfo.m_szCpuDescription);
+		else
+			*rCpuInfo.m_szCpuDescription = _T('\0');
+		dwValueSize = sizeof(rCpuInfo.m_szCpuId);
+		if (RegQueryValueEx(hKey, _T("Identifier"), NULL, &dwValueType, (PBYTE)rCpuInfo.m_szCpuId, &dwValueSize) == ERROR_SUCCESS && dwValueType == REG_SZ)
+			TrimSpaces(rCpuInfo.m_szCpuId);
+		else
+			*rCpuInfo.m_szCpuId = _T('\0');
+		RegCloseKey(hKey);
 	}
+	else
+		bResult = FALSE;
+
 	return bResult;
 }
 

@@ -14,6 +14,14 @@ class CBlender_terrain : public IBlender
 	string64 oG_Name;
 	string64 oB_Name;
 	string64 oA_Name;
+	string64 oRb_Name;
+	string64 oGb_Name;
+	string64 oBb_Name;
+	string64 oAb_Name;
+	string64 oRbx_Name;
+	string64 oGbx_Name;
+	string64 oBbx_Name;
+	string64 oAbx_Name;
 
   public:
 	virtual LPCSTR getComment()
@@ -91,10 +99,8 @@ class CBlender_terrain : public IBlender
 			C.begin_Pass("gbuffer_stage_terrain", "gbuffer_stage_terrain", TRUE, TRUE, TRUE);
 
 			C.set_Sampler("s_mask", mask);
-			C.set_Sampler("s_lmap", C.L_textures[1], false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_LINEAR);
-
 			C.set_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
-
+			//C.set_Sampler("s_cell_bomber", "vfx\\vfx_cell_bomber", false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 			C.set_Sampler("s_dt_r", oR_Name, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 			C.set_Sampler("s_dt_g", oG_Name, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 			C.set_Sampler("s_dt_b", oB_Name, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
@@ -102,17 +108,16 @@ class CBlender_terrain : public IBlender
 
 			if (ps_r_material_quality > 0)
 			{
-				C.set_Sampler("s_dn_r", strconcat(sizeof(mask), mask, oR_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
-				C.set_Sampler("s_dn_g", strconcat(sizeof(mask), mask, oG_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
-				C.set_Sampler("s_dn_b", strconcat(sizeof(mask), mask, oB_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
-				C.set_Sampler("s_dn_a", strconcat(sizeof(mask), mask, oA_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+				C.set_Sampler("s_dn_r", strconcat(sizeof(oRb_Name), oRb_Name, oR_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+				C.set_Sampler("s_dn_g", strconcat(sizeof(oGb_Name), oGb_Name, oG_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+				C.set_Sampler("s_dn_b", strconcat(sizeof(oBb_Name), oBb_Name, oB_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+				C.set_Sampler("s_dn_a", strconcat(sizeof(oAb_Name), oAb_Name, oA_Name, "_bump"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
 
-				C.set_Sampler("s_dn_rX", strconcat(sizeof(mask), mask, oR_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
-				C.set_Sampler("s_dn_gX", strconcat(sizeof(mask), mask, oG_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
-				C.set_Sampler("s_dn_bX", strconcat(sizeof(mask), mask, oB_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
-				C.set_Sampler("s_dn_aX", strconcat(sizeof(mask), mask, oA_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+				C.set_Sampler("s_dn_rX", strconcat(sizeof(oRbx_Name), oRbx_Name, oR_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+				C.set_Sampler("s_dn_gX", strconcat(sizeof(oGbx_Name), oGbx_Name, oG_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+				C.set_Sampler("s_dn_bX", strconcat(sizeof(oBbx_Name), oBbx_Name, oB_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
+				C.set_Sampler("s_dn_aX", strconcat(sizeof(oAbx_Name), oAbx_Name, oA_Name, "_bump#"), false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, false);
 			}
-
 			C.end_Pass();
 			break;
 		case SE_NORMAL_LQ: // deffer

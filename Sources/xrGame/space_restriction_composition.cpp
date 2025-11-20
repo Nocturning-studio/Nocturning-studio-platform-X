@@ -26,7 +26,10 @@
 #include "space_restrictor.h"
 #endif // DEBUG
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 int g_restriction_checker = 0;
 

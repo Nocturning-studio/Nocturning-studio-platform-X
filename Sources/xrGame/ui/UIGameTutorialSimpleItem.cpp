@@ -194,39 +194,39 @@ void CUISequenceSimpleItem::Start()
 	{
 		bool bShowPda = false;
 		CUIGameSP* ui_game_sp = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
-		if (!stricmp(m_pda_section, "pda_contacts"))
+		if (!xr_stricmp(m_pda_section, "pda_contacts"))
 		{
 			ui_game_sp->PdaMenu->SetActiveSubdialog(eptContacts);
 			bShowPda = true;
 		}
 		else
 		{
-			if (!stricmp(m_pda_section, "pda_map"))
+			if (!xr_stricmp(m_pda_section, "pda_map"))
 			{
 				ui_game_sp->PdaMenu->SetActiveSubdialog(eptMap);
 				bShowPda = true;
 			}
-			else if (!stricmp(m_pda_section, "pda_quests"))
+			else if (!xr_stricmp(m_pda_section, "pda_quests"))
 			{
 				ui_game_sp->PdaMenu->SetActiveSubdialog(eptQuests);
 				bShowPda = true;
 			}
-			else if (!stricmp(m_pda_section, "pda_diary"))
+			else if (!xr_stricmp(m_pda_section, "pda_diary"))
 			{
 				ui_game_sp->PdaMenu->SetActiveSubdialog(eptDiary);
 				bShowPda = true;
 			}
-			else if (!stricmp(m_pda_section, "pda_ranking"))
+			else if (!xr_stricmp(m_pda_section, "pda_ranking"))
 			{
 				ui_game_sp->PdaMenu->SetActiveSubdialog(eptRanking);
 				bShowPda = true;
 			}
-			else if (!stricmp(m_pda_section, "pda_statistics"))
+			else if (!xr_stricmp(m_pda_section, "pda_statistics"))
 			{
 				ui_game_sp->PdaMenu->SetActiveSubdialog(eptActorStatistic);
 				bShowPda = true;
 			}
-			else if (!stricmp(m_pda_section, "pda_encyclopedia"))
+			else if (!xr_stricmp(m_pda_section, "pda_encyclopedia"))
 			{
 				ui_game_sp->PdaMenu->SetActiveSubdialog(eptEncyclopedia);
 				bShowPda = true;

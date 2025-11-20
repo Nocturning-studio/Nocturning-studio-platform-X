@@ -13,7 +13,10 @@
 #include "level_graph.h"
 #include "space_restriction_base.h"
 #include "profiler.h"
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 const float dependent_distance = 100.f;
 

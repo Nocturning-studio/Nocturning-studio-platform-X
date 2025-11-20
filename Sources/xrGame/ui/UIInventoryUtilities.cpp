@@ -15,7 +15,10 @@
 #include "../game_base_space.h"
 #include "../actor.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #define BUY_MENU_TEXTURE "ui\\ui_mp_buy_menu"
 #define EQUIPMENT_ICONS "ui\\ui_icon_equipment"

@@ -17,7 +17,10 @@
 #include "Missile.h"
 #include "game_cl_base_weapon_usage_statistic.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 // #define DELAYED_ROUND_TIME	7000
 #include "ui\UIBuyWndShared.h"

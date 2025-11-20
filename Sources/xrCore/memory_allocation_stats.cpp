@@ -8,7 +8,10 @@
 
 #include <boost/crc.hpp>
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 extern void BuildStackTrace();
 

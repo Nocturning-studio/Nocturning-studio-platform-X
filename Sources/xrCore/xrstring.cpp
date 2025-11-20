@@ -111,8 +111,9 @@ void str_container::verify()
 		str_value* sv = *it;
 		u32 crc = crc32(sv->value, sv->dwLength);
 		string32 crc_str;
-		R_ASSERT3(crc == sv->dwCRC, "CorePanic: read-only memory corruption (shared_strings)",
-				  itoa(sv->dwCRC, crc_str, 16));
+		// Преобразуем число в строку и проверяем, что преобразование успешно
+		_itoa_s(sv->dwCRC, crc_str, sizeof(crc_str), 16);
+		R_ASSERT3(crc == sv->dwCRC, "CorePanic: read-only memory corruption (shared_strings)", crc_str);
 		R_ASSERT3(sv->dwLength == xr_strlen(sv->value),
 				  "CorePanic: read-only memory corruption (shared_strings, internal structures)", sv->value);
 	}

@@ -162,7 +162,7 @@ _DDS_2D : {
 		Msg("! Can't load texture '%s'", fn);
 		string_path temp;
 		R_ASSERT(FS.exist(temp, "$game_textures$", "ed\\ed_not_existing_texture", ".dds"));
-		strlwr(temp);
+		xr_strlwr(temp);
 		R_ASSERT(xr_strcmp(temp, fn));
 		strcpy(fn, temp);
 		goto _DDS;

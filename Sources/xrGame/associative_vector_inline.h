@@ -10,7 +10,10 @@
 #pragma warning(push)
 #pragma warning(disable : 5037)
 
+#pragma warning(push)
+#pragma warning(disable : 4995)
 #include <ppl.h>
+#pragma warning(pop)
 
 #define TEMPLATE_SPECIALIZATION template <typename _key_type, typename _data_type, typename _compare_predicate_type>
 
