@@ -80,6 +80,7 @@ CEnvironment::CEnvironment() : CurrentEnv(0), m_ambients_config(0)
 	tlut1 = Device.Resources->_CreateTexture("$user$lut_s1");
 
 	string_path file_name;
+	m_winds_config = xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\winds.ltx"), TRUE, TRUE, FALSE);
 	m_ambients_config = xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\ambients.ltx"), TRUE, TRUE, FALSE);
 	m_sound_channels_config = xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\sound_channels.ltx"), TRUE, TRUE, FALSE);
 	m_effects_config = xr_new<CInifile>(FS.update_path(file_name, "$game_config$", "environment\\effects.ltx"), TRUE, TRUE, FALSE);
@@ -129,6 +130,10 @@ CEnvironment::~CEnvironment()
 	VERIFY(m_thunderbolts_config);
 	CInifile::Destroy(m_thunderbolts_config);
 	m_thunderbolts_config = 0;
+
+	VERIFY(m_winds_config);
+	CInifile::Destroy(m_winds_config);
+	m_winds_config = 0;
 
 	destroy_mixer();
 }
@@ -444,36 +449,6 @@ void CEnvironment::lerp(float& current_weight)
 
 	// final lerp
 	CurrentEnv->lerp(this, *Current[0], *Current[1], current_weight, EM, mpower);
-}
-
-// Генерирует плавную волну порывов ветра (0.0 ... 1.0)
-float CalcGustWave(float Time)
-{
-	// Максимально простая и плавная волна.
-	// Используем всего две близкие частоты.
-	// Это создаст эффект "биения" (медленного нарастания и спада), без резких скачков.
-
-	float wave1 = sin(Time * 0.05f);		// Основной цикл (медленный)
-	float wave2 = sin(Time * 0.07f) * 0.5f; // Модуляция
-
-	float result = wave1 + wave2;
-
-	// Мягкая нормализация в 0..1
-	// Используем (sin + 1) / 2, чтобы избежать острых углов
-	return (result / 3.0f) + 0.5f;
-}
-
-void CEnvironment::CalcWindValues()
-{
-	float GustFactor = CalcGustWave(Device.fTimeGlobal);
-
-	float BaseStrength = CurrentEnv->wind_strength;
-	// Уменьшили влияние порывов на итоговую цифру, чтобы не было скачков от 0 до 100
-	float GustStrength = CurrentEnv->wind_gusting * BaseStrength * 0.8f;
-
-	CurrentEnv->wind_turbulence = BaseStrength + (GustStrength * GustFactor);
-
-	clamp(CurrentEnv->wind_turbulence, 0.0f, 10.0f);
 }
 
 void CEnvironment::OnFrame()
@@ -889,6 +864,11 @@ void CEnvironment::unload()
 	for (EnvAmbVecIt it = Ambients.begin(); it != Ambients.end(); it++)
 		xr_delete(*it);
 	Ambients.clear();
+
+	for (EnvWindVecIt it = Winds.begin(); it != Winds.end(); it++)
+		xr_delete(*it);
+	Winds.clear();
+
 	// misc
 	xr_delete(eff_Rain);
 	xr_delete(eff_LensFlare);

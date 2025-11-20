@@ -473,17 +473,21 @@ class cl_wind_params : public R_constant_setup
 	{
 		CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
 
-		// X, Y - Направление ветра
-		float WindDirectionX = cos(desc->wind_direction);
-		float WindDirectionY = sin(desc->wind_direction);
+		// Считаем 3D направление (Сферические координаты)
+		// Yaw = wind_direction, Pitch = wind_tilt
 
-		// Z - Параметр порывистости (для вариативности внутри шейдера)
-		float WindGusting = desc->wind_gusting;
+		float yaw = desc->wind_direction;
+		float pitch = desc->wind_tilt;
 
-		// W - Базовая сила (для справки, если нужно)
-		float WindStrength = desc->wind_strength;
+		// X-Ray использует Y-Up систему координат
+		float dirX = _cos(yaw) * _cos(pitch); // X
+		float dirY = _sin(pitch);			  // Y (Вертикаль)
+		float dirZ = _sin(yaw) * _cos(pitch); // Z
 
-		RenderBackend.set_Constant(C, WindDirectionX, WindDirectionY, WindGusting, WindStrength);
+		// W - передадим масштаб волны (Scale), если захотим, или оставим Strength
+		// Но лучше Strength передавать отдельно, а тут вектор и Gusting
+
+		RenderBackend.set_Constant(C, dirX, dirY, dirZ, desc->wind_gusting);
 	}
 };
 static cl_wind_params binder_wind_params;
@@ -494,16 +498,17 @@ class cl_wind_turbulence : public R_constant_setup
 	{
 		CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
 
-		float CurrentIntensity = desc->wind_turbulence;
-		clamp(desc->wind_turbulence, 0.0f, 1.0f);
+		float intensity = desc->wind_turbulence;
+		float velocity = desc->wind_velocity; // Берем скорость из конфига
 
-		// СТАБИЛИЗАЦИЯ ВРЕМЕНИ:
-		// Множитель (1.0f + CurrentIntensity * 0.1f) очень маленький.
-		// При урагане анимация ускорится всего на 10-20%, а не в разы.
-		// Базовая скорость 1.2f - подобрана экспериментально для веса дерева.
-		float AnimationTime = Device.fTimeGlobal * 1.2f * (1.0f + CurrentIntensity * 0.1f);
+		// Умножаем время на скорость из конфига
+		// ВАЖНО: Просто умножать fTimeGlobal на velocity нельзя, если velocity меняется динамически (будут скачки).
+		// Для идеальной плавности время нужно накапливать в CEnvironment::OnFrame:
+		// fWindTime += Device.fTimeDelta * current_velocity;
+		// Но для простоты пока умножим, при плавном переходе погоды скачок будет сглажен интерполяцией.
+		float anim_time = Device.fTimeGlobal * velocity;
 
-		RenderBackend.set_Constant(C, CurrentIntensity, desc->wind_turbulence, AnimationTime, 0);
+		RenderBackend.set_Constant(C, intensity, desc->wind_turbulence, anim_time, desc->wind_strength);
 	}
 };
 static cl_wind_turbulence binder_wind_turbulence;

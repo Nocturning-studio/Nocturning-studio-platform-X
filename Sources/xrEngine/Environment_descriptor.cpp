@@ -152,9 +152,39 @@ void CEnvDescriptor::load(CEnvironment& environment, CInifile& config)
 	rain_density = GetFloatIfExist("rain_density", 0.0f, config);
 	rain_color = GetRGBColorIfExist("rain_color", FULL_COLOR, config);
 
-	wind_strength = GetFloatIfExist("wind_strength", 0.35f, config);
-	wind_direction = deg2rad(GetFloatIfExist("wind_direction", 0.0f, config));
-	wind_gusting = GetFloatIfExist("wind_gusting", 1.0f, config);
+	// Попытка найти ссылку на пресет ветра
+	bool bWindLoaded = false;
+	if (config.line_exist(m_identifier.c_str(), "wind_profile"))
+	{
+		shared_str wind_profile = config.r_string(m_identifier.c_str(), "wind_profile");
+		CEnvWind* pWind = environment.AppendEnvWind(wind_profile);
+
+		if (pWind)
+		{
+			wind_strength = pWind->m_wind_strength;
+			wind_direction = pWind->m_wind_direction;
+			wind_gusting = pWind->m_wind_gusting;
+			wind_velocity = pWind->m_wind_velocity;
+			wind_tilt = pWind->m_wind_tilt;
+
+			bWindLoaded = true;
+		}
+		else
+		{
+			Msg("! Invalid wind_profile '%s' in weather section '%s'. Fallback to legacy params.", wind_profile.c_str(),
+				m_identifier.c_str());
+		}
+	}
+
+	// Fallback: Если профиль не задан или не найден, читаем по-старому из текущей секции
+	if (!bWindLoaded)
+	{
+		wind_strength = GetFloatIfExist("wind_strength", 0.35f, config);
+		wind_direction = deg2rad(GetFloatIfExist("wind_direction", 0.0f, config));
+		wind_gusting = GetFloatIfExist("wind_gusting", 1.0f, config);
+		wind_velocity = GetFloatIfExist("wind_velocity", 1.0f, config);
+		wind_tilt = GetFloatIfExist("wind_tilt", 0.0f, config);
+	}
 
 	ambient = GetRGBColorIfExist("ambient_color", FULL_COLOR, config);
 	hemi_color = GetRGBAColorIfExist("hemisphere_color", FULL_COLOR_RGBA, config);

@@ -8,6 +8,7 @@ class ENGINE_API CLensFlare;
 class ENGINE_API CEffect_Rain;
 class ENGINE_API CEffect_Thunderbolt;
 class ENGINE_API CPerlinNoise1D;
+class ENGINE_API CEnvWind;
 
 struct SThunderboltDesc;
 struct SThunderboltCollection;
@@ -20,7 +21,8 @@ ENGINE_API extern Flags32 psEnvFlags;
 #include "Environment_modifiers.h"
 #include "Environment_descriptor.h"
 #include "Environment_descriptor_mixer.h"
-							
+#include "Environment_wind.h"							
+
 class ENGINE_API CEnvironment
 {
 	struct str_pred
@@ -35,6 +37,7 @@ class ENGINE_API CEnvironment
 	DEFINE_VECTOR(CEnvAmbient*, EnvAmbVec, EnvAmbVecIt);
 	DEFINE_VECTOR(CEnvDescriptor*, EnvVec, EnvIt);
 	DEFINE_MAP_PRED(shared_str, EnvVec, EnvsMap, EnvsMapIt, str_pred);
+	DEFINE_VECTOR(CEnvWind*, EnvWindVec, EnvWindVecIt);
 
   private:
 	// clouds
@@ -95,6 +98,9 @@ class ENGINE_API CEnvironment
 	xr_vector<CEnvModifier> Modifiers;
 	EnvAmbVec Ambients;
 
+	CInifile* m_winds_config;
+	EnvWindVec Winds;
+
 	ref_shader sh_2sky;
 	ref_geom sh_2geom;
 
@@ -114,6 +120,8 @@ class ENGINE_API CEnvironment
 
 	void UpdateAmbient();
 	CEnvAmbient* AppendEnvAmb(const shared_str& sect);
+
+	CEnvWind* AppendEnvWind(const shared_str& sect);
 
 	void Invalidate();
 

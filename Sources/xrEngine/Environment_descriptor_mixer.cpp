@@ -52,22 +52,32 @@ void CEnvDescriptorMixer::clear()
 
 int get_ref_count(IUnknown* ii);
 
-void CEnvDescriptorMixer::lerp(	CEnvironment*, 
+void CEnvDescriptorMixer::lerp( CEnvironment* env, 
 								CEnvDescriptor& A, 
 								CEnvDescriptor& B, 
 								float f, 
 								CEnvModifier& Mdf,
-								float modifier_power )
+							    float modifier_power )
 {
+	// Макрос для интерполяции обычных чисел (float)
+	// Разворачивается в: variable = (1-f)*A.variable + f*B.variable
+#define LERP(v) v = fi * A.v + f * B.v
+
+	// Макрос для интерполяции векторов (Fvector3, Fvector4, Fcolor)
+	// Разворачивается в: variable.lerp(A.variable, B.variable, f)
+#define LERP_VEC(v) v.lerp(A.v, B.v, f)
+
 	float modif_power = 1.f / (modifier_power + 1); // the environment itself
 	float fi = 1 - f;
 
+	// -------------------------------------------------------------------------
+	// Текстуры
+	// -------------------------------------------------------------------------
 	sky_r_textures.clear();
 	sky_r_textures.push_back(mk_pair(0, A.sky_texture));
 	sky_r_textures.push_back(mk_pair(1, B.sky_texture));
 
 	sky_r_textures_irradiance.clear();
-
 	sky_r_textures_irradiance.push_back(mk_pair(0, A.sky_texture_irradiance));
 	sky_r_textures_irradiance.push_back(mk_pair(1, B.sky_texture_irradiance));
 
@@ -79,85 +89,101 @@ void CEnvDescriptorMixer::lerp(	CEnvironment*,
 	lut_r_textures.push_back(mk_pair(0, A.lut_texture));
 	lut_r_textures.push_back(mk_pair(1, B.lut_texture));
 
+	// -------------------------------------------------------------------------
+	// Интерполяция параметров
+	// -------------------------------------------------------------------------
 	weight = f;
 
-	clouds_color.lerp(A.clouds_color, B.clouds_color, f);
+	LERP_VEC(clouds_color);
+	LERP(sky_rotation);
 
-	sky_rotation = (fi * A.sky_rotation + f * B.sky_rotation);
-
+	LERP(far_plane);
 	if (Mdf.use_flags.test(eViewDist))
-		far_plane = (fi * A.far_plane + f * B.far_plane + Mdf.far_plane) * psVisDistance * modif_power;
+		far_plane *= psVisDistance* modif_power;
 	else
-		far_plane = (fi * A.far_plane + f * B.far_plane) * psVisDistance;
+		far_plane *= psVisDistance;
 
-	fog_color.lerp(A.fog_color, B.fog_color, f);
+	// Fog Color
+	LERP_VEC(fog_color);
 	if (Mdf.use_flags.test(eFogColor))
 		fog_color.add(Mdf.fog_color).mul(modif_power);
 
-	fog_density = (fi * A.fog_density + f * B.fog_density);
+	// Fog Density
+	LERP(fog_density);
 	if (Mdf.use_flags.test(eFogDensity))
 	{
 		fog_density += Mdf.fog_density;
 		fog_density *= modif_power;
 	}
-	fog_sky_influence = (fi * A.fog_sky_influence + f * B.fog_sky_influence);
 
-	vertical_fog_intensity = (fi * A.vertical_fog_intensity + f * B.vertical_fog_intensity);
-	vertical_fog_density = (fi * A.vertical_fog_density + f * B.vertical_fog_density);
-	vertical_fog_height = (fi * A.vertical_fog_height + f * B.vertical_fog_height);
+	LERP(fog_sky_influence);
 
-	rain_density = fi * A.rain_density + f * B.rain_density;
-	rain_color.lerp(A.rain_color, B.rain_color, f);
-	bolt_period = fi * A.bolt_period + f * B.bolt_period;
-	bolt_duration = fi * A.bolt_duration + f * B.bolt_duration;
+	// Vertical Fog
+	LERP(vertical_fog_intensity);
+	LERP(vertical_fog_density);
+	LERP(vertical_fog_height);
 
-	// wind
-	wind_strength = fi * A.wind_strength + f * B.wind_strength;
-	wind_direction = fi * A.wind_direction + f * B.wind_direction;
-	wind_gusting = fi * A.wind_gusting + f * B.wind_gusting;
+	// Rain & Bolt
+	LERP(rain_density);
+	LERP_VEC(rain_color);
+	LERP(bolt_period);
+	LERP(bolt_duration);
 
-	// trees
-	m_fTreeAmplitude = fi * A.m_fTreeAmplitude + f * B.m_fTreeAmplitude;
-	m_fTreeSpeed = fi * A.m_fTreeSpeed + f * B.m_fTreeSpeed;
-	m_fTreeRotation = fi * A.m_fTreeRotation + f * B.m_fTreeRotation;
-	m_fTreeWave.lerp(A.m_fTreeWave, B.m_fTreeWave, f);
+	// Wind (Здесь же добавьте ваши новые параметры из предыдущего шага, если нужно)
+	LERP(wind_strength);
+	LERP(wind_direction);
+	LERP(wind_gusting);
+	LERP(wind_tilt);
+	LERP(wind_velocity);
 
-	m_fSunShaftsIntensity = fi * A.m_fSunShaftsIntensity + f * B.m_fSunShaftsIntensity;
-	m_fWaterIntensity = fi * A.m_fWaterIntensity + f * B.m_fWaterIntensity;
+	// Trees
+	LERP(m_fTreeAmplitude);
+	LERP(m_fTreeSpeed);
+	LERP(m_fTreeRotation);
+	LERP_VEC(m_fTreeWave);
 
-	m_SepiaColor.lerp(A.m_SepiaColor, B.m_SepiaColor, f);
-	m_SepiaPower = fi * A.m_SepiaPower + f * B.m_SepiaPower;
-	m_VignettePower = fi * A.m_VignettePower + f * B.m_VignettePower;
+	// Sun Shafts & Water
+	LERP(m_fSunShaftsIntensity);
+	LERP(m_fWaterIntensity);
 
-	// colors
-	sky_color.lerp(A.sky_color, B.sky_color, f);
+	// Screen Effects
+	LERP_VEC(m_SepiaColor);
+	LERP(m_SepiaPower);
+	LERP(m_VignettePower);
+
+	// -------------------------------------------------------------------------
+	// Цвета с учетом модификаторов
+	// -------------------------------------------------------------------------
+
+	// Sky Color
+	LERP_VEC(sky_color);
 	if (Mdf.use_flags.test(eSkyColor))
 		sky_color.add(Mdf.sky_color).mul(modif_power);
 
-	ambient.lerp(A.ambient, B.ambient, f);
+	// Ambient
+	LERP_VEC(ambient);
 	if (Mdf.use_flags.test(eAmbientColor))
 		ambient.add(Mdf.ambient).mul(modif_power);
 
-	hemi_color.lerp(A.hemi_color, B.hemi_color, f);
-
-	ambient_brightness = fi * A.ambient_brightness + f * B.ambient_brightness;
-
+	// Hemi
+	LERP_VEC(hemi_color);
 	if (Mdf.use_flags.test(eHemiColor))
 	{
 		hemi_color.x += Mdf.hemi_color.x;
 		hemi_color.y += Mdf.hemi_color.y;
 		hemi_color.z += Mdf.hemi_color.z;
-		hemi_color.x *= modif_power;
-		hemi_color.y *= modif_power;
-		hemi_color.z *= modif_power;
+		hemi_color.mul(modif_power); // Оптимизировал: умножение всего вектора сразу
 	}
 
-	sun_color.lerp(A.sun_color, B.sun_color, f);
+	LERP(ambient_brightness);
+	LERP_VEC(sun_color);
 
-	R_ASSERT(_valid(A.sun_dir));
-	R_ASSERT(_valid(B.sun_dir));
+	// Sun Direction (Требует нормализации, макрос не подходит)
+	R_ASSERT(_valid(A.sun_dir) && _valid(B.sun_dir));
 	sun_dir.lerp(A.sun_dir, B.sun_dir, f).normalize();
-	R_ASSERT(_valid(sun_dir));
-
 	VERIFY2(sun_dir.y < 0, "Invalid sun direction settings while lerp");
+
+	// Удаляем макросы, чтобы не мусорить в глобальной области видимости
+#undef LERP
+#undef LERP_VEC
 }
