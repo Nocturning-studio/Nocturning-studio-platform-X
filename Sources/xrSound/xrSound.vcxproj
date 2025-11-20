@@ -354,8 +354,8 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -442,8 +442,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
@@ -489,8 +489,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
@@ -536,8 +536,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
@@ -584,8 +584,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
@@ -631,8 +631,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -908,8 +908,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)..\binaries\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">

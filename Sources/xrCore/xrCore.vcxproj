@@ -364,12 +364,8 @@
       <AdditionalDependencies>BugTrap.lib;dxerr.lib;winmm.lib;legacy_stdio_definitions.lib;dbghelp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\ode.dll" "$(OutDir)ode.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore.dll"
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -459,12 +455,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore
       <AdditionalDependencies>BugTrap.lib;dxerr.lib;winmm.lib;legacy_stdio_definitions.lib;dbghelp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\ode.dll" "$(OutDir)ode.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore.dll"
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
@@ -514,12 +506,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore
       <AdditionalDependencies>BugTrap.lib;dxerr.lib;winmm.lib;legacy_stdio_definitions.lib;dbghelp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\ode.dll" "$(OutDir)ode.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore.dll"
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
@@ -569,12 +557,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore
       <AdditionalDependencies>BugTrap.lib;dxerr.lib;winmm.lib;legacy_stdio_definitions.lib;dbghelp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\ode.dll" "$(OutDir)ode.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore.dll"
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
@@ -624,12 +608,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore
       <AdditionalDependencies>BugTrap.lib;dxerr.lib;winmm.lib;legacy_stdio_definitions.lib;dbghelp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\ode.dll" "$(OutDir)ode.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore.dll"
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
@@ -680,12 +660,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore
       <AdditionalDependencies>BugTrap.lib;dxerr.lib;winmm.lib;legacy_stdio_definitions.lib;dbghelp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\ode.dll" "$(OutDir)ode.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore.dll"
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -969,12 +945,8 @@ copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore
       <AdditionalDependencies>BugTrap.lib;dxerr.lib;winmm.lib;legacy_stdio_definitions.lib;dbghelp.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\eax.dll" "$(OutDir)eax.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\ode.dll" "$(OutDir)ode.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-copy /Y "$(SolutionDir)\Third-party\lib\x86\OptickCore.dll" "$(OutDir)OptickCore.dll"
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">

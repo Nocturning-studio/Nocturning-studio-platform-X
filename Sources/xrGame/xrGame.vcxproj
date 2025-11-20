@@ -576,6 +576,21 @@
       <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\eax.dll" "$(OutDir)eax.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrDiscordAPI.dll" "$(OutDir)xrDiscordAPI.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrGameSpy.dll" "$(OutDir)xrGameSpy.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrLua.dll" "$(OutDir)xrLua.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -679,6 +694,21 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\eax.dll" "$(OutDir)eax.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrDiscordAPI.dll" "$(OutDir)xrDiscordAPI.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrGameSpy.dll" "$(OutDir)xrGameSpy.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrLua.dll" "$(OutDir)xrLua.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">
     <Midl>
@@ -788,6 +818,21 @@
       <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\eax.dll" "$(OutDir)eax.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrDiscordAPI.dll" "$(OutDir)xrDiscordAPI.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrGameSpy.dll" "$(OutDir)xrGameSpy.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrLua.dll" "$(OutDir)xrLua.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
     <Midl>
@@ -849,6 +894,21 @@
       <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\eax.dll" "$(OutDir)eax.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrDiscordAPI.dll" "$(OutDir)xrDiscordAPI.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrGameSpy.dll" "$(OutDir)xrGameSpy.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrLua.dll" "$(OutDir)xrLua.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
     <Midl>
@@ -910,6 +970,21 @@
       <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\eax.dll" "$(OutDir)eax.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrDiscordAPI.dll" "$(OutDir)xrDiscordAPI.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrGameSpy.dll" "$(OutDir)xrGameSpy.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrLua.dll" "$(OutDir)xrLua.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
     <Midl>
@@ -972,6 +1047,21 @@
       <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\eax.dll" "$(OutDir)eax.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrDiscordAPI.dll" "$(OutDir)xrDiscordAPI.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrGameSpy.dll" "$(OutDir)xrGameSpy.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrLua.dll" "$(OutDir)xrLua.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
     <Midl>
@@ -1033,6 +1123,21 @@
       <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\eax.dll" "$(OutDir)eax.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrDiscordAPI.dll" "$(OutDir)xrDiscordAPI.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrGameSpy.dll" "$(OutDir)xrGameSpy.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrLua.dll" "$(OutDir)xrLua.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -1405,6 +1510,21 @@
       <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\eax.dll" "$(OutDir)eax.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrDiscordAPI.dll" "$(OutDir)xrDiscordAPI.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrGameSpy.dll" "$(OutDir)xrGameSpy.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrLua.dll" "$(OutDir)xrLua.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Priquel|x64'">
     <Midl>
@@ -1507,6 +1627,21 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\eax.dll" "$(OutDir)eax.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrDiscordAPI.dll" "$(OutDir)xrDiscordAPI.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrGameSpy.dll" "$(OutDir)xrGameSpy.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrLua.dll" "$(OutDir)xrLua.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed_Priquel|x64'">
     <Midl>
@@ -1614,6 +1749,21 @@
       <ImportLibrary>$(SolutionDir)\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\eax.dll" "$(OutDir)eax.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\wrap_oal.dll" "$(OutDir)wrap_oal.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrDiscordAPI.dll" "$(OutDir)xrDiscordAPI.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrGameSpy.dll" "$(OutDir)xrGameSpy.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\xrLua.dll" "$(OutDir)xrLua.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
+copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Priquel|x64'">
     <Midl>

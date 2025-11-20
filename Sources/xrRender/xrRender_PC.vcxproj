@@ -352,7 +352,8 @@
       <AdditionalDependencies>d3dx9.lib;d3d9.lib;d3dcompiler.lib;xrEngine.lib;xrCDB.lib;xrCore.lib;xrLua.lib;xrParticles.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -434,7 +435,8 @@
       <AdditionalDependencies>d3dx9.lib;d3d9.lib;d3dcompiler.lib;xrEngine.lib;xrCDB.lib;xrCore.lib;xrLua.lib;xrParticles.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Benchmark|Win32'">
@@ -485,7 +487,8 @@
       <AdditionalDependencies>d3dx9.lib;d3d9.lib;d3dcompiler.lib;xrEngine.lib;xrCDB.lib;xrCore.lib;xrLua.lib;xrParticles.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release profiling|Win32'">
@@ -536,7 +539,8 @@
       <AdditionalDependencies>d3dx9.lib;d3d9.lib;d3dcompiler.lib;xrEngine.lib;xrCDB.lib;xrCore.lib;xrLua.lib;xrParticles.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Demo|Win32'">
@@ -588,7 +592,8 @@
       <AdditionalDependencies>d3dx9.lib;d3d9.lib;d3dcompiler.lib;xrEngine.lib;xrCDB.lib;xrCore.lib;xrLua.lib;xrParticles.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|Win32'">
@@ -639,7 +644,8 @@
       <AdditionalDependencies>d3dx9.lib;d3d9.lib;d3dcompiler.lib;xrEngine.lib;xrCDB.lib;xrCore.lib;xrLua.lib;xrParticles.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -904,7 +910,8 @@
       <AdditionalDependencies>d3dx9.lib;d3d9.lib;d3dcompiler.lib;xrEngine.lib;xrCDB.lib;xrCore.lib;xrLua.lib;xrParticles.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-party\lib\x86\D3DCompiler_43.dll" "$(OutDir)D3DCompiler_43.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">
@@ -1180,9 +1187,6 @@
     <ProjectReference Include="..\xrCore\xrCore.vcxproj">
       <Project>{a0f7d1fb-59a7-4717-a7e4-96f37e91998e}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\xrLua\xrLua.vcxproj">
-      <Project>{9ace5473-6d68-4b96-ac42-b39eaba0fe1f}</Project>
     </ProjectReference>
     <ProjectReference Include="..\xrParticles\xrParticles.vcxproj">
       <Project>{94a1c366-3d19-48e6-8170-4adc2e70df97}</Project>

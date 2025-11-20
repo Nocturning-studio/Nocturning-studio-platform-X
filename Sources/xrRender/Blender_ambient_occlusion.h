@@ -59,6 +59,7 @@ class CBlender_ambient_occlusion : public IBlender
 		case SE_AO_DENOISE:
 			C.begin_Pass("screen_quad", "ambient_occlusion_blurring_stage_pass_bilinear_filter");
 			C.set_Sampler("s_ao", r_RT_ao);
+			gbuffer(C);
 			C.end_Pass();
 			break;
 		}
