@@ -12,6 +12,7 @@
 #include "Sound_environment_geometry.h"
 #include "Sound_environment_pathtracing.h"
 #include "Sound_environment_calculations.h"
+#include "Sound_environment_thread.h"
 ///////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -21,27 +22,29 @@
 class ENGINE_API CSoundEnvironment
 {
   private:
-	SEAXEnvironmentData m_CurrentData;	   ///< Current frame's environment data
-	SEAXEnvironmentData m_PrevData;		   ///< Previous frame's environment data
-	u32 m_LastUpdatedFrame;				   ///< Last frame when environment was updated
-	static const u32 UPDATE_INTERVAL = 10; ///< Minimum frames between updates
+	SEAXEnvironmentData m_CurrentData;
+	SEAXEnvironmentData m_PrevData;
+	u32 m_LastUpdatedFrame;
 
-	class CGeometryAnalyzer m_GeometryAnalyzer; ///< Geometry analysis subsystem
-	class CPathTracingSystem m_PathTracer;		///< Path tracing subsystem
+	// »нтервал обновлени€ запроса.
+	// ћожно ставить маленьким, так как поток сам разрулит нагрузку.
+	static const u32 UPDATE_INTERVAL = 5;
 
-	// Core analysis methods
-	float PerformDetailedRaycast(Fvector start, Fvector dir, float max_dist, u32& material_type);
-	void GatherRaycastData(EnvironmentContext& context);
+	// === NEW THREAD SYSTEM ===
+	CPathTracingThread m_Thread;
+	EnvironmentContext m_Context; // ’раним контекст здесь
 
-	// Update methods
-	bool NeedUpdate() const;
-	void __stdcall MT_CALC();
-	void CalculateEnvironmentData();
+	// ћетоды дл€ внутренней логики (уже без Raycast)
+	void ProcessNewData();
 
   public:
 	CSoundEnvironment();
 	~CSoundEnvironment();
 
-	void Update(); ///< Main update method called each frame
+	void Update();
+
+	// ћетоды управлени€ жизненным циклом
+	void OnLevelLoad();
+	void OnLevelUnload();
 };
 ///////////////////////////////////////////////////////////////////////////////////

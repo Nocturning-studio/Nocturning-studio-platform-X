@@ -1,226 +1,124 @@
-﻿///////////////////////////////////////////////////////////////////////////////////
-// Module - Sound_environment.cpp
-// Created: 22.10.2025
-// Modified: 21.11.2025 (Integrated Physics Update)
-// Author: NSDeathman
-// Path tracing EAX
-///////////////////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #pragma hdrstop
-
-#ifdef _EDITOR
-#include "ui_toolscustom.h"
-#else
-#include "igame_level.h"
-#include "igame_persistent.h"
-#include "xr_area.h"
-#include "xr_object.h"
-#include "xr_collide_defs.h"
-#endif
-
 #include "Sound_environment.h"
+#include "Sound_environment_calculations.h"
 
-namespace Internal
-{
-	float EyringReverberationTime(float volume, float surface_area, float absorption);
-}
-
-// Include Detailed Directions array here if not in common.h (usually defined in cpp or separate header)
-extern const Fvector DetailedSphereDirections[]; // Assuming it's defined elsewhere or included
+// Интерполяция (SmoothEAXData) остается здесь или в common
 
 CSoundEnvironment::CSoundEnvironment() : m_LastUpdatedFrame(0)
 {
 	ZeroMemory(&m_CurrentData, sizeof(m_CurrentData));
 	ZeroMemory(&m_PrevData, sizeof(m_PrevData));
 	m_CurrentData.Reset();
+	m_Context.Reset();
 }
 
 CSoundEnvironment::~CSoundEnvironment()
 {
+	// Обязательно стопаем поток при удалении
+	m_Thread.Stop();
 }
 
-float CSoundEnvironment::PerformDetailedRaycast(Fvector start, Fvector dir, float max_dist, u32& material_type)
+void CSoundEnvironment::OnLevelLoad()
 {
-	collide::rq_result hit;
-	CObject* ViewEntity = g_pGameLevel->CurrentViewEntity();
-
-	// X-Ray native raycast
-	BOOL bHit = g_pGameLevel->ObjectSpace.RayPick(start, dir, max_dist, collide::rqtStatic, hit, ViewEntity);
-
-	if (bHit && hit.range > 0.1f)
-	{
-		// Calculate normal using geometry (if available) or reverse direction
-		Fvector hit_normal;
-		// Trying to get actual triangle for normal
-		CDB::TRI* tri = g_pGameLevel->ObjectSpace.GetStaticTris() + hit.element;
-		Fvector* verts = g_pGameLevel->ObjectSpace.GetStaticVerts();
-		hit_normal.mknormal(verts[tri->verts[0]], verts[tri->verts[1]], verts[tri->verts[2]]);
-
-		float cos_angle = _abs(dir.dotproduct(hit_normal));
-
-		// === UPDATED MATERIAL LOGIC (Matches Standalone Tests) ===
-		// Default logic: Walls are Stone/Concrete, Floor/Ceiling might vary.
-
-		if (hit.range < 2.0f)
-		{
-			// Very close - detailed check
-			if (cos_angle > 0.9f)
-				material_type = MATERIAL_STONE;
-			else if (cos_angle > 0.7f)
-				material_type = MATERIAL_METAL;
-			else
-				material_type = MATERIAL_WOOD;
-		}
-		else if (hit.range < 10.0f)
-		{
-			// Medium range
-			if (cos_angle > 0.8f)
-				material_type = MATERIAL_STONE;
-			else if (cos_angle > 0.5f)
-				material_type = MATERIAL_WOOD;
-			else
-				material_type = MATERIAL_SOFT;
-		}
-		else if (hit.range < 50.0f)
-		{
-			// Far surfaces - likely structural (Stone/Concrete)
-			if (cos_angle > 0.6f)
-				material_type = MATERIAL_STONE;
-			else
-				material_type = MATERIAL_WOOD;
-		}
-		else
-		{
-			// Very far
-			if (hit.range < max_dist * 0.9f)
-				material_type = MATERIAL_STONE; // Far buildings
-			else
-				material_type = MATERIAL_GLASS; // Sky/Void
-		}
-
-		return hit.range;
-	}
-
-	material_type = MATERIAL_AIR;
-	return max_dist;
+	m_Thread.Start();
 }
 
-void CSoundEnvironment::GatherRaycastData(EnvironmentContext& context)
+void CSoundEnvironment::OnLevelUnload()
 {
-	// Use detailed directions
-	for (u32 i = 0; i < DETAILED_DIRECTIONS_COUNT; ++i)
-	{
-		// Assuming DetailedSphereDirections is available globally or as a static member
-		Fvector RayDirection = DetailedSphereDirections[i];
-		u32 material_type = 0;
-
-		float distance =
-			PerformDetailedRaycast(context.CameraPosition, RayDirection, SMART_RAY_DISTANCE, material_type);
-
-		context.RaycastDistances.push_back(distance);
-		context.TotalDistance += distance;
-
-		if (material_type > MATERIAL_AIR)
-		{
-			context.TotalHits++;
-			// Ensure index bounds
-			if (material_type < 6)
-			{
-				context.MaterialHits[material_type]++;
-				context.MaterialDistances[material_type] += distance;
-			}
-		}
-	}
+	// Критично остановить поток ДО выгрузки геометрии уровня
+	m_Thread.Stop();
 }
 
-void CSoundEnvironment::CalculateEnvironmentData()
+// Вспомогательная функция для линейной интерполяции
+template <typename T> T EAXLerp(T current, T target, float step)
 {
-	EnvironmentContext context;
-	context.CameraPosition = Device.vCameraPosition;
+	// Защита от перелета (overshoot)
+	float diff = (float)(target - current);
+	if (_abs(diff) < 0.01f)
+		return target; // Близко? Ставим сразу
+	return (T)(current + diff * step);
+}
 
-	// 1. Run subsystems
-	m_PathTracer.PerformPathTracingAnalysis(context.CameraPosition, context.PathTracingResult);
-	m_GeometryAnalyzer.AnalyzeEnvironmentGeometry(context.CameraPosition, context.GeometryAnalysis);
+void SmoothEAXData(SEAXEnvironmentData& current, const SEAXEnvironmentData& target, float speed_factor)
+{
+	// speed_factor: 0.0 (нет изменений) ... 1.0 (мгновенно)
+	// Рекомендуемое значение: 0.1f - 0.2f (для плавности за 5-10 кадров)
 
-	// 2. Gather Raycast Data
-	GatherRaycastData(context);
+	// 1. Громкость (Room, Refl, Reverb) - интерполируем как Long
+	current.lRoom = EAXLerp(current.lRoom, target.lRoom, speed_factor);
+	current.lRoomHF = EAXLerp(current.lRoomHF, target.lRoomHF, speed_factor);
+	current.lReflections = EAXLerp(current.lReflections, target.lReflections, speed_factor);
+	current.lReverb = EAXLerp(current.lReverb, target.lReverb, speed_factor);
 
-	// 3. Execute NEW PHYSICS PIPELINE
-	// Note: We map the namespace functions from the standalone code to the context here
-	EnvironmentCalculations::CalculateEnvironmentalProperties(context);
-	EnvironmentCalculations::CalculateEAXParameters(context);
+	// 2. Временные параметры (Decay, Delay) - интерполируем как Float
+	current.flDecayTime = EAXLerp(current.flDecayTime, target.flDecayTime, speed_factor);
+	current.flDecayHFRatio = EAXLerp(current.flDecayHFRatio, target.flDecayHFRatio, speed_factor);
+	current.flReflectionsDelay = EAXLerp(current.flReflectionsDelay, target.flReflectionsDelay, speed_factor);
+	current.flReverbDelay = EAXLerp(current.flReverbDelay, target.flReverbDelay, speed_factor);
 
-	// 4. Validate
-	if (!EnvironmentCalculations::ValidatePhysicalContext(context))
+	// 3. Параметры среды
+	current.flEnvironmentSize = EAXLerp(current.flEnvironmentSize, target.flEnvironmentSize, speed_factor);
+	current.flEnvironmentDiffusion =
+		EAXLerp(current.flEnvironmentDiffusion, target.flEnvironmentDiffusion, speed_factor);
+	current.flAirAbsorptionHF = EAXLerp(current.flAirAbsorptionHF, target.flAirAbsorptionHF, speed_factor);
+
+	// 4. Флаги и прочее
+	current.dwFlags = target.dwFlags;						  // Флаги меняем мгновенно
+	current.flRoomRolloffFactor = target.flRoomRolloffFactor; // Rolloff тоже лучше сразу
+}
+
+void CSoundEnvironment::ProcessNewData()
+{
+	// 1. Данные лучей уже в m_Context (заполнил поток)
+
+	// 2. Выполняем быструю математику (доли миллисекунды) в главном потоке
+	EnvironmentCalculations::CalculateEnvironmentalProperties(m_Context);
+	EnvironmentCalculations::CalculateEAXParameters(m_Context);
+
+	// 3. Валидация и Финализация
+	if (!EnvironmentCalculations::ValidatePhysicalContext(m_Context))
 	{
-		Msg("! [SoundEnv] Validation failed. Vol: %.1f", context.PhysicalVolume);
-		context.EAXData.Reset();
+		m_Context.EAXData.Reset();
 	}
 
-	// 5. Finalize
-	context.EAXData.dwFrameStamp = Device.dwFrame;
-	context.EAXData.bDataValid = true;
+	m_Context.EAXData.dwFrameStamp = Device.dwFrame;
+	m_Context.EAXData.bDataValid = true;
+
+	// 4. Интерполяция (сглаживание)
+	// Если это первый запуск - сразу ставим, иначе плавно
+	if (m_CurrentData.lRoom <= -9000)
+		m_CurrentData.CopyFrom(m_Context.EAXData);
+	else
+		SmoothEAXData(m_CurrentData, m_Context.EAXData, 0.5f);
 
 	m_PrevData.CopyFrom(m_CurrentData);
-	m_CurrentData.CopyFrom(context.EAXData);
 
-	// Debug output
-#ifdef DEBUG
-	Msg("[EAX Physics] Vol=%.1f m3, RT60=%.2fs, Room=%d, RoomHF=%d", context.PhysicalVolume, context.ReverbTime,
-		context.EAXData.lRoom, context.EAXData.lRoomHF);
-#endif
-
-	Msg("============== [EAX ENVIRONMENT DEBUG] ==============");
-
-	// 1. ГЕОМЕТРИЯ: Что видят лучи?
-	// Vol: Объем. Если он маленький в большом зале -> лучи короткие или упираются в препятствия.
-	// MFP: Средняя длина луча.
-	// Encl: Замкнутость (0.0 - поле, 1.0 - бункер).
-	Msg("[1. GEO  ] Vol: %7.1f m3 | MeanDist: %5.2f m | Enclosed: %4.2f | Hits: %d/%d", context.PhysicalVolume,
-		context.MeanFreePath, context.GeometricEnclosedness, context.TotalHits, DETAILED_DIRECTIONS_COUNT);
-
-	// 2. МАТЕРИАЛЫ: Из чего сделаны стены?
-	// Важно проверить, определяет ли он Stone/Concrete, или все считает Air/Default.
-	Msg("[2. MATS ] Stone: %d | Metal: %d | Wood: %d | Soft: %d | Air: %d", context.MaterialHits[MATERIAL_STONE],
-		context.MaterialHits[MATERIAL_METAL], context.MaterialHits[MATERIAL_WOOD], context.MaterialHits[MATERIAL_SOFT],
-		(DETAILED_DIRECTIONS_COUNT - context.TotalHits));
-
-	// 3. АКУСТИКА (РАСЧЕТНАЯ): Что насчитала физика?
-	// PhysRefl: Насколько стены отражают звук (0.1 - вата, 0.9 - зеркало).
-	// CalcRT60: Чистое время реверберации по формуле (без EAX лимитов).
-	Msg("[3. CALC ] PhysRefl: %4.2f | CalcRT60: %4.2f sec", context.PhysicalReflectivity,
-		Internal::EyringReverberationTime(context.PhysicalVolume, 6.0f * powf(context.PhysicalVolume, 2.0f / 3.0f),
-										  1.0f - context.PhysicalReflectivity));
-
-	// 4. EAX ВЫХОД: Что уходит в драйвер?
-	Msg("[4. FINAL] Decay: %4.2f s | Room: %d mB | Refl: %d mB | Rev: %d mB", context.EAXData.flDecayTime,
-		context.EAXData.lRoom, context.EAXData.lReflections, context.EAXData.lReverb);
-
-	Msg("=====================================================");
-
+	// 5. Отправка в OpenAL
 	if (::Sound)
 		::Sound->commit_eax(&m_CurrentData);
 }
 
-void __stdcall CSoundEnvironment::MT_CALC()
-{
-	CalculateEnvironmentData();
-}
-
-bool CSoundEnvironment::NeedUpdate() const
-{
-	if (!psSoundFlags.test(ss_EAX))
-		return false;
-	if (Device.dwFrame < (m_LastUpdatedFrame + UPDATE_INTERVAL))
-		return false;
-	return true;
-}
-
 void CSoundEnvironment::Update()
 {
-	if (NeedUpdate())
+	if (!psSoundFlags.test(ss_EAX))
+		return;
+
+	// 1. ПРОВЕРКА: Готов ли результат от потока?
+	// GetResult вернет true только если поток закончил работу
+	if (m_Thread.GetResult(m_Context))
 	{
-		Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(this, &CSoundEnvironment::MT_CALC));
+		// Ура, свежие данные лучей! Обрабатываем.
+		ProcessNewData();
 		m_LastUpdatedFrame = Device.dwFrame;
+	}
+
+	// 2. ЗАПРОС: Нужно ли запустить новый расчет?
+	// Если поток свободен И прошло время с последнего обновления
+	if (!m_Thread.IsCalculating() && Device.dwFrame > (m_LastUpdatedFrame + UPDATE_INTERVAL))
+	{
+		// Просто кидаем задачу в поток и забываем.
+		// Это не блокирует игру.
+		m_Thread.RequestUpdate(Device.vCameraPosition);
 	}
 }

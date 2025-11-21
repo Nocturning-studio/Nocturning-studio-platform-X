@@ -99,6 +99,8 @@ void IGame_Persistent::Start(LPCSTR op)
 	else
 		UpdateGameType();
 
+	pSoundEnvironment->OnLevelLoad();
+
 	VERIFY(ps_destroy.empty());
 }
 
@@ -112,6 +114,8 @@ void IGame_Persistent::Disconnect()
 
 	ObjectPool.clear();
 	Render->models_Clear(TRUE);
+
+	pSoundEnvironment->OnLevelUnload();
 }
 
 void IGame_Persistent::OnGameStart()
