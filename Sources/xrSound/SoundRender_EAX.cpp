@@ -7,8 +7,59 @@
 #include <eax/eax.h>
 #pragma warning(pop)
 
-void CSoundRender_Core::InitializeEAX()
+BOOL CSoundRender_Core::EAXQuerySupport(BOOL bDeferred, const GUID* guid, u32 prop, void* val, u32 sz)
 {
+	if (AL_NO_ERROR != eaxGet(guid, prop, 0, val, sz))
+		return FALSE;
+
+	if (AL_NO_ERROR != eaxSet(guid, (bDeferred ? DSPROPERTY_EAXLISTENER_DEFERRED : 0) | prop, 0, val, sz))
+		return FALSE;
+
+	return TRUE;
+}
+
+BOOL CSoundRender_Core::EAXTestSupport(BOOL bDeferred)
+{
+	EAXLISTENERPROPERTIES ep;
+
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOM, &ep.lRoom,
+						 sizeof(LONG)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOMHF, &ep.lRoomHF,
+						 sizeof(LONG)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR,
+						 &ep.flRoomRolloffFactor, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_DECAYTIME,
+						 &ep.flDecayTime, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_DECAYHFRATIO,
+						 &ep.flDecayHFRatio, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REFLECTIONS,
+						 &ep.lReflections, sizeof(LONG)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REFLECTIONSDELAY,
+						 &ep.flReflectionsDelay, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REVERB, &ep.lReverb,
+						 sizeof(LONG)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REVERBDELAY,
+						 &ep.flReverbDelay, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ENVIRONMENTDIFFUSION,
+						 &ep.flEnvironmentDiffusion, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF,
+						 &ep.flAirAbsorptionHF, sizeof(float)))
+		return FALSE;
+	if (!EAXQuerySupport(bDeferred, &DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_FLAGS, &ep.dwFlags,
+						 sizeof(DWORD)))
+		return FALSE;
+
+	return TRUE;
 }
 
 void CSoundRender_Core::i_eax_set(const GUID* guid, u32 prop, void* val, u32 sz)
@@ -23,13 +74,51 @@ void CSoundRender_Core::i_eax_get(const GUID* guid, u32 prop, void* val, u32 sz)
 		eaxGet(guid, prop, 0, val, sz);
 }
 
+void CSoundRender_Core::UpdateEAX()
+{
+	if (!bEAX)
+		return;
+
+	EAXLISTENERPROPERTIES ep;
+	ep.lRoom = DSPROPERTY_EAXLISTENER_ROOM;
+	ep.lRoomHF = DSPROPERTY_EAXLISTENER_ROOMHF;
+	ep.flRoomRolloffFactor = DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR;
+	ep.flDecayTime = DSPROPERTY_EAXLISTENER_DECAYTIME;
+	ep.flDecayHFRatio = DSPROPERTY_EAXLISTENER_DECAYHFRATIO;
+	ep.lReflections = DSPROPERTY_EAXLISTENER_REFLECTIONS;
+	ep.flReflectionsDelay = DSPROPERTY_EAXLISTENER_REFLECTIONSDELAY;
+	ep.lReverb = DSPROPERTY_EAXLISTENER_REVERB;
+	ep.flReverbDelay = DSPROPERTY_EAXLISTENER_REVERBDELAY;
+	ep.flEnvironmentDiffusion = DSPROPERTY_EAXLISTENER_ENVIRONMENTDIFFUSION;
+	ep.flAirAbsorptionHF = DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF;
+	ep.dwFlags = DSPROPERTY_EAXLISTENER_FLAGS;
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOM, &ep.lRoom, sizeof(LONG));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOMHF, &ep.lRoomHF, sizeof(LONG));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR,
+				&ep.flRoomRolloffFactor, sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_DECAYTIME, &ep.flDecayTime,
+				sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_DECAYHFRATIO, &ep.flDecayHFRatio,
+				sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REFLECTIONS, &ep.lReflections,
+				sizeof(LONG));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REFLECTIONSDELAY, &ep.flReflectionsDelay,
+				sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REVERB, &ep.lReverb, sizeof(LONG));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_REVERBDELAY, &ep.flReverbDelay,
+				sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ENVIRONMENTDIFFUSION,
+				&ep.flEnvironmentDiffusion, sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF, &ep.flAirAbsorptionHF,
+				sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_FLAGS, &ep.dwFlags, sizeof(DWORD));
+}
+
 void CSoundRender_Core::commit_eax(SEAXEnvironmentData* EAXEnvData)
 {
 	const SEAXEnvironmentData& env = *EAXEnvData;
 
-	Msg("[EAX COMMIT] DecayTime=%.3f, Reflections=%d, Reverb=%d, ReflectionsDelay=%.4f", env.flDecayTime, env.lReflections, env.lReverb, env.flReflectionsDelay);
-	Msg("[EAX COMMIT] Room=%d, RoomHF=%d, EnvironmentSize=%.1f", env.lRoom, env.lRoomHF, env.flEnvironmentSize);
-
+	// 1. Применяем настройки СЛУШАТЕЛЯ (Listener) - Сама комната
 	EAXLISTENERPROPERTIES ep;
 	ZeroMemory(&ep, sizeof(ep));
 
@@ -47,31 +136,21 @@ void CSoundRender_Core::commit_eax(SEAXEnvironmentData* EAXEnvData)
 	ep.flAirAbsorptionHF = env.flAirAbsorptionHF;
 	ep.dwFlags = env.dwFlags;
 
+	// Отладочный вывод
+	Msg("[EAX COMMIT] Decay: %.2f, Room: %d, Refl: %d, Rev: %d", ep.flDecayTime, ep.lRoom, ep.lReflections, ep.lReverb);
+
 	u32 deferred = bDeferredEAX ? DSPROPERTY_EAXLISTENER_DEFERRED : 0;
 
-	(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ROOM, &ep.lRoom, sizeof(LONG));
-	Msg("[EAX SET] Room: %d", ep.lRoom);
-
-	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ROOMHF, &ep.lRoomHF,
-				   sizeof(LONG));
-	Msg("[EAX SET] RoomHF: %d", ep.lRoomHF);
-
+	// Установка параметров Listener
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ROOM, &ep.lRoom, sizeof(LONG));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ROOMHF, &ep.lRoomHF, sizeof(LONG));
 	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_DECAYTIME, &ep.flDecayTime,
-				   sizeof(float));
-	Msg("[EAX SET] DecayTime: %.3f", ep.flDecayTime);
-
+			  sizeof(float));
 	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_REFLECTIONS, &ep.lReflections,
-				   sizeof(LONG));
-	Msg("[EAX SET] Reflections: %d", ep.lReflections);
-
+			  sizeof(LONG));
 	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_REFLECTIONSDELAY,
-				   &ep.flReflectionsDelay, sizeof(float));
-	Msg("[EAX SET] ReflectionsDelay: %.4f", ep.flReflectionsDelay);
-
-	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_REVERB, &ep.lReverb,
-				   sizeof(LONG));
-	Msg("[EAX SET] Reverb: %d", ep.lReverb);
-
+			  &ep.flReflectionsDelay, sizeof(float));
+	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_REVERB, &ep.lReverb, sizeof(LONG));
 	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR,
 			  &ep.flRoomRolloffFactor, sizeof(float));
 	i_eax_set(&DSPROPSETID_EAX_ListenerProperties, deferred | DSPROPERTY_EAXLISTENER_DECAYHFRATIO, &ep.flDecayHFRatio,
@@ -87,6 +166,28 @@ void CSoundRender_Core::commit_eax(SEAXEnvironmentData* EAXEnvData)
 	if (bDeferredEAX)
 	{
 		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_COMMITDEFERREDSETTINGS, NULL, 0);
-		Msg("[EAX COMMIT] Deferred settings committed");
+	}
+
+	// 2. [CRITICAL FIX FOR EAX 2.0] Применяем настройки ИСТОЧНИКОВ (Sources)
+	// Без этого шага источники могут играть "сухо", игнорируя настройки комнаты.
+	if (bEAX && eaxSet)
+	{
+		// В EAX 2.0 уровень эффекта задается через DSPROPERTY_EAXBUFFER_ROOM
+		// 0 = Максимальный уровень (0 mB)
+		// Если звук все еще тихий, убедитесь, что не стоят флаги EAXBUFFERFLAGS_ROOMAUTO, которые могут занижать
+		// громкость от дистанции
+
+		LONG lSendLevel = 0; // 0 mB (Full Wet)
+
+		for (u32 tit = 0; tit < s_targets.size(); tit++)
+		{
+			CSoundRender_Target* T = s_targets[tit];
+			if (T->get_emitter())
+			{
+				// Принудительно говорим источнику использовать эффекты комнаты на полную громкость
+				// 3-й аргумент eaxSet - это ID источника (pSource)
+				eaxSet(&DSPROPSETID_EAX_BufferProperties, DSPROPERTY_EAXBUFFER_ROOM, T->pSource, &lSendLevel, sizeof(LONG));
+			}
+		}
 	}
 }

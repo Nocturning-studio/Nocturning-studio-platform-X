@@ -12,6 +12,7 @@ class CSoundRender_Target
 	CSoundRender_Emitter* pEmitter;
 	BOOL rendering;
 
+  public:
 	// OpenAL specific
 	ALuint pSource;
 	ALuint pBuffers[sdef_target_count];
@@ -19,7 +20,6 @@ class CSoundRender_Target
 	float cache_pitch;
 	ALuint buf_block;
 
-  public:
 	float priority;
 
   protected:

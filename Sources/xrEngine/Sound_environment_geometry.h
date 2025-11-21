@@ -1,27 +1,13 @@
 ﻿///////////////////////////////////////////////////////////////////////////////////
-// Created: 22.10.2025
+// Module - Sound_environment_geometry.h
 // Author: NSDeathman
-// Path tracing EAX
-// Nocturning studio for X-Platform
 ///////////////////////////////////////////////////////////////////////////////////
 #pragma once
-///////////////////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
-///////////////////////////////////////////////////////////////////////////////////
 #include "Sound_environment_common.h"
-///////////////////////////////////////////////////////////////////////////////////
-struct SGeometryAnalysis
-{
-	float fApproxVolume;	 // Приблизительный объем пространства (м³)
-	float fSurfaceArea;		 // Приблизительная площадь поверхностей
-	float fAvgCeilingHeight; // Средняя высота потолка
-	float fAvgWallDistance;	 // Среднее расстояние до стен
-	float fComplexity;		 // Сложность геометрии (0-1)
-	float fSymmetry;		 // Симметричность помещения
-	float fVerticality;		 // Вертикальная протяженность
-	Fvector vMainAxis;		 // Основная ось помещения
-};
-///////////////////////////////////////////////////////////////////////////////////
+#include <vector>
+
+// struct SGeometryAnalysis удалена, так как она есть в Common.h
+
 class ENGINE_API CGeometryAnalyzer
 {
   private:
@@ -40,4 +26,3 @@ class ENGINE_API CGeometryAnalyzer
 	Fvector EstimateMainAxis(const std::vector<Fvector>& hit_points);
 	void AnalyzeEnvironmentGeometry(Fvector start_pos, SGeometryAnalysis& result);
 };
-///////////////////////////////////////////////////////////////////////////////////

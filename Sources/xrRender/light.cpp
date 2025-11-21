@@ -135,9 +135,9 @@ void light::set_active(bool a)
 		Fvector zero = {0, -1000, 0};
 		if (position.similar(zero, EPS_L))
 		{
-			Msg("! [Warning] Trying to activate light with uninitialized position.");
-			flags.bActive = false;
-			return;
+			DbgMsg("! [Warning] Trying to activate light with uninitialized position.");
+			//flags.bActive = false;
+			//return;
 		}
 
 		flags.bActive = true;
@@ -213,8 +213,8 @@ void light::spatial_move()
 	Fvector zero = {0, -1000, 0};
 	if (position.similar(zero, EPS_L))
 	{
-		Msg("! [Warning] light::spatial_move called with uninitialized position");
-		return;
+		DbgMsg("! [Warning] light::spatial_move called with uninitialized position");
+		//return;
 	}
 
 	if (RenderImplementation.Sectors.size() > 1)

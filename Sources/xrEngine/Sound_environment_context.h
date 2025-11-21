@@ -1,20 +1,14 @@
 ///////////////////////////////////////////////////////////////////////////////////
+// Module - Sound_environment_context.h
 // Created: 22.10.2025
+// Modified: 21.11.2025 (Integrated Physics Update)
 // Author: NSDeathman
 // Path tracing EAX - Environment Context
-// Nocturning studio for X-Platform
 ///////////////////////////////////////////////////////////////////////////////////
 #pragma once
-///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Sound_environment_common.h"
-#include "Sound_environment_geometry.h"
-#include "Sound_environment_pathtracing.h"
-///////////////////////////////////////////////////////////////////////////////////
-/**
- * @brief Environment analysis context - stores all intermediate calculations
- * Similar to LightContext in Unreal Engine 4
- */
+
 struct EnvironmentContext
 {
 	// Input data
@@ -25,84 +19,68 @@ struct EnvironmentContext
 	// Raw raycast data
 	std::vector<float> RaycastDistances;
 	u32 TotalHits;
-	u32 CloseHits;
-	u32 MediumHits;
-	u32 FarHits;
 	float TotalDistance;
 	u32 MaterialHits[6];
 	float MaterialDistances[6];
 
-	// Intermediate calculations
-	float Openness;
-	float Enclosedness;
-	float Reflectivity;
-	float EnvironmentRadius;
-	float EnvironmentDensity;
-	float EnvironmentVariance;
-	float Uniformity;
+	// New Physical acoustic parameters
+	float PhysicalVolume;		 // m^3
+	float MeanFreePath;			 // m
+	float PhysicalReflectivity;	 // 0-1
+	float GeometricOpenness;	 // 0-1
+	float GeometricEnclosedness; // 0-1
+	float ReverbTime;			 // Seconds (RT60)
+	float EarlyReflectionLevel;	 // 0-1
+	float ReverbLevel;			 // 0-1
 
-	// Continuous multipliers
-	float OpenSpaceMultiplier;
-	float EnclosedMultiplier;
-	float ComplexityMultiplier;
-	float OpenReductionFactor;
-	float EnclosedBoostFactor;
-	float ComplexityBoostFactor;
-
-	// Physical acoustic parameters
-	float RoomVolume;
-	float NormalizedVolume;
-	float VolumeFactor;
-	float BaseReverb;
+	// Timing
+	float ReflectionDelay;
 	float EchoDelay;
 
-	float ReflectionEnergy;
-	float PrimaryReflections;
-	float SecondaryReflections;
-	float ReflectionDelay;
-	float SurfaceComplexity;
+	// Psychoacoustic corrections
+	float PerceivedReflectivity;
+	float PerceivedReverbTime;
+	float PerceivedEarlyReflections;
 
 	// Final EAX parameters
 	SEAXEnvironmentData EAXData;
 
-	// Constructor
 	EnvironmentContext()
-		: TotalHits(0), CloseHits(0), MediumHits(0), FarHits(0), TotalDistance(0), Openness(0.5f), Enclosedness(0.5f),
-		  Reflectivity(0.5f), EnvironmentRadius(10.0f), EnvironmentDensity(0.5f), EnvironmentVariance(0.5f),
-		  Uniformity(0.5f), OpenSpaceMultiplier(0.0f), EnclosedMultiplier(0.0f), ComplexityMultiplier(0.0f),
-		  OpenReductionFactor(1.0f), EnclosedBoostFactor(1.0f), ComplexityBoostFactor(1.0f), RoomVolume(100.0f),
-		  NormalizedVolume(0.1f), VolumeFactor(0.3f), BaseReverb(1.0f), EchoDelay(0.02f), ReflectionEnergy(0.1f),
-		  PrimaryReflections(0.05f), SecondaryReflections(0.02f), ReflectionDelay(0.01f), SurfaceComplexity(0.3f)
 	{
-		ZeroMemory(MaterialHits, sizeof(MaterialHits));
-		ZeroMemory(MaterialDistances, sizeof(MaterialDistances));
-		RaycastDistances.reserve(DETAILED_DIRECTIONS_COUNT);
+		Reset();
 	}
 
-	// Helper functions for continuous transitions
-	static float SmoothStep(float x)
+	void Reset()
 	{
-		return x * x * (3.0f - 2.0f * x);
+		RaycastDistances.clear();
+		RaycastDistances.reserve(DETAILED_DIRECTIONS_COUNT);
+		TotalHits = 0;
+		TotalDistance = 0.0f;
+		ZeroMemory(MaterialHits, sizeof(MaterialHits));
+		ZeroMemory(MaterialDistances, sizeof(MaterialDistances));
+
+		PhysicalVolume = 100.0f;
+		MeanFreePath = 5.0f;
+		PhysicalReflectivity = 0.3f;
+		GeometricOpenness = 0.5f;
+		GeometricEnclosedness = 0.5f;
+		ReverbTime = 1.0f;
+		EarlyReflectionLevel = 0.1f;
+		ReverbLevel = 0.1f;
+		ReflectionDelay = 0.01f;
+		EchoDelay = 0.02f;
+		PerceivedReflectivity = 0.3f;
+		PerceivedReverbTime = 1.0f;
+		PerceivedEarlyReflections = 0.1f;
 	}
-	static float ExponentialDecay(float x, float strength)
+
+	// Math Helpers
+	static float Lerp(float a, float b, float t)
 	{
-		return expf(-x * strength);
+		return a + (b - a) * t;
 	}
-	static float GaussianBell(float x, float center, float width)
+	static float Clamp(float v, float min, float max)
 	{
-		float exponent = -((x - center) * (x - center)) / (2.0f * width * width);
-		return expf(exponent);
-	}
-	static float LogisticGrowth(float x, float steepness, float midpoint)
-	{
-		return 1.0f / (1.0f + expf(-steepness * (x - midpoint)));
-	}
-	static float InversePower(float x, float power, float scale)
-	{
-		return 1.0f / (1.0f + powf(x / scale, power));
-	}
-	static float InterpolateLinear(float a, float b, float t)
-	{
-		return ((a) + ((b) - (a)) * (t));
+		return (v < min) ? min : (v > max) ? max : v;
 	}
 };

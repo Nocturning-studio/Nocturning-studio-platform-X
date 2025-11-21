@@ -1,81 +1,28 @@
 ﻿///////////////////////////////////////////////////////////////////////////////////
-// Created: 22.10.2025
+// Module - Sound_environment_common.h
 // Author: NSDeathman
-// Path tracing EAX
-// Nocturning studio for X-Platform
 ///////////////////////////////////////////////////////////////////////////////////
 #pragma once
-///////////////////////////////////////////////////////////////////////////////////
 
-/**
- * @brief Balanced hemisphere directions for initial sampling
- */
-static const Fvector3 BalancedHemisphereDirections[] = {
-	{0.000000, 0.000000, 1.000000},	  {0.577350, 0.577350, 0.577350},	{0.577350, -0.577350, 0.577350},
-	{-0.577350, 0.577350, 0.577350},  {-0.577350, -0.577350, 0.577350}, {0.850651, 0.000000, 0.525731},
-	{-0.850651, 0.000000, 0.525731},  {0.525731, 0.850651, 0.000000},	{0.525731, -0.850651, 0.000000},
-	{0.000000, 0.525731, 0.850651},	  {0.000000, -0.525731, 0.850651},	{0.309017, 0.000000, 0.951057},
-	{-0.309017, 0.000000, 0.951057},  {0.000000, 0.309017, 0.951057},	{0.000000, -0.309017, 0.951057},
-	{0.809017, 0.309017, 0.500000},	  {0.809017, -0.309017, 0.500000},	{-0.809017, 0.309017, 0.500000},
-	{-0.809017, -0.309017, 0.500000}, {0.500000, 0.809017, 0.309017},	{0.500000, -0.809017, 0.309017},
-	{-0.500000, 0.809017, 0.309017},  {-0.500000, -0.809017, 0.309017}};
+#include "xr_collide_defs.h" // Нужно для Fvector и типов движка
 
-static const u32 BALANCED_DIRECTIONS_COUNT = sizeof(BalancedHemisphereDirections) / sizeof(Fvector3);
-static const float SMART_RAY_DISTANCE = 10000.0f;
+// Directions for raycasting
+static const Fvector BalancedHemisphereDirections[] = {
+	{0.000000f, 0.000000f, 1.000000f},	 {0.577350f, 0.577350f, 0.577350f},	  {0.577350f, -0.577350f, 0.577350f},
+	{-0.577350f, 0.577350f, 0.577350f},	 {-0.577350f, -0.577350f, 0.577350f}, {0.850651f, 0.000000f, 0.525731f},
+	{-0.850651f, 0.000000f, 0.525731f},	 {0.525731f, 0.850651f, 0.000000f},	  {0.525731f, -0.850651f, 0.000000f},
+	{0.000000f, 0.525731f, 0.850651f},	 {0.000000f, -0.525731f, 0.850651f},  {0.309017f, 0.000000f, 0.951057f},
+	{-0.309017f, 0.000000f, 0.951057f},	 {0.000000f, 0.309017f, 0.951057f},	  {0.000000f, -0.309017f, 0.951057f},
+	{0.809017f, 0.309017f, 0.500000f},	 {0.809017f, -0.309017f, 0.500000f},  {-0.809017f, 0.309017f, 0.500000f},
+	{-0.809017f, -0.309017f, 0.500000f}, {0.500000f, 0.809017f, 0.309017f},	  {0.500000f, -0.809017f, 0.309017f},
+	{-0.500000f, 0.809017f, 0.309017f},	 {-0.500000f, -0.809017f, 0.309017f}};
 
-/**
- * @brief Structure for storing raycast hit information
- */
-struct SRayHitInfo
-{
-	Fvector vPosition; ///< Hit position in world space
-	Fvector vNormal;   ///< Surface normal at hit point
-	float fDistance;   ///< Distance from ray origin to hit point
-	u32 material_type; ///< Classified material type (0=air, 1-4=surfaces)
-	bool bHit;		   ///< Whether ray hit anything
-
-	SRayHitInfo() : fDistance(0), material_type(0), bHit(false)
-	{
-		vPosition.set(0, 0, 0);
-		vNormal.set(0, 0, 0);
-	}
-};
-
-/**
- * @brief Reflection analysis results
- */
-struct SReflectionAnalysis
-{
-	float fPrimaryReflections;	 ///< Primary reflection intensity
-	float fSecondaryReflections; ///< Secondary reflection intensity
-	float fReflectionDelay;		 ///< Average reflection delay time
-	float fReflectionEnergy;	 ///< Total reflection energy
-	float fSurfaceComplexity;	 ///< Surface complexity factor (0-1)
-};
-
-/**
- * @brief Physical acoustic parameters
- */
-struct SPhysicalAcoustics
-{
-	float fRoomVolume;		 ///< Room volume in cubic meters
-	float fEchoStrength;	 ///< Echo strength (0-1) for EAX
-	float fReverbTime;		 ///< Reverberation time in seconds for EAX
-	float fCriticalDistance; ///< Critical distance in meters
-	float fAdjustedRadius;	 ///< Adjusted radius accounting for openness for EAX
-	float fEchoDelay;		 ///< Echo delay time in seconds for EAX
-
-	SPhysicalAcoustics()
-		: fRoomVolume(100.0f), fEchoStrength(0.3f), fReverbTime(1.0f), fCriticalDistance(5.0f), fAdjustedRadius(10.0f),
-		  fEchoDelay(0.02f)
-	{
-	}
-};
+static const u32 BALANCED_DIRECTIONS_COUNT = sizeof(BalancedHemisphereDirections) / sizeof(Fvector);
+static const float SMART_RAY_DISTANCE = 200.0f;
 
 /**
  * @brief Detailed sphere directions for comprehensive environment analysis
  */
-
 static const Fvector3 DetailedSphereDirections[] = {
 	// Основные оси (6 направлений)
 	{1.000000, 0.000000, 0.000000},
@@ -140,15 +87,73 @@ static const Fvector3 DetailedSphereDirections[] = {
 	{-0.425325, 0.688191, 0.587785},
 	{0.425325, -0.688191, 0.587785},
 	{-0.425325, -0.688191, 0.587785}};
-
 static const u32 DETAILED_DIRECTIONS_COUNT = sizeof(DetailedSphereDirections) / sizeof(Fvector3);
 
-/**
- * @brief Pure EAX parameters structure - only what's needed for EAX API
- */
+
+// Material types constants
+enum EMaterialType
+{
+	MATERIAL_AIR = 0,
+	MATERIAL_STONE = 1,
+	MATERIAL_METAL = 2,
+	MATERIAL_WOOD = 3,
+	MATERIAL_SOFT = 4,
+	MATERIAL_GLASS = 5
+};
+
+// Structure for storing raycast hit information
+// ПЕРЕНЕСЕНО СЮДА из Pathtracing.h во избежание ошибок C3646
+struct SRayHitInfo
+{
+	Fvector vPosition;
+	Fvector vNormal;
+	float fDistance;
+	u32 material_type;
+	bool bHit;
+
+	SRayHitInfo() : fDistance(0), material_type(0), bHit(false)
+	{
+		vPosition.set(0, 0, 0);
+		vNormal.set(0, 0, 0);
+	}
+};
+
+struct SPathTracingResult
+{
+	float fTotalEnergy;
+	float fTotalDelay;
+	u32 iNumBounces;
+	float fAverageDistance;
+	float fEnergyDistribution;
+
+	float fEarlyReflections;
+	float fLateReverberation;
+	float fDiffuseEnergy;
+	float fSpecularEnergy;
+
+	SPathTracingResult()
+		: fTotalEnergy(0), fTotalDelay(0), iNumBounces(0), fAverageDistance(0), fEnergyDistribution(0),
+		  fEarlyReflections(0), fLateReverberation(0), fDiffuseEnergy(0), fSpecularEnergy(0)
+	{
+	}
+};
+
+struct SGeometryAnalysis
+{
+	float fApproxVolume;
+	float fSurfaceArea;
+	float fAvgCeilingHeight;
+	float fAvgWallDistance;
+	float fComplexity;
+	float fSymmetry;
+	float fVerticality;
+	float fCompactness;
+	float fIrregularity;
+	Fvector vMainAxis;
+};
+
 struct SEAXEnvironmentData
 {
-	// Core EAX parameters (mapped directly to EAX properties)
 	LONG lRoom;
 	LONG lRoomHF;
 	float flRoomRolloffFactor;
@@ -163,17 +168,14 @@ struct SEAXEnvironmentData
 	float flAirAbsorptionHF;
 	DWORD dwFlags;
 
-	// Timestamps and validation
 	u32 dwFrameStamp;
 	bool bDataValid;
 
-	/// Default constructor
 	SEAXEnvironmentData()
 	{
 		Reset();
 	}
 
-	/// Resets to default EAX values
 	void Reset()
 	{
 		lRoom = -1000;
@@ -188,13 +190,11 @@ struct SEAXEnvironmentData
 		flEnvironmentSize = 7.5f;
 		flEnvironmentDiffusion = 1.0f;
 		flAirAbsorptionHF = -5.0f;
-		dwFlags = 0x3; // EAXLISTENERFLAGS_DECAYTIMESCALE | EAXLISTENERFLAGS_REFLECTIONSDELAYSCALE
-
+		dwFlags = 0x3;
 		dwFrameStamp = 0;
 		bDataValid = false;
 	}
 
-	/// Copies data from another instance
 	void CopyFrom(const SEAXEnvironmentData& other)
 	{
 		lRoom = other.lRoom;
@@ -210,7 +210,6 @@ struct SEAXEnvironmentData
 		flEnvironmentDiffusion = other.flEnvironmentDiffusion;
 		flAirAbsorptionHF = other.flAirAbsorptionHF;
 		dwFlags = other.dwFlags;
-
 		dwFrameStamp = other.dwFrameStamp;
 		bDataValid = other.bDataValid;
 	}
