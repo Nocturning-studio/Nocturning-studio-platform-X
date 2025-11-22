@@ -497,7 +497,7 @@ class CCC_ALifeSave : public IConsole_Command
 #endif
 		if (!xr_strlen(S))
 		{
-			strconcat(sizeof(S), S, Core.UserName, "_", "quicksave");
+			strconcat(sizeof(S), S, Core.UserName, " - ", CStringTable().translate("ui_st_quicksave").c_str());
 			NET_Packet net_packet;
 			net_packet.w_begin(M_SAVE_GAME);
 			net_packet.w_stringZ(S);
@@ -662,7 +662,7 @@ class CCC_LoadLastQuickSave : public IConsole_Command
 	virtual void Execute(LPCSTR args)
 	{
 		string_path saved_game, command;
-		strconcat(sizeof(saved_game), saved_game, Core.UserName, "_", "quicksave");
+		strconcat(sizeof(saved_game), saved_game, Core.UserName, " - ", CStringTable().translate("ui_st_quicksave").c_str());
 
 		if (!CSavedGameWrapper::valid_saved_game(saved_game))
 		{

@@ -17,6 +17,10 @@ class CUIHint : public CUIWindow, public pureRender
 	CUIHint();
 	virtual ~CUIHint();
 
+	void SetOwner(CUIWindow* owner)
+	{
+		m_ownerWnd = owner;
+	}
 	CUIWindow* Owner()
 	{
 		return m_ownerWnd;

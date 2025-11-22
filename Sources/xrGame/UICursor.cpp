@@ -102,10 +102,41 @@ void CUICursor::UpdateCursorPosition()
 
 void CUICursor::SetUICursorPosition(Fvector2 pos)
 {
-	vPos = pos;
-	POINT p;
-	p.x = iFloor(vPos.x / (UI_BASE_WIDTH / (float)Device.dwWidth));
-	p.y = iFloor(vPos.y / (UI_BASE_HEIGHT / (float)Device.dwHeight));
+	clamp(pos.x, 0.f, UI_BASE_WIDTH);
+	clamp(pos.y, 0.f, UI_BASE_HEIGHT);
 
-	SetCursorPos(p.x, p.y);
+	HWND hWnd = Device.m_hWnd;
+
+	// 1) Текущая клиентка
+	RECT rc{};
+	GetClientRect(hWnd, &rc);
+	const float cw = float(rc.right - rc.left);
+	const float ch = float(rc.bottom - rc.top);
+
+	// 2) UI -> клиентские пиксели
+	POINT cpt;
+	cpt.x = LONG(floorf(pos.x * (cw / UI_BASE_WIDTH) + 0.5f));
+	cpt.y = LONG(floorf(pos.y * (ch / UI_BASE_HEIGHT) + 0.5f));
+
+	// 4) Клиент -> экран и SetCursorPos
+	ClientToScreen(hWnd, &cpt);
+	SetCursorPos(cpt.x, cpt.y);
+
+	// 5) Жёсткая синхронизация внутренних координат (не ждать физдвижения)
+	if (0)//(m_b_use_win_cursor)
+	{
+		POINT pt{};
+		GetCursorPos(&pt);		   // уже центр по экрану
+		ScreenToClient(hWnd, &pt); // обратно в клиент
+		const float sx = UI_BASE_WIDTH / cw;
+		const float sy = UI_BASE_HEIGHT / ch;
+		vPrevPos.set(pos);
+		vPos.x = pt.x * sx;
+		vPos.y = pt.y * sy;
+	}
+	else
+	{
+		vPrevPos.set(pos);
+		vPos.set(pos);
+	}
 }

@@ -2,6 +2,7 @@
 
 #include "UIWindow.h"
 #include "UIOptionsItem.h"
+#include "UIStatic.h"
 
 class CUI3tButton;
 class CUIFrameLineWnd;
@@ -25,6 +26,7 @@ class CUITrackBar : public CUIWindow, public CUIOptionsItem
 	// CUIWindow
 	virtual void Init(float x, float y, float width, float height);
 	virtual void Enable(bool status);
+	virtual void OnFocusLost() override;
 	void SetInvert(bool v)
 	{
 		m_b_invert = v;
@@ -44,7 +46,9 @@ class CUITrackBar : public CUIWindow, public CUIOptionsItem
   protected:
 	void UpdatePos();
 	void UpdatePosRelativeToMouse();
+	void UpdateStaticValue();
 
+	CUIStatic* m_pStaticValue;
 	CUI3tButton* m_pSlider;
 	CUIFrameLineWnd* m_pFrameLine;
 	CUIFrameLineWnd* m_pFrameLine_d;

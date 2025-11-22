@@ -6,6 +6,7 @@
 #include "UI3tButton.h"
 #include "UITextureMaster.h"
 #include "../../xrEngine/xr_input.h"
+#include "UIStatic.h"
 
 #define DEF_CONTROL_HEIGHT 21
 #define FRAME_LINE_TEXTURE "ui_slider_e"
@@ -26,18 +27,33 @@ CUITrackBar::CUITrackBar()
 	AttachChild(m_pSlider);
 	m_pSlider->SetAutoDelete(true);
 	//.	m_pSlider->SetOwner				(this);
+	m_pStaticValue = xr_new<CUIStatic>();
+	AttachChild(m_pStaticValue);
+	m_pStaticValue->SetAutoDelete(true);
+	m_pStaticValue->SetVisible(false);
 }
 
 bool CUITrackBar::OnMouse(float x, float y, EUIMessages mouse_action)
 {
-	CUIWindow::OnMouse(x, y, mouse_action);
+	bool result = CUIWindow::OnMouse(x, y, mouse_action);
 
 	if (m_bCursorOverWindow)
 	{
+		// Показываем текст при наведении
+		if (!m_pStaticValue->GetVisible())
+			m_pStaticValue->SetVisible(true);
+
 		if (pInput->iGetAsyncBtnState(0))
 			UpdatePosRelativeToMouse();
 	}
-	return true;
+	else
+	{
+		// Скрываем текст когда курсор ушел
+		if (m_pStaticValue->GetVisible())
+			m_pStaticValue->SetVisible(false);
+	}
+
+	return result;
 }
 
 void CUITrackBar::Init(float x, float y, float width, float height)
@@ -68,6 +84,7 @@ void CUITrackBar::SetCurrentValue()
 		GetOptIntegerValue(m_i_val, m_i_min, m_i_max);
 
 	UpdatePos();
+	UpdateStaticValue();
 }
 
 //. #include "../HUDmanager.h"
@@ -196,19 +213,19 @@ void CUITrackBar::UpdatePosRelativeToMouse()
 		GetMessageTarget()->SendMessage(this, BUTTON_CLICKED, NULL);
 
 	UpdatePos();
+
+	UpdateStaticValue();
 }
 
 void CUITrackBar::UpdatePos()
 {
 #ifdef DEBUG
-
 	if (m_b_is_float)
 		R_ASSERT2(m_f_val >= m_f_min && m_f_val <= m_f_max,
 				  "CUITrackBar::UpdatePos() - m_val >= m_min && m_val <= m_max");
 	else
 		R_ASSERT2(m_i_val >= m_i_min && m_i_val <= m_i_max,
 				  "CUITrackBar::UpdatePos() - m_val >= m_min && m_val <= m_max");
-
 #endif
 
 	float btn_width = m_pSlider->GetWidth();
@@ -225,7 +242,24 @@ void CUITrackBar::UpdatePos()
 		pos.x = free_space - pos.x;
 
 	m_pSlider->SetWndPos(pos);
+
+	// Обновляем текст значения
+	UpdateStaticValue();
 	SaveValue();
+}
+
+void CUITrackBar::UpdateStaticValue()
+{
+	if (!m_pStaticValue)
+		return;
+
+	string128 buf;
+	if (m_b_is_float)
+		sprintf(buf, "%.2f", m_f_val);
+	else
+		sprintf(buf, "%d", m_i_val);
+
+	m_pStaticValue->SetText(buf);
 }
 
 void CUITrackBar::OnMessage(const char* message)
@@ -251,4 +285,11 @@ void CUITrackBar::SetCheck(bool b)
 {
 	VERIFY(!m_b_is_float);
 	m_i_val = (b) ? m_i_max : m_i_min;
+}
+
+void CUITrackBar::OnFocusLost()
+{
+	CUIWindow::OnFocusLost();
+	if (m_pStaticValue && m_pStaticValue->GetVisible())
+		m_pStaticValue->SetVisible(false);
 }

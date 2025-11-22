@@ -16,7 +16,8 @@
 #include "weaponhud.h"
 #include "stalker_animation_data_storage.h"
 #include "stalker_velocity_holder.h"
-
+#include "hudmanager.h"
+#include "UIGameCustom.h"
 #include "../xrEngine/CameraManager.h"
 #include "actor.h"
 
@@ -613,6 +614,9 @@ void CGamePersistent::OnEvent(EVENT E, u64 P1, u64 P2)
 	{
 		if (Device.Paused())
 			Device.Pause(FALSE, TRUE, TRUE, "eQuickLoad");
+
+		if (HUD().GetUI())
+			HUD().GetUI()->UIGame()->HideShownDialogs();
 
 		LPSTR saved_name = (LPSTR)(P1);
 

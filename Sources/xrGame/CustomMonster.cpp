@@ -614,7 +614,12 @@ void CCustomMonster::eye_pp_s2()
 
 void CCustomMonster::Exec_Visibility()
 {
-	// if (0==Sector())				return;
+	if (getDestroy() || !m_entity_condition)
+		return;
+
+	// if (0==Sector())
+	//	return;
+
 	if (!g_Alive())
 		return;
 
@@ -760,16 +765,19 @@ void CCustomMonster::OnEvent(NET_Packet& P, u16 type)
 
 void CCustomMonster::net_Destroy()
 {
-	inherited::net_Destroy();
+	// 1. СНАЧАЛА убираем задачи из параллельных потоков, чтобы они не обратились к битой памяти
+	Device.remove_from_seq_parallel(fastdelegate::FastDelegate0<>(this, &CCustomMonster::update_sound_player));
+	Device.remove_from_seq_parallel(fastdelegate::FastDelegate0<>(this, &CCustomMonster::Exec_Visibility));
+
+	// 2. Теперь безопасно вызываем родительские деструкторы
+	inherited::net_Destroy(); // Здесь, скорее всего, удаляется m_entity_condition
 	CScriptEntity::net_Destroy();
+
 	sound().unload();
 	movement().net_Destroy();
 
-	Actor()->SetActorVisibility(ID(), 0.f); // Исправление проблемы с зависающей шкалой заметности при уходе НПС в
-											// оффлайн (Взял из кода Kondr48/gz_team_engine)
-
-	Device.remove_from_seq_parallel(fastdelegate::FastDelegate0<>(this, &CCustomMonster::update_sound_player));
-	Device.remove_from_seq_parallel(fastdelegate::FastDelegate0<>(this, &CCustomMonster::Exec_Visibility));
+	// Исправление проблемы с зависающей шкалой
+	Actor()->SetActorVisibility(ID(), 0.f);
 
 #ifdef DEBUG
 	DBG().on_destroy_object(this);

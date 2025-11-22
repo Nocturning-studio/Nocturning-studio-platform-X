@@ -155,8 +155,6 @@ class CEntityAlive : public CEntity
 
   public:
 	MONSTER_COMMUNITY* monster_community;
-
-  private:
 	CEntityCondition* m_entity_condition;
 	CMaterialManager* m_material_manager;
 

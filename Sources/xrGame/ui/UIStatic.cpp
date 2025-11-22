@@ -96,18 +96,30 @@ void CUIStatic::Init(LPCSTR tex_name, float x, float y, float width, float heigh
 {
 	Init(x, y, width, height);
 	InitTexture(tex_name);
+	if (m_hint)
+	{
+		m_hint->SetOwner(this);
+	}
 }
 
 void CUIStatic::InitEx(LPCSTR tex_name, LPCSTR sh_name, float x, float y, float width, float height)
 {
 	Init(x, y, width, height);
 	InitTextureEx(tex_name, sh_name);
+	if (m_hint)
+	{
+		m_hint->SetOwner(this); // <--- ОБЯЗАТЕЛЬНО ДОБАВИТЬ
+	}
 }
 
 void CUIStatic::Init(float x, float y, float width, float height)
 {
 	CUIWindow::Init(x, y, width, height);
 	m_xxxRect.set(x, y, x + width, y + height);
+	if (m_hint)
+	{
+		m_hint->SetOwner(this); // <--- ОБЯЗАТЕЛЬНО ДОБАВИТЬ
+	}
 }
 
 void CUIStatic::InitTexture(LPCSTR texture)
@@ -233,43 +245,55 @@ bool is_in_2_(const Frect& b1, const Frect& b2)
 void CUIStatic::Update()
 {
 	inherited::Update();
-	// update light animation if defined
+
+	// 1. ПРОВЕРКА ИЕРАРХИИ РОДИТЕЛЕЙ
+	// Проходимся вверх по дереву окон. Если хоть один родитель скрыт -> bParentVisible = false
+	bool bParentVisible = true;
+	CUIWindow* parent = GetParent();
+	while (parent)
+	{
+		if (!parent->IsShown())
+		{
+			bParentVisible = false;
+			break;
+		}
+		parent = parent->GetParent();
+	}
+
+	// 2. ОБНОВЛЕНИЕ АНИМАЦИЙ (Light Animations)
 	if (m_lanim_clr.m_lanim)
 	{
 		if (m_lanim_clr.m_lanim_start_time < 0.0f)
 			ResetClrAnimation();
 		float t = Device.dwTimeContinual / 1000.0f;
 
-		if (t < m_lanim_clr.m_lanim_start_time) // consider animation delay
-			return;
-
-		if (m_lanim_clr.m_lanimFlags.test(LA_CYCLIC) ||
-			t - m_lanim_clr.m_lanim_start_time < m_lanim_clr.m_lanim->Length_sec())
+		if (t >= m_lanim_clr.m_lanim_start_time)
 		{
+			if (m_lanim_clr.m_lanimFlags.test(LA_CYCLIC) ||
+				t - m_lanim_clr.m_lanim_start_time < m_lanim_clr.m_lanim->Length_sec())
+			{
+				int frame;
+				u32 clr = m_lanim_clr.m_lanim->CalculateRGB(t - m_lanim_clr.m_lanim_start_time, frame);
 
-			int frame;
-			u32 clr = m_lanim_clr.m_lanim->CalculateRGB(t - m_lanim_clr.m_lanim_start_time, frame);
+				if (m_lanim_clr.m_lanimFlags.test(LA_TEXTURECOLOR))
+					if (m_lanim_clr.m_lanimFlags.test(LA_ONLYALPHA))
+						SetColor(subst_alpha(GetColor(), color_get_A(clr)));
+					else
+						SetColor(clr);
 
-			if (m_lanim_clr.m_lanimFlags.test(LA_TEXTURECOLOR))
-				if (m_lanim_clr.m_lanimFlags.test(LA_ONLYALPHA))
-					SetColor(subst_alpha(GetColor(), color_get_A(clr)));
-				else
-					SetColor(clr);
-
-			if (m_lanim_clr.m_lanimFlags.test(LA_TEXTCOLOR))
-				if (m_lanim_clr.m_lanimFlags.test(LA_ONLYALPHA))
-					SetTextColor(subst_alpha(GetTextColor(), color_get_A(clr)));
-				else
-					SetTextColor(clr);
+				if (m_lanim_clr.m_lanimFlags.test(LA_TEXTCOLOR))
+					if (m_lanim_clr.m_lanimFlags.test(LA_ONLYALPHA))
+						SetTextColor(subst_alpha(GetTextColor(), color_get_A(clr)));
+					else
+						SetTextColor(clr);
+			}
 		}
 	}
 
 	if (m_lanim_xform.m_lanim)
 	{
 		if (m_lanim_xform.m_lanim_start_time < 0.0f)
-		{
 			ResetXformAnimation();
-		}
 		float t = Device.dwTimeContinual / 1000.0f;
 
 		if (m_lanim_xform.m_lanimFlags.test(LA_CYCLIC) ||
@@ -283,7 +307,6 @@ void CUIStatic::Update()
 			SetHeading(heading);
 
 			float _value = (float)color_get_R(clr);
-
 			float f_scale = _value / 64.0f;
 			Fvector2 _sz;
 			_sz.set(m_xxxRect.width() * f_scale, m_xxxRect.height() * f_scale);
@@ -296,7 +319,10 @@ void CUIStatic::Update()
 		}
 	}
 
-	if (CursorOverWindow() && m_hint_text.size() && !g_btnHint->Owner() &&
+	// 3. ГЛОБАЛЬНЫЙ ХИНТ (g_btnHint)
+	// Показываем, ТОЛЬКО если:
+	// Родители видимы И мы видимы И курсор на нас И есть текст И никто другой не занял хинт
+	if (bParentVisible && GetVisible() && CursorOverWindow() && m_hint_text.size() && !g_btnHint->Owner() &&
 		Device.dwTimeGlobal > m_dwFocusReceiveTime + 500)
 	{
 		g_btnHint->SetHintText(this, *m_hint_text);
@@ -305,7 +331,6 @@ void CUIStatic::Update()
 		Frect vis_rect;
 		vis_rect.set(0, 0, UI_BASE_WIDTH, UI_BASE_HEIGHT);
 
-		// select appropriate position
 		Frect r;
 		r.set(0.0f, 0.0f, g_btnHint->GetWidth(), g_btnHint->GetHeight());
 		r.add(c_pos.x, c_pos.y);
@@ -321,56 +346,81 @@ void CUIStatic::Update()
 
 		g_btnHint->SetWndPos(r.lt);
 	}
+	// Сброс глобального хинта: если мы им владеем, но условия нарушены
+	else if (g_btnHint->Owner() == this)
+	{
+		if (!bParentVisible || !GetVisible() || !CursorOverWindow())
+		{
+			g_btnHint->Discard();
+		}
+	}
 
-	// Hint stuff
+	// 4. КАСТОМНЫЙ ХИНТ (m_hint)
 	if (m_hint && m_hint->HintStatic())
 	{
-		bool visible = false;
+		// Страховка: если Owner не был задан при инициализации
+		if (!m_hint->Owner())
+			m_hint->SetOwner(this);
+
+		// Можно ли показывать?
+		// Должны быть выполнены ВСЕ условия: родители видимы, мы видимы, курсор на нас
+		bool bCanShow = bParentVisible && GetVisible() && m_bCursorOverWindow;
+
 		u32 hintColor;
 
-		if (m_bCursorOverWindow && GetVisible())
+		if (bCanShow)
 		{
+			// Показываем (Highlighted цвет)
 			hintColor = m_hint->HintStatic()->m_bUseTextColor[H] ? m_hint->HintStatic()->m_dwTextColor[H]
 																 : m_hint->HintStatic()->m_dwTextColor[E];
-			visible = true;
+			if (m_bChangeVis)
+				m_hint->HintStatic()->SetVisible(true);
 		}
 		else
 		{
+			// Скрываем (Enabled цвет)
 			hintColor = m_hint->HintStatic()->m_dwTextColor[E];
-			visible = false;
-		}
 
-#pragma todo("VAX: Если захотите это вернуть, то надо решить проблему фокуса")
-		// if (visible)
-		//	GetUICursor()->GetStatic()->SetTextureColor(color_argb(64, 255, 255, 255));
-		// else
-		//	GetUICursor()->GetStatic()->SetTextureColor(color_argb(255, 255, 255, 255));
+			// Если включено скрытие (changeVisability) ИЛИ родитель вообще исчез - скрываем полностью
+			if (m_bChangeVis || !bParentVisible || !GetVisible())
+				m_hint->HintStatic()->SetVisible(false);
+		}
 
 		m_hint->HintStatic()->SetTextColor(hintColor);
-		if (m_bChangeVis)
-			m_hint->HintStatic()->SetVisible(visible);
 
-		Fvector2 parentPos;
-		m_hint->GetParent()->GetAbsolutePos(parentPos);
-		Fvector2 cursosPos = GetUICursor()->GetCursorPosition();
-
-		float x = cursosPos.x - parentPos.x;
-		float y = cursosPos.y - parentPos.y - m_hint->GetHeight();
-
-		if (cursosPos.x + m_hint->GetWidth() > UI_BASE_WIDTH)
+		// Позиционирование рассчитываем только если родитель в принципе виден
+		if (bParentVisible)
 		{
-			// Хинт упирается в конец экрана
-			x = (UI_BASE_WIDTH - m_hint->GetWidth()) - parentPos.x;
-		}
-		else if (cursosPos.x + m_hint->GetWidth() > UI_BASE_WIDTH * 1.5)
-		{
-			// Хинт рендерится в другую сторону
-			x -= m_hint->GetWidth();
-		}
+			Fvector2 parentPos;
+			// Используем GetParent() самого хинта, так как он приаттачен к нам
+			if (m_hint->GetParent())
+			{
+				m_hint->GetParent()->GetAbsolutePos(parentPos);
+				Fvector2 cursosPos = GetUICursor()->GetCursorPosition();
 
-		m_hint->SetWndPos(x, y);
+				float x = cursosPos.x - parentPos.x;
+				float y = cursosPos.y - parentPos.y - m_hint->GetHeight();
+
+				if (cursosPos.x + m_hint->GetWidth() > UI_BASE_WIDTH)
+				{
+					x = (UI_BASE_WIDTH - m_hint->GetWidth()) - parentPos.x;
+				}
+				else if (cursosPos.x + m_hint->GetWidth() > UI_BASE_WIDTH * 1.5)
+				{
+					x -= m_hint->GetWidth();
+				}
+
+				m_hint->SetWndPos(x, y);
+			}
+		}
+	}
+	else if (m_hint && m_hint->HintStatic() && !bParentVisible)
+	{
+		// Резервное скрытие, если мы не попали в основной блок
+		m_hint->HintStatic()->SetVisible(false);
 	}
 }
+
 
 void CUIStatic::ResetXformAnimation()
 {
@@ -610,8 +660,17 @@ CGameFont::EAligment CUIStatic::GetTextAlignment()
 void CUIStatic::SetVisible(bool vis)
 {
 	inherited::SetVisible(vis);
-	if (m_hint && m_hint->HintStatic())
-		m_hint->HintStatic()->SetVisible(false);
+
+	// Скрываем подсказки при скрытии элемента
+	if (!vis)
+	{
+		if (m_hint && m_hint->HintStatic())
+			m_hint->HintStatic()->SetVisible(false);
+
+		// Также скрываем глобальную подсказку если она наша
+		if (g_btnHint->Owner() == this)
+			g_btnHint->Discard();
+	}
 }
 
 // void CUIStatic::SetTextAlign(CGameFont::EAligment align){
@@ -678,16 +737,55 @@ void CUIStatic::OnFocusReceive()
 void CUIStatic::OnFocusLost()
 {
 	inherited::OnFocusLost();
+
 	if (GetMessageTarget())
 		GetMessageTarget()->SendMessage(this, STATIC_FOCUS_LOST, NULL);
+
+	// Если окно закрывается, фокус теряется. Принудительно убираем хинт.
+	if (g_btnHint->Owner() == this)
+	{
+		g_btnHint->Discard();
+	}
+
+	// На случай, если кастомный хинт всё еще висит
+	if (m_hint && m_hint->HintStatic())
+	{
+		m_hint->HintStatic()->SetVisible(false);
+	}
 }
 
-#pragma todo("NSDeathman to all: Необходимо переписать этот метод, для того чтобы хинты работали адекватно на всех разрешениях")
 void CUIStatic::AdjustHeightToText()
 {
-	m_pLines->SetWidth(GetWidth());
+	if (!m_pLines)
+		return;
+
+	// 1. Вычисляем РЕАЛЬНУЮ доступную ширину для текста.
+	// Если мы рисуем текст со смещением m_TextOffset.x, то для самого текста
+	// остается меньше места, иначе он вылезет за правую границу.
+	float available_width = GetWidth() - m_TextOffset.x;
+
+	// Защита от некорректных размеров (чтобы не крашнуть парсер)
+	if (available_width < 10.0f)
+		available_width = 10.0f;
+
+	m_pLines->SetWidth(available_width);
+
+	// Принудительно пересчитываем перенос строк
 	m_pLines->ParseText();
-	SetHeight(m_pLines->GetVisibleHeight());
+
+	// 2. Получаем высоту текста
+	float text_height = m_pLines->GetVisibleHeight();
+
+	// 3. Итоговая высота окна = Высота текста + Отступ сверху (m_TextOffset.y).
+	// Без этого нижняя часть текста будет обрезана окном.
+	float final_height = text_height + m_TextOffset.y;
+
+	// 4. Добавляем небольшой буфер (паддинг снизу),
+	// чтобы компенсировать погрешности масштабирования на разных разрешениях
+	// и чтобы "хвостики" букв (p, g, y, j, q) не касались края текстуры.
+	final_height += 4.0f;
+
+	SetHeight(final_height);
 }
 
 void CUIStatic::AdjustWidthToText()

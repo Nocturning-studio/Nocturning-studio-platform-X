@@ -319,6 +319,12 @@ bool CUIXmlInit::InitCustomHint(CUIXml& xml_doc, const char* path, int index, CU
 	if (hint_xml)
 	{
 		pWnd->m_hint = xr_new<CUIHint>();
+
+		// --- ИСПРАВЛЕНИЕ ---
+		// Сообщаем хинту, кто его владелец, чтобы OnRender мог проверить иерархию видимости
+		pWnd->m_hint->SetOwner(pWnd);
+		// -------------------
+
 		pWnd->m_hint->m_hint = xr_new<CUIStatic>();
 
 		CUIHint*& hint_wnd = pWnd->m_hint;
@@ -329,6 +335,8 @@ bool CUIXmlInit::InitCustomHint(CUIXml& xml_doc, const char* path, int index, CU
 		pWnd->AttachChild(hint_wnd);
 
 		hint_wnd->AttachChild(hint_obj);
+
+		// Ваши исправленные методы подстройки размера
 		hint_obj->AdjustWidthToText();
 		hint_obj->AdjustHeightToText();
 
@@ -339,18 +347,7 @@ bool CUIXmlInit::InitCustomHint(CUIXml& xml_doc, const char* path, int index, CU
 			hint_obj->SetVisible(false);
 		}
 
-		/*strconcat(sizeof(buff), buff, hint, ":frame_line");
-		if (xml_doc.NavigateToNode(buff, index))
-		{
-			CUIFrameLineWnd* m_border = xr_new<CUIFrameLineWnd>();
-			m_border->SetAutoDelete(true);
-			hint_wnd->AttachChild(m_border);
-			InitFrameLine(xml_doc, buff, 0, m_border);
-			float hh = _max(hint_wnd->GetWidth() + 30.0f, 80.0f);
-			m_border->SetWidth(hh);
-			m_border->SetHeight(hint_wnd->GetHeight());
-		}*/
-
+		// Обработка текстуры фона (hint_texture)
 		strconcat(sizeof(buff), buff, hint, ":hint_texture");
 		if (xml_doc.NavigateToNode(buff, index))
 		{
@@ -363,12 +360,13 @@ bool CUIXmlInit::InitCustomHint(CUIXml& xml_doc, const char* path, int index, CU
 			((IUISingleTextureOwner*)m_border)->InitTexture(*texture);
 
 			Frect rect{0};
-
 			rect.x1 = 0;
 			rect.y1 = 0;
 			rect.x2 = hint_obj->GetWidth();
 			rect.y2 = hint_obj->GetHeight();
 
+			// Внимание: Убедитесь, что SetOriginalRect принимает пиксели, а не UV-координаты,
+			// либо что текстура подготовлена соответствующим образом.
 			if (rect.width() != 0 && rect.height() != 0)
 				m_border->SetOriginalRect(rect);
 
@@ -393,6 +391,7 @@ bool CUIXmlInit::InitCustomHint(CUIXml& xml_doc, const char* path, int index, CU
 			}
 		}
 
+		// Подгоняем размер контейнера под размер текстового блока
 		hint_wnd->SetWidth(hint_obj->GetWidth());
 		hint_wnd->SetHeight(hint_obj->GetHeight());
 
@@ -478,6 +477,12 @@ bool CUIXmlInit::InitHint(CUIXml& xml_doc, const char* path, int index, CUIStati
 	if (hint_xml)
 	{
 		pWnd->m_hint = xr_new<CUIHint>();
+
+		// --- ВАЖНОЕ ДОБАВЛЕНИЕ ---
+		// Связываем хинт с владельцем для корректной проверки видимости в OnRender
+		pWnd->m_hint->SetOwner(pWnd);
+		// -------------------------
+
 		pWnd->m_hint->m_hint = xr_new<CUIStatic>();
 
 		CUIHint*& hint_wnd = pWnd->m_hint;
