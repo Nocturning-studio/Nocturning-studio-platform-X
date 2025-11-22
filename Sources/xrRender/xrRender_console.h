@@ -33,6 +33,11 @@ extern ECORE_API float ps_r_Detail_l_ambient;
 extern ECORE_API float ps_r_Detail_l_aniso;
 extern ECORE_API float ps_r_Detail_density;
 
+extern ECORE_API float ps_r_Detail_radius; // Радиус отрисовки
+extern ECORE_API float ps_r_Detail_scale;  // Глобальный масштаб
+extern ECORE_API float ps_r_Detail_height; // Смещение по высоте
+extern ECORE_API u32 ps_r_Detail_quality;  // Сам пресет (Low/Med/High)
+
 extern ECORE_API float ps_r_Tree_w_rot;
 extern ECORE_API float ps_r_Tree_w_speed;
 extern ECORE_API float ps_r_Tree_w_amp;

@@ -46,6 +46,12 @@ xr_token cubemap_size_token[] =
 	{0, 0}
 };
 
+xr_token detail_quality_token[] = {{"st_opt_low", 1},	 // 1 = Low
+								   {"st_opt_medium", 2}, // 2 = Medium
+								   {"st_opt_high", 3},	 // 3 = High
+								   {"st_opt_ultra", 4},	 // 4 = Ultra
+								   {0, 0}};
+
 /*
 u32 ps_r1_aa = 0;
 xr_token r1_aa_token[] = {
@@ -197,6 +203,11 @@ float ps_r_debug_reserved_3 = 1.0f;
 float ps_r_Detail_l_ambient = 0.9f;
 float ps_r_Detail_l_aniso = 0.25f;
 float ps_r_Detail_density = 0.3f;
+
+float ps_r_Detail_radius = 50.0f;
+float ps_r_Detail_scale = 1.0f;
+float ps_r_Detail_height = 0.0f;
+u32 ps_r_Detail_quality = 2;
 
 float ps_r_Tree_w_rot = 10.0f;
 float ps_r_Tree_w_speed = 1.00f;
@@ -545,6 +556,48 @@ class CCC_Dof : public CCC_Vector3
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////
+class CCC_DetailQuality : public CCC_Token
+{
+  public:
+	CCC_DetailQuality(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N, V, T){};
+
+	virtual void Execute(LPCSTR args)
+	{
+		CCC_Token::Execute(args);
+		switch (*value)
+		{
+		case 1: // Low
+			ps_r_Detail_density = 0.60f;
+			ps_r_Detail_radius = 40.0f;
+			ps_r_Detail_scale = 0.85f;
+			ps_r_Detail_height = 0.00f;
+			break;
+		case 2: // Medium
+			ps_r_Detail_density = 0.45f;
+			ps_r_Detail_radius = 75.0f;
+			ps_r_Detail_scale = 1.00f;
+			ps_r_Detail_height = 0.00f;
+			break;
+		case 3: // High
+			ps_r_Detail_density = 0.30f;
+			ps_r_Detail_radius = 120.0f;
+			ps_r_Detail_scale = 1.10f;
+			ps_r_Detail_height = 0.05f;
+			break;
+		case 4: // Ultra
+			ps_r_Detail_density = 0.20f;
+			ps_r_Detail_radius = 180.0f;
+			ps_r_Detail_scale = 1.20f;
+			ps_r_Detail_height = 0.10f;
+			break;
+		}
+
+		// Обновляем кеш
+		if (RenderImplementation.Details)
+			RenderImplementation.Details->InvalidateCache();
+	}
+};
+///////////////////////////////////////////////////////////////////////////////////
 void xrRender_initconsole()
 {
 	Fvector tw_min, tw_max;
@@ -576,6 +629,8 @@ void xrRender_initconsole()
 
 	//CMD4(CCC_Float, "r_detail_l_ambient", &ps_r_Detail_l_ambient, .5f, .95f);
 	//CMD4(CCC_Float, "r_detail_l_aniso", &ps_r_Detail_l_aniso, .1f, .5f);
+
+	CMD3(CCC_DetailQuality, "r_detail_quality", &ps_r_Detail_quality, detail_quality_token);
 
 	tw_min.set(EPS, EPS, EPS);
 	tw_max.set(2, 2, 2);

@@ -5,27 +5,38 @@
 #include "xrpool.h"
 #include "detailformat.h"
 #include "detailmodel.h"
-#include <ppl.h> // Подключаем PPL для многопоточности
+#include <ppl.h> // PPL для многопоточности
 
 #ifdef _EDITOR
 #include "ESceneClassList.h"
 #endif
 
-const int dm_size = 64;
-const int dm_max_decompress = 7; // Можно уменьшить, так как PPL сделает всё за один проход, но оставим для совместимости
+// === НАСТРОЙКИ БУФЕРА ===
+// Увеличиваем размер кеша, чтобы физически поддерживать большой радиус.
+// 128 слотов * 2 метра = 256 метров максимальный радиус.
+const int dm_size = 128;
+
+const int dm_max_decompress = 7;
 const int dm_cache1_count = 4;
 const int dm_cache1_line = dm_size * 2 / dm_cache1_count;
 const int dm_max_objects = 64;
 const int dm_obj_in_slot = 4;
 const int dm_cache_line = dm_size + 1 + dm_size;
 const int dm_cache_size = dm_cache_line * dm_cache_line;
-
-const float dm_fade = float(2 * dm_size) - .5f;
 const float dm_slot_size = DETAIL_SLOT_SIZE;
+
+// === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ (EXTERN) ===
+// Это позволяет DetailManager.cpp видеть переменные, объявленные в xrRender_console.cpp
+extern float ps_r_Detail_density;
+extern float ps_r_Detail_radius;
+extern float ps_r_Detail_scale;
+extern float ps_r_Detail_height;
+extern u32 ps_r_Detail_quality;
 
 class CDetailManager
 {
   public:
+	// Структуры
 	struct SlotItem
 	{
 		float scale;
@@ -71,7 +82,6 @@ class CDetailManager
 		int sx, sz;
 		vis_data vis;
 		SlotPart G[dm_obj_in_slot];
-
 		Slot()
 		{
 			frame = 0;
@@ -113,8 +123,7 @@ class CDetailManager
 	u32 hw_MaxInstances;
 
 #ifndef _EDITOR
-	// Этот XRC используется для синхронных задач, но НЕ для распаковки в потоках
-	xrXRC xrc;
+	xrXRC xrc; // Глобальный XRC (не для потоков)
 #endif
 
 	CacheSlot1 cache_level1[dm_cache1_line][dm_cache1_line];
@@ -125,7 +134,7 @@ class CDetailManager
 	int cache_cz;
 
 	PSS poolSI;
-	xrCriticalSection pool_lock; // Мьютекс для защиты poolSI
+	xrCriticalSection pool_lock; // Мьютекс
 
 	void UpdateVisibleM();
 
@@ -136,10 +145,10 @@ class CDetailManager
 	// Hard
 	ref_geom hw_Geom;
 	u32 hw_BatchSize;
-	IDirect3DVertexBuffer9* hw_VB;
-	IDirect3DIndexBuffer9* hw_IB;
 	ref_constant hwc_array;
 	ref_constant hwc_s_array;
+	IDirect3DVertexBuffer9* hw_VB;
+	IDirect3DIndexBuffer9* hw_IB;
 	void hw_Load();
 	void hw_Unload();
 	void hw_Render();
@@ -152,8 +161,11 @@ class CDetailManager
 	void cache_Task(int gx, int gz, Slot* D);
 	Slot* cache_Query(int sx, int sz);
 
-	// ИЗМЕНЕНО: cache_Decompress принимает локальный XRC
+	// Decompress принимает локальный XRC
 	void cache_Decompress(Slot* D, xrXRC& local_xrc);
+
+	// Метод сброса кеша при смене настроек
+	void InvalidateCache();
 
 	BOOL cache_Validate();
 
@@ -194,5 +206,4 @@ class CDetailManager
 	CDetailManager();
 	virtual ~CDetailManager();
 };
-
-#endif // DetailManagerH
+#endif
