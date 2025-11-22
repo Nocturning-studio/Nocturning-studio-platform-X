@@ -1,8 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Module - Sound_environment_context.h
-// Created: 22.10.2025
-// Modified: 21.11.2025 (Integrated Physics Update)
-// Author: NSDeathman
 // Path tracing EAX - Environment Context
 ///////////////////////////////////////////////////////////////////////////////////
 #pragma once
@@ -11,49 +8,49 @@
 
 struct EnvironmentContext
 {
-	// Input data
+	// === Input Data ===
 	Fvector CameraPosition;
 	SPathTracingResult PathTracingResult;
 	SGeometryAnalysis GeometryAnalysis;
 
-	// Raw raycast data
+	// === Real-time Data (Snapshot) ===
 	std::vector<float> RaycastDistances;
 	u32 TotalHits;
 	float TotalDistance;
 	u32 MaterialHits[6];
 	float MaterialDistances[6];
 
-	// New Physical acoustic parameters
+	// === Accumulation Data (Temporal Integration) ===
+	u32 Accum_FrameCount;
+	float Accum_TotalDistance;
+	u32 Accum_TotalHits;
+	u32 Accum_MaterialHits[6];
+
+	// === Acoustic Parameters ===
 	float PhysicalVolume;		 // m^3
 	float MeanFreePath;			 // m
 	float PhysicalReflectivity;	 // 0-1
-	float GeometricOpenness;	 // 0-1
-	float GeometricEnclosedness; // 0-1
-	float ReverbTime;			 // Seconds (RT60)
-	float EarlyReflectionLevel;	 // 0-1
-	float ReverbLevel;			 // 0-1
+	float GeometricOpenness;	 // 0-1 (1=Outdoor)
+	float GeometricEnclosedness; // 0-1 (1=Bunker)
+	float ReverbTime;			 // RT60 (Seconds)
+	float EarlyReflectionLevel;
+	float ReverbLevel;
 
-	// Timing
-	float ReflectionDelay;
-	float EchoDelay;
-
-	// Psychoacoustic corrections
+	// === Psychoacoustics ===
 	float PerceivedReflectivity;
-	float PerceivedReverbTime;
-	float PerceivedEarlyReflections;
 
-	// Final EAX parameters
+	// === Final Output ===
 	SEAXEnvironmentData EAXData;
 
 	EnvironmentContext()
 	{
 		Reset();
+		ResetAccumulation();
 	}
 
 	void Reset()
 	{
 		RaycastDistances.clear();
-		RaycastDistances.reserve(DETAILED_DIRECTIONS_COUNT);
 		TotalHits = 0;
 		TotalDistance = 0.0f;
 		ZeroMemory(MaterialHits, sizeof(MaterialHits));
@@ -65,13 +62,14 @@ struct EnvironmentContext
 		GeometricOpenness = 0.5f;
 		GeometricEnclosedness = 0.5f;
 		ReverbTime = 1.0f;
-		EarlyReflectionLevel = 0.1f;
-		ReverbLevel = 0.1f;
-		ReflectionDelay = 0.01f;
-		EchoDelay = 0.02f;
-		PerceivedReflectivity = 0.3f;
-		PerceivedReverbTime = 1.0f;
-		PerceivedEarlyReflections = 0.1f;
+	}
+
+	void ResetAccumulation()
+	{
+		Accum_FrameCount = 0;
+		Accum_TotalDistance = 0.0f;
+		Accum_TotalHits = 0;
+		ZeroMemory(Accum_MaterialHits, sizeof(Accum_MaterialHits));
 	}
 
 	// Math Helpers

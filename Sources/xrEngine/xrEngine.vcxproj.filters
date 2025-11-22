@@ -639,9 +639,6 @@
     <ClInclude Include="Sound_environment_common.h">
       <Filter>Game API\Sound Environment</Filter>
     </ClInclude>
-    <ClInclude Include="Sound_environment_geometry.h">
-      <Filter>Game API\Sound Environment</Filter>
-    </ClInclude>
     <ClInclude Include="Sound_environment_pathtracing.h">
       <Filter>Game API\Sound Environment</Filter>
     </ClInclude>
@@ -1132,9 +1129,6 @@
     </ClCompile>
     <ClCompile Include="R_Backend_xform.cpp">
       <Filter>Render\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound_environment_geometry.cpp">
-      <Filter>Game API\Sound Environment</Filter>
     </ClCompile>
     <ClCompile Include="Sound_environment_pathtracing.cpp">
       <Filter>Game API\Sound Environment</Filter>
