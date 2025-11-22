@@ -345,6 +345,10 @@ void CRenderDevice::StartEventLoop()
 				Statistic->RenderTOTAL_Real.FrameEnd();
 				Statistic->RenderTOTAL.accum = Statistic->RenderTOTAL_Real.accum;
 #endif
+
+				vCameraPosition_saved = vCameraPosition;
+				mFullTransform_saved = mFullTransform;
+
 				syncFrameDone.Wait();
 #ifdef DEDICATED_SERVER
 				u32 FrameEndTime = TimerGlobal.GetElapsed_ms();

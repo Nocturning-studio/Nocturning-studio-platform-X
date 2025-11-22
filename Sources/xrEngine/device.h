@@ -130,6 +130,7 @@ class ENGINE_API CRenderDevice
 
 	// Cameras & projection
 	Fvector vCameraPosition;
+	Fvector vCameraPosition_saved;
 	Fvector vCameraDirection;
 	Fvector vCameraTop;
 	Fvector vCameraRight;
@@ -138,6 +139,7 @@ class ENGINE_API CRenderDevice
 	Fmatrix mProject_hud;
 	Fmatrix mFullTransform;
 	Fmatrix mInvFullTransform;
+	Fmatrix mFullTransform_saved;
 	float fFOV;
 	float fASPECT;
 
