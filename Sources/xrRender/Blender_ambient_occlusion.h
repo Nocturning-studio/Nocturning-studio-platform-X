@@ -9,7 +9,6 @@
 ///////////////////////////////////////////////////////////////////////////////////
 enum
 {
-	SE_AO_MXAO,
 	SE_AO_SSAO,
 	SE_AO_HBAO_PLUS,
 	SE_AO_SSAO_PATH_TRACE,
@@ -30,13 +29,6 @@ class CBlender_ambient_occlusion : public IBlender
 		{
 		case SE_AO_SSAO:
 			C.begin_Pass("screen_quad", "ambient_occlusion_stage_pass_ssao");
-			C.set_Sampler_point("s_bent_normals", r_RT_Bent_Normals);
-			gbuffer(C);
-			jitter(C);
-			C.end_Pass();
-			break;
-		case SE_AO_MXAO:
-			C.begin_Pass("screen_quad", "ambient_occlusion_stage_pass_mxao");
 			C.set_Sampler_point("s_bent_normals", r_RT_Bent_Normals);
 			gbuffer(C);
 			jitter(C);

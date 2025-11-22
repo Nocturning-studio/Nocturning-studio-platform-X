@@ -22,7 +22,7 @@ void CRender::render_ambient_occlusion()
 	float negInvR2 = -(1.0f / (pow(ps_r_ao_radius, 2.0f)));
 	float RadiusPrecalc = (10.0f * h * 0.5f);
 
-	int AOType = SE_AO_MXAO;
+	int AOType = SE_AO_SSAO;
 
 	switch (ps_r_ao_quality)
 	{
@@ -30,12 +30,9 @@ void CRender::render_ambient_occlusion()
 		AOType = SE_AO_SSAO;
 		break;
 	case 2:
-		AOType = SE_AO_MXAO;
-		break;
-	case 3:
 		AOType = SE_AO_HBAO_PLUS;
 		break;
-	case 4:
+	case 3:
 		AOType = SE_AO_SSAO_PATH_TRACE;
 		break;
 	}

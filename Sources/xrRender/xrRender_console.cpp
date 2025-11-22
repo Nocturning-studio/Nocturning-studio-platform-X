@@ -104,9 +104,8 @@ u32 ps_r_ao_quality = 2;
 xr_token ao_quality_token[] = 
 {
 	{"st_opt_ssao", 1}, 
-	{"st_opt_mxao", 2}, 
-	{"st_opt_hbao_plus", 3}, 
-	{"st_opt_ssptao", 4}, 
+	{"st_opt_hbao_plus", 2}, 
+	{"st_opt_ssptao", 3}, 
 	{0, 0}
 };
 
@@ -722,9 +721,9 @@ void xrRender_initconsole()
 
 	//CMD4(CCC_Float, "r_slight_fade", &ps_r_slight_fade, .02f, 2.f);
 
-	//CMD4(CCC_Integer, "r_dhemi_count", &ps_r_dhemi_count, 4, 25);
-	//CMD4(CCC_Float, "r_dhemi_scale", &ps_r_dhemi_scale, .5f, 3.f);
-	//CMD4(CCC_Float, "r_dhemi_smooth", &ps_r_lt_smooth, 0.f, 10.f);
+	CMD4(CCC_Integer, "r_dhemi_count", &ps_r_dhemi_count, 4, 25);
+	CMD4(CCC_Float, "r_dhemi_scale", &ps_r_dhemi_scale, .5f, 3.f);
+	CMD4(CCC_Float, "r_dhemi_smooth", &ps_r_lt_smooth, 0.f, 10.f);
 
 	CMD3(CCC_Token, "r_material_quality", &ps_r_material_quality, material_quality_token);
 
