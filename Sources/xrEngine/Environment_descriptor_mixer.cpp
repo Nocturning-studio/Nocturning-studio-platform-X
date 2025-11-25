@@ -98,10 +98,7 @@ void CEnvDescriptorMixer::lerp( CEnvironment* env,
 	LERP(sky_rotation);
 
 	LERP(far_plane);
-	if (Mdf.use_flags.test(eViewDist))
-		far_plane *= psVisDistance* modif_power;
-	else
-		far_plane *= psVisDistance;
+	far_plane *= psVisDistance;
 
 	// Fog Color
 	LERP_VEC(fog_color);
@@ -129,7 +126,7 @@ void CEnvDescriptorMixer::lerp( CEnvironment* env,
 	LERP(bolt_period);
 	LERP(bolt_duration);
 
-	// Wind (Здесь же добавьте ваши новые параметры из предыдущего шага, если нужно)
+	// Wind
 	LERP(wind_strength);
 	LERP(wind_direction);
 	LERP(wind_gusting);
@@ -172,13 +169,12 @@ void CEnvDescriptorMixer::lerp( CEnvironment* env,
 		hemi_color.x += Mdf.hemi_color.x;
 		hemi_color.y += Mdf.hemi_color.y;
 		hemi_color.z += Mdf.hemi_color.z;
-		hemi_color.mul(modif_power); // Оптимизировал: умножение всего вектора сразу
+		hemi_color.mul(modif_power);
 	}
 
 	LERP(ambient_brightness);
 	LERP_VEC(sun_color);
 
-	// Sun Direction (Требует нормализации, макрос не подходит)
 	R_ASSERT(_valid(A.sun_dir) && _valid(B.sun_dir));
 	sun_dir.lerp(A.sun_dir, B.sun_dir, f).normalize();
 	VERIFY2(sun_dir.y < 0, "Invalid sun direction settings while lerp");
