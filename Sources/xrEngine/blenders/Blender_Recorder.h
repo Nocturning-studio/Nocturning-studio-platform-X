@@ -53,6 +53,13 @@ class ENGINE_API CBlender_Compile
 	}
 
   public:
+	enum class ShaderScope
+	{
+		Vertex,
+		Pixel,
+		Both
+	};
+
 	struct PassDesc
 	{
 		std::string VertexShader = "null";
@@ -67,7 +74,9 @@ class ENGINE_API CBlender_Compile
 		u32 AlphaRef = 0;
 	};
 
-	CShaderMacros macros;
+	CShaderMacros macros_common; // Для обоих (по умолчанию)
+	CShaderMacros macros_vs;	 // Только для Vertex Shader
+	CShaderMacros macros_ps;	 // Только для Pixel Shader
 
 	CSimulator& R()
 	{
@@ -141,13 +150,64 @@ class ENGINE_API CBlender_Compile
 	void i_Filter(u32 s, u32 _min, u32 _mip, u32 _mag);
 	void i_sRGB(u32 s, bool state = true);
 
-	void set_Define(string32 Name, int value);
-	void set_Define(string32 Name, float value);
-	void set_Define(string32 Name, u32 value);
-	void set_Define(string32 Name, bool value);
-	void set_Define(string32 Name);
-	void set_Define(string32 Name, string32 Definition);
-	void set_Define(BOOL Enabled, string32 Name, string32 Definition);
+private:
+	// Вспомогательный макрос для распределения по scope
+	// __VA_ARGS__ позволяет передавать (Name, value) или (Name, "1")
+#define APPLY_SCOPE_MACRO(...)                                                                                         \
+	switch (scope)                                                                                                     \
+	{                                                                                                                  \
+	case ShaderScope::Vertex:                                                                                          \
+		macros_vs.add(__VA_ARGS__);                                                                                    \
+		break;                                                                                                         \
+	case ShaderScope::Pixel:                                                                                           \
+		macros_ps.add(__VA_ARGS__);                                                                                    \
+		break;                                                                                                         \
+	case ShaderScope::Both:                                                                                            \
+	default:                                                                                                           \
+		macros_common.add(__VA_ARGS__);                                                                                \
+		break;                                                                                                         \
+	}
+
+  public:
+	void set_Define(string32 Name, int value, ShaderScope scope = ShaderScope::Both)
+	{
+		APPLY_SCOPE_MACRO(Name, value);
+	}
+
+	void set_Define(string32 Name, float value, ShaderScope scope = ShaderScope::Both)
+	{
+		APPLY_SCOPE_MACRO(Name, value);
+	}
+
+	void set_Define(string32 Name, u32 value, ShaderScope scope = ShaderScope::Both)
+	{
+		APPLY_SCOPE_MACRO(Name, value);
+	}
+
+	void set_Define(string32 Name, bool value, ShaderScope scope = ShaderScope::Both)
+	{
+		APPLY_SCOPE_MACRO(Name, value);
+	}
+
+	// ИСПРАВЛЕННЫЙ МЕТОД
+	void set_Define(string32 Name, ShaderScope scope = ShaderScope::Both)
+	{
+		// Явно передаем "1", так как add(Name) не существует
+		APPLY_SCOPE_MACRO(Name, "1");
+	}
+
+	void set_Define(string32 Name, string32 Definition, ShaderScope scope = ShaderScope::Both)
+	{
+		APPLY_SCOPE_MACRO(Name, Definition);
+	}
+
+	void set_Define(BOOL Enabled, string32 Name, string32 Definition, ShaderScope scope = ShaderScope::Both)
+	{
+		APPLY_SCOPE_MACRO(Enabled, Name, Definition);
+	}
+
+	// Удаляем макрос, чтобы не засорять глобальное пространство имен
+#undef APPLY_SCOPE_MACRO
 
 	void begin_Pass(LPCSTR vs = "null", LPCSTR ps = "null", bool bFog = FALSE, BOOL bZtest = FALSE, BOOL bZwrite = FALSE,
 					BOOL bABlend = FALSE,

@@ -113,6 +113,11 @@ void CBlender_Compile::PassBegin()
 	strcpy_s(pass_ps, "null");
 	strcpy_s(pass_vs, "null");
 	dwStage = 0;
+
+	// Очищаем все списки
+	macros_common.clear();
+	macros_vs.clear();
+	macros_ps.clear();
 }
 
 void CBlender_Compile::PassEnd()
@@ -123,9 +128,27 @@ void CBlender_Compile::PassEnd()
 
 	// Create pass
 	ref_state state = Device.Resources->_CreateState(RS.GetContainer());
-	ref_ps ps = Device.Resources->CreateShader<SPS>(pass_ps, macros);
-	ref_vs vs = Device.Resources->CreateShader<SVS>(pass_vs, macros);
-	macros.clear();
+
+	// [НОВАЯ ЛОГИКА] Объединяем макросы
+	// 1. Подготавливаем макросы для Pixel Shader (Common + PS)
+	CShaderMacros final_macros_ps;
+	final_macros_ps.add(macros_common);
+	final_macros_ps.add(macros_ps);
+
+	// 2. Подготавливаем макросы для Vertex Shader (Common + VS)
+	CShaderMacros final_macros_vs;
+	final_macros_vs.add(macros_common);
+	final_macros_vs.add(macros_vs);
+
+	// Компилируем шейдеры с соответствующими макросами
+	ref_ps ps = Device.Resources->CreateShader<SPS>(pass_ps, final_macros_ps);
+	ref_vs vs = Device.Resources->CreateShader<SVS>(pass_vs, final_macros_vs);
+
+	// Очищаем списки после создания прохода
+	macros_common.clear();
+	macros_vs.clear();
+	macros_ps.clear();
+
 	ctable.merge(&ps->constants);
 	ctable.merge(&vs->constants);
 	SetMapping();
@@ -311,43 +334,8 @@ void CBlender_Compile::Stage_Constant(LPCSTR name)
 	passConstants.push_back(Device.Resources->_CreateConstant((id >= 0) ? *lst[id] : name));
 }
 
-void CBlender_Compile::set_Define(string32 Name, int value)
-{
-	macros.add(Name, value);
-}
-
-void CBlender_Compile::set_Define(string32 Name, float value)
-{
-	macros.add(Name, value);
-}
-
-void CBlender_Compile::set_Define(string32 Name, u32 value)
-{
-	macros.add(Name, value);
-}
-
-void CBlender_Compile::set_Define(string32 Name, bool value)
-{
-	macros.add(Name, value);
-}
-
-void CBlender_Compile::set_Define(string32 Name)
-{
-	macros.add(Name, "1");
-}
-
-void CBlender_Compile::set_Define(string32 Name, string32 Definition)
-{
-	macros.add(Name, Definition);
-}
-
-void CBlender_Compile::set_Define(BOOL Enabled, string32 Name, string32 Definition)
-{
-	macros.add(Enabled, Name, Definition);
-}
-
 void CBlender_Compile::begin_Pass(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest, BOOL bZwrite, BOOL bABlend,
-							  D3DBLEND abSRC, D3DBLEND abDST, BOOL aTest, u32 aRef)
+								  D3DBLEND abSRC, D3DBLEND abDST, BOOL aTest, u32 aRef)
 {
 	RS.Invalidate();
 	ctable.clear();
@@ -361,10 +349,24 @@ void CBlender_Compile::begin_Pass(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest
 	PassSET_Blend(bABlend, abSRC, abDST, aTest, aRef);
 	PassSET_LightFog(FALSE, bFog);
 
+	// [НОВАЯ ЛОГИКА] Объединяем макросы
+	CShaderMacros final_macros_ps;
+	final_macros_ps.add(macros_common);
+	final_macros_ps.add(macros_ps);
+
+	CShaderMacros final_macros_vs;
+	final_macros_vs.add(macros_common);
+	final_macros_vs.add(macros_vs);
+
 	// Create shaders
-	SPS* ps = Device.Resources->CreateShader<SPS>(_ps, macros);
-	SVS* vs = Device.Resources->CreateShader<SVS>(_vs, macros);
-	macros.clear();
+	SPS* ps = Device.Resources->CreateShader<SPS>(_ps, final_macros_ps);
+	SVS* vs = Device.Resources->CreateShader<SVS>(_vs, final_macros_vs);
+
+	// Очищаем после использования
+	macros_common.clear();
+	macros_vs.clear();
+	macros_ps.clear();
+
 	dest.ps = ps;
 	dest.vs = vs;
 	ctable.merge(&ps->constants);

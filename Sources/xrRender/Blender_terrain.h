@@ -90,11 +90,11 @@ class CBlender_terrain : public IBlender
 			else if (ps_r_material_quality == 4)
 				BumpType = 3; // steep parallax
 
-			C.set_Define(BumpType == 1, "USE_NORMAL_MAPPING", "1");
-			C.set_Define(BumpType == 2, "USE_PARALLAX_MAPPING", "1");
-			C.set_Define(BumpType == 3, "USE_PARALLAX_OCCLUSION_MAPPING", "1");
-			C.set_Define(true, "USE_SRGB_COLOR_CONVERTING", "1");
-			C.set_Define(true, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1");
+			C.set_Define(BumpType == 1, "USE_NORMAL_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define(BumpType == 2, "USE_PARALLAX_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define(BumpType == 3, "USE_PARALLAX_OCCLUSION_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define(true, "USE_SRGB_COLOR_CONVERTING", "1", CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define(true, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1", CBlender_Compile::ShaderScope::Pixel);
 
 			C.begin_Pass("gbuffer_stage_terrain", "gbuffer_stage_terrain", TRUE, TRUE, TRUE);
 
