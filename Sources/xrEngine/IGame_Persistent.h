@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Environment.h"
-#include "Sound_environment.h"
 #ifndef _EDITOR
 #include "IGame_ObjectPool.h"
 #endif
@@ -76,12 +75,6 @@ class ENGINE_API IGame_Persistent :
 	CEnvironment& Environment()
 	{
 		return *pEnvironment;
-	};
-
-	CSoundEnvironment* pSoundEnvironment;
-	CSoundEnvironment& SoundEnvironment()
-	{
-		return *pSoundEnvironment;
 	};
 
 	virtual bool OnRenderPPUI_query()

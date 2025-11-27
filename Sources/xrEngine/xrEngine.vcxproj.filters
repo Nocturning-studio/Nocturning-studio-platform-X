@@ -151,9 +151,6 @@
     <Filter Include="Game API\Environment\Hemisphere">
       <UniqueIdentifier>{a0a981e9-3342-4843-8de4-f900f0c05969}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game API\Sound Environment">
-      <UniqueIdentifier>{4344e60a-1d70-41a3-908e-6dba4316c117}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Profiling">
       <UniqueIdentifier>{8dc6eb7a-079c-47df-bbfa-b9bf38756dc6}</UniqueIdentifier>
     </Filter>
@@ -564,9 +561,6 @@
     <ClInclude Include="ShaderMacros.h">
       <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager</Filter>
     </ClInclude>
-    <ClInclude Include="Sound_environment.h">
-      <Filter>Game API\Sound Environment</Filter>
-    </ClInclude>
     <ClInclude Include="CPhotoMode.h">
       <Filter>Game API\Photo mode</Filter>
     </ClInclude>
@@ -636,23 +630,8 @@
     <ClInclude Include="R_Backend_xform.h">
       <Filter>Render\Backend</Filter>
     </ClInclude>
-    <ClInclude Include="Sound_environment_common.h">
-      <Filter>Game API\Sound Environment</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound_environment_pathtracing.h">
-      <Filter>Game API\Sound Environment</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound_environment_context.h">
-      <Filter>Game API\Sound Environment</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound_environment_calculations.h">
-      <Filter>Game API\Sound Environment</Filter>
-    </ClInclude>
     <ClInclude Include="Environment_wind.h">
       <Filter>Game API\Environment</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound_environment_thread.h">
-      <Filter>Game API\Sound Environment</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1031,9 +1010,6 @@
     <ClCompile Include="ShaderMacros.cpp">
       <Filter>Render\Execution &amp; 3D\Shaders\ShaderManager</Filter>
     </ClCompile>
-    <ClCompile Include="Sound_environment.cpp">
-      <Filter>Game API\Sound Environment</Filter>
-    </ClCompile>
     <ClCompile Include="CPhotoMode.cpp">
       <Filter>Game API\Photo mode</Filter>
     </ClCompile>
@@ -1130,17 +1106,8 @@
     <ClCompile Include="R_Backend_xform.cpp">
       <Filter>Render\Backend</Filter>
     </ClCompile>
-    <ClCompile Include="Sound_environment_pathtracing.cpp">
-      <Filter>Game API\Sound Environment</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound_environment_calculations.cpp">
-      <Filter>Game API\Sound Environment</Filter>
-    </ClCompile>
     <ClCompile Include="Environment_wind.cpp">
       <Filter>Game API\Environment</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound_environment_thread.cpp">
-      <Filter>Game API\Sound Environment</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

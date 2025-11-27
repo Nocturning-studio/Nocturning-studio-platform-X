@@ -30,7 +30,6 @@ IGame_Persistent::IGame_Persistent()
 	m_pMainMenu = NULL;
 
 	pEnvironment = xr_new<CEnvironment>();
-	pSoundEnvironment = xr_new<CSoundEnvironment>();
 }
 
 IGame_Persistent::~IGame_Persistent()
@@ -41,7 +40,6 @@ IGame_Persistent::~IGame_Persistent()
 	Device.seqAppActivate.Remove(this);
 	Device.seqAppDeactivate.Remove(this);
 	xr_delete(pEnvironment);
-	xr_delete(pSoundEnvironment);
 }
 
 void IGame_Persistent::OnAppActivate()
@@ -99,8 +97,6 @@ void IGame_Persistent::Start(LPCSTR op)
 	else
 		UpdateGameType();
 
-	pSoundEnvironment->OnLevelLoad();
-
 	VERIFY(ps_destroy.empty());
 }
 
@@ -114,8 +110,6 @@ void IGame_Persistent::Disconnect()
 
 	ObjectPool.clear();
 	Render->models_Clear(TRUE);
-
-	pSoundEnvironment->OnLevelUnload();
 }
 
 void IGame_Persistent::OnGameStart()
@@ -162,7 +156,6 @@ void IGame_Persistent::OnFrame()
 	if (!Device.Paused() || Device.dwPrecacheFrame)
 	{
 		Environment().OnFrame();
-		SoundEnvironment().Update();
 	}
 #endif
 
