@@ -51,15 +51,19 @@ class CBlender_static_mesh : public IBlender
 		case SE_NORMAL_LQ: // deffer
 			configure_shader(C, false, "static_mesh", "static_mesh", false);
 			break;
-		case SE_SHADOW_DEPTH: // smap-direct
-			C.begin_Pass("shadow_depth_stage_static_mesh", "shadow_depth_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
-			C.set_Sampler("s_base", C.L_textures[0]);
-			C.end_Pass();
-			break;
+		//case SE_SHADOW_DEPTH: // smap-direct
+		//	C.begin_Pass("shadow_depth_stage_static_mesh", "shadow_depth_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
+		//	C.set_Sampler("s_base", C.L_textures[0]);
+		//	C.end_Pass();
+		//	break;
+		//case SE_DEPTH_PREPASS:
+		//	C.begin_Pass("depth_prepass_stage_static_mesh", "depth_prepass_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
+		//	C.set_Sampler("s_base", C.L_textures[0]);
+		//	C.end_Pass();
+		//	break;
+		case SE_SHADOW_DEPTH: // smap
 		case SE_DEPTH_PREPASS:
-			C.begin_Pass("depth_prepass_stage_static_mesh", "depth_prepass_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
-			C.set_Sampler("s_base", C.L_textures[0]);
-			C.end_Pass();
+			configure_shader(C, true, "static_mesh", "static_mesh", true, true);
 			break;
 		}
 	}

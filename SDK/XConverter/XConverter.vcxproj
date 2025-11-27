@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{531aa021-7427-4c9a-babb-5a079da39d36}</ProjectGuid>
+    <ProjectGuid>{7DD096BB-0027-4B30-BF0B-8D08A3288735}</ProjectGuid>
     <RootNamespace>XConverter</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>

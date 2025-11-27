@@ -29,9 +29,11 @@ void CRender::render_depth_of_field()
 
 	float FocalLength = fov_to_length(Device.fFOV);
 	float FocalPlane = Dof.x * FocalDepthMultiplier;
+	FocalPlane = std::max(FocalPlane, FocalLength + 1.0f);
 	float COCPrecalc1 = FocalPlane * FocalLength;
 	float COCPrecalc2 = FocalPlane - FocalLength;
-	float COCPrecalc3 = FocalPlane * Dof.z * CoC;
+	float SafeAperture = std::max(Dof.z, 0.1f);
+	float COCPrecalc3 = FocalPlane * SafeAperture * CoC;
 	float B = COCPrecalc1 / COCPrecalc2;
 	float C = COCPrecalc1 / COCPrecalc3;
 	float CPremultiplied = C * CoC;
