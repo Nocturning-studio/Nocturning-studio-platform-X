@@ -588,7 +588,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-
+copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)PresenceAudioSDK.dll"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -706,7 +706,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-
+copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)PresenceAudioSDK.dll"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -830,7 +830,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-
+copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)PresenceAudioSDK.dll"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -906,7 +906,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-
+copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)PresenceAudioSDK.dll"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -982,7 +982,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-
+copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)PresenceAudioSDK.dll"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -1059,7 +1059,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-
+copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)PresenceAudioSDK.dll"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -1135,7 +1135,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-
+copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)PresenceAudioSDK.dll"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -1522,7 +1522,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-
+copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)PresenceAudioSDK.dll"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -1639,7 +1639,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-
+copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)PresenceAudioSDK.dll"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -1761,7 +1761,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\BugTrap.dll" "$(OutDir)BugTrap.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\ode.dll" "$(OutDir)ode.dll"
 copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll"
-
+copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)PresenceAudioSDK.dll"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -1828,6 +1828,10 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Third-party\include\PresenceAudioSDK\PresenceAudioAPI.h" />
+    <ClInclude Include="..\..\Third-party\include\PresenceAudioSDK\PresenceDefines.h" />
+    <ClInclude Include="..\..\Third-party\include\PresenceAudioSDK\PresenceMath.h" />
+    <ClInclude Include="..\..\Third-party\include\PresenceAudioSDK\PresenceSystem.h" />
     <ClInclude Include="abstract_location_selector.h" />
     <ClInclude Include="abstract_location_selector_inline.h" />
     <ClInclude Include="abstract_path_manager.h" />
@@ -2739,6 +2743,9 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
     <ClInclude Include="PostprocessAnimator.h" />
     <ClInclude Include="pp_effector_custom.h" />
     <ClInclude Include="pp_effector_distance.h" />
+    <ClInclude Include="PresenceAudioIntegration\Sound_environment.h" />
+    <ClInclude Include="PresenceAudioIntegration\Sound_environment_common.h" />
+    <ClInclude Include="PresenceAudioIntegration\Sound_environment_geometry_provider.h" />
     <ClInclude Include="problem_solver.h" />
     <ClInclude Include="problem_solver_inline.h" />
     <ClInclude Include="profiler.h" />
@@ -9145,6 +9152,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\OpenAL32.dll" "$(OutDir)OpenAL32.dll
     <ClCompile Include="PostprocessAnimator.cpp" />
     <ClCompile Include="pp_effector_custom.cpp" />
     <ClCompile Include="pp_effector_distance.cpp" />
+    <ClCompile Include="PresenceAudioIntegration\Sound_environment.cpp" />
     <ClCompile Include="profiler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Priquel|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Priquel|x64'">true</ExcludedFromBuild>

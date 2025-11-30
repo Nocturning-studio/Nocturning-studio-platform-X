@@ -15,7 +15,6 @@
 #include "PHdynamicdata.h"
 #include "Physics.h"
 #include "ShootingObject.h"
-//.#include "LevelFogOfWar.h"
 #include "Level_Bullet_Manager.h"
 #include "script_process.h"
 #include "script_engine.h"
@@ -52,6 +51,10 @@
 #include "physicobject.h"
 #endif
 
+#include "PresenceAudioIntegration/Sound_environment.h"
+
+CSoundEnvironment* g_SoundEnvironment = nullptr;
+
 ENGINE_API bool g_dedicated_server;
 
 extern BOOL g_bDebugDumpPhysicsStep;
@@ -75,7 +78,7 @@ CLevel::CLevel()
 	Server = NULL;
 
 	game = NULL;
-	//	game						= xr_new<game_cl_GameState>();
+
 	game_events = xr_new<NET_Queue_Event>();
 
 	game_configured = FALSE;
@@ -95,7 +98,6 @@ CLevel::CLevel()
 	else
 		m_map_manager = NULL;
 
-	//	m_pFogOfWarMngr				= xr_new<CFogOfWarMngr>();
 	//----------------------------------------------------
 	m_bNeed_CrPr = false;
 	m_bIn_CrPr = false;
@@ -158,45 +160,20 @@ CLevel::CLevel()
 	m_pOldCrashHandler = NULL;
 	m_we_used_old_crach_handler = false;
 
-	//	if ( !strstr( Core.Params, "-tdemo " ) && !strstr(Core.Params,"-tdemof "))
-	//	{
-	//		Demo_PrepareToStore();
-	//	};
-	//---------------------------------------------------------
-	//	m_bDemoPlayMode = FALSE;
-	//	m_aDemoData.clear();
-	//	m_bDemoStarted	= FALSE;
-
 	Msg("%s", Core.Params);
-	/*
-	if (strstr(Core.Params,"-tdemo ") || strstr(Core.Params,"-tdemof ")) {
-		string1024				f_name;
-		if (strstr(Core.Params,"-tdemo "))
-		{
-			sscanf					(strstr(Core.Params,"-tdemo ")+7,"%[^ ] ",f_name);
-			m_bDemoPlayByFrame = FALSE;
 
-			Demo_Load	(f_name);
-		}
-		else
-		{
-			sscanf					(strstr(Core.Params,"-tdemof ")+8,"%[^ ] ",f_name);
-			m_bDemoPlayByFrame = TRUE;
-
-			m_lDemoOfs = 0;
-			Demo_Load_toFrame(f_name, 100, m_lDemoOfs);
-		};
-	}
-	*/
-	//---------------------------------------------------------
+	g_SoundEnvironment = xr_new<CSoundEnvironment>();
+	g_SoundEnvironment->OnLevelLoad();
 }
 
 extern CAI_Space* g_ai_space;
 
 CLevel::~CLevel()
 {
-	//	g_pGameLevel		= NULL;
 	Msg("- Destroying level");
+
+	g_SoundEnvironment->OnLevelUnload();
+	xr_delete (g_SoundEnvironment);
 
 	Engine.Event.Handler_Detach(eEntitySpawn, this);
 
@@ -481,7 +458,6 @@ void CLevel::OnFrame()
 	}
 	else
 	{
-
 		Device.Statistic->netClient1.Begin();
 
 		ClientReceive();
@@ -574,6 +550,8 @@ void CLevel::OnFrame()
 	// update static sounds
 	if (!g_dedicated_server)
 	{
+		g_SoundEnvironment->Update();
+
 		if (g_mt_config.test(mtLevelSounds))
 			Device.seqParallel.push_back(
 				fastdelegate::FastDelegate0<>(m_level_sound_manager, &CLevelSoundManager::Update));

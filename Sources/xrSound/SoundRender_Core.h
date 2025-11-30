@@ -5,7 +5,12 @@
 #include "SoundRender.h"
 #include "SoundRender_Cache.h"
 #include "soundrender_target.h"
-#include "../xrEngine/Sound_environment_common.h"
+
+#pragma warning(push)
+#pragma warning(disable : 4995)
+#include <PresenceAudioSDK/PresenceAudioAPI.h>
+#include "../xrGame/PresenceAudioIntegration/Sound_environment_common.h"
+#pragma warning(pop)
 
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
@@ -69,6 +74,14 @@ class CSoundRender_Core : public CSound_manager_interface
   public:
 	typedef std::pair<ref_sound_data_ptr, float> event;
 	xr_vector<event> s_events;
+
+	// ”казатель на интерфейс из SDK
+	Presence::ISoundOcclusionCalculator* m_pOcclusion;
+
+	void SetOcclusion(Presence::ISoundOcclusionCalculator* pOcc)
+	{
+		m_pOcclusion = pOcc;
+	}
 
   public:
 	BOOL bPresent;

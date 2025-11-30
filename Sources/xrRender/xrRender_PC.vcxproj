@@ -987,6 +987,7 @@
     <ClInclude Include="r_render_pipeline.h" />
     <ClInclude Include="r_sector.h" />
     <ClInclude Include="shader_configurator.h" />
+    <ClInclude Include="SunOccluder.h" />
     <ClInclude Include="VertexCache.h" />
     <ClInclude Include="WallmarksEngine.h" />
     <ClInclude Include="xrRender_console.h" />
@@ -1103,6 +1104,7 @@
     <ClCompile Include="r_screenshot.cpp" />
     <ClCompile Include="r_sector.cpp" />
     <ClCompile Include="r_sector_traversal.cpp" />
+    <ClCompile Include="SunOccluder.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tga.cpp" />
     <ClCompile Include="shader_configurator.cpp" />

@@ -289,6 +289,8 @@ void SetupCustomMaterialNormal(CBlender_Compile& C, LPCSTR channel_setup)
 void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR VertexShaderName,
 					  LPCSTR PixelShaderName, BOOL bUseAlpha, BOOL bUseDepthOnly)
 {
+	C.set_Define("MATERIAL_QUALITY", (int)ps_r_material_quality, CBlender_Compile::ShaderScope::Pixel);
+
 	// Output shader names
 	string_path NewPixelShaderName;
 	string_path NewVertexShaderName;
@@ -336,7 +338,6 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	if (FS.exist(MaterialConfiguratorRealPath))
 	{
 		MaterialConfiguration = CInifile::Create(MaterialConfiguratorRealPath);
-		Msg("Material configuration file finded: %s", MaterialConfiguratorRealPath);
 		bUseConfigurator = true;
 	}
 
@@ -1095,6 +1096,8 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR VertexShaderName,
 									LPCSTR PixelShaderName, BOOL bUseAlpha)
 {
+	C.set_Define("MATERIAL_QUALITY", (int)ps_r_material_quality, CBlender_Compile::ShaderScope::Pixel);
+
 	// Output shader names
 	string_path NewPixelShaderName;
 	string_path NewVertexShaderName;
@@ -1123,7 +1126,6 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 	if (FS.exist(MaterialConfiguratorRealPath))
 	{
 		MaterialConfiguration = CInifile::Create(MaterialConfiguratorRealPath);
-		Msg("Material configuration file finded: %s", MaterialConfiguratorRealPath);
 		bUseConfigurator = true;
 	}
 
@@ -1181,7 +1183,6 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 	bUseCustomSubsurfacePower =
 		ConcatAndFindLevelTexture(CustomSubsurfacePowerTexture, AlbedoTexture, "_subsurface_power") && !DisablePBR;
 	C.set_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1", CBlender_Compile::ShaderScope::Pixel);
-	Msg("CustomSubsurfacePowerTexture %s", CustomSubsurfacePowerTexture);
 
 	// Get emission power texture
 	bool bUseCustomEmission = false;

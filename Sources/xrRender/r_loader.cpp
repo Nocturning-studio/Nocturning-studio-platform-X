@@ -9,6 +9,10 @@
 #include "../xrCore/stream_reader.h"
 #include "../xrEngine/xr_ioconsole.h"
 
+#include <ppl.h>
+#include <future>
+#include <atomic>
+
 #pragma warning(push)
 #pragma warning(disable : 4995)
 #include <malloc.h>
@@ -21,92 +25,133 @@ void CRender::level_Load(IReader* fs)
 	R_ASSERT(0 != g_pGameLevel);
 	R_ASSERT(!b_loaded);
 
-	// Begin
 	pApp->LoadBegin();
 	Device.Resources->DeferredLoad(TRUE);
-	IReader* chunk;
 
-	// Shaders
-	g_pGamePersistent->LoadTitle("st_loading_shaders");
-	{
-		chunk = fs->open_chunk(fsL_SHADERS);
-		R_ASSERT2(chunk, "Level doesn't builded correctly.");
-		u32 count = chunk->r_u32();
-		Shaders.resize(count);
-		for (u32 i = 0; i < count; i++) // skip first shader as "reserved" one
-		{
-			string512 n_sh, n_tlist;
-			LPCSTR n = LPCSTR(chunk->pointer());
-			chunk->skip_stringZ();
-			if (0 == n[0])
-				continue;
-			strcpy(n_sh, n);
-			LPSTR delim = strchr(n_sh, '/');
-			*delim = 0;
-			strcpy(n_tlist, delim + 1);
-			Shaders[i] = Device.Resources->Create(n_sh, n_tlist);
-		}
-		chunk->close();
-	}
+	// 1. RAM BUFFERING
+	fs->seek(0);
+	u32 level_size = fs->elapsed();
+	u8* level_data_ptr = (u8*)xr_malloc(level_size);
+	fs->r(level_data_ptr, level_size);
+	IReader mem_fs(level_data_ptr, level_size);
 
-	// Components
 	g_pGamePersistent->LoadTitle("st_loading_components");
 	Wallmarks = xr_new<CWallmarksEngine>();
 	Details = xr_new<CDetailManager>();
+	m_SunOccluder = xr_new<CSunOccluder>();
 
-	if (!g_dedicated_server)
+	// 2. Шейдеры (Main Thread)
+	g_pGamePersistent->LoadTitle("st_loading_shaders");
 	{
-		// VB,IB,SWI
-		g_pGamePersistent->LoadTitle("st_loading_geometry");
+		Msg("* Compiling RenderTarget shaders...");
+		if (RenderTarget)
+			RenderTarget->CompileShaders();
+
+		IReader* chunk = mem_fs.open_chunk(fsL_SHADERS);
+		if (chunk)
 		{
-			CStreamReader* geom = FS.rs_open("$level$", "level.geom");
-			R_ASSERT2(geom, "level.geom");
-			LoadBuffers(geom, FALSE);
-			LoadSWIs(geom);
-			FS.r_close(geom);
+			u32 count = chunk->r_u32();
+			Shaders.resize(count);
+			for (u32 i = 0; i < count; i++)
+			{
+				string512 n_sh, n_tlist;
+				LPCSTR n = LPCSTR(chunk->pointer());
+				chunk->skip_stringZ();
+				if (0 == n[0])
+					continue;
+				strcpy(n_sh, n);
+				LPSTR delim = strchr(n_sh, '/');
+				*delim = 0;
+				strcpy(n_tlist, delim + 1);
+				Shaders[i] = Device.Resources->Create(n_sh, n_tlist);
+			}
+			chunk->close();
 		}
-
-		//...and alternate/fast geometry
-		g_pGamePersistent->LoadTitle("st_loading_fast_geometry");
-		{
-			CStreamReader* geom = FS.rs_open("$level$", "level.geomx");
-			R_ASSERT2(geom, "level.geomX");
-			LoadBuffers(geom, TRUE);
-			FS.r_close(geom);
-		}
-
-		// Visuals
-		g_pGamePersistent->LoadTitle("st_loading_spatial_db");
-		chunk = fs->open_chunk(fsL_VISUALS);
-		LoadVisuals(chunk);
-		chunk->close();
-
-		// Details
-		g_pGamePersistent->LoadTitle("st_loading_details");
-		Details->Load();
 	}
 
-	// Sectors
+	// 3. Геометрия (Main Thread)
+	if (!g_dedicated_server)
+	{
+		g_pGamePersistent->LoadTitle("st_loading_geometry");
+
+		CStreamReader* geom = FS.rs_open("$level$", "level.geom");
+		R_ASSERT2(geom, "level.geom");
+		LoadBuffers(geom, FALSE);
+		LoadSWIs(geom);
+		FS.r_close(geom);
+
+		// Обновим экран между тяжелыми файлами
+		pApp->LoadDraw();
+
+		g_pGamePersistent->LoadTitle("st_loading_fast_geometry");
+
+		CStreamReader* geomx = FS.rs_open("$level$", "level.geomx");
+		R_ASSERT2(geomx, "level.geomX");
+		LoadBuffers(geomx, TRUE);
+		FS.r_close(geomx);
+	}
+
+	concurrency::task_group tg;
+	std::atomic<int> active_tasks = 0;
+
+	// Хелпер для запуска задачи с подсчетом
+	auto run_tracked_task = [&](auto func) {
+		active_tasks++;
+		tg.run([func, &active_tasks]() {
+			func();
+			active_tasks--;
+		});
+	};
+
+	g_pGamePersistent->LoadTitle("st_loading_spatial_db");
+
+	// ЗАДАЧА A: Визуалы
+	run_tracked_task([this, level_data_ptr, level_size]() {
+		IReader local_fs(level_data_ptr, level_size);
+		LoadVisuals(&local_fs);
+	});
+
+	// ЗАДАЧА B: Детейлы
+	run_tracked_task([this]() { Details->Load(); });
+
+	// ЗАДАЧА C: HOM
+	run_tracked_task([this]() { HOM.Load(); });
+
+	// ЗАДАЧА D: Sun Occluder
+	run_tracked_task([this]() { m_SunOccluder->Load(); });
+
+	// === ACTIVE WAIT LOOP ===
+	// Вместо простого tg.wait(), мы крутимся в цикле и рендерим, пока задачи работают
+	while (active_tasks > 0)
+	{
+		pApp->LoadDraw();
+		Sleep(1);		  // Отдаем приоритет рабочим потокам
+	}
+	tg.wait(); // Для гарантии
+
+	// 5. Финализация (Main Thread)
 	g_pGamePersistent->LoadTitle("st_loading_sectors_portals");
-	LoadSectors(fs);
+	{
+		IReader local_fs(level_data_ptr, level_size);
+		LoadSectors(&local_fs);
+	}
 
-	// HOM
-	g_pGamePersistent->LoadTitle("st_loading_hom");
-	HOM.Load();
+	pApp->LoadDraw();
 
-	// Lights
 	g_pGamePersistent->LoadTitle("st_loading_lights");
-	LoadLights(fs);
+	{
+		IReader local_fs(level_data_ptr, level_size);
+		LoadLights(&local_fs);
+	}
 
-	// End
+	xr_free(level_data_ptr);
+
 	pApp->LoadEnd();
 
-	// sanity-clear
 	lstLODs.clear();
 	lstLODgroups.clear();
 	mapLOD.clear();
 
-	// signal loaded
 	b_loaded = TRUE;
 }
 
@@ -127,6 +172,12 @@ void CRender::level_Unload()
 	// HOM
 	g_pGamePersistent->LoadTitle("st_unloading_hom");
 	HOM.Unload();
+
+	if (m_SunOccluder)
+	{
+		m_SunOccluder->Unload();
+		xr_delete(m_SunOccluder);
+	}
 
 	//*** Details
 	g_pGamePersistent->LoadTitle("st_unloading_details");
@@ -204,16 +255,18 @@ void CRender::LoadBuffers(CStreamReader* base_fs, BOOL _alternative)
 
 	// Vertex buffers
 	{
-		// Use DX9-style declarators
 		CStreamReader* fs = base_fs->open_chunk(fsL_VB);
 		R_ASSERT2(fs, "Could not load geometry. File 'level.geom?' corrupted.");
 		u32 count = fs->r_u32();
 		_DC.resize(count);
 		_VB.resize(count);
+
+		// Используем временный буфер для чтения
+		xr_vector<u8> temp_buffer;
+
 		for (u32 i = 0; i < count; i++)
 		{
-			// decl
-			//			D3DVERTEXELEMENT9*	dcl		= (D3DVERTEXELEMENT9*) fs().pointer();
+			// 1. Читаем декларацию
 			u32 buffer_size = (MAXD3DDECLLENGTH + 1) * sizeof(D3DVERTEXELEMENT9);
 			D3DVERTEXELEMENT9* dcl = (D3DVERTEXELEMENT9*)_alloca(buffer_size);
 			fs->r(dcl, buffer_size);
@@ -223,20 +276,25 @@ void CRender::LoadBuffers(CStreamReader* base_fs, BOOL _alternative)
 			_DC[i].resize(dcl_len);
 			fs->r(_DC[i].begin(), dcl_len * sizeof(D3DVERTEXELEMENT9));
 
-			// count, size
+			// 2. Читаем данные вершин
 			u32 vCount = fs->r_u32();
 			u32 vSize = D3DXGetDeclVertexSize(dcl, 0);
-			Msg("* [Loading VB] %d verts, %d Kb", vCount, (vCount * vSize) / 1024);
+			u32 byteSize = vCount * vSize;
 
-			// Create and fill
-			BYTE* pData = 0;
-			R_CHK(HW.pDevice->CreateVertexBuffer(vCount * vSize, dwUsage, 0, D3DPOOL_DEFAULT, &_VB[i], 0));
+			Msg("* [Loading VB] %d verts, %d Kb", vCount, byteSize / 1024);
+
+			// ОПТИМИЗАЦИЯ: Читаем в RAM
+			temp_buffer.resize(byteSize);
+			fs->r(temp_buffer.data(), byteSize);
+
+			// Создаем буфер
+			R_CHK(HW.pDevice->CreateVertexBuffer(byteSize, dwUsage, 0, D3DPOOL_DEFAULT, &_VB[i], 0));
+
+			// Копируем из RAM в VRAM (это очень быстро)
+			void* pData = 0;
 			R_CHK(_VB[i]->Lock(0, 0, (void**)&pData, 0));
-			//			CopyMemory			(pData,fs().pointer(),vCount*vSize);
-			fs->r(pData, vCount * vSize);
+			CopyMemory(pData, temp_buffer.data(), byteSize);
 			_VB[i]->Unlock();
-
-			//			fs->advance			(vCount*vSize);
 		}
 		fs->close();
 	}
@@ -246,20 +304,25 @@ void CRender::LoadBuffers(CStreamReader* base_fs, BOOL _alternative)
 		CStreamReader* fs = base_fs->open_chunk(fsL_IB);
 		u32 count = fs->r_u32();
 		_IB.resize(count);
+
+		xr_vector<u8> temp_buffer;
+
 		for (u32 i = 0; i < count; i++)
 		{
 			u32 iCount = fs->r_u32();
-			Msg("* [Loading IB] %d indices, %d Kb", iCount, (iCount * 2) / 1024);
+			u32 byteSize = iCount * 2;
+			Msg("* [Loading IB] %d indices, %d Kb", iCount, byteSize / 1024);
 
-			// Create and fill
-			BYTE* pData = 0;
-			R_CHK(HW.pDevice->CreateIndexBuffer(iCount * 2, dwUsage, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &_IB[i], 0));
+			// ОПТИМИЗАЦИЯ: Читаем в RAM
+			temp_buffer.resize(byteSize);
+			fs->r(temp_buffer.data(), byteSize);
+
+			// Создаем и копируем
+			void* pData = 0;
+			R_CHK(HW.pDevice->CreateIndexBuffer(byteSize, dwUsage, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &_IB[i], 0));
 			R_CHK(_IB[i]->Lock(0, 0, (void**)&pData, 0));
-			//			CopyMemory			(pData,fs().pointer(),iCount*2);
-			fs->r(pData, iCount * 2);
+			CopyMemory(pData, temp_buffer.data(), byteSize);
 			_IB[i]->Unlock();
-
-			//			fs().advance		(iCount*2);
 		}
 		fs->close();
 	}
@@ -274,9 +337,14 @@ void CRender::LoadVisuals(IReader* fs)
 	IRender_Visual* V = 0;
 	ogf_header H;
 
-	while ((chunk = fs->open_chunk(index)) != 0)
+	IReader* main_chunk = fs->open_chunk(fsL_VISUALS);
+	if (!main_chunk)
+		return;
+
+	while ((chunk = main_chunk->open_chunk(index)) != 0)
 	{
 		chunk->r_chunk_safe(OGF_HEADER, &H, sizeof(H));
+
 		V = Models->Instance_Create(H.type);
 		V->Load(0, chunk, 0);
 		Visuals.push_back(V);
@@ -284,6 +352,7 @@ void CRender::LoadVisuals(IReader* fs)
 		chunk->close();
 		index++;
 	}
+	main_chunk->close();
 }
 
 void CRender::LoadLights(IReader* fs)

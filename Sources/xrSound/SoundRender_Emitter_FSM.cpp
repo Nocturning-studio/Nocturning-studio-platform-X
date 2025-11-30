@@ -278,18 +278,51 @@ BOOL CSoundRender_Emitter::update_culling(float dt)
 			fade_scale *= psSoundVWeaponShooting;
 
 		if (owner_data->g_type == SOUND_TYPE_WORLD_AMBIENT)
-			fade_scale *= psSoundVAmbient;// * psSoundVAmbientDynamicMultiplier;
+			fade_scale *= psSoundVAmbient;
 
 		fade_volume += dt * 10.f * fade_scale;
 
-		// Update occlusion
-		volume_lerp(occluder_volume, SoundRender->get_occlusion(p_source.position, .2f, occluder), 1.f, dt);
-		// float occ = (owner_data->g_type == SOUND_TYPE_WORLD_AMBIENT) ? 1.0f :
-		//  SoundRender->get_occlusion(p_source.position, .2f, occluder);
-		//  volume_lerp(occluder_volume, occ, 1.f, dt);
+		// -----------------------------------------------------------------------------------------
+		// [Presence Audio Integration] Update occlusion
+		// -----------------------------------------------------------------------------------------
+
+		float target_occlusion = 1.0f;
+
+		// 1. Эмбиент не должен перекрываться стенами (он глобальный)
+		//if (owner_data->g_type == SOUND_TYPE_WORLD_AMBIENT)
+		//{
+		//	target_occlusion = 1.0f;
+		//}
+		// 2. Если Presence SDK подключен -> используем Ray Tracing
+		//else 
+		if (SoundRender->m_pOcclusion)
+		{
+			Fvector l_pos = SoundRender->listener_position();
+			Fvector s_pos = p_source.position;
+
+			// Конвертация координат X-Ray -> Presence
+			Presence::float3 listener(l_pos.x, l_pos.y, l_pos.z);
+			Presence::float3 source(s_pos.x, s_pos.y, s_pos.z);
+
+			target_occlusion = SoundRender->m_pOcclusion->CalculateOcclusion(listener, source);
+		}
+		// 3. Fallback: Старая система (если SDK не загрузился)
+		else
+		{
+			target_occlusion = SoundRender->get_occlusion(p_source.position, .2f, occluder);
+		}
+
+		// Интерполяция (сглаживание) значения окклюзии
+		// 1.f - это скорость интерполяции. Для рейтрейсинга можно сделать чуть быстрее или медленнее
+		// в зависимости от вкуса. Стандартное значение 1.f вполне подходит.
+		volume_lerp(occluder_volume, target_occlusion, 1.f, dt);
 		clamp(occluder_volume, 0.f, 1.f);
+
+		// -----------------------------------------------------------------------------------------
 	}
+
 	clamp(fade_volume, 0.f, 1.f);
+
 	// Update smoothing
 	smooth_volume = .9f * smooth_volume + .1f * (p_source.base_volume * p_source.volume *
 												 (owner_data->s_type == st_Effect ? psSoundVEffects : psSoundVMusic) *
@@ -303,13 +336,11 @@ BOOL CSoundRender_Emitter::update_culling(float dt)
 		smooth_volume *= psSoundVWeaponShooting;
 
 	if (owner_data->g_type == SOUND_TYPE_WORLD_AMBIENT)
-		smooth_volume *= psSoundVAmbient;// * psSoundVAmbientDynamicMultiplier;
+		smooth_volume *= psSoundVAmbient;
 
 	if (smooth_volume < psSoundCull)
 		return FALSE; // allow volume to go up
-	// Here we has enought "PRIORITY" to be soundable
-	// If we are playing already, return OK
-	// --- else check availability of resources
+
 	if (target)
 		return TRUE;
 	else

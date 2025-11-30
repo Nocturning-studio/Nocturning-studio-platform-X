@@ -32,5 +32,7 @@
 
 #include "../xrCore/xr_resource.h"
 
+#pragma comment(lib, "PresenceAudioSDK.lib")
+
 // TODO: reference additional headers your program requires here
 #endif

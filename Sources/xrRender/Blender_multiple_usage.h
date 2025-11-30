@@ -87,7 +87,6 @@ class CBlender_multiple_usage : public IBlender
 		if (FS.exist(MaterialConfiguratorRealPath))
 		{
 			MaterialConfiguration = CInifile::Create(MaterialConfiguratorRealPath);
-			Msg("Material configuration file finded: %s", MaterialConfiguratorRealPath);
 			bUseConfigurator = true;
 		}
 

@@ -71,6 +71,8 @@ CSoundRender_Core::CSoundRender_Core()
 	pContext = 0;
 	eaxSet = 0;
 	eaxGet = 0;
+
+	m_pOcclusion = nullptr;
 }
 
 CSoundRender_Core::~CSoundRender_Core()

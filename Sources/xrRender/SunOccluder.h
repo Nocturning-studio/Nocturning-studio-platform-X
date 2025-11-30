@@ -1,0 +1,21 @@
+#pragma once
+
+class CSunOccluder
+{
+  private:
+	IDirect3DVertexBuffer9* m_VB;
+	IDirect3DIndexBuffer9* m_IB;
+	ref_geom m_Geom;
+	u32 m_VertexCount;
+	u32 m_IndexCount;
+	bool m_Loaded;
+	ref_shader m_Shader;
+
+  public:
+	CSunOccluder();
+	~CSunOccluder();
+
+	void Load();
+	void Unload();
+	void Render();
+};

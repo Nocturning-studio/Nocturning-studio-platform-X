@@ -233,6 +233,8 @@ int ps_r_thread_wait_sleep = 0;
 // Render common flags
 Flags32 ps_render_flags = {RFLAG_LENS_FLARES | RFLAG_EXP_MT_CALC | RFLAG_EXP_HW_OCC};
 
+ECORE_API Flags32 ps_r_debug_flags = {NULL};
+
 /*-------------------------------------------------------------------------------*/
 // R2/R2a/R2.5-specific values
 /*-------------------------------------------------------------------------------*/
@@ -753,6 +755,8 @@ void xrRender_initconsole()
 	CMD4(CCC_Float, "r_debug_reserved_1", &ps_r_debug_reserved_1, -1000, 1000);
 	CMD4(CCC_Float, "r_debug_reserved_2", &ps_r_debug_reserved_2, -1000, 1000);
 	CMD4(CCC_Float, "r_debug_reserved_3", &ps_r_debug_reserved_3, -1000, 1000);
+
+	CMD3(CCC_Mask, "r_draw_sun_occluders", &ps_r_debug_flags, RFLAG_DRAW_SUN_OCCLUDERS);
 
 	CMD3(CCC_Token, "r_geometry_quality_mode", &ps_geometry_quality_mode, geometry_quality_mode_token);
 

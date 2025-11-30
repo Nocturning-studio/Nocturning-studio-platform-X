@@ -40,6 +40,8 @@ class CBlender_accum_spot : public IBlender
 			C.end_Pass();
 			break;
 		case SE_L_NORMAL: // normal
+			C.set_Define("SMAP_SIZE", (int)RenderImplementation.o.smapsize, CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define("SHADOW_FILTER_QUALITY", (int)ps_r_shadow_filtering, CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("USE_SHADOW_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("USE_LIGHT_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("USE_LIGHT_MAP_XFORM", "1", CBlender_Compile::ShaderScope::Pixel);
@@ -51,6 +53,8 @@ class CBlender_accum_spot : public IBlender
 			C.end_Pass();
 			break;
 		case SE_L_FULLSIZE: // normal-fullsize
+			C.set_Define("SMAP_SIZE", (int)RenderImplementation.o.smapsize, CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define("SHADOW_FILTER_QUALITY", (int)ps_r_shadow_filtering, CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("USE_SHADOW_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("USE_LIGHT_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);
 			C.begin_Pass(PassDescription);
@@ -61,6 +65,8 @@ class CBlender_accum_spot : public IBlender
 			C.end_Pass();
 			break;
 		case SE_L_TRANSLUENT: // shadowed + transluency
+			C.set_Define("SMAP_SIZE", (int)RenderImplementation.o.smapsize, CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define("SHADOW_FILTER_QUALITY", (int)ps_r_shadow_filtering, CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("USE_SHADOW_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("USE_LIGHT_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);
 			C.begin_Pass(PassDescription);

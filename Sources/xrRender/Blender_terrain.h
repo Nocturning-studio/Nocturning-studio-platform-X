@@ -90,6 +90,7 @@ class CBlender_terrain : public IBlender
 			else if (ps_r_material_quality == 4)
 				BumpType = 3; // steep parallax
 
+			C.set_Define("MATERIAL_QUALITY", (int)ps_r_material_quality, CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define(BumpType == 1, "USE_NORMAL_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define(BumpType == 2, "USE_PARALLAX_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define(BumpType == 3, "USE_PARALLAX_OCCLUSION_MAPPING", "1", CBlender_Compile::ShaderScope::Pixel);

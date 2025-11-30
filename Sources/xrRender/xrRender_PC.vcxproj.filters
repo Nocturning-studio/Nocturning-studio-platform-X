@@ -154,6 +154,9 @@
     <Filter Include="Render pipeline\Render stages\Core">
       <UniqueIdentifier>{87a07ac8-8513-43f2-a079-ddc438035210}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Sun occluder">
+      <UniqueIdentifier>{6854b29c-9fbb-49e2-a0de-c54f4b158e4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl_intersect.h">
@@ -371,6 +374,9 @@
     </ClInclude>
     <ClInclude Include="Blender_bent_normals.h">
       <Filter>Render pipeline\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="SunOccluder.h">
+      <Filter>Core\Sun occluder</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -628,6 +634,9 @@
     </ClCompile>
     <ClCompile Include="r_render_stages_bent_normals.cpp">
       <Filter>Render pipeline\Render stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="SunOccluder.cpp">
+      <Filter>Core\Sun occluder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

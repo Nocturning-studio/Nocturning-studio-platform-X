@@ -871,6 +871,9 @@ void CRender::render_sun_cascade(u32 cascade_ind)
 
 		r_dsgraph_render_graph(0);
 
+		if (m_SunOccluder)
+			m_SunOccluder->Render();
+
 		sun->X.D.transluent = FALSE;
 
 		//if (bSpecial || (cascade_ind < m_sun_cascades.size() - 1))

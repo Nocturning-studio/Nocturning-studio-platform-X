@@ -215,7 +215,7 @@ void CRender::update_options()
 {
 	OPTICK_EVENT("CRender::update_options");
 
-	o.smapsize = 2048;
+	o.smapsize = 1024;
 
 	o.nvdbt = HW.support((D3DFORMAT)MAKEFOURCC('N', 'V', 'D', 'B'), D3DRTYPE_SURFACE, 0);
 	if (o.nvdbt)
@@ -237,12 +237,6 @@ CShaderMacros CRender::FetchShaderMacros()
 	macros.add(4 == m_skinning, "SKIN_4", "1");
 
 	macros.add(o.forceskinw, "SKIN_COLOR", "1");
-
-	macros.add("SMAP_SIZE", (int)o.smapsize);
-	macros.add("MATERIAL_QUALITY", (int)ps_r_material_quality);
-
-	macros.add("SHADOW_FILTER_QUALITY", (int)ps_r_shadow_filtering);
-	macros.add("SUN_SHAFTS_QUALITY", (int)ps_r_sun_shafts_quality);
 
 	macros.add(ps_r_shading_mode == 1, "ENABLE_PBR", "1");
 
@@ -348,6 +342,7 @@ void CRender::reset_end()
 
 	update_options();
 	RenderTarget = xr_new<CRenderTarget>();
+	RenderTarget->CompileShaders();
 	dwAccumulatorClearMark = 0;
 
 	xrRender_apply_tf();

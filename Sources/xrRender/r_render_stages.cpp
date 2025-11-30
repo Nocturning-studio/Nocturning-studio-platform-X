@@ -380,6 +380,9 @@ void CRender::render_stage_forward()
 
 		g_pGamePersistent->Environment().RenderThunderbolt();
 		g_pGamePersistent->Environment().RenderRain();
+
+		if (m_SunOccluder && ps_r_debug_flags.test(RFLAG_DRAW_SUN_OCCLUDERS))
+			m_SunOccluder->Render();
 	}
 }
 

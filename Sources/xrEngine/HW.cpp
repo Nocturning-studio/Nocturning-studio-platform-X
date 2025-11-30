@@ -48,6 +48,7 @@ void CHW::Reset(HWND hwnd)
 	DevPP.SwapEffect = bWindowed ? D3DSWAPEFFECT_FLIPEX : D3DSWAPEFFECT_DISCARD;
 	DevPP.Windowed = bWindowed;
 	DevPP.PresentationInterval = selectPresentInterval();
+	DevPP.BackBufferCount = 2;
 	if (!bWindowed)
 		DevPP.FullScreen_RefreshRateInHz = selectRefresh(DevPP.BackBufferWidth, DevPP.BackBufferHeight, Caps.fTarget);
 	else
@@ -329,7 +330,7 @@ void CHW::CreateDevice(HWND m_hWnd)
 	//.	P.BackBufferWidth		= dwWidth;
 	//. P.BackBufferHeight		= dwHeight;
 	P.BackBufferFormat = fTarget;
-	P.BackBufferCount = 1;
+	P.BackBufferCount = 2;
 
 	// Multisample
 	P.MultiSampleType = D3DMULTISAMPLE_NONE;
@@ -440,17 +441,16 @@ u32 CHW::selectPresentInterval()
 {
 	OPTICK_EVENT("CHW::selectPresentInterval");
 
+	// Если VSync выключен в настройках игры
 	if (!psDeviceFlags.test(rsVSync))
 	{
-		D3DCAPS9 caps;
-		pD3D->GetDeviceCaps(DevAdapter, DevT, &caps);
-
-		if (caps.PresentationIntervals & D3DPRESENT_INTERVAL_IMMEDIATE)
-			return D3DPRESENT_INTERVAL_IMMEDIATE;
-		if (caps.PresentationIntervals & D3DPRESENT_INTERVAL_ONE)
-			return D3DPRESENT_INTERVAL_ONE;
+		// Принудительно возвращаем IMMEDIATE (без ожидания).
+		// Практически все современные карты поддерживают это.
+		// Дополнительные проверки капсов часто избыточны и могут сбоить.
+		return D3DPRESENT_INTERVAL_IMMEDIATE;
 	}
 
+	// Если VSync включен
 	return D3DPRESENT_INTERVAL_DEFAULT;
 }
 

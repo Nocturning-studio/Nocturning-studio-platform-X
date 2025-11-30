@@ -24,7 +24,7 @@
 #include "../xrEngine\fmesh.h"
 #include "xrRender_console.h"
 
-
+#include "SunOccluder.h" 
 
 // definition
 class CRender : public R_dsgraph_structure
@@ -87,6 +87,8 @@ class CRender : public R_dsgraph_structure
 	CHOM HOM;
 	R_occlusion HWOCC;
 
+	CSunOccluder* m_SunOccluder;
+
 	// Global vertex-buffer container
 	xr_vector<FSlideWindowItem> SWIs;
 	xr_vector<ref_shader> Shaders;
@@ -132,6 +134,8 @@ class CRender : public R_dsgraph_structure
 	Fmatrix m_saved_invview;
 
   private:
+	xrCriticalSection resource_lock;
+
 	// Loading / Unloading
 	void LoadBuffers(CStreamReader* fs, BOOL _alternative);
 	void LoadVisuals(IReader* fs);

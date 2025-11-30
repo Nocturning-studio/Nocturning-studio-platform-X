@@ -26,6 +26,8 @@ class CBlender_accum_direct_cascade : public IBlender
 		case SE_SUN_NEAR: // near pass - enable Z-test to perform depth-clipping
 			C.set_Define("NEAR_CASCADE", CBlender_Compile::ShaderScope::Pixel);
 		case SE_SUN_MIDDLE:
+			C.set_Define("SMAP_SIZE", (int)RenderImplementation.o.smapsize, CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define("SHADOW_FILTER_QUALITY", (int)ps_r_shadow_filtering, CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("MIDDLE_CASCADE", CBlender_Compile::ShaderScope::Pixel);
 			C.begin_Pass(PassDescription);
 			C.PassSET_ZB(TRUE, FALSE, TRUE); // force inverted Z-Buffer
@@ -35,6 +37,8 @@ class CBlender_accum_direct_cascade : public IBlender
 			C.end_Pass();
 			break;
 		case SE_SUN_FAR: // far pass, only stencil clipping performed
+			C.set_Define("SMAP_SIZE", (int)RenderImplementation.o.smapsize, CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define("SHADOW_FILTER_QUALITY", (int)ps_r_shadow_filtering, CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("USE_SMOOTH_FADING", CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("FAR_CASCADE", CBlender_Compile::ShaderScope::Pixel);
 			C.begin_Pass(PassDescription);
@@ -51,6 +55,9 @@ class CBlender_accum_direct_cascade : public IBlender
 		case SE_SUN_VOL_NEAR: // near pass - enable Z-test to perform depth-clipping
 			C.set_Define("NEAR_CASCADE", CBlender_Compile::ShaderScope::Pixel);
 		case SE_SUN_VOL_MIDDLE:
+			C.set_Define("SUN_SHAFTS_QUALITY", (int)ps_r_sun_shafts_quality, CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define("SMAP_SIZE", (int)RenderImplementation.o.smapsize, CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define("SHADOW_FILTER_QUALITY", (int)ps_r_shadow_filtering, CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("MIDDLE_CASCADE", CBlender_Compile::ShaderScope::Pixel);
 			PassDescription.PixelShader += "_volumetric";
 			C.begin_Pass(PassDescription);
@@ -62,6 +69,9 @@ class CBlender_accum_direct_cascade : public IBlender
 			break;
 		case SE_SUN_VOL_FAR: // far pass, only stencil clipping performed
 			PassDescription.PixelShader += "_volumetric";
+			C.set_Define("SUN_SHAFTS_QUALITY", (int)ps_r_sun_shafts_quality, CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define("SMAP_SIZE", (int)RenderImplementation.o.smapsize, CBlender_Compile::ShaderScope::Pixel);
+			C.set_Define("SHADOW_FILTER_QUALITY", (int)ps_r_shadow_filtering, CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("USE_SMOOTH_FADING", CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define("FAR_CASCADE", CBlender_Compile::ShaderScope::Pixel);
 			C.begin_Pass(PassDescription);

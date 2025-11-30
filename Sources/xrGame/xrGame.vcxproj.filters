@@ -2302,6 +2302,12 @@
     <Filter Include="Core\Client\Effectors\Actor\Effectors">
       <UniqueIdentifier>{108c44fd-c919-4153-806d-b71bf8a75195}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Presence Audio Integration">
+      <UniqueIdentifier>{fe0667fb-844d-446a-8e23-d4b52eb6f799}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Presence Audio Integration\PresenceAudio">
+      <UniqueIdentifier>{dbb48cde-144d-488d-8567-bcbefc981b3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -6570,6 +6576,27 @@
     <ClInclude Include="SleepEffector.h">
       <Filter>Core\Client\Effectors\Actor\Effectors</Filter>
     </ClInclude>
+    <ClInclude Include="PresenceAudioIntegration\Sound_environment.h">
+      <Filter>Presence Audio Integration</Filter>
+    </ClInclude>
+    <ClInclude Include="PresenceAudioIntegration\Sound_environment_common.h">
+      <Filter>Presence Audio Integration</Filter>
+    </ClInclude>
+    <ClInclude Include="PresenceAudioIntegration\Sound_environment_geometry_provider.h">
+      <Filter>Presence Audio Integration</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Third-party\include\PresenceAudioSDK\PresenceAudioAPI.h">
+      <Filter>Presence Audio Integration\PresenceAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Third-party\include\PresenceAudioSDK\PresenceDefines.h">
+      <Filter>Presence Audio Integration\PresenceAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Third-party\include\PresenceAudioSDK\PresenceMath.h">
+      <Filter>Presence Audio Integration\PresenceAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Third-party\include\PresenceAudioSDK\PresenceSystem.h">
+      <Filter>Presence Audio Integration\PresenceAudio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9718,6 +9745,9 @@
     </ClCompile>
     <ClCompile Include="SleepEffector.cpp">
       <Filter>Core\Client\Effectors\Actor\Effectors</Filter>
+    </ClCompile>
+    <ClCompile Include="PresenceAudioIntegration\Sound_environment.cpp">
+      <Filter>Presence Audio Integration</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

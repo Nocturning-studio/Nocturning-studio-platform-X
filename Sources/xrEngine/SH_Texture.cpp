@@ -175,7 +175,7 @@ void CTexture::Preload()
 
 void CTexture::Load()
 {
-	Msg("Loading texture: %s", *cName);
+	//Msg("Loading texture: %s", *cName);
 
 	flags.bLoaded = true;
 	desc_cache = 0;

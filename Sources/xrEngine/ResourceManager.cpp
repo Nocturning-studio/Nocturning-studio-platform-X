@@ -18,6 +18,7 @@
 #include "tss.h"
 #include "blenders\blender.h"
 #include "blenders\blender_recorder.h"
+#include <Application.h>
 
 //--------------------------------------------------------------------------------------------------------------
 IBlender* CResourceManager::_GetBlender(LPCSTR Name)
@@ -272,18 +273,31 @@ void CResourceManager::DeferredUpload()
 	if (!Device.b_is_Ready)
 		return;
 
-	Msg("* Texture loading, size = %d", m_textures.size());
+	// 1. Собираем список текстур для загрузки
+	xr_vector<CTexture*> textures_to_load;
+	textures_to_load.reserve(m_textures.size());
 
-	CTimer timer;
-	timer.Start();
+	for (auto& pair : m_textures)
+	{
+		if (pair.second && !pair.second->flags.bLoaded)
+			textures_to_load.push_back(pair.second);
+	}
 
-	//concurrency::parallel_for_each(m_textures.begin(), m_textures.end(), [](auto& iterator){iterator.second->Load();});
-	for (map_TextureIt t = m_textures.begin(); t != m_textures.end(); t++)
- 	{
- 		t->second->Load();
- 	}
+	// 2. Грузим пачками по N штук
+	const size_t BATCH_SIZE = 16;
+	size_t total = textures_to_load.size();
 
-	Msg("* Phase time: %d ms", timer.GetElapsed_ms());
+	for (size_t i = 0; i < total; i += BATCH_SIZE)
+	{
+		// Обновляем экран перед каждой пачкой
+		if (pApp)
+			pApp->LoadDraw();
+
+		size_t end = std::min(i + BATCH_SIZE, total);
+
+		// Загружаем пачку параллельно
+		concurrency::parallel_for(i, end, [&](size_t k) { textures_to_load[k]->Load(); });
+	}
 }
 
 void CResourceManager::DeferredUnload()

@@ -92,63 +92,50 @@ void CRenderTarget::create_textures()
 
 void CRenderTarget::create_blenders()
 {
-	Msg("Creating blenders");
+	Msg("Creating blenders (allocation only)");
 
 	b_occq = xr_new<CBlender_light_occq>();
-	s_occq.create(b_occq);
-
 	b_accum_mask = xr_new<CBlender_accum_direct_mask>();
-	s_accum_mask.create(b_accum_mask);
-
 	b_accum_direct_cascade = xr_new<CBlender_accum_direct_cascade>();
-	s_accum_direct_cascade.create(b_accum_direct_cascade);
-
 	b_accum_point = xr_new<CBlender_accum_point>();
-	s_accum_point.create(b_accum_point);
-
 	b_accum_spot = xr_new<CBlender_accum_spot>();
-	s_accum_spot.create(b_accum_spot, "r\\accum_spot_s", "lights\\lights_spot01");
-
 	b_effectors = xr_new<CBlender_effectors>();
-	s_effectors.create(b_effectors);
-
 	b_output_to_screen = xr_new<CBlender_output_to_screen>();
+	b_ambient_occlusion = xr_new<CBlender_ambient_occlusion>();
+	b_bloom = xr_new<CBlender_bloom>();
+	b_autoexposure = xr_new<CBlender_autoexposure>();
+	b_combine = xr_new<CBlender_combine>();
+	b_antialiasing = xr_new<CBlender_antialiasing>();
+	b_distortion = xr_new<CBlender_distortion>();
+	b_reflections = xr_new<CBlender_reflections>();
+	b_dof = xr_new<CBlender_depth_of_field>();
+	b_motion_blur = xr_new<CBlender_motion_blur>();
+	b_frame_overlay = xr_new<CBlender_frame_overlay>();
+	b_bent_normals = xr_new<CBlender_bent_normals>();
+}
+
+void CRenderTarget::CompileShaders()
+{
+	Msg("Compiling render target shaders...");
+
+	s_occq.create(b_occq);
+	s_accum_mask.create(b_accum_mask);
+	s_accum_direct_cascade.create(b_accum_direct_cascade);
+	s_accum_point.create(b_accum_point);
+	s_accum_spot.create(b_accum_spot, "r\\accum_spot_s", "lights\\lights_spot01");
+	s_effectors.create(b_effectors);
 	s_output_to_screen.create(b_output_to_screen);
 
-	s_menu_distortion.create("main_menu_distort");
-	s_menu_gamma.create("main_menu_gamma");
-
-	b_ambient_occlusion = xr_new<CBlender_ambient_occlusion>();
 	s_ambient_occlusion.create(b_ambient_occlusion);
-
-	b_bloom = xr_new<CBlender_bloom>();
 	s_bloom.create(b_bloom);
-
-	b_autoexposure = xr_new<CBlender_autoexposure>();
 	s_autoexposure.create(b_autoexposure);
-
-	b_combine = xr_new<CBlender_combine>();
 	s_combine.create(b_combine);
-
-	b_antialiasing = xr_new<CBlender_antialiasing>();
 	s_antialiasing.create(b_antialiasing);
-
-	b_distortion = xr_new<CBlender_distortion>();
 	s_distortion.create(b_distortion);
-
-	b_reflections = xr_new<CBlender_reflections>();
 	s_reflections.create(b_reflections);
-
-	b_dof = xr_new<CBlender_depth_of_field>();
 	s_dof.create(b_dof);
-
-	b_motion_blur = xr_new<CBlender_motion_blur>();
 	s_motion_blur.create(b_motion_blur);
-
-	b_frame_overlay = xr_new<CBlender_frame_overlay>();
 	s_frame_overlay.create(b_frame_overlay);
-
-	b_bent_normals = xr_new<CBlender_bent_normals>();
 	s_bent_normals.create(b_bent_normals);
 }
 
@@ -242,6 +229,9 @@ CRenderTarget::CRenderTarget()
 	g_effectors.create(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX3, RenderBackend.Vertex.Buffer(), RenderBackend.QuadIB);
 
 	g_cuboid.create(FVF::F_L, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
+
+	s_menu_distortion.create("main_menu_distort");
+	s_menu_gamma.create("main_menu_gamma");
 }
 
 CRenderTarget::~CRenderTarget()
