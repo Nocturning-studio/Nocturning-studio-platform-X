@@ -496,7 +496,7 @@ void print_macros(CShaderMacros& macros)
 }
 #endif
 
-template <typename T> T* CResourceManager::CreateShader(const char* _name, CShaderMacros& _macros)
+template <typename T> T* CResourceManager::CreateShader(const char* _name, const char* _entry, CShaderMacros& _macros)
 {
 	// get shader macros
 	CShaderMacros macros;
@@ -504,9 +504,14 @@ template <typename T> T* CResourceManager::CreateShader(const char* _name, CShad
 	macros.add(_macros);
 	macros.add(TRUE, NULL, NULL);
 
+	// Нормализуем входное имя функции
+	LPCSTR actual_entry = (_entry && _entry[0]) ? _entry : "main";
+
 	// make the unique shader name
+	// [ИЗМЕНЕНО] Уникальное имя теперь включает имя функции (entry point),
+	// чтобы различать test.ps(main) и test.ps(MainPS)
 	string_path name;
-	sprintf_s(name, sizeof name, "%s%s", _name, macros.get_name().c_str());
+	sprintf_s(name, sizeof name, "%s_%s%s", _name, actual_entry, macros.get_name().c_str());
 
 	// if the shader is already exist, return it
 	T* sh = FindShader<T>(name);
@@ -540,18 +545,39 @@ template <typename T> T* CResourceManager::CreateShader(const char* _name, CShad
 	}
 
 	// select target
-	const char* type = ShaderTypeTraits<T>::GetShaderType();
-	string32 c_target, c_entry;
-	sprintf_s(c_entry, sizeof c_entry, "main");
+	const char* type = ShaderTypeTraits<T>::GetShaderType(); // Возвращает "ps" или "vs"
+	string32 c_target;
 	sprintf_s(c_target, sizeof c_target, "%s_%u_%u", type, HW.Caps.raster_major, HW.Caps.raster_minor);
 
 #ifdef DEBUG_SHADER_COMPILATION
-	Msg("* Compiling shader: target=%s, source=%s.%s", c_target, _name, ext);
+	Msg("* Compiling shader: target=%s, source=%s.%s, entry=%s", c_target, _name, ext, actual_entry);
 	print_macros(_macros);
 #endif
 
-	// compile and create
-	HRESULT _hr = CompileShader(_name, ext, (LPCSTR)file->pointer(), file->length(), c_target, c_entry, macros, (T*&)sh);
+	// [НОВАЯ ЛОГИКА] Попытка компиляции с fallback
+	// 1. Пробуем с запрошенным именем (обычно "main" или пользовательское)
+	HRESULT _hr =
+		CompileShader(_name, ext, (LPCSTR)file->pointer(), file->length(), c_target, actual_entry, macros, (T*&)sh);
+
+	// 2. Если не вышло И мы пробовали стандартный "main", пробуем альтернативы MainPS/MainVS
+	if (FAILED(_hr) && (0 == xr_strcmp(actual_entry, "main")))
+	{
+		string32 alt_entry;
+		// Определяем альтернативное имя на основе типа шейдера (первая буква типа 'p' -> ps -> MainPS)
+		if (type[0] == 'p')
+			strcpy_s(alt_entry, "MainPS");
+		else
+			strcpy_s(alt_entry, "MainVS");
+
+		Msg("! Compile failed for entry 'main', trying alternative: '%s' for shader %s", alt_entry, _name);
+
+		_hr = CompileShader(_name, ext, (LPCSTR)file->pointer(), file->length(), c_target, alt_entry, macros, (T*&)sh);
+
+		if (SUCCEEDED(_hr))
+		{
+			Msg("* Alternative entry point '%s' compiled successfully.", alt_entry);
+		}
+	}
 
 	FS.r_close(file);
 
@@ -759,8 +785,8 @@ HRESULT CResourceManager::CompileShader(LPCSTR name, LPCSTR ext, LPCSTR src, UIN
 
 	// ФОРМИРУЕМ ОТНОСИТЕЛЬНЫЙ путь к кешу (без FS.update_path)
 	string_path cache_dest;
-	sprintf_s(cache_dest, sizeof cache_dest, "shaders_cache\\%s%s.%s\\%s%d.xrcache", ::Render->getShaderPath(), name,
-			  ext, macros.get_name().c_str(), build_id);
+	sprintf_s(cache_dest, sizeof cache_dest, "shaders_cache\\%s%s.%s\\%s_%s_%d.xrcache", ::Render->getShaderPath(),
+			  name, ext, macros.get_name().c_str(), entry, build_id);
 
 	// Получаем время модификации исходного файла шейдера
 	string_path source_file_path;
@@ -956,8 +982,8 @@ HRESULT CResourceManager::CompileShader(LPCSTR name, LPCSTR ext, LPCSTR src, UIN
 			{
 				// Формируем путь для сохранения дизассемблированного шейдера
 				string_path disasm_path;
-				sprintf_s(disasm_path, sizeof disasm_path, "shaders_cache\\%s%s.%s\\%s%d.html",
-						  ::Render->getShaderPath(), name, ext, macros.get_name().c_str(), build_id);
+				sprintf_s(disasm_path, sizeof disasm_path, "shaders_cache\\%s%s.%s\\%s_%s_%d.html",
+						  ::Render->getShaderPath(), name, ext, macros.get_name().c_str(), entry, build_id);
 
 				// Создаем директорию если нужно
 				EnsureCacheDirectoryExists(disasm_path);

@@ -65,6 +65,16 @@ void CRender::calculate_bloom()
 	}
 }
 
+void CRender::apply_bloom()
+{
+	RenderBackend.set_Element(RenderTarget->s_bloom->E[SE_PASS_APPLY_BLOOM]);
+	RenderBackend.set_Constant("bloom_parameters", ps_r_bloom_threshold, 
+												   ps_r_bloom_brightness,
+												   ps_r_bloom_blades_threshold, 
+												   ps_r_bloom_blades_brightness);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+}
+
 void CRender::render_bloom()
 {
 	OPTICK_EVENT("CRender::render_bloom");
@@ -73,6 +83,7 @@ void CRender::render_bloom()
 	{
 		TexturesIsClean = false;
 		calculate_bloom();
+		apply_bloom();
 	}
 	else
 	{

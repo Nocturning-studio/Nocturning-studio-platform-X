@@ -46,6 +46,8 @@ class ENGINE_API CBlender_Compile
 
 	string128 pass_vs;
 	string128 pass_ps;
+	string128 pass_vs_entry;
+	string128 pass_ps_entry;
 
 	u32 BC(BOOL v)
 	{
@@ -64,6 +66,8 @@ class ENGINE_API CBlender_Compile
 	{
 		std::string VertexShader = "null";
 		std::string PixelShader = "null";
+		std::string VertexShaderEntry = "main";
+		std::string PixelShaderEntry = "main";
 		bool EnableFog = FALSE;
 		BOOL EnableZTest = FALSE;
 		BOOL EnableZWrite = FALSE;
@@ -117,9 +121,10 @@ class ENGINE_API CBlender_Compile
 		PassSET_Blend(TRUE, D3DBLEND_DESTCOLOR, D3DBLEND_SRCCOLOR, bAref, ref);
 	}
 	void PassSET_LightFog(BOOL bLight, BOOL bFog);
-	void PassSET_PS(LPCSTR name);
-	void PassSET_VS(LPCSTR name);
 	void PassEnd();
+
+	void PassSET_PS(LPCSTR name, LPCSTR entry);
+	void PassSET_VS(LPCSTR name, LPCSTR entry);
 
 	void StageBegin();
 	u32 Stage()
@@ -209,13 +214,25 @@ private:
 	// Удаляем макрос, чтобы не засорять глобальное пространство имен
 #undef APPLY_SCOPE_MACRO
 
-	void begin_Pass(LPCSTR vs = "null", LPCSTR ps = "null", bool bFog = FALSE, BOOL bZtest = FALSE, BOOL bZwrite = FALSE,
+	void begin_Pass(LPCSTR vs = "null", 
+					LPCSTR ps = "null", 
+					LPCSTR _vs_entry = "main", 
+					LPCSTR _ps_entry = "main",
+					bool bFog = FALSE,
+					BOOL bZtest = FALSE, 
+					BOOL bZwrite = FALSE,
 					BOOL bABlend = FALSE,
-				D3DBLEND abSRC = D3DBLEND_ONE, D3DBLEND abDST = D3DBLEND_ZERO, BOOL aTest = FALSE, u32 aRef = 0);	
+					D3DBLEND abSRC = D3DBLEND_ONE, 
+					D3DBLEND abDST = D3DBLEND_ZERO, 
+					BOOL aTest = FALSE, 
+					u32 aRef = 0);	
+
 	void begin_Pass(PassDesc PassDescription)
 	{
 		begin_Pass(	PassDescription.VertexShader.c_str(), 
 					PassDescription.PixelShader.c_str(), 
+					PassDescription.VertexShaderEntry.c_str(),
+					PassDescription.PixelShaderEntry.c_str(),
 					PassDescription.EnableFog,
 					PassDescription.EnableZTest,
 					PassDescription.EnableZWrite,
@@ -225,6 +242,7 @@ private:
 					PassDescription.EnableAlphaTest, 
 					PassDescription.AlphaRef );
 	};
+
 	void set_Constant(LPCSTR name, R_constant_setup* s);
 	u32 set_Sampler(LPCSTR name, LPCSTR texture, bool b_ps1x_ProjectiveDivide = false, u32 address = D3DTADDRESS_WRAP,
 				  u32 fmin = D3DTEXF_LINEAR, u32 fmip = D3DTEXF_LINEAR, u32 fmag = D3DTEXF_LINEAR, bool b_srgb = true);

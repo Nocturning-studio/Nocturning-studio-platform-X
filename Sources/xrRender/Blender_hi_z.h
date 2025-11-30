@@ -9,11 +9,10 @@
 ///////////////////////////////////////////////////////////////////////////////////
 enum
 {
-	SE_SSR_GENERATE_MIP_CHAIN_PASS,
-	SE_SSR_RENDER_PASS,
+	SE_HI_Z_GENERATE_MIP_CHAIN_PASS,
 };
 ///////////////////////////////////////////////////////////////////////////////////
-class CBlender_reflections : public IBlender
+class CBlender_hi_z : public IBlender
 {
   public:
 	virtual LPCSTR getComment()
@@ -27,27 +26,20 @@ class CBlender_reflections : public IBlender
 
 		switch (C.iElement)
 		{
-		case SE_SSR_GENERATE_MIP_CHAIN_PASS:
-			C.begin_Pass("screen_quad", "simple_image");
-			C.set_Sampler("s_image", r_RT_generic0);
+		case SE_HI_Z_GENERATE_MIP_CHAIN_PASS:
+			C.begin_Pass("screen_quad", "hi_z_stage_pass_copy_buffer");
 			gbuffer(C);
 			C.end_Pass();
 
-			C.begin_Pass("screen_quad", "postprocess_stage_reflections_pass_generate_mip_chain");
-			C.set_Sampler("s_mip_chain", r_RT_backbuffer_mip, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, false);
-			gbuffer(C);
-			C.end_Pass();
-			break;
-		case SE_SSR_RENDER_PASS:
-			C.begin_Pass("screen_quad", "postprocess_stage_reflections_pass_render");
+			C.begin_Pass("screen_quad", "hi_z_stage_pass_generate");
 			C.set_Sampler("s_hi_z_mip_chain", r_RT_Hi_z, false, D3DTADDRESS_CLAMP, D3DTEXF_POINT, D3DTEXF_POINT, D3DTEXF_POINT, false);
-			C.set_Sampler("s_image", r_RT_backbuffer_mip, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, false);
 			gbuffer(C);
 			C.end_Pass();
 			break;
 		}
 	}
 
-	~CBlender_reflections() = default;
+	~CBlender_hi_z() = default;
 };
 ///////////////////////////////////////////////////////////////////////////////////
+

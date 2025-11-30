@@ -112,6 +112,8 @@ void CBlender_Compile::PassBegin()
 	passConstants.clear();
 	strcpy_s(pass_ps, "null");
 	strcpy_s(pass_vs, "null");
+	strcpy_s(pass_ps_entry, "main");
+	strcpy_s(pass_vs_entry, "main");
 	dwStage = 0;
 
 	// Очищаем все списки
@@ -141,8 +143,8 @@ void CBlender_Compile::PassEnd()
 	final_macros_vs.add(macros_vs);
 
 	// Компилируем шейдеры с соответствующими макросами
-	ref_ps ps = Device.Resources->CreateShader<SPS>(pass_ps, final_macros_ps);
-	ref_vs vs = Device.Resources->CreateShader<SVS>(pass_vs, final_macros_vs);
+	ref_ps ps = Device.Resources->CreateShader<SPS>(pass_ps, pass_ps_entry, final_macros_ps);
+	ref_vs vs = Device.Resources->CreateShader<SVS>(pass_vs, pass_vs_entry, final_macros_vs);
 
 	// Очищаем списки после создания прохода
 	macros_common.clear();
@@ -161,16 +163,28 @@ void CBlender_Compile::PassEnd()
 	SH->passes.push_back(_pass_);
 }
 
-void CBlender_Compile::PassSET_PS(LPCSTR name)
+void CBlender_Compile::PassSET_PS(LPCSTR name, LPCSTR entry)
 {
 	strcpy_s(pass_ps, name);
 	xr_strlwr(pass_ps);
+
+	// Если entry задан, копируем, иначе main
+	if (entry && entry[0])
+		strcpy_s(pass_ps_entry, entry);
+	else
+		strcpy_s(pass_ps_entry, "main");
 }
 
-void CBlender_Compile::PassSET_VS(LPCSTR name)
+void CBlender_Compile::PassSET_VS(LPCSTR name, LPCSTR entry)
 {
 	strcpy_s(pass_vs, name);
 	xr_strlwr(pass_vs);
+
+	// Если entry задан, копируем, иначе main
+	if (entry && entry[0])
+		strcpy_s(pass_vs_entry, entry);
+	else
+		strcpy_s(pass_vs_entry, "main");
 }
 
 void CBlender_Compile::PassSET_ZB(BOOL bZTest, BOOL bZWrite, BOOL bInvertZTest)
@@ -179,10 +193,6 @@ void CBlender_Compile::PassSET_ZB(BOOL bZTest, BOOL bZWrite, BOOL bInvertZTest)
 		bZWrite = FALSE;
 	RS.SetRS(D3DRS_ZFUNC, bZTest ? (bInvertZTest ? D3DCMP_GREATER : D3DCMP_LESSEQUAL) : D3DCMP_ALWAYS);
 	RS.SetRS(D3DRS_ZWRITEENABLE, BC(bZWrite));
-	/*
-	if (bZWrite || bZTest)				RS.SetRS	(D3DRS_ZENABLE,	D3DZB_TRUE);
-	else								RS.SetRS	(D3DRS_ZENABLE,	D3DZB_FALSE);
-	*/
 }
 
 void CBlender_Compile::PassSET_ablend_mode(BOOL bABlend, u32 abSRC, u32 abDST)
@@ -334,7 +344,8 @@ void CBlender_Compile::Stage_Constant(LPCSTR name)
 	passConstants.push_back(Device.Resources->_CreateConstant((id >= 0) ? *lst[id] : name));
 }
 
-void CBlender_Compile::begin_Pass(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest, BOOL bZwrite, BOOL bABlend,
+void CBlender_Compile::begin_Pass(LPCSTR _vs, LPCSTR _ps, LPCSTR _vs_entry, LPCSTR _ps_entry, bool bFog, BOOL bZtest,
+								  BOOL bZwrite, BOOL bABlend,
 								  D3DBLEND abSRC, D3DBLEND abDST, BOOL aTest, u32 aRef)
 {
 	RS.Invalidate();
@@ -359,8 +370,8 @@ void CBlender_Compile::begin_Pass(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest
 	final_macros_vs.add(macros_vs);
 
 	// Create shaders
-	SPS* ps = Device.Resources->CreateShader<SPS>(_ps, final_macros_ps);
-	SVS* vs = Device.Resources->CreateShader<SVS>(_vs, final_macros_vs);
+	SPS* ps = Device.Resources->CreateShader<SPS>(_ps, _ps_entry, final_macros_ps);
+	SVS* vs = Device.Resources->CreateShader<SVS>(_vs, _vs_entry, final_macros_vs);
 
 	// Очищаем после использования
 	macros_common.clear();

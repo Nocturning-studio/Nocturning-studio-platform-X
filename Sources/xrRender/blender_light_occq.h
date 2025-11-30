@@ -21,7 +21,8 @@ class CBlender_light_occq : public IBlender
 		switch (C.iElement)
 		{
 		case 0: // occlusion testing
-			C.begin_Pass("accumulating_light_stage_occlusion_culling", "accumulating_light_stage_occlusion_culling", false,
+			C.begin_Pass("accumulating_light_stage_occlusion_culling", "accumulating_light_stage_occlusion_culling",
+						 "main", "main", false,
 					 TRUE, FALSE, FALSE);
 			C.end_Pass();
 			break;

@@ -958,7 +958,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	// Create shader pass
 	safe_string::concat3(NewPixelShaderName, sizeof(NewPixelShaderName), "gbuffer_stage_", PixelShaderName, "");
 	safe_string::concat3(NewVertexShaderName, sizeof(NewVertexShaderName), "gbuffer_stage_", VertexShaderName, "");
-	C.begin_Pass(NewVertexShaderName, NewPixelShaderName, FALSE, TRUE, TRUE);
+	C.begin_Pass(NewVertexShaderName, NewPixelShaderName, "main", "main", FALSE, TRUE, TRUE);
 
 	C.set_Sampler("s_base", AlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR,
 				  D3DTEXF_ANISOTROPIC, true);
@@ -1212,7 +1212,7 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 	// Create shader pass
 	safe_string::concat3(NewPixelShaderName, sizeof(NewPixelShaderName), "gbuffer_stage_", PixelShaderName, "");
 	safe_string::concat3(NewVertexShaderName, sizeof(NewVertexShaderName), "gbuffer_stage_", VertexShaderName, "");
-	C.begin_Pass(NewVertexShaderName, NewPixelShaderName, FALSE, TRUE, TRUE);
+	C.begin_Pass(NewVertexShaderName, NewPixelShaderName, "main", "main", FALSE, TRUE, TRUE);
 
 	C.set_Sampler("s_base", AlbedoTexture, false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR,
 				  D3DTEXF_ANISOTROPIC, true);

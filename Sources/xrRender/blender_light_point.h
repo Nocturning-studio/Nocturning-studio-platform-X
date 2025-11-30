@@ -28,8 +28,8 @@ class CBlender_accum_point : public IBlender
 		switch (C.iElement)
 		{
 		case SE_L_FILL: // fill projective
-			C.begin_Pass("null", "copy");
-			C.set_Sampler("s_base", C.L_textures[0]);
+			C.begin_Pass("null", "simple_image");
+			C.set_Sampler("s_image", C.L_textures[0]);
 			C.end_Pass();
 			break;
 		case SE_L_UNSHADOWED: // unshadowed

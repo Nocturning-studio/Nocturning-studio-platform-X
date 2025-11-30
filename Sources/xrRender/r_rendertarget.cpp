@@ -22,6 +22,7 @@
 #include "blender_effectors.h"
 #include "blender_output_to_screen.h"
 #include "blender_bent_normals.h"
+#include "blender_hi_z.h"
 ///////////////////////////////////////////////////////////////////////////////////
 void CRenderTarget::create_textures()
 {
@@ -46,6 +47,8 @@ void CRenderTarget::create_textures()
 		rt_GBuffer_4.create(r_RT_GBuffer_4, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	}
 
+	rt_Hi_z.create(r_RT_Hi_z, dwWidth, dwHeight, D3DFMT_R16F, 9);
+
 	//rt_Bent_Normals.create(r_RT_Bent_Normals, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	
 	rt_Volumetric_Sun.create(r_RT_Volumetric_Sun, dwWidth * 0.5f, dwHeight * 0.5f, D3DFMT_A8);
@@ -61,7 +64,7 @@ void CRenderTarget::create_textures()
 	rt_Motion_Blur_Dilation_Map_0.create(r_RT_mblur_dilation_map_0, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
 	rt_Motion_Blur_Dilation_Map_1.create(r_RT_mblur_dilation_map_1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
 
-	rt_BackbufferMip.create(r_RT_backbuffer_mip, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F, 9);
+	rt_BackbufferMip.create(r_RT_backbuffer_mip, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F, 5);
 	rt_Reflections.create(r_RT_reflections, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F);
 
 	rt_Radiation_Noise0.create(r_RT_radiation_noise0, dwWidth, dwHeight, D3DFMT_L8);
@@ -112,6 +115,7 @@ void CRenderTarget::create_blenders()
 	b_motion_blur = xr_new<CBlender_motion_blur>();
 	b_frame_overlay = xr_new<CBlender_frame_overlay>();
 	b_bent_normals = xr_new<CBlender_bent_normals>();
+	b_hi_z = xr_new<CBlender_hi_z>();
 }
 
 void CRenderTarget::CompileShaders()
@@ -137,12 +141,14 @@ void CRenderTarget::CompileShaders()
 	s_motion_blur.create(b_motion_blur);
 	s_frame_overlay.create(b_frame_overlay);
 	s_bent_normals.create(b_bent_normals);
+	s_hi_z.create(b_hi_z);
 }
 
 void CRenderTarget::delete_blenders()
 {
 	Msg("Deleting blenders");
 
+	xr_delete(b_hi_z);
 	xr_delete(b_bent_normals);
 	xr_delete(b_frame_overlay);
 	xr_delete(b_motion_blur);

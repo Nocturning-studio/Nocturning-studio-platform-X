@@ -28,8 +28,8 @@ class CBlender_accum_spot : public IBlender
 		switch (C.iElement)
 		{
 		case SE_L_FILL: // masking
-			C.begin_Pass("null", "copy", false, FALSE, FALSE);
-			C.set_Sampler("s_base", C.L_textures[0]);
+			C.begin_Pass("null", "simple_image", "main", "main", false, FALSE, FALSE);
+			C.set_Sampler("s_image", C.L_textures[0]);
 			C.end_Pass();
 			break;
 		case SE_L_UNSHADOWED: // unshadowed

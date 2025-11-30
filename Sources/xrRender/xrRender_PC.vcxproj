@@ -951,6 +951,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Blender_bent_normals.h" />
+    <ClInclude Include="Blender_hi_z.h" />
     <ClInclude Include="Blender_terrain.h" />
     <ClInclude Include="Blender_detail_object.h" />
     <ClInclude Include="blender_effectors.h" />
@@ -1101,6 +1102,7 @@
     <ClCompile Include="r_render_pipeline_ui.cpp" />
     <ClCompile Include="r_render_stages_bent_normals.cpp" />
     <ClCompile Include="r_render_stages_output_to_screen.cpp" />
+    <ClCompile Include="r_render_stages_phase_hi_z.cpp" />
     <ClCompile Include="r_screenshot.cpp" />
     <ClCompile Include="r_sector.cpp" />
     <ClCompile Include="r_sector_traversal.cpp" />

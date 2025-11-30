@@ -36,6 +36,9 @@ class CRenderTarget : public IRender_Target
 	IBlender* b_bent_normals;
 	ref_shader s_bent_normals;
 
+	IBlender* b_hi_z;
+	ref_shader s_hi_z;
+
 #ifdef DEBUG
 	struct dbg_line_t
 	{
@@ -55,6 +58,8 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_GBuffer_2;
 	ref_rt rt_GBuffer_3;
 	ref_rt rt_GBuffer_4;
+
+	ref_rt rt_Hi_z;
 
 	ref_rt rt_Bent_Normals;
 	ref_rt rt_Volumetric_Sun;

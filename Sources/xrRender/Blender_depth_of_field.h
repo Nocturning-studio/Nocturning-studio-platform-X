@@ -27,46 +27,44 @@ class CBlender_depth_of_field : public IBlender
 	{
 		IBlender::Compile(C);
 
+		LPCSTR sh_name = "postprocess_stage_depth_of_field";
+
 		switch (C.iElement)
 		{
 		case SE_PASS_DOF_PREPARE_BUFFER:
-			C.begin_Pass("screen_quad", "postprocess_stage_depth_of_field_pass_prepare_buffer");
+			// 1. Prepare (Calc CoC)
+			C.begin_Pass("screen_quad", sh_name, "main", "PrepareBuffer");
 			C.set_Sampler_point("s_image", r_RT_generic1);
 			gbuffer(C);
 			C.end_Pass();
 			break;
+
 		case SE_PASS_PROCESS_BOKEH_HQ:
+			// 2. HQ Bokeh
 			C.set_Define("HQ_FILTER", "1");
-			C.begin_Pass("screen_quad", "postprocess_stage_depth_of_field");
-			C.set_Sampler_point("s_image", r_RT_generic1);
+			C.begin_Pass("screen_quad", sh_name, "main", "Bokeh");
+			C.set_Sampler_linear("s_image", r_RT_generic1); // Linear для сглаживания сэмплов
 			gbuffer(C);
 			C.end_Pass();
 
-			C.begin_Pass("screen_quad", "postprocess_stage_depth_of_field");
-			C.set_Sampler_point("s_image", r_RT_generic0);
+			// Второй проход (если нужен, но для дискового боке обычно хватает одного хорошего)
+			// В коде рендера у вас вызывается два раза (ping-pong), можно оставить.
+			C.begin_Pass("screen_quad", sh_name, "main", "Bokeh");
+			C.set_Sampler_linear("s_image", r_RT_generic0);
 			gbuffer(C);
 			C.end_Pass();
 			break;
+
 		case SE_PASS_PROCESS_BOKEH_LQ:
-			C.set_Define("LQ_FILTER", "1");
-			C.begin_Pass("screen_quad", "postprocess_stage_depth_of_field");
-			C.set_Sampler_point("s_image", r_RT_generic1);
+			// 3. LQ Bokeh
+			// Макрос HQ_FILTER не задан -> будет LQ
+			C.begin_Pass("screen_quad", sh_name, "main", "Bokeh");
+			C.set_Sampler_linear("s_image", r_RT_generic1);
 			gbuffer(C);
 			C.end_Pass();
 
-			C.begin_Pass("screen_quad", "postprocess_stage_depth_of_field");
-			C.set_Sampler_point("s_image", r_RT_generic0);
-			gbuffer(C);
-			C.end_Pass();
-			break;
-		case SE_PASS_DOF_DUMMY:
-			C.begin_Pass("screen_quad", "simple_image");
-			C.set_Sampler_point("s_image", r_RT_generic1);
-			gbuffer(C);
-			C.end_Pass();
-
-			C.begin_Pass("screen_quad", "simple_image");
-			C.set_Sampler_point("s_image", r_RT_generic0);
+			C.begin_Pass("screen_quad", sh_name, "main", "Bokeh");
+			C.set_Sampler_linear("s_image", r_RT_generic0);
 			gbuffer(C);
 			C.end_Pass();
 			break;

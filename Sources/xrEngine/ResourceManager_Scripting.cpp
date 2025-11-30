@@ -226,7 +226,7 @@ class adopt_compiler
 
 	adopt_compiler& _pass(LPCSTR vs, LPCSTR ps)
 	{
-		C->begin_Pass(vs, ps, true, true);
+		C->begin_Pass(vs, ps, "main", "main", true, true);
 		return *this;
 	}
 

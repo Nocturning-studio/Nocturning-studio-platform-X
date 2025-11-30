@@ -23,29 +23,42 @@ class CBlender_autoexposure : public IBlender
 	{
 		IBlender::Compile(C);
 
+		// Имя единого шейдерного файла (без расширения)
+		LPCSTR sh_name = "postprocess_stage_autoexposure";
+
 		switch (C.iElement)
 		{
 		case SE_PASS_AUTOEXPOSURE_GENERATE_MIP_CHAIN:
-			C.begin_Pass("screen_quad", "postprocess_stage_autoexposure_pass_initial");
+			// Pass 1: Initial
+			// Было: "postprocess_stage_autoexposure_pass_initial"
+			// Стало: sh_name, "main", "pass_initial" (VS, VS_Entry, PS, PS_Entry)
+			C.begin_Pass("screen_quad", sh_name, "main", "InitialPass");
 			C.set_Sampler_point("s_image", r_RT_generic1);
 			C.end_Pass();
 
-			C.begin_Pass("screen_quad", "postprocess_stage_autoexposure_pass_generate_mip_chain");
-			C.set_Sampler("s_mip_chain", r_RT_autoexposure_mip_chain, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, false);
+			// Pass 2: Generate Mip Chain
+			C.begin_Pass("screen_quad", sh_name, "main", "GenerateMipChainPass");
+			C.set_Sampler("s_mip_chain", r_RT_autoexposure_mip_chain, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD,
+						  D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, false);
 			C.end_Pass();
 			break;
 
 		case SE_PASS_AUTOEXPOSURE_PREPARE_LUMINANCE:
-			C.begin_Pass("screen_quad", "postprocess_stage_autoexposure_pass_prepare_luminance");
+			// Pass 3: Prepare/Adapt
+			C.begin_Pass("screen_quad", sh_name, "main", "PrepareLuminancePass");
 			C.set_Sampler_gaussian("s_luminance_previous", r_RT_autoexposure_luminance_previous);
-			C.set_Sampler("s_luminance", r_RT_autoexposure_mip_chain, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, false);
+			C.set_Sampler("s_luminance", r_RT_autoexposure_mip_chain, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD,
+						  D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, false);
 			C.end_Pass();
 			break;
 
 		case SE_PASS_AUTOEXPOSURE_APPLY_EXPOSURE:
+			// Pass 4: Apply
 			CBlender_Compile::PassDesc PassDescription;
-			PassDescription.PixelShader = "postprocess_stage_autoexposure_pass_apply";
 			PassDescription.VertexShader = "screen_quad";
+			PassDescription.VertexShaderEntry = "main"; // Стандартная точка входа для VS
+			PassDescription.PixelShader = sh_name;
+			PassDescription.PixelShaderEntry = "ApplyPass"; // Наша новая точка входа
 			PassDescription.EnableAlphaBlend = true;
 			PassDescription.BlendSRC = D3DBLEND_ZERO;
 			PassDescription.BlendDST = D3DBLEND_SRCCOLOR;

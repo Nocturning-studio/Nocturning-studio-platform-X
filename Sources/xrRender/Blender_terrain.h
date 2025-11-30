@@ -97,7 +97,7 @@ class CBlender_terrain : public IBlender
 			C.set_Define(true, "USE_SRGB_COLOR_CONVERTING", "1", CBlender_Compile::ShaderScope::Pixel);
 			C.set_Define(true, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1", CBlender_Compile::ShaderScope::Pixel);
 
-			C.begin_Pass("gbuffer_stage_terrain", "gbuffer_stage_terrain", TRUE, TRUE, TRUE);
+			C.begin_Pass("gbuffer_stage_terrain", "gbuffer_stage_terrain", "main", "main", TRUE, TRUE, TRUE);
 
 			C.set_Sampler("s_mask", mask);
 			C.set_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
@@ -124,7 +124,7 @@ class CBlender_terrain : public IBlender
 		case SE_NORMAL_LQ: // deffer
 			C.set_Define(true, "USE_SRGB_COLOR_CONVERTING", "1");
 			C.set_Define(true, "USE_DETAIL_SRGB_COLOR_CONVERTING", "1");
-			C.begin_Pass("gbuffer_stage_terrain_lq", "gbuffer_stage_terrain_lq", TRUE, TRUE, TRUE);
+			C.begin_Pass("gbuffer_stage_terrain_lq", "gbuffer_stage_terrain_lq", "main", "main", TRUE, TRUE, TRUE);
 
 			C.set_Sampler("s_lmap", C.L_textures[1], false, D3DTADDRESS_CLAMP, D3DTEXF_LINEAR, D3DTEXF_NONE, D3DTEXF_LINEAR);
 			C.set_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
@@ -133,14 +133,16 @@ class CBlender_terrain : public IBlender
 			C.end_Pass();
 			break;
 		case SE_SHADOW_DEPTH: // smap
-			C.begin_Pass("shadow_depth_stage_static_mesh", "shadow_depth_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
+			C.begin_Pass("shadow_depth_stage_static_mesh", "shadow_depth_stage_static_mesh", "main", "main", FALSE,
+						 TRUE, TRUE, FALSE);
 
 			C.set_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 
 			C.end_Pass();
 			break;
 		case SE_DEPTH_PREPASS:
-			C.begin_Pass("depth_prepass_stage_static_mesh", "depth_prepass_stage_static_mesh", FALSE, TRUE, TRUE, FALSE);
+			C.begin_Pass("depth_prepass_stage_static_mesh", "depth_prepass_stage_static_mesh", "main", "main", FALSE,
+						 TRUE, TRUE, FALSE);
 
 			C.set_Sampler("s_base", C.L_textures[0], false, D3DTADDRESS_WRAP, D3DTEXF_ANISOTROPIC, D3DTEXF_LINEAR, D3DTEXF_ANISOTROPIC, true);
 

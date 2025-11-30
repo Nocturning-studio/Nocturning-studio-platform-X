@@ -46,51 +46,6 @@
     <Filter Include="Render pipeline\Render stages">
       <UniqueIdentifier>{4bda8459-77e1-4998-9fe5-50179f622e5f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render pipeline\Blenders">
-      <UniqueIdentifier>{2c0915c2-d416-4490-8571-ad0c1fc676f4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\GBuffer stage">
-      <UniqueIdentifier>{701d8886-e6b4-42d7-8c7a-3acfe27989a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Postprocess stage">
-      <UniqueIdentifier>{ebfa012d-91b1-43d7-9030-8a3b34316da3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Postprocess stage\Bloom">
-      <UniqueIdentifier>{66d09db0-23d8-443b-be96-1037bcfa55d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Postprocess stage\Motion blur">
-      <UniqueIdentifier>{94911cf6-3cac-4b4e-834d-3ce151606ef2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Postprocess stage\Depth of field">
-      <UniqueIdentifier>{a93fa9ff-fb61-451f-b2e0-5a0623735f04}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Postprocess stage\Antialiasing">
-      <UniqueIdentifier>{d96e805c-1825-4b20-a2a4-2d94e6d1e59e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Postprocess stage\Distortion">
-      <UniqueIdentifier>{fca0c934-d1a8-4b80-85dc-2db7f68db37e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Postprocess stage\Autoexposure">
-      <UniqueIdentifier>{9e8b1e52-a0d3-4e14-99b7-e34d9e132e01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Postprocess stage\Effectors">
-      <UniqueIdentifier>{33a9d6a0-c2d2-43ab-8a47-46b0c89a5e66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Overlays stage">
-      <UniqueIdentifier>{c8fcd8cd-b4ea-45bc-bbbc-101a0f54cf62}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Light accumulating stage">
-      <UniqueIdentifier>{6371f753-349c-476b-bd50-91c769017890}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Forward rendering">
-      <UniqueIdentifier>{ed178e34-be90-41d6-bc02-c215b6ccf8df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Reflections stage">
-      <UniqueIdentifier>{0eabc662-fedc-47ea-81e4-6a7d7d882387}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Blenders\Output to screen stage">
-      <UniqueIdentifier>{ba8794b8-d398-4582-84a5-b2f9894a9c4b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Render pipeline\Core">
       <UniqueIdentifier>{fe8ea627-ce82-4380-8edb-1145c56ad896}</UniqueIdentifier>
     </Filter>
@@ -111,9 +66,6 @@
     </Filter>
     <Filter Include="Core\Lights">
       <UniqueIdentifier>{268234e2-3527-4c36-97d3-c33940d436e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render pipeline\Rendering">
-      <UniqueIdentifier>{1cb38cff-ea29-43d6-afa5-2e3b2dac430a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Render pipeline\Render stages\Stages">
       <UniqueIdentifier>{41e0c0ec-bc21-4c56-876e-74866a9c1ba3}</UniqueIdentifier>
@@ -156,6 +108,54 @@
     </Filter>
     <Filter Include="Core\Sun occluder">
       <UniqueIdentifier>{6854b29c-9fbb-49e2-a0de-c54f4b158e4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Postprocess stages\Reflections phase">
+      <UniqueIdentifier>{db159c05-241d-450b-b59d-e222513d8751}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Postprocess stages\HI-Z phase">
+      <UniqueIdentifier>{53fe20fd-9df4-40a7-b31a-83e97f019f57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Postprocess stages\Bent normals phase">
+      <UniqueIdentifier>{6280449e-3d93-43ec-b968-e5f084646b57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Postprocess stages\Autoexposure">
+      <UniqueIdentifier>{f234fe23-1985-474a-b3a4-fbc4ea46323d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Postprocess stages\Antialiasing">
+      <UniqueIdentifier>{8e126c45-9a5b-4387-a432-754a743281dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Postprocess stages\Bloom">
+      <UniqueIdentifier>{de9037d1-a368-4c6b-8ca5-9cd8e22ae400}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Postprocess stages\Depth of field">
+      <UniqueIdentifier>{a93fa9ff-fb61-451f-b2e0-5a0623735f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Postprocess stages\Distortion">
+      <UniqueIdentifier>{fca0c934-d1a8-4b80-85dc-2db7f68db37e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Postprocess stages\Effectors">
+      <UniqueIdentifier>{33a9d6a0-c2d2-43ab-8a47-46b0c89a5e66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Postprocess stages\Motion blur">
+      <UniqueIdentifier>{94911cf6-3cac-4b4e-834d-3ce151606ef2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Overlays stage">
+      <UniqueIdentifier>{c8fcd8cd-b4ea-45bc-bbbc-101a0f54cf62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\GBuffer stage\Blenders">
+      <UniqueIdentifier>{619c8b6c-717a-47b0-8f8a-3a23caa29dc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Render stages\Stages\Light accumulation stage\Blenders">
+      <UniqueIdentifier>{d348d627-5566-4ed0-aa28-3df1836064a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Core\Rendering">
+      <UniqueIdentifier>{1cb38cff-ea29-43d6-afa5-2e3b2dac430a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Core\Rendering\Specific pipelines">
+      <UniqueIdentifier>{86f4370c-d488-4549-9820-c6399fa37bd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render pipeline\Core\Rendering\Core">
+      <UniqueIdentifier>{e3e61797-6191-437a-90a7-5c9ecad40841}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -252,53 +252,14 @@
     <ClInclude Include="occRasterizer.h">
       <Filter>Core\Occlusion culling\HOM Occlusion</Filter>
     </ClInclude>
-    <ClInclude Include="Blender_transluent.h">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_static_mesh.h">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_skinned_mesh.h">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_terrain.h">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClInclude>
     <ClInclude Include="Blender_frame_overlay.h">
-      <Filter>Render pipeline\Blenders\Overlays stage</Filter>
-    </ClInclude>
-    <ClInclude Include="blender_light_direct_cascade.h">
-      <Filter>Render pipeline\Blenders\Light accumulating stage</Filter>
-    </ClInclude>
-    <ClInclude Include="blender_light_mask.h">
-      <Filter>Render pipeline\Blenders\Light accumulating stage</Filter>
-    </ClInclude>
-    <ClInclude Include="blender_light_occq.h">
-      <Filter>Render pipeline\Blenders\Light accumulating stage</Filter>
-    </ClInclude>
-    <ClInclude Include="blender_light_point.h">
-      <Filter>Render pipeline\Blenders\Light accumulating stage</Filter>
-    </ClInclude>
-    <ClInclude Include="blender_light_spot.h">
-      <Filter>Render pipeline\Blenders\Light accumulating stage</Filter>
-    </ClInclude>
-    <ClInclude Include="blender_bloom.h">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Bloom</Filter>
+      <Filter>Render pipeline\Render stages\Stages\Overlays stage</Filter>
     </ClInclude>
     <ClInclude Include="Blender_motion_blur.h">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Motion blur</Filter>
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Motion blur</Filter>
     </ClInclude>
     <ClInclude Include="Blender_depth_of_field.h">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Depth of field</Filter>
-    </ClInclude>
-    <ClInclude Include="shader_configurator.h">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Particle.h">
-      <Filter>Render pipeline\Blenders\Forward rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_antialiasing.h">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Antialiasing</Filter>
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Depth of field</Filter>
     </ClInclude>
     <ClInclude Include="r_occlusion.h">
       <Filter>Core\Occlusion culling</Filter>
@@ -307,40 +268,16 @@
       <Filter>Core\Particle library</Filter>
     </ClInclude>
     <ClInclude Include="Blender_distortion.h">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Distortion</Filter>
-    </ClInclude>
-    <ClInclude Include="blender_autoexposure.h">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Autoexposure</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_reflections.h">
-      <Filter>Render pipeline\Blenders\Reflections stage</Filter>
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Distortion</Filter>
     </ClInclude>
     <ClInclude Include="ColorMapManager.h">
       <Filter>Render pipeline\Render stages\Stages\Postprocess stages\ColorMap</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_detail_object.h">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Lm(EbB).h">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Model_EbB.h">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_Screen_SET.h">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_multiple_usage.h">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
     </ClInclude>
     <ClInclude Include="r_color_converting.h">
       <Filter>Core\Color convertation</Filter>
     </ClInclude>
     <ClInclude Include="blender_effectors.h">
-      <Filter>Render pipeline\Blenders\Postprocess stage\Effectors</Filter>
-    </ClInclude>
-    <ClInclude Include="Blender_output_to_screen.h">
-      <Filter>Render pipeline\Blenders\Output to screen stage</Filter>
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Effectors</Filter>
     </ClInclude>
     <ClInclude Include="xrRender_console.h">
       <Filter>Render Console</Filter>
@@ -357,9 +294,6 @@
     <ClInclude Include="r_rendertarget.h">
       <Filter>Render pipeline\Rendertargets</Filter>
     </ClInclude>
-    <ClInclude Include="r_render_pipeline.h">
-      <Filter>Render pipeline\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="r_render_stages.h">
       <Filter>Render pipeline\Render stages\Core</Filter>
     </ClInclude>
@@ -372,11 +306,80 @@
     <ClInclude Include="blender_combine.h">
       <Filter>Render pipeline\Render stages\Stages\Scene combine stage</Filter>
     </ClInclude>
-    <ClInclude Include="Blender_bent_normals.h">
-      <Filter>Render pipeline\Blenders</Filter>
-    </ClInclude>
     <ClInclude Include="SunOccluder.h">
       <Filter>Core\Sun occluder</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_hi_z.h">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\HI-Z phase</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_reflections.h">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Reflections phase</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_bent_normals.h">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Bent normals phase</Filter>
+    </ClInclude>
+    <ClInclude Include="blender_autoexposure.h">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Autoexposure</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_antialiasing.h">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Antialiasing</Filter>
+    </ClInclude>
+    <ClInclude Include="blender_bloom.h">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Bloom</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_output_to_screen.h">
+      <Filter>Render pipeline\Render stages\Stages\Output to screen stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_detail_object.h">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Lm(EbB).h">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Model_EbB.h">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_multiple_usage.h">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Screen_SET.h">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_skinned_mesh.h">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_static_mesh.h">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_terrain.h">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_transluent.h">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_configurator.h">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender_Particle.h">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="blender_light_direct_cascade.h">
+      <Filter>Render pipeline\Render stages\Stages\Light accumulation stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="blender_light_mask.h">
+      <Filter>Render pipeline\Render stages\Stages\Light accumulation stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="blender_light_occq.h">
+      <Filter>Render pipeline\Render stages\Stages\Light accumulation stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="blender_light_point.h">
+      <Filter>Render pipeline\Render stages\Stages\Light accumulation stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="blender_light_spot.h">
+      <Filter>Render pipeline\Render stages\Stages\Light accumulation stage\Blenders</Filter>
+    </ClInclude>
+    <ClInclude Include="r_render_pipeline.h">
+      <Filter>Render pipeline\Core\Rendering\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -500,27 +503,6 @@
     <ClCompile Include="r_render_stages_phase_occlusion_culling.cpp">
       <Filter>Render pipeline\Render stages\Stages\Light accumulation stage\Occlusion culling stage</Filter>
     </ClCompile>
-    <ClCompile Include="r_render_stages_phase_depth_of_field.cpp">
-      <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_stages_phase_frame_overlay.cpp">
-      <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_stages_phase_effectors.cpp">
-      <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
-    </ClCompile>
-    <ClCompile Include="shader_configurator.cpp">
-      <Filter>Render pipeline\Blenders\GBuffer stage</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_stages_phase_motion_blur.cpp">
-      <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_stages_phase_bloom.cpp">
-      <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_stages_phase_antialiasing.cpp">
-      <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
-    </ClCompile>
     <ClCompile Include="r_render_stages_light_accumulator_direct.cpp">
       <Filter>Render pipeline\Render stages\Stages\Light accumulation stage\Direct</Filter>
     </ClCompile>
@@ -569,20 +551,8 @@
     <ClCompile Include="tga.cpp">
       <Filter>Core\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="r_render_stages_phase_wallmarks.cpp">
-      <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_stages_phase_distortion.cpp">
-      <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_stages_phase_autoexposure.cpp">
-      <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
-    </ClCompile>
     <ClCompile Include="r_render_stages_ambient_occlusion.cpp">
       <Filter>Render pipeline\Render stages\Stages\Ambient occlusion</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_stages_phase_ssr.cpp">
-      <Filter>Render pipeline\Render stages\Stages\Postprocess stages</Filter>
     </ClCompile>
     <ClCompile Include="ColorMapManager.cpp">
       <Filter>Render pipeline\Render stages\Stages\Postprocess stages\ColorMap</Filter>
@@ -617,26 +587,62 @@
     <ClCompile Include="r_rendertarget.cpp">
       <Filter>Render pipeline\Rendertargets</Filter>
     </ClCompile>
-    <ClCompile Include="r_render_pipeline.cpp">
-      <Filter>Render pipeline\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_pipeline_ui.cpp">
-      <Filter>Render pipeline\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_pipeline_scene.cpp">
-      <Filter>Render pipeline\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="r_render_pipeline_debug.cpp">
-      <Filter>Render pipeline\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="r_render_stages.cpp">
       <Filter>Render pipeline\Render stages\Core</Filter>
     </ClCompile>
-    <ClCompile Include="r_render_stages_bent_normals.cpp">
-      <Filter>Render pipeline\Render stages\Stages</Filter>
-    </ClCompile>
     <ClCompile Include="SunOccluder.cpp">
       <Filter>Core\Sun occluder</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_phase_hi_z.cpp">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\HI-Z phase</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_phase_ssr.cpp">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Reflections phase</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_bent_normals.cpp">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Bent normals phase</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_phase_autoexposure.cpp">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Autoexposure</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_phase_antialiasing.cpp">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Antialiasing</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_phase_bloom.cpp">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Bloom</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_phase_depth_of_field.cpp">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Depth of field</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_phase_distortion.cpp">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Distortion</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_phase_effectors.cpp">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Effectors</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_phase_motion_blur.cpp">
+      <Filter>Render pipeline\Render stages\Stages\Postprocess stages\Motion blur</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_phase_frame_overlay.cpp">
+      <Filter>Render pipeline\Render stages\Stages\Overlays stage</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_stages_phase_wallmarks.cpp">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage</Filter>
+    </ClCompile>
+    <ClCompile Include="shader_configurator.cpp">
+      <Filter>Render pipeline\Render stages\Stages\GBuffer stage\Blenders</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_pipeline_scene.cpp">
+      <Filter>Render pipeline\Core\Rendering\Specific pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_pipeline_ui.cpp">
+      <Filter>Render pipeline\Core\Rendering\Specific pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_pipeline_debug.cpp">
+      <Filter>Render pipeline\Core\Rendering\Specific pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="r_render_pipeline.cpp">
+      <Filter>Render pipeline\Core\Rendering\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

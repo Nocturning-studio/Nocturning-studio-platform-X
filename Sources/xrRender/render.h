@@ -309,6 +309,7 @@ class CRender : public R_dsgraph_structure
 	void accumulate_spot_lights(light* L);
 	void clear_bloom();
 	void calculate_bloom();
+	void apply_bloom();
 	void render_bloom();
 	void downsample_scene_luminance();
 	void prepare_scene_luminance();
@@ -362,7 +363,7 @@ class CRender : public R_dsgraph_structure
 	void update_shadow_map_visibility();
 	void render_sun();
 	void render_lights();
-	void render_sky_box();
+	void create_hi_z_mip_chain();
 	void render_postprocess();
 	void render_stage_main_geometry();
 	void render_bent_normals();
