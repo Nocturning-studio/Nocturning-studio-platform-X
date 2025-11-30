@@ -296,7 +296,11 @@ void CResourceManager::DeferredUpload()
 		size_t end = std::min(i + BATCH_SIZE, total);
 
 		// Загружаем пачку параллельно
-		concurrency::parallel_for(i, end, [&](size_t k) { textures_to_load[k]->Load(); });
+		//concurrency::parallel_for(i, end, [&](size_t k) { textures_to_load[k]->Load(); });
+		for (size_t k = i; k < end; k++)
+		{
+			textures_to_load[k]->Load(); 
+		}
 	}
 }
 

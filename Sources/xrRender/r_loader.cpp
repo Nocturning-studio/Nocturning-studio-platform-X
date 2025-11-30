@@ -18,12 +18,33 @@
 #include <malloc.h>
 #pragma warning(pop)
 
+// Добавь структуру для хранения данных, чтобы не зависеть от IReader в потоке
+// Вспомогательная структура для передачи данных в поток
+struct ShaderRequest
+{
+	shared_str name;
+	shared_str textures;
+};
+
 void CRender::level_Load(IReader* fs)
 {
 	OPTICK_EVENT("CRender::level_Load");
 
 	R_ASSERT(0 != g_pGameLevel);
 	R_ASSERT(!b_loaded);
+
+	// Группа задач для Визуалов (то, что мы пытаемся ускорить)
+	concurrency::task_group tg_visuals;
+	std::atomic<int> active_tasks = 0;
+
+	// Хелпер
+	auto run_task = [&](concurrency::task_group& tg, auto func) {
+		active_tasks++;
+		tg.run([func, &active_tasks]() {
+			func();
+			active_tasks--;
+		});
+	};
 
 	pApp->LoadBegin();
 	Device.Resources->DeferredLoad(TRUE);
@@ -40,9 +61,14 @@ void CRender::level_Load(IReader* fs)
 	Details = xr_new<CDetailManager>();
 	m_SunOccluder = xr_new<CSunOccluder>();
 
-	// 2. Шейдеры (Main Thread)
+	// =================================================================================
+	// 2. ШЕЙДЕРЫ (MAIN THREAD - СИНХРОННО)
+	// =================================================================================
+	// Мы вернули это в основной поток. Никакой многопоточности здесь.
+	// Это исключает любые гонки данных при создании ресурсов.
 	g_pGamePersistent->LoadTitle("st_loading_shaders");
 	{
+		// Компиляция RT шейдеров тоже в основном потоке, сразу же.
 		Msg("* Compiling RenderTarget shaders...");
 		if (RenderTarget)
 			RenderTarget->CompileShaders();
@@ -52,17 +78,22 @@ void CRender::level_Load(IReader* fs)
 		{
 			u32 count = chunk->r_u32();
 			Shaders.resize(count);
+
 			for (u32 i = 0; i < count; i++)
 			{
 				string512 n_sh, n_tlist;
 				LPCSTR n = LPCSTR(chunk->pointer());
 				chunk->skip_stringZ();
+
 				if (0 == n[0])
 					continue;
+
 				strcpy(n_sh, n);
 				LPSTR delim = strchr(n_sh, '/');
 				*delim = 0;
 				strcpy(n_tlist, delim + 1);
+
+				// Прямой вызов создания. Безопасно.
 				Shaders[i] = Device.Resources->Create(n_sh, n_tlist);
 			}
 			chunk->close();
@@ -80,7 +111,6 @@ void CRender::level_Load(IReader* fs)
 		LoadSWIs(geom);
 		FS.r_close(geom);
 
-		// Обновим экран между тяжелыми файлами
 		pApp->LoadDraw();
 
 		g_pGamePersistent->LoadTitle("st_loading_fast_geometry");
@@ -91,43 +121,39 @@ void CRender::level_Load(IReader* fs)
 		FS.r_close(geomx);
 	}
 
-	concurrency::task_group tg;
-	std::atomic<int> active_tasks = 0;
-
-	// Хелпер для запуска задачи с подсчетом
-	auto run_tracked_task = [&](auto func) {
-		active_tasks++;
-		tg.run([func, &active_tasks]() {
-			func();
-			active_tasks--;
-		});
-	};
-
 	g_pGamePersistent->LoadTitle("st_loading_spatial_db");
 
-	// ЗАДАЧА A: Визуалы
-	run_tracked_task([this, level_data_ptr, level_size]() {
-		IReader local_fs(level_data_ptr, level_size);
-		LoadVisuals(&local_fs);
+	// =================================================================================
+	// 4. ПАРАЛЛЕЛЬНАЯ ЗАГРУЗКА ОБЪЕКТОВ
+	// =================================================================================
+	// Так как шейдеры уже созданы (шаг 2), LoadVisuals должен работать стабильно,
+	// даже в отдельном потоке (он будет только ЧИТАТЬ готовые ресурсы).
+
+	// ЗАДАЧА A: Визуалы (Локальный IReader обязателен!)
+	run_task(tg_visuals, [this, level_data_ptr, level_size]() {
+
 	});
 
+	IReader local_fs(level_data_ptr, level_size);
+	LoadVisuals(&local_fs);
+
 	// ЗАДАЧА B: Детейлы
-	run_tracked_task([this]() { Details->Load(); });
+	run_task(tg_visuals, [this]() { Details->Load(); });
 
 	// ЗАДАЧА C: HOM
-	run_tracked_task([this]() { HOM.Load(); });
+	run_task(tg_visuals, [this]() { HOM.Load(); });
 
 	// ЗАДАЧА D: Sun Occluder
-	run_tracked_task([this]() { m_SunOccluder->Load(); });
+	run_task(tg_visuals, [this]() { m_SunOccluder->Load(); });
 
-	// === ACTIVE WAIT LOOP ===
-	// Вместо простого tg.wait(), мы крутимся в цикле и рендерим, пока задачи работают
+	// === ACTIVE WAIT ===
+	// Ждем окончания загрузки объектов
 	while (active_tasks > 0)
 	{
 		pApp->LoadDraw();
-		Sleep(1);		  // Отдаем приоритет рабочим потокам
+		Sleep(1);
 	}
-	tg.wait(); // Для гарантии
+	tg_visuals.wait();
 
 	// 5. Финализация (Main Thread)
 	g_pGamePersistent->LoadTitle("st_loading_sectors_portals");
@@ -331,7 +357,6 @@ void CRender::LoadBuffers(CStreamReader* base_fs, BOOL _alternative)
 void CRender::LoadVisuals(IReader* fs)
 {
 	OPTICK_EVENT("CRender::LoadVisuals");
-
 	IReader* chunk = 0;
 	u32 index = 0;
 	IRender_Visual* V = 0;
