@@ -4,74 +4,75 @@
 ///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Blender_depth_of_field.h"
-///////////////////////////////////////////////////////////////////////////////////
-constexpr double x = 43.266615300557; // Diagonal measurement for a 'normal' 35mm lens
-constexpr float FocalDepthMultiplier = 1000.0f;
-constexpr float CoC = 0.03f; // circle of confusion size in mm (35mm film = 0.03mm)
-///////////////////////////////////////////////////////////////////////////////////
+
+// Константы для расчета оптики (35mm Full Frame сенсор)
+constexpr double SENSOR_DIAGONAL = 43.266615300557;
+constexpr float FOCAL_DEPTH_MUL = 1000.0f; // Перевод игровых единиц в метры/миллиметры
+
+// Вспомогательная функция для расчета фокусного расстояния из FOV
 double fov_to_length(double fov)
 {
-	if (fov < 1 || fov > 179)
-		return NULL;
+	// Защита от некорректных углов
+	if (fov < 1.0 || fov > 179.0)
+		return 35.0;
 
-	return (x / (2 * tan(M_PI * fov / 360.f)));
+	return (SENSOR_DIAGONAL / (2.0 * tan(M_PI * fov / 360.0)));
 }
-///////////////////////////////////////////////////////////////////////////////////
+
 void CRender::render_depth_of_field()
 {
 	OPTICK_EVENT("CRender::render_depth_of_field");
 
+	RenderBackend.CopyViewportSurface(RenderTarget->rt_Generic_1, RenderTarget->rt_Generic_0);
+
+	// Params
+	Fvector3 DofParams;
+	g_pGamePersistent->GetCurrentDof(DofParams);
+	float FocusDist = DofParams.x * FOCAL_DEPTH_MUL;
+	float FocalLen = (float)fov_to_length(Device.fFOV);
+
+	if (FocalLen < 10.0f)
+		FocalLen = 35.0f;
+	if (FocusDist < FocalLen + 10.0f)
+		FocusDist = FocalLen + 10.0f;
+
+	float FStop = (DofParams.z < 0.1f) ? 1.4f : DofParams.z;
+	float Aperture = FocalLen / FStop;
+	float SensorHeight = 24.0f;
+	float PPM = (float(Device.dwHeight) / SensorHeight);
+
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	Fvector3 Dof;
-	g_pGamePersistent->GetCurrentDof(Dof);
-	// Dof.x = Focus Distance (Game Units usually meters)
-	// Dof.y = Focus Range (Not used in physical model directly)
-	// Dof.z = Aperture (F-Stop)
+	// PHASE 1: Calc CoC
+	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_DOF_CALC_COC]);
+	RenderBackend.set_Constant("dof_coc_params", FocusDist, FocalLen, Aperture, PPM);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_dof_coc);
 
-	float FocalLength = fov_to_length(Device.fFOV);
+	// PHASE 2: Tile Dilation (Low Res)
+	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_DOF_TILE_DILATION]);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_dof_dilation);
 
-	// Конвертация дистанции фокуса в мм (если Dof.x в метрах)
-	float FocalPlane = Dof.x * 1000.0f; // FocalDepthMultiplier
+	// PHASE 3: Separate (Half Res)
+	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_DOF_SEPARATE]);
+	RenderBackend.set_Constant("dof_layer_select", 0.0f, 0.0f, 0.0f, 0.0f);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_dof_far);
 
-	// Безопасность
-	if (FocalPlane < FocalLength + 10.0f)
-		FocalPlane = FocalLength + 10.0f;
+	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_DOF_SEPARATE]);
+	RenderBackend.set_Constant("dof_layer_select", 1.0f, 0.0f, 0.0f, 0.0f);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_dof_near);
 
-	float COCPrecalc1 = FocalPlane * FocalLength;
-	float COCPrecalc2 = FocalPlane - FocalLength;
-	float SafeAperture = std::max(Dof.z, 1.4f);			 // F1.4 min
-	float COCPrecalc3 = FocalPlane * SafeAperture * CoC; // CoC = 0.03f
-
-	float B = COCPrecalc1 / COCPrecalc2; // (d*f)/(d-f)
-	float C = COCPrecalc1 / COCPrecalc3; // (d*f)/(d*F*c) -> f / (F*c) ? Нет, формула (d-f)/(d*F*c)
-
-	// Формула C для шейдера:
-	// CoC = abs(a - b) * c
-	// a = (o*f)/(o-f)
-	// b = (d*f)/(d-f)
-	// c = (d-f)/(d*F*c) -- Обычно это Scaling factor
-
-	// Передаем параметры
-	// x: FocalPlane (unused in shader optimization but passed)
-	// y: B (Image distance of focused object)
-	// z: C (CoC scaling factor)
-	// w: FocalLength
-
-	// Используем B и CPremultiplied
-	float CPremultiplied = C * CoC;
-	// В шейдере: return abs(a - b) * c;
-
-	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_DOF_PREPARE_BUFFER]);
-	RenderBackend.set_Constant("dof_coc_precalculated", FocalPlane, B, CPremultiplied, FocalLength);
+	// PHASE 4: Blur Far
+	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_DOF_BLUR_FAR]);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderBackend.CopyViewportSurface(RenderTarget->rt_Generic_1, RenderTarget->rt_dof_far);
 
-	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH_HQ], 0);
-	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
+	// PHASE 5: Blur Near (с Dilation map)
+	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_DOF_BLUR_NEAR]);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+	RenderBackend.CopyViewportSurface(RenderTarget->rt_Generic_1, RenderTarget->rt_dof_near);
 
-	// Если все же нужно 2 прохода (для очень большого радиуса):
-	// RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_PROCESS_BOKEH_HQ], 1);
-	// RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+	// PHASE 6: Composite
+	RenderBackend.set_Element(RenderTarget->s_dof->E[SE_PASS_DOF_COMPOSITE]);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
-///////////////////////////////////////////////////////////////////////////////////

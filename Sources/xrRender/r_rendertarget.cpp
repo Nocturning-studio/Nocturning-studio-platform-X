@@ -49,8 +49,20 @@ void CRenderTarget::create_textures()
 
 	rt_Hi_z.create(r_RT_Hi_z, dwWidth, dwHeight, D3DFMT_R16F, 9);
 
-	//rt_Bent_Normals.create(r_RT_Bent_Normals, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	rt_Bent_Normals.create(r_RT_Bent_Normals, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	
+	// DOF Resources
+	// G16R16F: R = Real CoC, G = Dilated (Max) CoC
+	rt_dof_coc.create(r_RT_dof_coc, dwWidth, dwHeight, D3DFMT_G16R16F);
+	// R16F, разрешение / 8 (тайлы 8x8)
+	// Содержит Max Near CoC для тайла.
+	u32 tileW = dwWidth / 8;
+	u32 tileH = dwHeight / 8;
+	rt_dof_dilation.create(r_RT_dof_dilation, tileW, tileH, D3DFMT_R16F);
+	// Буферы для слоев (можно уменьшить разрешение для производительности, например dwWidth/2)
+	rt_dof_near.create(r_RT_dof_near, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+	rt_dof_far.create(r_RT_dof_far, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
+
 	rt_Volumetric_Sun.create(r_RT_Volumetric_Sun, dwWidth * 0.5f, dwHeight * 0.5f, D3DFMT_A8);
 
 	rt_Light_Accumulator.create(r_RT_Light_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
@@ -64,7 +76,7 @@ void CRenderTarget::create_textures()
 	rt_Motion_Blur_Dilation_Map_0.create(r_RT_mblur_dilation_map_0, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
 	rt_Motion_Blur_Dilation_Map_1.create(r_RT_mblur_dilation_map_1, u32(dwWidth * 0.5f), u32(dwHeight * 0.5f), D3DFMT_G16R16F);
 
-	rt_BackbufferMip.create(r_RT_backbuffer_mip, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F, 5);
+	rt_BackbufferMip.create(r_RT_backbuffer_mip, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F, 3);
 	rt_Reflections.create(r_RT_reflections, u32(dwWidth), u32(dwHeight), D3DFMT_A16B16G16R16F);
 
 	rt_Radiation_Noise0.create(r_RT_radiation_noise0, dwWidth, dwHeight, D3DFMT_L8);

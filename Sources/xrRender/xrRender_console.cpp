@@ -105,7 +105,8 @@ xr_token ao_quality_token[] =
 {
 	{"st_opt_ssao", 1}, 
 	{"st_opt_hbao_plus", 2}, 
-	{"st_opt_ssptao", 3}, 
+	{"st_opt_gtao", 3}, 
+	{"st_opt_ssptao", 4}, 
 	{0, 0}
 };
 
@@ -681,7 +682,7 @@ void xrRender_initconsole()
 	tw_max.set(10000, 10000, 10000);
 	CMD4(CCC_Dof, "r_dof", &ps_r_dof, tw_min, tw_max);
 	CMD4(CCC_DofFocalDepth, "r_dof_focal_depth", &ps_r_dof.x, 0.5f, 100.0f);
-	CMD4(CCC_DofFStop, "r_dof_fstop", &ps_r_dof.z, 1.0f, 100.0f);
+	CMD4(CCC_DofFStop, "r_dof_fstop", &ps_r_dof.z, 0.1f, 100.0f);
 	CMD3(CCC_Mask, "r_dof_enabled", &ps_r_postprocess_flags, RFLAG_DOF);
 	CMD3(CCC_Token, "r_dof_quality", &ps_r_dof_quality, dof_quality_token);
 

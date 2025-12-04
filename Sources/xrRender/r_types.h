@@ -30,6 +30,12 @@
 
 #define r_RT_backbuffer_mip "$user$r_RT_backbuffer_mip"
 
+// DOF Textures
+#define r_RT_dof_coc "$user$dof_coc"   // R16F
+#define r_RT_dof_near "$user$dof_near" // RGBA (Color + CoC/Alpha)
+#define r_RT_dof_far "$user$dof_far"   // RGBA (Color + CoC)
+#define r_RT_dof_dilation "$user$dof_dilation"
+
 #define r_RT_distortion_mask "$user$distortion"
 
 // Motion blur previous frame

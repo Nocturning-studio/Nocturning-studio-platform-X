@@ -329,6 +329,7 @@ class CRender : public R_dsgraph_structure
 	void render_antialiasing();
 	void create_distortion_mask();
 	void render_distortion();
+	void prepare_dof_mip_chain(float FocalPlane, float B, float C, float FocalLength);
 	void render_depth_of_field();
 	void motion_blur_pass_prepare_dilation_map();
 	void motion_blur_pass_blur();

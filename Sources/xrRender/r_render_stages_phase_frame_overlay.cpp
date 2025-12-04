@@ -3,6 +3,7 @@
 // Nocturning studio for NS Platform X
 ///////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
+#include <Blender_frame_overlay.h>
 ///////////////////////////////////////////////////////////////////////////////////
 void CRender::render_screen_overlays()
 {
@@ -18,16 +19,17 @@ void CRender::render_screen_overlays()
 	if (ps_r_overlay_flags.test(RFLAG_CINEMA_BORDERS))
 		CinemaBordersEnabled = 1;
 
-	if (ps_r_overlay_flags.test(RFLAG_WATERMARK))
-		WatermarkEnabled = 1;
-
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	RenderBackend.set_Element(RenderTarget->s_frame_overlay->E[0]);
-
-	RenderBackend.set_Constant("enabled_overlays", (float)GridEnabled, (float)CinemaBordersEnabled, (float)WatermarkEnabled, 0);
-
+	RenderBackend.set_Element(RenderTarget->s_frame_overlay->E[SE_OVERLAYS_MAIN]);
+	RenderBackend.set_Constant("enabled_overlays", (float)GridEnabled, (float)CinemaBordersEnabled, 0, 0);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
+
+	if (ps_r_overlay_flags.test(RFLAG_WATERMARK))
+	{
+		RenderBackend.set_Element(RenderTarget->s_frame_overlay->E[SE_OVERLAYS_WATERMARK]);
+		RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_0);
+	}
 }
 ///////////////////////////////////////////////////////////////////////////////////

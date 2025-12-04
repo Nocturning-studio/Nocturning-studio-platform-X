@@ -335,6 +335,7 @@ void CRender::render_gbuffer_secondary()
 
 	set_active_phase(PHASE_HUD);
 	r_dsgraph_render_hud();
+	set_active_phase(PHASE_NORMAL);
 
 	if (psDeviceFlags.test(rsWireframe))
 		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID));
@@ -514,7 +515,7 @@ void CRender::combine_scene()
 
 	render_stage_forward();
 
-	if (ps_r_lighting_flags.test(RFLAG_SUN_SHAFTS))
+	//if (ps_r_lighting_flags.test(RFLAG_SUN_SHAFTS))
 		combine_sun_shafts();
 }
 

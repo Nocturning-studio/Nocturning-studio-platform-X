@@ -64,6 +64,11 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_Bent_Normals;
 	ref_rt rt_Volumetric_Sun;
 
+	ref_rt rt_dof_coc;
+	ref_rt rt_dof_near;
+	ref_rt rt_dof_far;
+	ref_rt rt_dof_dilation; // Low-Res Tile Map (R16F)
+
 	// Accumulation Buffer
 	ref_rt rt_Light_Accumulator;
 

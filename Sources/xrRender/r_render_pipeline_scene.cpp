@@ -63,7 +63,7 @@ void CRender::RenderScene()
 
 	create_hi_z_mip_chain();
 
-	//render_bent_normals();
+	render_bent_normals();
 
 	render_ambient_occlusion();
 

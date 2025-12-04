@@ -15,8 +15,8 @@ void CRender::render_ambient_occlusion()
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	float w = float(Device.dwWidth);
-	float h = float(Device.dwHeight);
+	float w = float(RenderTarget->rt_ao->dwWidth);
+	float h = float(RenderTarget->rt_ao->dwHeight);
 
 	// HBAO+ stuff
 	float negInvR2 = -(1.0f / (pow(ps_r_ao_radius, 2.0f)));
@@ -33,16 +33,19 @@ void CRender::render_ambient_occlusion()
 		AOType = SE_AO_HBAO_PLUS;
 		break;
 	case 3:
+		AOType = SE_AO_GTAO;
+		break;
+	case 4:
 		AOType = SE_AO_SSAO_PATH_TRACE;
 		break;
 	}
 
-	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[AOType]);
+	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[AOType], SE_AO_PASS_CALC);
 	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
 	RenderBackend.set_Constant("ao_params", ps_r_ao_bias, ps_r_ao_radius, negInvR2, RadiusPrecalc);
 	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_ao);
 
-	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[SE_AO_DENOISE]);
+	RenderBackend.set_Element(RenderTarget->s_ambient_occlusion->E[AOType], SE_AO_PASS_DENOISE);
 	RenderBackend.set_Constant("image_resolution", w, h, 1 / w, 1 / h);
 	RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_ao);
 

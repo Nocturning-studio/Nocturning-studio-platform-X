@@ -25,29 +25,52 @@ class CBlender_reflections : public IBlender
 	{
 		IBlender::Compile(C);
 
+		// Имя единого шейдерного файла (без расширения)
+		LPCSTR sh_name = "postprocess_stage_reflections";
+
 		switch (C.iElement)
 		{
 		case SE_SSR_GENERATE_MIP_CHAIN_PASS:
+			// Pass 1: Simple Image (Initial copy if needed, preserved from original logic)
 			C.begin_Pass("screen_quad", "simple_image");
 			C.set_Sampler("s_image", r_RT_generic0);
 			gbuffer(C);
 			C.end_Pass();
 
-			C.begin_Pass("screen_quad", "postprocess_stage_reflections_pass_generate_mip_chain");
-			C.set_Sampler("s_mip_chain", r_RT_backbuffer_mip, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, false);
+			// Pass 2: Generate Mip / Blur
+			// Используем наш единый файл и точку входа GenerateMipChainPass
+			C.begin_Pass("screen_quad", sh_name, "main", "GenerateMipChainPass");
+			C.set_Sampler("s_mip_chain", r_RT_backbuffer_mip, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD,
+						  D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, false);
 			gbuffer(C);
 			C.end_Pass();
 			break;
+
 		case SE_SSR_RENDER_PASS:
-			C.begin_Pass("screen_quad", "postprocess_stage_reflections_pass_render");
-			C.set_Sampler("s_hi_z_mip_chain", r_RT_Hi_z, false, D3DTADDRESS_CLAMP, D3DTEXF_POINT, D3DTEXF_POINT, D3DTEXF_POINT, false);
-			C.set_Sampler("s_image", r_RT_backbuffer_mip, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, false);
+			// Pass 3: Render SSR
+			// Используем наш единый файл и точку входа ReflectionsRenderPass
+			CBlender_Compile::PassDesc PassDescription;
+			PassDescription.VertexShader = "screen_quad";
+			PassDescription.VertexShaderEntry = "main";
+			PassDescription.PixelShader = sh_name;
+			PassDescription.PixelShaderEntry = "ReflectionsRenderPass";
+
+			// В оригинале использовался begin_Pass("screen_quad", ...).
+			// Используем простой вариант, так как в оригинале не было сложного блендинга,
+			// но если нужно, можно развернуть PassDescription как в примере с автоэкспозицией.
+			C.begin_Pass("screen_quad", sh_name, "main", "ReflectionsRenderPass");
+
+			C.set_Sampler("s_hi_z_mip_chain", r_RT_Hi_z, false, D3DTADDRESS_CLAMP, D3DTEXF_POINT, D3DTEXF_POINT,
+						  D3DTEXF_POINT, false);
+			C.set_Sampler("s_image", r_RT_backbuffer_mip, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD,
+						  D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, false);
 			gbuffer(C);
 			C.end_Pass();
 			break;
 		}
 	}
 
+	CBlender_reflections() = default;
 	~CBlender_reflections() = default;
 };
 ///////////////////////////////////////////////////////////////////////////////////

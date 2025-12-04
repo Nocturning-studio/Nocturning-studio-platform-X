@@ -7,13 +7,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 void CRender::render_bent_normals()
 {
+	OPTICK_EVENT("CRender::render_bent_normals");
+	RenderBackend.set_ColorWriteEnable();
 	RenderBackend.set_CullMode(CULL_NONE);
 	RenderBackend.set_Stencil(FALSE);
 
-	float w = float(Device.dwWidth);
-	float h = float(Device.dwHeight);
-
-	//RenderBackend.set_Element(RenderTarget->s_bent_normals->E[0]);
-	//RenderBackend.RenderViewportSurface(w, h, RenderTarget->rt_Bent_Normals);
+	RenderBackend.set_Element(RenderTarget->s_bent_normals->E[0]);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Bent_Normals);
 }
 ///////////////////////////////////////////////////////////////////////////////////
