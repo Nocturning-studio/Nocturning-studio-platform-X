@@ -46,6 +46,9 @@ void CRender::render_reflections()
 	RenderBackend.set_Stencil(FALSE);
 
 	RenderBackend.set_Element(RenderTarget->s_reflections->E[SE_SSR_RENDER_PASS]);
+	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
+
+	RenderBackend.set_Element(RenderTarget->s_reflections->E[SE_SSR_DENOISE_PASS]);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Reflections);
 }
 ///////////////////////////////////////////////////////////////////////////////////

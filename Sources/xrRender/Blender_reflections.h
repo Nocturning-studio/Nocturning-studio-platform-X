@@ -11,6 +11,7 @@ enum
 {
 	SE_SSR_GENERATE_MIP_CHAIN_PASS,
 	SE_SSR_RENDER_PASS,
+	SE_SSR_DENOISE_PASS
 };
 ///////////////////////////////////////////////////////////////////////////////////
 class CBlender_reflections : public IBlender
@@ -24,6 +25,8 @@ class CBlender_reflections : public IBlender
 	void Compile(CBlender_Compile& C)
 	{
 		IBlender::Compile(C);
+
+		CBlender_Compile::PassDesc PassDescription;
 
 		// Имя единого шейдерного файла (без расширения)
 		LPCSTR sh_name = "postprocess_stage_reflections";
@@ -49,7 +52,6 @@ class CBlender_reflections : public IBlender
 		case SE_SSR_RENDER_PASS:
 			// Pass 3: Render SSR
 			// Используем наш единый файл и точку входа ReflectionsRenderPass
-			CBlender_Compile::PassDesc PassDescription;
 			PassDescription.VertexShader = "screen_quad";
 			PassDescription.VertexShaderEntry = "main";
 			PassDescription.PixelShader = sh_name;
@@ -58,12 +60,26 @@ class CBlender_reflections : public IBlender
 			// В оригинале использовался begin_Pass("screen_quad", ...).
 			// Используем простой вариант, так как в оригинале не было сложного блендинга,
 			// но если нужно, можно развернуть PassDescription как в примере с автоэкспозицией.
-			C.begin_Pass("screen_quad", sh_name, "main", "ReflectionsRenderPass");
+			C.begin_Pass(PassDescription);
 
 			C.set_Sampler("s_hi_z_mip_chain", r_RT_Hi_z, false, D3DTADDRESS_CLAMP, D3DTEXF_POINT, D3DTEXF_POINT,
 						  D3DTEXF_POINT, false);
 			C.set_Sampler("s_image", r_RT_backbuffer_mip, false, D3DTADDRESS_CLAMP, D3DTEXF_GAUSSIANQUAD,
 						  D3DTEXF_GAUSSIANQUAD, D3DTEXF_GAUSSIANQUAD, false);
+			gbuffer(C);
+			C.end_Pass();
+			break;
+
+		case SE_SSR_DENOISE_PASS:
+			PassDescription.VertexShader = "screen_quad";
+			PassDescription.VertexShaderEntry = "main";
+			PassDescription.PixelShader = sh_name;
+			PassDescription.PixelShaderEntry = "DenoisePass";
+
+			C.begin_Pass(PassDescription);
+
+			C.set_Sampler_linear("s_reflections", r_RT_generic1);
+
 			gbuffer(C);
 			C.end_Pass();
 			break;

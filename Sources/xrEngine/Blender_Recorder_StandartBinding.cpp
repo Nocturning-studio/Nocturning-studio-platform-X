@@ -506,7 +506,8 @@ class cl_wind_turbulence : public R_constant_setup
 		// Для идеальной плавности время нужно накапливать в CEnvironment::OnFrame:
 		// fWindTime += Device.fTimeDelta * current_velocity;
 		// Но для простоты пока умножим, при плавном переходе погоды скачок будет сглажен интерполяцией.
-		float anim_time = Device.fTimeGlobal * velocity;
+		clamp(velocity, 0.0f, 1.0f);
+		float anim_time = Device.fTimeGlobal * velocity * 1.2f;
 
 		RenderBackend.set_Constant(C, intensity, desc->wind_turbulence, anim_time, desc->wind_strength);
 	}

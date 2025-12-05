@@ -69,9 +69,9 @@ void CEnvironment::CalcWindValues()
 
 	float BaseStrength = CurrentEnv->wind_strength;
 	// Уменьшили влияние порывов на итоговую цифру, чтобы не было скачков от 0 до 100
-	float GustStrength = CurrentEnv->wind_gusting * BaseStrength * 0.8f;
+	float GustStrength = CurrentEnv->wind_gusting * BaseStrength;
 
 	CurrentEnv->wind_turbulence = BaseStrength + (GustStrength * GustFactor);
 
-	clamp(CurrentEnv->wind_turbulence, 0.0f, 10.0f);
+	clamp(CurrentEnv->wind_turbulence, 0.0f, 5.0f);
 }
