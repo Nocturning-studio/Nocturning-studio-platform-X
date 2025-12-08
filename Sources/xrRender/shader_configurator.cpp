@@ -292,22 +292,22 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 	C.set_Define("MATERIAL_QUALITY", (int)ps_r_material_quality, CBlender_Compile::ShaderScope::Pixel);
 
 	// Output shader names
-	string_path NewPixelShaderName;
-	string_path NewVertexShaderName;
+	string_path NewPixelShaderName = { 0 };
+	string_path NewVertexShaderName = {0};
 
 	// Base part of material
-	string_path AlbedoTexture;
-	string_path BumpTexture;
-	string_path BumpCorrectionTexture;
+	string_path AlbedoTexture = {0};
+	string_path BumpTexture = {0};
+	string_path BumpCorrectionTexture = {0};
 
 	// Detail part of material
-	string_path DetailAlbedoTexture;
-	string_path DetailBumpTexture;
-	string_path DetailBumpCorrectionTexture;
+	string_path DetailAlbedoTexture = {0};
+	string_path DetailBumpTexture = {0};
+	string_path DetailBumpCorrectionTexture = {0};
 
 	// Other textures
-	string_path HemisphereLightMapTexture;
-	string_path LightMapTexture;
+	string_path HemisphereLightMapTexture = {0};
+	string_path LightMapTexture = {0};
 
 	string_path Dummy = {0};
 
@@ -328,8 +328,8 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 	bool bUseConfigurator = false;
 	CInifile* MaterialConfiguration;
-	string_path MaterialConfiguratorSearchPath;
-	string_path MaterialConfiguratorRealPath;
+	string_path MaterialConfiguratorSearchPath = {0};
+	string_path MaterialConfiguratorRealPath = {0};
 	safe_string::copy(MaterialConfiguratorSearchPath, sizeof(MaterialConfiguratorSearchPath), AlbedoTexture);
 	safe_string::concat(MaterialConfiguratorSearchPath, sizeof(MaterialConfiguratorSearchPath),
 						MaterialConfiguratorSearchPath, ".ltx");
@@ -363,7 +363,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 	// Get opacity texture
 	bool bUseOpacity = false;
-	string_path OpacityTexture;
+	string_path OpacityTexture = {0};
 	bUseOpacity = ConcatAndFindTexture(OpacityTexture, AlbedoTexture, "_opacity");
 	C.set_Define(bUseOpacity, "USE_CUSTOM_OPACITY", "1");
 
@@ -433,9 +433,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 			}
 			else
 			{
-				// If bump not connected - try find unconnected texture with similar name
-				if (FS.exist(Dummy, "$game_textures$", BumpTexture, ".dds"))
-					bUseBump = ConcatAndFindTexture(BumpTexture, AlbedoTexture, "_bump");
+				bUseBump = ConcatAndFindTexture(BumpTexture, AlbedoTexture, "_bump");
 			}
 		}
 
@@ -498,7 +496,7 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 	// Get weight texture
 	bool bUseCustomWeight = false;
-	string_path CustomWeightTexture;
+	string_path CustomWeightTexture = {0};
 
 	if (bUseConfigurator)
 	{
@@ -513,79 +511,79 @@ void configure_shader(CBlender_Compile& C, bool bIsHightQualityGeometry, LPCSTR 
 
 	// Get AO-Roughness-Metallic texture
 	bool bUseARMMap = false;
-	string_path ARMTexture;
+	string_path ARMTexture = {0};
 
 	// Get ARMD (AO-Roughness-Metallic-Displacement)
 	bool bUseARMDMap = false;
-	string_path ARMDTexture;
+	string_path ARMDTexture = {0};
 
 	// Get Empty-Roughness-Metallic texture
 	bool bUseERMMap = false;
-	string_path ERMTexture;
+	string_path ERMTexture = {0};
 
 	// Get normal texture
 	bool bUseCustomNormal = false;
-	string_path CustomNormalTexture;
+	string_path CustomNormalTexture = {0};
 
 	// Get packed normal texture
 	bool bUsePackedNormal = false;
-	string_path PackedNormalTexture;
+	string_path PackedNormalTexture = {0};
 
 	// Get subsurface_power power texture
 	bool bUseCustomSubsurfacePower = false;
-	string_path CustomSubsurfacePowerTexture;
+	string_path CustomSubsurfacePowerTexture = {0};
 
 	// Get BakedAO texture
 	bool bUseBakedAO = false;
-	string_path BakedAOTexture;
+	string_path BakedAOTexture = {0};
 
 	// Get emission power texture
 	bool bUseCustomEmission = false;
-	string_path CustomEmissionTexture;
+	string_path CustomEmissionTexture = {0};
 
 	// Get roughness texture
 	bool bUseCustomRoughness = false;
-	string_path CustomRoughnessTexture;
+	string_path CustomRoughnessTexture = {0};
 
 	// Get gloss texture
 	bool bUseCustomGloss = false;
-	string_path CustomGlossTexture;
+	string_path CustomGlossTexture = {0};
 
 	// Get metallic texture
 	bool bUseCustomMetallic = false;
-	string_path CustomMetallicTexture;
+	string_path CustomMetallicTexture = {0};
 
 	// Get cavity texture
 	bool bUseCustomCavity = false;
-	string_path CustomCavityTexture;
+	string_path CustomCavityTexture = {0};
 
 	// Get Specular Tint texture
 	bool bUseCustomSpecularTint = false;
-	string_path CustomSpecularTintTexture;
+	string_path CustomSpecularTintTexture = {0};
 
 	// Get displacement texture
 	bool bUseCustomDisplacement = false;
-	string_path CustomDisplacementTexture;
+	string_path CustomDisplacementTexture = {0};
 
 	// Get sheen intensity texture
 	bool bUseCustomSheenIntensity = false;
-	string_path CustomSheenIntensityTexture;
+	string_path CustomSheenIntensityTexture = {0};
 
 	// Get sheen roughness texture
 	bool bUseCustomSheenRoughness = false;
-	string_path CustomSheenRoughnessTexture;
+	string_path CustomSheenRoughnessTexture = {0};
 
 	// Get coat intensity texture
 	bool bUseCustomCoatIntensity = false;
-	string_path CustomCoatIntensityTexture;
+	string_path CustomCoatIntensityTexture = {0};
 
 	// Get coat roughness texture
 	bool bUseCustomCoatRoughness = false;
-	string_path CustomCoatRoughnessTexture;
+	string_path CustomCoatRoughnessTexture = {0};
 
 	// Custom Packed Material Logic
 	bool bUseCustomMaterial = false;
-	string_path CustomMaterialTexture;
+	string_path CustomMaterialTexture = {0};
 
 	if (!UseAlbedoOnly)
 	{
@@ -1099,11 +1097,11 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 	C.set_Define("MATERIAL_QUALITY", (int)ps_r_material_quality, CBlender_Compile::ShaderScope::Pixel);
 
 	// Output shader names
-	string_path NewPixelShaderName;
-	string_path NewVertexShaderName;
+	string_path NewPixelShaderName = {0};
+	string_path NewVertexShaderName = {0};
 
 	// Base part of material
-	string_path AlbedoTexture;
+	string_path AlbedoTexture = {0};
 	safe_string::copy(AlbedoTexture, sizeof(AlbedoTexture), *C.L_textures[0]);
 
 	// Add extension to texture  and chek for null
@@ -1116,8 +1114,8 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 
 	bool bUseConfigurator = false;
 	CInifile* MaterialConfiguration;
-	string_path MaterialConfiguratorSearchPath;
-	string_path MaterialConfiguratorRealPath;
+	string_path MaterialConfiguratorSearchPath = {0};
+	string_path MaterialConfiguratorRealPath = {0};
 	safe_string::copy(MaterialConfiguratorSearchPath, sizeof(MaterialConfiguratorSearchPath), AlbedoTexture);
 	safe_string::concat3(MaterialConfiguratorSearchPath, sizeof(MaterialConfiguratorSearchPath),
 						 MaterialConfiguratorSearchPath, "_material_configuration", ".ltx");
@@ -1146,7 +1144,7 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 
 	// Get opacity texture
 	bool bUseOpacity = false;
-	string_path OpacityTexture;
+	string_path OpacityTexture = {0};
 	bUseOpacity = ConcatAndFindLevelTexture(OpacityTexture, AlbedoTexture, "_opacity");
 	C.set_Define(bUseOpacity, "USE_CUSTOM_OPACITY", "1", CBlender_Compile::ShaderScope::Pixel);
 
@@ -1155,57 +1153,57 @@ void configure_shader_detail_object(CBlender_Compile& C, bool bIsHightQualityGeo
 
 	// Get BakedAO texture
 	bool bUseBakedAO = false;
-	string_path BakedAOTexture;
+	string_path BakedAOTexture = {0};
 	bUseBakedAO = ConcatAndFindLevelTexture(BakedAOTexture, AlbedoTexture, "_ao") && !DisablePBR;
 	C.set_Define(bUseBakedAO, "USE_BAKED_AO", "1", CBlender_Compile::ShaderScope::Pixel);
 
 	// Get normal texture
 	bool bUseCustomNormal = false;
-	string_path CustomNormalTexture;
+	string_path CustomNormalTexture = {0};
 	bUseCustomNormal = ConcatAndFindLevelTexture(CustomNormalTexture, AlbedoTexture, "_normal") && !DisablePBR;
 	C.set_Define(bUseCustomNormal, "USE_CUSTOM_NORMAL", "1", CBlender_Compile::ShaderScope::Pixel);
 
 	// Get roughness texture
 	bool bUseCustomRoughness = false;
-	string_path CustomRoughnessTexture;
+	string_path CustomRoughnessTexture = {0};
 	bUseCustomRoughness = ConcatAndFindLevelTexture(CustomRoughnessTexture, AlbedoTexture, "_roughness") && !DisablePBR;
 	C.set_Define(bUseCustomRoughness, "USE_CUSTOM_ROUGHNESS", "1", CBlender_Compile::ShaderScope::Pixel);
 
 	// Get metallic texture
 	bool bUseCustomMetallic = false;
-	string_path CustomMetallicTexture;
+	string_path CustomMetallicTexture = {0};
 	bUseCustomMetallic = ConcatAndFindLevelTexture(CustomMetallicTexture, AlbedoTexture, "_metallic") && !DisablePBR;
 	C.set_Define(bUseCustomMetallic, "USE_CUSTOM_METALLIC", "1", CBlender_Compile::ShaderScope::Pixel);
 
 	// Get subsurface_power power texture
 	bool bUseCustomSubsurfacePower = false;
-	string_path CustomSubsurfacePowerTexture;
+	string_path CustomSubsurfacePowerTexture = {0};
 	bUseCustomSubsurfacePower =
 		ConcatAndFindLevelTexture(CustomSubsurfacePowerTexture, AlbedoTexture, "_subsurface_power") && !DisablePBR;
 	C.set_Define(bUseCustomSubsurfacePower, "USE_CUSTOM_SUBSURFACE_POWER", "1", CBlender_Compile::ShaderScope::Pixel);
 
 	// Get emission power texture
 	bool bUseCustomEmission = false;
-	string_path CustomEmissionTexture;
+	string_path CustomEmissionTexture = {0};
 	bUseCustomEmission = ConcatAndFindLevelTexture(CustomEmissionTexture, AlbedoTexture, "_emission");
 	C.set_Define(bUseCustomEmission, "USE_CUSTOM_EMISSION", "1", CBlender_Compile::ShaderScope::Pixel);
 
 	// Get displacement texture
 	bool bUseCustomDisplacement = false;
-	string_path CustomDisplacementTexture;
+	string_path CustomDisplacementTexture = {0};
 	bUseCustomDisplacement =
 		ConcatAndFindLevelTexture(CustomDisplacementTexture, AlbedoTexture, "_displacement") && !DisablePBR;
 	C.set_Define(bUseCustomDisplacement, "USE_CUSTOM_DISPLACEMENT", "1", CBlender_Compile::ShaderScope::Pixel);
 
 	// Get cavity texture
 	bool bUseCustomCavity = false;
-	string_path CustomCavityTexture;
+	string_path CustomCavityTexture = {0};
 	bUseCustomCavity = ConcatAndFindLevelTexture(CustomCavityTexture, AlbedoTexture, "_cavity") && !DisablePBR;
 	C.set_Define(bUseCustomCavity, "USE_CUSTOM_CAVITY", "1", CBlender_Compile::ShaderScope::Pixel);
 
 	// Get weight texture
 	bool bUseCustomWeight = false;
-	string_path CustomWeightTexture;
+	string_path CustomWeightTexture = {0};
 	bUseCustomWeight = ConcatAndFindLevelTexture(CustomWeightTexture, AlbedoTexture, "_weight");
 	C.set_Define(bUseCustomWeight, "USE_WEIGHT_MAP", "1", CBlender_Compile::ShaderScope::Vertex);
 

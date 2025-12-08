@@ -385,6 +385,7 @@ class ENGINE_API CBackend
 			set_Array_Constant(&*ctable->get(n), e, x, y, z, w);
 	}
 
+	ICF void Apply(u32 countV, u32 PC);
 	ICF void Render(D3DPRIMITIVETYPE T, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC);
 	ICF void Render(D3DPRIMITIVETYPE T, u32 startV, u32 PC);
 

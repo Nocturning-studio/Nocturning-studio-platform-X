@@ -8,9 +8,6 @@
 #define DETAIL_SLOT_SIZE 2.f
 #define DETAIL_SLOT_SIZE_2 DETAIL_SLOT_SIZE * 0.5f
 
-//	int s_x	= iFloor			(EYE.x/slot_size+.5f)+offs_x;		// [0...size_x)
-//	int s_z	= iFloor			(EYE.z/slot_size+.5f)+offs_z;		// [0...size_z)
-
 /*
 0 - Header(version,obj_count(max255),size_x,size_z,min_x,min_z)
 1 - Objects
@@ -124,7 +121,6 @@ struct DetailSlot // was(4+4+3*4+2 = 22b), now(8+2*4=16b)
 		return float(v) / float(range);
 	}
 
-	//	static void		verify		()						{	VERIFY(16==sizeof(DetailSlot));	}
 	void color_editor()
 	{
 		c_dir = w_qclr(0.5f, 15);

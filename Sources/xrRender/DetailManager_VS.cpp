@@ -42,8 +42,8 @@ void CDetailManager::hw_Load()
 	OPTICK_EVENT("CDetailManager::hw_Load");
 
 	// Настраиваем максимальное количество инстансов за один вызов
-	// 8192 * 64 байта (размер InstanceData) = 512 КБ буфер. Это нормально.
-	hw_MaxInstances = 8192;
+	// 32768 * 64 байта (размер InstanceData) = 2 MБ буфер. Это нормально.
+	hw_MaxInstances = 32768;
 
 	// Pre-process objects
 	u32 dwVerts = 0;
@@ -73,23 +73,43 @@ void CDetailManager::hw_Load()
 
 	// Fill Geometry VB
 	{
+		// Lock buffer
 		vertHW* pV;
 		R_CHK(hw_VB->Lock(0, 0, (void**)&pV, 0));
+
 		for (u32 o = 0; o < objects.size(); o++)
 		{
 			CDetail& D = *objects[o];
-			// Пишем только ОДНУ копию вершин
+
+			// 1. Вычисляем высоту модели
+			float fMinY = D.bv_bb.min.y;
+			float fHeight = D.bv_bb.max.y - fMinY;
+
+			// Защита от деления на ноль для плоских объектов
+			if (fHeight < EPS_S)
+				fHeight = EPS_S;
+
 			for (u32 v = 0; v < D.number_vertices; v++)
 			{
 				Fvector& vP = D.vertices[v].P;
+
 				pV->x = vP.x;
-				pV->y = vP.y;
+
+				// 2. ИСПРАВЛЕНИЕ ПАРЕНИЯ:
+				// Сдвигаем вершину так, чтобы самая нижняя точка модели всегда была на 0.0
+				pV->y = vP.y - fMinY;
+
 				pV->z = vP.z;
+
 				pV->u = QC(D.vertices[v].u);
 				pV->v = QC(D.vertices[v].v);
-				// t - нормализованная высота для градиента или ветра
-				pV->t = QC(vP.y / (D.bv_bb.max.y - D.bv_bb.min.y));
-				pV->mid = 0; // Больше не используется
+
+				// 3. ИСПРАВЛЕНИЕ ГРАДИЕНТА ВЕТРА (t):
+				// Градиент должен быть от 0 (низ) до 1 (верх).
+				// Раньше формула была vP.y / Height, что давало ошибку, если fMinY != 0.
+				pV->t = QC((vP.y - fMinY) / fHeight);
+
+				pV->mid = 0;
 				pV++;
 			}
 		}
@@ -265,7 +285,6 @@ void CDetailManager::hw_Render_dump(u32 var_id, u32 lod_id)
 
 				u32 primCount = Object.number_indices / 3;
 
-				// ИСПОЛЬЗУЕМ RenderBackend
 				RenderBackend.Render(D3DPT_TRIANGLELIST, vOffset, 0, Object.number_vertices, iOffset, primCount);
 
 				Device.Statistic->RenderDUMP_DT_Count += currentInstanceCount;
@@ -274,8 +293,7 @@ void CDetailManager::hw_Render_dump(u32 var_id, u32 lod_id)
 
 			// ВАЖНО: Обязательно сбрасываем частоту стримов, иначе следующий вызов отрисовки
 			// (например, UI или другой геометрии) упадет или отрисуется некорректно.
-			HW.pDevice->SetStreamSourceFreq(0, 1);
-			HW.pDevice->SetStreamSourceFreq(1, 1);
+			HW.pDevice->SetStreamSource(1, NULL, 0, 0);
 		}
 
 		// Сдвигаем оффсеты в общем буфере геометрии

@@ -55,7 +55,26 @@ void CSoundRender_Emitter::update(float dt)
 		fTimeToStop = fTime + get_length_sec();
 		fTimeToPropagade = fTime;
 		fade_volume = 1.f;
-		occluder_volume = SoundRender->get_occlusion(p_source.position, .2f, occluder);
+
+		// --- [FIX BEGIN] Правильная начальная инициализация ---
+		if (SoundRender->m_pOcclusion)
+		{
+			// Если SDK активен, сразу считаем честную окклюзию, чтобы не было "хлопка" громкости
+			Fvector l_pos = SoundRender->listener_position();
+			Fvector s_pos = p_source.position;
+			Presence::float3 listener(l_pos.x, l_pos.y, l_pos.z);
+			Presence::float3 source(s_pos.x, s_pos.y, s_pos.z);
+
+			// Считаем мгновенно, без интерполяции
+			occluder_volume = SoundRender->m_pOcclusion->CalculateOcclusion(listener, source);
+		}
+		else
+		{
+			// Старый метод (фоллбэк)
+			occluder_volume = SoundRender->get_occlusion(p_source.position, .2f, occluder);
+		}
+		// --- [FIX END] ---
+
 		smooth_volume = p_source.base_volume * p_source.volume *
 						(owner_data->s_type == st_Effect ? psSoundVEffects : psSoundVMusic) * psSoundVFactor *
 						psSoundVMaster * (b2D ? 1.f : occluder_volume);
@@ -313,9 +332,10 @@ BOOL CSoundRender_Emitter::update_culling(float dt)
 		}
 
 		// Интерполяция (сглаживание) значения окклюзии
-		// 1.f - это скорость интерполяции. Для рейтрейсинга можно сделать чуть быстрее или медленнее
-		// в зависимости от вкуса. Стандартное значение 1.f вполне подходит.
-		volume_lerp(occluder_volume, target_occlusion, 1.f, dt);
+		// 10.f - это скорость интерполяции. Для рейтрейсинга можно сделать чуть быстрее или медленнее
+		// в зависимости от вкуса. Стандартное значение 10.f вполне подходит.
+		volume_lerp(occluder_volume, target_occlusion, 10.f, dt);
+
 		clamp(occluder_volume, 0.f, 1.f);
 
 		// -----------------------------------------------------------------------------------------

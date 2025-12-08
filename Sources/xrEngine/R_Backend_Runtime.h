@@ -292,14 +292,22 @@ ICF void CBackend::set_Indices(IDirect3DIndexBuffer9* _ib)
 	}
 }
 
-ICF void CBackend::Render(D3DPRIMITIVETYPE PrimitiveType, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC)
+ICF void CBackend::Apply(u32 countV, u32 PC)
 {
-	OPTICK_EVENT("CBackend::Render");
+	OPTICK_EVENT("CBackend::Apply");
 
 	stat.calls++;
 	stat.verts += countV;
 	stat.polys += PC;
 	constants.flush();
+}
+
+ICF void CBackend::Render(D3DPRIMITIVETYPE PrimitiveType, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC)
+{
+	OPTICK_EVENT("CBackend::Render");
+
+	Apply(countV, PC);
+
 	CHK_DX(HW.pDevice->DrawIndexedPrimitive(PrimitiveType, baseV, startV, countV, startI, PC));
 
 	//LPSTR event_name;
