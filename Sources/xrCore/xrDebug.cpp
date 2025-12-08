@@ -243,10 +243,6 @@ LONG WINAPI UnhandledFilter(struct _EXCEPTION_POINTERS* pExceptionInfo)
 			timestamp(t_stemp);
 			strcpy(szDumpPath, "logs\\");
 			strcat(szDumpPath, Core.ApplicationNameLog);
-			strcat(szDumpPath, "_");
-			strcat(szDumpPath, Core.UserName);
-			strcat(szDumpPath, "_");
-			strcat(szDumpPath, t_stemp);
 			strcat(szDumpPath, ".mdmp");
 
 			// create the file

@@ -67,6 +67,7 @@ class CBlender_combine : public IBlender
 		case SE_COMBINE_VOLUMETRIC:
 			PassDescription.PixelShader += "_apply_volumetric";
 			PassDescription.EnableAlphaBlend = false;
+			C.begin_Pass(PassDescription);
 			C.set_Sampler_point("s_image", r_RT_generic1);
 			C.set_Sampler_linear("s_volumetric_accumulator", r_RT_Volumetric_Sun);
 			jitter(C);

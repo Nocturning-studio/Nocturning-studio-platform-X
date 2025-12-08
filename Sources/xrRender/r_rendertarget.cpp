@@ -63,7 +63,7 @@ void CRenderTarget::create_textures()
 	rt_dof_near.create(r_RT_dof_near, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 	rt_dof_far.create(r_RT_dof_far, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 
-	rt_Volumetric_Sun.create(r_RT_Volumetric_Sun, dwWidth * 0.5f, dwHeight * 0.5f, D3DFMT_A8);
+	rt_Volumetric_Sun.create(r_RT_Volumetric_Sun, dwWidth, dwHeight, D3DFMT_A8);
 
 	rt_Light_Accumulator.create(r_RT_Light_Accumulator, dwWidth, dwHeight, D3DFMT_A16B16G16R16F);
 

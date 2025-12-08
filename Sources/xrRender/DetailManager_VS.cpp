@@ -89,6 +89,10 @@ void CDetailManager::hw_Load()
 			if (fHeight < EPS_S)
 				fHeight = EPS_S;
 
+			D.bv_bb.min.y -= fMinY;
+			D.bv_bb.max.y -= fMinY;
+			D.bv_sphere.P.y -= fMinY;
+
 			for (u32 v = 0; v < D.number_vertices; v++)
 			{
 				Fvector& vP = D.vertices[v].P;
@@ -162,14 +166,13 @@ void CDetailManager::hw_Render_dump(u32 var_id, u32 lod_id)
 	OPTICK_EVENT("CDetailManager::hw_Render_dump");
 	Device.Statistic->RenderDUMP_DT_Count = 0;
 
-	// Смещения в буферах геометрии
+	// Смещения в глобальных буферах геометрии
 	u32 vOffset = 0;
 	u32 iOffset = 0;
 
 	vis_list& list = m_visibles[var_id];
 
-	// Эти параметры (c_sun, c_hemi) теперь пишутся в инстанс буфер,
-	// но мы оставляем их расчет здесь
+	// Подготовка цветов окружения
 	CEnvDescriptor* desc = g_pGamePersistent->Environment().CurrentEnv;
 	Fvector c_sun, c_ambient, c_hemi;
 	c_sun.set(desc->sun_color.x, desc->sun_color.y, desc->sun_color.z);
@@ -177,78 +180,85 @@ void CDetailManager::hw_Render_dump(u32 var_id, u32 lod_id)
 	c_ambient.set(desc->ambient.x, desc->ambient.y, desc->ambient.z);
 	c_hemi.set(desc->hemi_color.x, desc->hemi_color.y, desc->hemi_color.z);
 
-	// Iterate objects
+	// Устанавливаем геометрию один раз глобально (но будем страховать перед Draw)
+	RenderBackend.set_Geometry(hw_Geom);
+
+	// Итерируемся по типам объектов (моделям травы)
 	for (u32 O = 0; O < objects.size(); O++)
 	{
 		CDetail& Object = *objects[O];
+
+		// === ИСПРАВЛЕНИЕ 1: Защита от нулевой геометрии ===
+		// Если у модели нет треугольников, отрисовка сломает видеодрайвер в режиме инстансинга.
+		// Это частая причина "бага с проекцией на экран".
+		u32 primCount = Object.number_indices / 3;
+		if (primCount == 0)
+		{
+			// ВАЖНО: Даже если мы не рисуем, мы ОБЯЗАНЫ сдвинуть оффсеты,
+			// так как буферы вершин/индексов едины для всех моделей.
+			vOffset += Object.number_vertices;
+			iOffset += Object.number_indices;
+			continue;
+		}
+
 		xr_vector<SlotItemVec*>& vis = list[O];
 
 		if (!vis.empty())
 		{
-			// Выбор шейдера
+			// Выбор шейдера (анимированный или статика)
 			int id = (lod_id == 0) ? SE_DETAIL_NORMAL_ANIMATED : SE_DETAIL_NORMAL_STATIC;
 
-			// Устанавливаем шейдер через Backend
 			RenderBackend.set_Element(Object.shader->E[id]);
 			RenderImplementation.apply_lmaterial();
 
-			// === ЗАПОЛНЕНИЕ БУФЕРА ИНСТАНСОВ ===
-
+			// === ЦИКЛ ЗАПОЛНЕНИЯ ИНСТАНСОВ ===
 			u32 currentInstanceCount = 0;
 			InstanceData* pInstances = nullptr;
 
-			// Блокируем буфер (DISCARD)
+			// Блокируем буфер с флагом DISCARD (говорим драйверу, что старые данные не нужны)
 			HRESULT hr =
 				hw_InstanceVB->Lock(0, hw_MaxInstances * sizeof(InstanceData), (void**)&pInstances, D3DLOCK_DISCARD);
 			if (FAILED(hr))
 				return;
 
-			xr_vector<SlotItemVec*>::iterator _vI = vis.begin();
-			xr_vector<SlotItemVec*>::iterator _vE = vis.end();
+			auto _vI = vis.begin();
+			auto _vE = vis.end();
 
-			for (; _vI != _vE; _vI++)
+			for (; _vI != _vE; ++_vI)
 			{
 				SlotItemVec* items = *_vI;
-				SlotItemVecIt _iI = items->begin();
-				SlotItemVecIt _iE = items->end();
+				auto _iI = items->begin();
+				auto _iE = items->end();
 
-				for (; _iI != _iE; _iI++)
+				for (; _iI != _iE; ++_iI)
 				{
-					// Если буфер переполнился — отрисовываем и сбрасываем
+					// Если буфер переполнен -> рисуем то, что накопили
 					if (currentInstanceCount >= hw_MaxInstances)
 					{
 						hw_InstanceVB->Unlock();
 
-						// --- RENDER PHASE ---
+						// --- ОТРИСОВКА ПАКЕТА ---
+						RenderBackend.set_Geometry(hw_Geom); // Страховка состояния
 
-						// 1. Убеждаемся, что геометрия (VB/IB) установлена
-						RenderBackend.set_Geometry(hw_Geom);
-
-						// 2. Вручную привязываем Stream 1 (Instance Data)
-						// RCache не знает про Stream 1, поэтому ставим напрямую через HW
+						// Привязываем буфер инстансов к Stream 1
 						HW.pDevice->SetStreamSource(1, hw_InstanceVB, 0, sizeof(InstanceData));
 
-						// 3. Включаем Instancing (Frequency)
-						// Говорим драйверу: Stream 0 - использовать индексы, делить на кол-во инстансов
-						// Stream 1 - использовать данные, 1 элемент на 1 инстанс
+						// Включаем Hardware Instancing
+						// Stream 0 (Геометрия): Использовать индексы, делить на кол-во инстансов
 						HW.pDevice->SetStreamSourceFreq(0, (D3DSTREAMSOURCE_INDEXEDDATA | currentInstanceCount));
+						// Stream 1 (Матрицы): 1 элемент данных на 1 инстанс
 						HW.pDevice->SetStreamSourceFreq(1, (D3DSTREAMSOURCE_INSTANCEDATA | 1));
 
-						// 4. Вызываем RenderBackend вместо сырого DrawIndexedPrimitive
-						// Он сам вызовет DIP, но перед этим закоммитит константы и обновит статистику
-						u32 primCount = Object.number_indices / 3;
-
+						// Рисуем
 						RenderBackend.Render(D3DPT_TRIANGLELIST, vOffset, 0, Object.number_vertices, iOffset,
 											 primCount);
 
-						// Статистику по полигонам RenderBackend обновит сам (частично),
-						// но детальную статистику X-Ray (s_details) нужно добавить вручную:
+						// Обновляем статистику
 						Device.Statistic->RenderDUMP_DT_Count += currentInstanceCount;
 						RenderBackend.stat.r.s_details.add(currentInstanceCount * Object.number_vertices);
+						// -----------------------
 
-						// --- END RENDER PHASE ---
-
-						// Сброс и новая блокировка
+						// Снова блокируем буфер для следующей порции
 						currentInstanceCount = 0;
 						hw_InstanceVB->Lock(0, hw_MaxInstances * sizeof(InstanceData), (void**)&pInstances,
 											D3DLOCK_DISCARD);
@@ -256,7 +266,8 @@ void CDetailManager::hw_Render_dump(u32 var_id, u32 lod_id)
 
 					SlotItem& Instance = **_iI;
 
-					// Заполнение данных (Transposed matrices for HLSL mul(m, v))
+					// Заполняем данные инстанса
+					// Транспонирование матрицы для mul(m, v) в HLSL
 					float scale = Instance.scale_calculated;
 					Fmatrix& M = Instance.mRotY;
 
@@ -264,6 +275,7 @@ void CDetailManager::hw_Render_dump(u32 var_id, u32 lod_id)
 					pInstances[currentInstanceCount].Mat1.set(M._12 * scale, M._22 * scale, M._32 * scale, M._42);
 					pInstances[currentInstanceCount].Mat2.set(M._13 * scale, M._23 * scale, M._33 * scale, M._43);
 
+					// Упаковка цвета и хеми
 					float h = Instance.c_hemi;
 					float s = Instance.c_sun;
 					pInstances[currentInstanceCount].Color.set(s, s, s, h);
@@ -274,7 +286,7 @@ void CDetailManager::hw_Render_dump(u32 var_id, u32 lod_id)
 
 			hw_InstanceVB->Unlock();
 
-			// Отрисовка "хвоста" (остатков)
+			// === ОТРИСОВКА ОСТАТКА (ХВОСТА) ===
 			if (currentInstanceCount > 0)
 			{
 				RenderBackend.set_Geometry(hw_Geom);
@@ -283,20 +295,21 @@ void CDetailManager::hw_Render_dump(u32 var_id, u32 lod_id)
 				HW.pDevice->SetStreamSourceFreq(0, (D3DSTREAMSOURCE_INDEXEDDATA | currentInstanceCount));
 				HW.pDevice->SetStreamSourceFreq(1, (D3DSTREAMSOURCE_INSTANCEDATA | 1));
 
-				u32 primCount = Object.number_indices / 3;
-
 				RenderBackend.Render(D3DPT_TRIANGLELIST, vOffset, 0, Object.number_vertices, iOffset, primCount);
 
 				Device.Statistic->RenderDUMP_DT_Count += currentInstanceCount;
 				RenderBackend.stat.r.s_details.add(currentInstanceCount * Object.number_vertices);
 			}
 
-			// ВАЖНО: Обязательно сбрасываем частоту стримов, иначе следующий вызов отрисовки
-			// (например, UI или другой геометрии) упадет или отрисуется некорректно.
+			// === ВАЖНО: ОЧИСТКА СОСТОЯНИЯ ===
+			// Обязательно сбрасываем Frequency и отвязываем буфер,
+			// иначе следующая отрисовка (UI, партиклы) попытается использовать инстансинг.
 			HW.pDevice->SetStreamSource(1, NULL, 0, 0);
+			HW.pDevice->SetStreamSourceFreq(0, 1);
+			HW.pDevice->SetStreamSourceFreq(1, 1);
 		}
 
-		// Сдвигаем оффсеты в общем буфере геометрии
+		// Сдвигаем указатели в общем буфере вершин/индексов для следующей модели
 		vOffset += Object.number_vertices;
 		iOffset += Object.number_indices;
 	}

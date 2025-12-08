@@ -117,11 +117,9 @@ void CTexture::apply_avi(u32 dwStage)
 		D3DLOCKED_RECT R;
 		R_CHK(T2D->LockRect(0, &R, NULL, 0));
 		R_ASSERT(R.Pitch == int(pAVI->m_dwWidth * 4));
-		//		R_ASSERT(pAVI->DecompressFrame((u32*)(R.pBits)));
 		BYTE* ptr;
 		pAVI->GetFrame(&ptr);
 		CopyMemory(R.pBits, ptr, pAVI->m_dwWidth * pAVI->m_dwHeight * 4);
-		//		R_ASSERT(pAVI->GetFrame((BYTE*)(&R.pBits)));
 
 		R_CHK(T2D->UnlockRect(0));
 		R_CHK(HW.pDevice->UpdateTexture(pTempSurface, pSurface));
@@ -154,21 +152,6 @@ void CTexture::apply_normal(u32 dwStage)
 
 void CTexture::Preload()
 {
-	// Material
-	/*
-		if (Device.Resources->m_description->line_exist("specification",*cName))	{
-	//		if (strstr(*cName,"ston_stena"))	__asm int 3;
-			LPCSTR		descr			=	Device.Resources->m_description->r_string("specification",*cName);
-			string256	bmode;
-			sscanf		(descr,"bump_mode[%[^]]], material[%f]",bmode,&m_material);
-			if ((bmode[0]=='u')&&(bmode[1]=='s')&&(bmode[2]=='e')&&(bmode[3]==':'))
-			{
-				// bump-map specified
-				m_bumpmap		=	bmode+4;
-			}
-	//		Msg	("mid[%f] : %s",m_material,*cName);
-		}
-	*/
 	m_bumpmap = Device.Resources->m_textures_description.GetBumpName(cName);
 	m_material = Device.Resources->m_textures_description.GetMaterial(cName);
 }

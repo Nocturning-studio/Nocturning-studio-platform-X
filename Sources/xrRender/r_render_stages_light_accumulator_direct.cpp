@@ -220,8 +220,7 @@ void CRender::accumulate_volumetric_sun(u32 sub_phase, Fmatrix m_shadow, Fvector
 {
 	OPTICK_EVENT("CRender::accumulate_volumetric_sun");
 
-	if (!(g_pGamePersistent->Environment().CurrentEnv->m_fSunShaftsIntensity > 0.05f) ||
-		!ps_r_lighting_flags.test(RFLAG_SUN_SHAFTS))
+	if (!(g_pGamePersistent->Environment().CurrentEnv->m_fSunShaftsIntensity > 0.05f) || !ps_r_lighting_flags.test(RFLAG_SUN_SHAFTS))
 	{
 		if (!bVolumetricSunTextureCleared)
 		{
@@ -231,8 +230,8 @@ void CRender::accumulate_volumetric_sun(u32 sub_phase, Fmatrix m_shadow, Fvector
 		return;
 	}
 
-	if (!bVolumetricSunTextureCleared)
-		bVolumetricSunTextureCleared = true;
+	if (bVolumetricSunTextureCleared)
+		bVolumetricSunTextureCleared = false;
 
 	// Убираем ВСЕ ограничения для объемного света
 	RenderBackend.set_Stencil(FALSE);
@@ -256,8 +255,8 @@ void CRender::accumulate_volumetric_sun(u32 sub_phase, Fmatrix m_shadow, Fvector
 	RenderBackend.set_Element(RenderTarget->s_accum_direct_cascade->E[sub_phase]);
 
 	// Pass necessary constants
-	float Weight = Device.dwWidth * 0.5f;
-	float Height = Device.dwHeight * 0.5f;
+	float Weight = RenderTarget->rt_Volumetric_Sun->dwWidth;
+	float Height = RenderTarget->rt_Volumetric_Sun->dwHeight;
 
 	float sun_shafts_intensity = g_pGamePersistent->Environment().CurrentEnv->m_fSunShaftsIntensity;
 	RenderBackend.set_Constant("image_resolution", Weight, Height, 1.0f / Weight, 1.0f / Height);
