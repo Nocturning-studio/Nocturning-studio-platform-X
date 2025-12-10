@@ -190,6 +190,24 @@ void CParticleManager::RemoveParticle(int effect_id, u32 p_id)
 void CParticleManager::SetMaxParticles(int effect_id, u32 max_particles)
 {
 	ParticleEffect* pe = GetEffectPtr(effect_id);
+
+	// 1. Проверка на валидность указателя
+	if (!pe)
+	{
+		Msg("! [ERROR] CParticleManager::SetMaxParticles: Effect is NULL! ID: %d", effect_id);
+		return;
+	}
+
+	// 2. Проверка на адекватность количества частиц
+	// Обычно партиклов не должно быть миллионы. Поставим лимит, например, 100 000.
+	if (max_particles > 100000)
+	{
+		Msg("! [ERROR] CParticleManager::SetMaxParticles: Suspicious max_particles count: %u. ID: %d. Clamping to "
+			"1000.",
+			max_particles, effect_id);
+		max_particles = 1000; // Ставим безопасное значение, чтобы не крашнуть движок
+	}
+
 	pe->Resize(max_particles);
 }
 void CParticleManager::SetCallback(int effect_id, OnBirthParticleCB b, OnDeadParticleCB d, void* owner, u32 param)

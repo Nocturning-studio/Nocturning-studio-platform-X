@@ -618,11 +618,7 @@ void CLevel::OnRender()
 	inherited::OnRender();
 
 	Game().OnRender();
-	// отрисовать трассы пуль
-	// Device.Statistic->TEST1.Begin();
 	BulletManager().Render();
-	// Device.Statistic->TEST1.End();
-	// отрисовать интерфейc пользователя
 	HUD().RenderUI();
 
 	draw_wnds_rects();
@@ -748,9 +744,9 @@ void CLevel::OnEvent(EVENT E, u64 P1, u64 /**P2/**/)
 		sscanf(LPCSTR(P1), "%s", Name);
 		Level().g_cl_Spawn(Name, 0xff, M_SPAWN_OBJECT_LOCAL, Fvector().set(0, 0, 0));
 	}
-	else if (E == eChangeRP && P1)
-	{
-	}
+	//else if (E == eChangeRP && P1)
+	//{
+	//}
 	else if (E == eDemoPlay && P1)
 	{
 		char* name = (char*)P1;
@@ -759,18 +755,18 @@ void CLevel::OnEvent(EVENT E, u64 P1, u64 /**P2/**/)
 		strcat(RealName, ".ltx");
 		Cameras().AddCamEffector(xr_new<CDemoPlay>(RealName, 1.3f, 0));
 	}
-	else if (E == eChangeTrack && P1)
-	{
+	//else if (E == eChangeTrack && P1)
+	//{
 		// int id = atoi((char*)P1);
 		// Environment->Music_Play(id);
-	}
-	else if (E == eEnvironment)
-	{
+	//}
+	//else if (E == eEnvironment)
+	//{
 		// int id=0; float s=1;
 		// sscanf((char*)P1,"%d,%f",&id,&s);
 		// Environment->set_EnvMode(id,s);
-	}
-	else
+	//}
+	//else
 		return;
 }
 

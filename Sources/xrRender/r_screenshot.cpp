@@ -97,11 +97,7 @@ void CRender::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 
 		ID3DXBuffer* saved = 0;
 
-#ifndef MASTER_GOLD
-		bool UsePngFormat = strstr(Core.Params, "-screenshot_format_png");
-#else
 		bool UsePngFormat = true;
-#endif
 
 		if (UsePngFormat)
 		{

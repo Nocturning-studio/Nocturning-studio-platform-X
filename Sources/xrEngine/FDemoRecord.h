@@ -58,7 +58,6 @@ class ENGINE_API CDemoRecord : public CEffectorCam, public IInputReceiver
 	void ChangeDepthOfFieldFocalLength(int direction);
 	void ChangeDepthOfFieldFStop(int direction);
 	void ChangeFieldOfView(int direction);
-	void ChangeDiaphragm(int direction);
 	void SwitchAutofocusState();
 	void SwitchGridState();
 	void SwitchCinemaBordersState();

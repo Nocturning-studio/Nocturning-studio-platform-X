@@ -18,6 +18,10 @@ class ENGINE_API CDemoPlay : public CEffectorCam, public IInputReceiver
 	bool m_bGlobalHudDraw;
 	bool m_bGlobalCrosshairDraw;
 
+	Fmatrix m_OriginalViewMatrix;
+
+	bool m_bBenchmarkMode;
+
 	// statistics
 	BOOL stat_started;
 	bool bNeedDrawResults;
@@ -35,7 +39,6 @@ class ENGINE_API CDemoPlay : public CEffectorCam, public IInputReceiver
 	bool m_bIsFirstFrame;
 
 	void Update(SCamEffectorInfo& info);
-	void PrintSummaryBanchmarkStatistic();
 	void ResetPerFrameStatistic();
 	void ShowPerFrameStatistic();
 	void ChooseTextColor(float FPSValue);
@@ -44,7 +47,12 @@ class ENGINE_API CDemoPlay : public CEffectorCam, public IInputReceiver
 	void MoveCamera(u32 frame, float interpolation_factor, int interpolation_type);
 	void Screenshot();
 
+	void PrintSummaryBenchmarkStatistic();
 	void EnableBenchmarkResultPrint();
+	void SaveBenchmarkResults();
+
+	Fmatrix GetFrameMatrix(int frame);
+	bool IsCut(int frame);
 
 	void Close();
 
