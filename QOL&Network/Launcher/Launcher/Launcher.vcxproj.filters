@@ -30,7 +30,7 @@
     <ClInclude Include="Launcher.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Third-party\include\TinyXML\tinyxml2.h">
+    <ClInclude Include="..\..\..\Third-party\include\TinyXML\tinyxml2.h">
       <Filter>TinyXML</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClCompile Include="Launcher.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Third-party\include\TinyXML\tinyxml2.cpp">
+    <ClCompile Include="..\..\..\Third-party\include\TinyXML\tinyxml2.cpp">
       <Filter>TinyXML</Filter>
     </ClCompile>
   </ItemGroup>

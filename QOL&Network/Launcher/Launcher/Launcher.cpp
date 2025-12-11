@@ -13,7 +13,7 @@
 #include <codecvt>
 #include <commctrl.h>
 #include <windowsx.h>
-#include "..\..\Third-party\include\TinyXML\tinyxml2.h"
+#include "TinyXML\tinyxml2.h"
 
 using namespace tinyxml2;
 
