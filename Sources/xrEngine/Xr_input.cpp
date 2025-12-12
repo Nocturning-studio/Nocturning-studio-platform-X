@@ -242,6 +242,7 @@ void CInput::MouseUpdate()
 
 	VERIFY(pMouse);
 
+	// —начала получаем буферизированные данные (важно дл€ кликов, чтобы не пропустить нажати€)
 	hr = pMouse->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), &od[0], &dwElements, 0);
 	if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
 	{
@@ -252,31 +253,50 @@ void CInput::MouseUpdate()
 		if (hr != S_OK)
 			return;
 	};
-	BOOL mouse_prev[COUNT_MOUSE_BUTTONS];
 
+	DIMOUSESTATE2 immediateMouseState;
+	HRESULT hrState = pMouse->GetDeviceState(sizeof(DIMOUSESTATE2), &immediateMouseState);
+
+	// ≈сли удалось получить мгновенное состо€ние - используем его дл€ движени€
+	if (SUCCEEDED(hrState))
+	{
+		offs[0] = immediateMouseState.lX;
+		offs[1] = immediateMouseState.lY;
+		offs[2] = immediateMouseState.lZ;
+	}
+	else
+	{
+		// Fallback: если GetDeviceState не сработал, обнул€ем смещени€ перед накоплением
+		offs[0] = offs[1] = offs[2] = 0;
+	}
+
+	BOOL mouse_prev[COUNT_MOUSE_BUTTONS];
 	mouse_prev[0] = mouseState[0];
 	mouse_prev[1] = mouseState[1];
 	mouse_prev[2] = mouseState[2];
 
-#pragma todo("NSDeathman to ALL: –азобратьс€ с предупреждением")
-#pragma warning(disable : 4644)
-	offs[0] = offs[1] = offs[2] = 0;
 	for (u32 i = 0; i < dwElements; i++)
 	{
 		switch (od[i].dwOfs)
 		{
+		// ќси обрабатываем только если не сработал GetDeviceState выше (fallback)
 		case DIMOFS_X:
-			offs[0] += od[i].dwData;
+			if (FAILED(hrState))
+				offs[0] += od[i].dwData;
 			timeStamp[0] = od[i].dwTimeStamp;
 			break;
 		case DIMOFS_Y:
-			offs[1] += od[i].dwData;
+			if (FAILED(hrState))
+				offs[1] += od[i].dwData;
 			timeStamp[1] = od[i].dwTimeStamp;
 			break;
 		case DIMOFS_Z:
-			offs[2] += od[i].dwData;
+			if (FAILED(hrState))
+				offs[2] += od[i].dwData;
 			timeStamp[2] = od[i].dwTimeStamp;
 			break;
+
+		//  нопки обрабатываем всегда через буфер, чтобы не тер€ть быстрые нажати€
 		case DIMOFS_BUTTON0:
 			if (od[i].dwData & 0x80)
 			{
@@ -390,20 +410,12 @@ void CInput::MouseUpdate()
 	{
 		cbStack.back()->IR_OnMouseHold(2);
 	}
-	if (dwElements)
-	{
-		if (offs[0] || offs[1])
-			cbStack.back()->IR_OnMouseMove(offs[0], offs[1]);
-		if (offs[2])
-			cbStack.back()->IR_OnMouseWheel(offs[2]);
-	}
-	else
-	{
-		if (timeStamp[1] && ((dwCurTime - timeStamp[1]) >= mouse_property.mouse_dt))
-			cbStack.back()->IR_OnMouseStop(DIMOFS_Y, timeStamp[1] = 0);
-		if (timeStamp[0] && ((dwCurTime - timeStamp[0]) >= mouse_property.mouse_dt))
-			cbStack.back()->IR_OnMouseStop(DIMOFS_X, timeStamp[0] = 0);
-	}
+
+	// ѕередаем движени€
+	if (offs[0] || offs[1])
+		cbStack.back()->IR_OnMouseMove(offs[0], offs[1]);
+	if (offs[2])
+		cbStack.back()->IR_OnMouseWheel(offs[2]);
 }
 
 //-------------------------------------------------------

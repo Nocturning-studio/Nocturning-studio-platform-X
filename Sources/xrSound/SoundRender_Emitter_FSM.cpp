@@ -47,6 +47,7 @@ void CSoundRender_Emitter::update(float dt)
 		if (starting_delay <= 0)
 			m_current_state = stStarting;
 		break;
+
 	case stStarting:
 		if (iPaused)
 			break;
@@ -56,24 +57,43 @@ void CSoundRender_Emitter::update(float dt)
 		fTimeToPropagade = fTime;
 		fade_volume = 1.f;
 
-		// --- [FIX BEGIN] Правильная начальная инициализация ---
-		if (SoundRender->m_pOcclusion)
+		// -----------------------------------------------------------------------
+		// [SOM Priority] Начальный расчет окклюзии
+		// -----------------------------------------------------------------------
 		{
-			// Если SDK активен, сразу считаем честную окклюзию, чтобы не было "хлопка" громкости
 			Fvector l_pos = SoundRender->listener_position();
 			Fvector s_pos = p_source.position;
-			Presence::float3 listener(l_pos.x, l_pos.y, l_pos.z);
-			Presence::float3 source(s_pos.x, s_pos.y, s_pos.z);
 
-			// Считаем мгновенно, без интерполяции
-			occluder_volume = SoundRender->m_pOcclusion->CalculateOcclusion(listener, source);
+			// 1. Проверяем SOM геометрию (стены, гермодвери, перекрытия уровней)
+			float fSomOcclusion = SoundRender->get_occlusion_to(l_pos, s_pos);
+
+			// Если SOM блокирует звук почти полностью (коэффициент < 0.01)
+			if (fSomOcclusion < 0.01f)
+			{
+				// Сразу глушим звук в 0, Presence Audio не вызываем (оптимизация)
+				occluder_volume = 0.0f;
+			}
+			else
+			{
+				// 2. Если проход открыт, считаем детальную физику звука
+				if (SoundRender->m_pOcclusion)
+				{
+					Presence::float3 listener(l_pos.x, l_pos.y, l_pos.z);
+					Presence::float3 source(s_pos.x, s_pos.y, s_pos.z);
+					// Считаем мгновенно, без интерполяции для старта
+					occluder_volume = SoundRender->m_pOcclusion->CalculateOcclusion(listener, source);
+
+					// Дополнительно можно умножить на SOM, если нужно, чтобы SOM работал как полупрозрачное препятствие
+					// occluder_volume *= fSomOcclusion;
+				}
+				else
+				{
+					// Fallback: Старый метод raycast
+					occluder_volume = SoundRender->get_occlusion(p_source.position, .2f, occluder);
+				}
+			}
 		}
-		else
-		{
-			// Старый метод (фоллбэк)
-			occluder_volume = SoundRender->get_occlusion(p_source.position, .2f, occluder);
-		}
-		// --- [FIX END] ---
+		// -----------------------------------------------------------------------
 
 		smooth_volume = p_source.base_volume * p_source.volume *
 						(owner_data->s_type == st_Effect ? psSoundVEffects : psSoundVMusic) * psSoundVFactor *
@@ -97,6 +117,7 @@ void CSoundRender_Emitter::update(float dt)
 		if (starting_delay <= 0)
 			m_current_state = stStartingLooped;
 		break;
+
 	case stStartingLooped:
 		if (iPaused)
 			break;
@@ -105,7 +126,36 @@ void CSoundRender_Emitter::update(float dt)
 		fTimeToStop = FLT_MAX;
 		fTimeToPropagade = fTime;
 		fade_volume = 1.f;
-		occluder_volume = SoundRender->get_occlusion(p_source.position, .2f, occluder);
+
+		// -----------------------------------------------------------------------
+		// [SOM Priority] Начальный расчет окклюзии для зацикленных звуков
+		// -----------------------------------------------------------------------
+		{
+			Fvector l_pos = SoundRender->listener_position();
+			Fvector s_pos = p_source.position;
+
+			float fSomOcclusion = SoundRender->get_occlusion_to(l_pos, s_pos);
+
+			if (fSomOcclusion < 0.01f)
+			{
+				occluder_volume = 0.0f;
+			}
+			else
+			{
+				if (SoundRender->m_pOcclusion)
+				{
+					Presence::float3 listener(l_pos.x, l_pos.y, l_pos.z);
+					Presence::float3 source(s_pos.x, s_pos.y, s_pos.z);
+					occluder_volume = SoundRender->m_pOcclusion->CalculateOcclusion(listener, source);
+				}
+				else
+				{
+					occluder_volume = SoundRender->get_occlusion(p_source.position, .2f, occluder);
+				}
+			}
+		}
+		// -----------------------------------------------------------------------
+
 		smooth_volume = p_source.base_volume * p_source.volume *
 						(owner_data->s_type == st_Effect ? psSoundVEffects : psSoundVMusic) * psSoundVFactor *
 						psSoundVMaster * (b2D ? 1.f : occluder_volume);
@@ -302,38 +352,45 @@ BOOL CSoundRender_Emitter::update_culling(float dt)
 		fade_volume += dt * 10.f * fade_scale;
 
 		// -----------------------------------------------------------------------------------------
-		// [Presence Audio Integration] Update occlusion
+		// [SOM Priority] Логика приоритета SOM над Presence Audio
 		// -----------------------------------------------------------------------------------------
 
 		float target_occlusion = 1.0f;
+		Fvector l_pos = SoundRender->listener_position();
+		Fvector s_pos = p_source.position;
 
-		// 1. Эмбиент не должен перекрываться стенами (он глобальный)
-		//if (owner_data->g_type == SOUND_TYPE_WORLD_AMBIENT)
-		//{
-		//	target_occlusion = 1.0f;
-		//}
-		// 2. Если Presence SDK подключен -> используем Ray Tracing
-		//else 
-		if (SoundRender->m_pOcclusion)
+		// Шаг 1: Проверяем грубую геометрию (Sound Occlusion Model)
+		// get_occlusion_to трассирует луч только по SOM-модели.
+		float fSomOcclusion = SoundRender->get_occlusion_to(l_pos, s_pos);
+
+		// Если SOM перекрывает путь звука (коэфф. прохождения очень мал)
+		if (fSomOcclusion < 0.01f)
 		{
-			Fvector l_pos = SoundRender->listener_position();
-			Fvector s_pos = p_source.position;
-
-			// Конвертация координат X-Ray -> Presence
-			Presence::float3 listener(l_pos.x, l_pos.y, l_pos.z);
-			Presence::float3 source(s_pos.x, s_pos.y, s_pos.z);
-
-			target_occlusion = SoundRender->m_pOcclusion->CalculateOcclusion(listener, source);
+			// ОПТИМИЗАЦИЯ:
+			// Мы считаем, что звук полностью блокирован геометрией (например, звук под землей, а игрок на поверхности).
+			// Принудительно ставим целевую окклюзию в 0 и НЕ ВЫЗЫВАЕМ тяжелый Presence Audio.
+			target_occlusion = 0.0f;
 		}
-		// 3. Fallback: Старая система (если SDK не загрузился)
 		else
 		{
-			target_occlusion = SoundRender->get_occlusion(p_source.position, .2f, occluder);
+			// Шаг 2: Если SOM пропускает звук, считаем "честную" дифракцию/окклюзию
+			if (SoundRender->m_pOcclusion)
+			{
+				// Конвертация координат X-Ray -> Presence
+				Presence::float3 listener(l_pos.x, l_pos.y, l_pos.z);
+				Presence::float3 source(s_pos.x, s_pos.y, s_pos.z);
+
+				target_occlusion = SoundRender->m_pOcclusion->CalculateOcclusion(listener, source);
+			}
+			// Fallback: Старая система (если SDK не загрузился или выключен)
+			else
+			{
+				target_occlusion = SoundRender->get_occlusion(p_source.position, .2f, occluder);
+			}
 		}
 
 		// Интерполяция (сглаживание) значения окклюзии
-		// 10.f - это скорость интерполяции. Для рейтрейсинга можно сделать чуть быстрее или медленнее
-		// в зависимости от вкуса. Стандартное значение 10.f вполне подходит.
+		// Это позволяет плавно менять громкость даже если SOM сработал резко
 		volume_lerp(occluder_volume, target_occlusion, 10.f, dt);
 
 		clamp(occluder_volume, 0.f, 1.f);

@@ -59,7 +59,8 @@
 // Constructor / Destructor
 // =================================================================================================
 
-CSoundEnvironment::CSoundEnvironment() : m_pAudioSystem(nullptr), m_pGeometryAdapter(nullptr), m_bLoaded(false)
+CSoundEnvironment::CSoundEnvironment()
+	: m_pAudioSystem(nullptr), m_pGeometryAdapter(nullptr), m_bLoaded(false), m_bEnabled(false)
 {
 	Msg("Initializing Presence audio SDK...");
 
@@ -125,9 +126,14 @@ void CSoundEnvironment::OnLevelLoad()
 
 	// Настройка параметров симуляции
 	Presence::Settings s;
-	s.maxBounces = 3; // Глубина рекурсии (3 отскока достаточно для качественного эха)
+	s.maxBounces = 5; // Глубина рекурсии (5 отскока достаточно для качественного эха)
 	s.maxRayDistance = 200.0f; // Дистанция трассировки (дальше 200м звук не анализируем)
 	s.useMultithreading = true; // Включаем асинхронные вычисления в отдельном потоке
+
+	if (m_pGeometryAdapter)
+	{
+		m_pGeometryAdapter->BuildMaterialCache();
+	}
 
 	// Инициализация системы и передача адаптера геометрии
 	// В этот момент внутри адаптера будет построен кэш материалов.
@@ -196,12 +202,23 @@ float CSoundEnvironment::CalculateOcclusion(const Presence::float3& listenerPos,
 
 void CSoundEnvironment::Update()
 {
-	// Проверка флага консоли (ss_EAX) — позволяет отключить систему на лету для тестов
+	// Проверка флага консоли (ss_EAX) — позволяет отключить систему на лету
 	if (!psSoundFlags.test(ss_EAX) || !m_bLoaded || !m_pAudioSystem)
+	{
+		if (m_bEnabled)
+		{
+			Presence::EAXResult res = Presence::EAXResult();
+			ApplyToSoundDriver(res);
+			m_bEnabled = false;
+		}
 		return;
+	}
 
 	if (!g_pGameLevel)
 		return;
+
+	if (!m_bEnabled)
+		m_bEnabled = true;
 
 	// 1. Сбор данных о состоянии мира (World State Gathering)
 	// Преобразуем координаты камеры из X-Ray (Fvector) в формат SDK (float3)

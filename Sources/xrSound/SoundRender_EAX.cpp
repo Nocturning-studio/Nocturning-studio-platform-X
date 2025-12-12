@@ -168,24 +168,15 @@ void CSoundRender_Core::commit_eax(SEAXEnvironmentData* EAXEnvData)
 		i_eax_set(&DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_COMMITDEFERREDSETTINGS, NULL, 0);
 	}
 
-	// 2. [CRITICAL FIX FOR EAX 2.0] Применяем настройки ИСТОЧНИКОВ (Sources)
-	// Без этого шага источники могут играть "сухо", игнорируя настройки комнаты.
 	if (bEAX && eaxSet)
 	{
-		// В EAX 2.0 уровень эффекта задается через DSPROPERTY_EAXBUFFER_ROOM
-		// 0 = Максимальный уровень (0 mB)
-		// Если звук все еще тихий, убедитесь, что не стоят флаги EAXBUFFERFLAGS_ROOMAUTO, которые могут занижать
-		// громкость от дистанции
-
-		LONG lSendLevel = 0; // 0 mB (Full Wet)
+		LONG lSendLevel = -1000;
 
 		for (u32 tit = 0; tit < s_targets.size(); tit++)
 		{
 			CSoundRender_Target* T = s_targets[tit];
 			if (T->get_emitter())
 			{
-				// Принудительно говорим источнику использовать эффекты комнаты на полную громкость
-				// 3-й аргумент eaxSet - это ID источника (pSource)
 				eaxSet(&DSPROPSETID_EAX_BufferProperties, DSPROPERTY_EAXBUFFER_ROOM, T->pSource, &lSendLevel, sizeof(LONG));
 			}
 		}

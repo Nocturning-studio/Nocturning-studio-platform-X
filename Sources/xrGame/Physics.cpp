@@ -48,11 +48,11 @@ dReal world_erp = ERP(SPRING_S(base_cfm, base_erp, base_fixed_step), DAMPING(bas
 dReal world_spring = 1.0f * SPRING(world_cfm, world_erp);
 dReal world_damping = 1.0f * DAMPING(world_cfm, world_erp);
 
-const dReal default_world_gravity = 2 * 9.81f;
+const dReal default_world_gravity = 2.0f * 9.81f;
 
 /////////////////////////////////////////////////////
 
-int phIterations = 18;
+int phIterations = 20;
 float phTimefactor = 1.f;
 float phBreakCommonFactor = 0.01f;
 float phRigidBreakWeaponFactor = 1.f;

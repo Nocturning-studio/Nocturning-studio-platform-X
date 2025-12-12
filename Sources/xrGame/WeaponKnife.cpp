@@ -138,8 +138,17 @@ void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 
 	PlaySound(m_sndShot, pos);
 
+	// --- FIX START: FORCE DISTANCE ---
+	// –ассчитываем новую, гарантированную дистанцию удара.
+	// fireDistance беретс€ из конфига. ћы добавл€ем компенсацию сдвига (0.2f)
+	// и ставим жесткий минимум в 2.0 метра (игрова€ условность, чтобы попадать наверн€ка).
+	float fEffectiveDist = fireDistance + 0.2f;
+	if (fEffectiveDist < 2.0f)
+		fEffectiveDist = 2.0f;
+	// --- FIX END ---
+
 	Level().BulletManager().AddBullet(pos, dir, m_fStartBulletSpeed, fCurrentHit, fHitImpulse, H_Parent()->ID(), ID(),
-									  m_eHitType, fireDistance, cartridge, SendHit);
+									  m_eHitType, fEffectiveDist, cartridge, SendHit);
 }
 
 void CWeaponKnife::OnAnimationEnd(u32 state)
@@ -167,6 +176,13 @@ void CWeaponKnife::OnAnimationEnd(u32 state)
 				smart_cast<CEntity*>(H_Parent())->g_fireParams(this, p1, d);
 			else
 				break;
+
+			// --- FIX START: ORIGIN SHIFT ---
+			// —двигаем точку начала удара Ќј«јƒ относительно взгл€да.
+			// Ёто решает проблему, когда игрок стоит вплотную к врагу и "промахиваетс€",
+			// потому что луч начиналс€ внутри модели врага.
+			p1.mad(d, -0.2f);
+			// --- FIX END ---
 
 			KnifeStrike(p1, d);
 		}
@@ -282,7 +298,7 @@ void CWeaponKnife::LoadFireParams(LPCSTR section, LPCSTR prefix)
 	fvHitPower_2[egdNovice] = fvHitPower_2[egdMaster];	// такие же
 
 	int num_game_diff_param = _GetItemCount(*s_sHitPower_2); // узнаЄм колличество параметров дл€ хитов
-	if (num_game_diff_param > 1)							 // если задан второй параметр хита
+	if (num_game_diff_param > 1) // если задан второй параметр хита
 	{
 		fvHitPower_2[egdVeteran] =
 			(float)atof(_GetItem(*s_sHitPower_2, 1, buffer)); // то вычитываем его дл€ уровн€ ветерана

@@ -82,12 +82,27 @@ void CRadioactiveZone::feel_touch_new(CObject* O)
 #include "actor.h"
 BOOL CRadioactiveZone::feel_touch_contact(CObject* O)
 {
-
 	CActor* A = smart_cast<CActor*>(O);
 	if (A)
 	{
+		// Дополнительная проверка на валидность объекта
+		if (A->getDestroy())
+			return FALSE;
+
+		// "Failsafe": Проверка по дистанции.
+		// Если физика залагала и Contact() врет, мы проверяем математическое расстояние.
+		// Берем радиус ограничивающей сферы (bounding sphere) зоны.
+		float fZoneRadius = CFORM()->getSphere().R;
+		float fDist = A->Position().distance_to(Position());
+
+		// Если мы дальше радиуса зоны + 2.5 метра (запас на гистерезис),
+		// то принудительно считаем, что контакта нет.
+		if (fDist > (fZoneRadius + 2.5f))
+			return FALSE;
+
 		if (!((CCF_Shape*)CFORM())->Contact(O))
 			return FALSE;
+
 		return A->feel_touch_on_contact(this);
 	}
 	else

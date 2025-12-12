@@ -87,6 +87,7 @@ void CALifeUpdateManager::update_switch()
 	init_ef_storage();
 
 	START_PROFILE("ALife/switch");
+	reset_online_counter(); 
 	graph().level().update(CSwitchPredicate(this));
 	STOP_PROFILE
 }

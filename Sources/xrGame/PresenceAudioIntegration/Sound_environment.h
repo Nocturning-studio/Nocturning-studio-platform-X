@@ -92,6 +92,9 @@ class CSoundEnvironment : public Presence::ISoundOcclusionCalculator
 	// Флаг состояния: true, если уровень загружен и система работает.
 	bool m_bLoaded;
 
+	// Флаг состояния: true если сама библиотека включена (для проверки выключили ли эффект чтобы очистить данные для EAX)
+	bool m_bEnabled;
+
   public:
 	// =============================================================================================
 	// Initialization / Destruction

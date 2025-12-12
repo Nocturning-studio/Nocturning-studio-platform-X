@@ -107,14 +107,14 @@ struct SEAXEnvironmentData
 		Reset();
 	}
 
-	// Сброс в дефолтное состояние "Generic" (обычная комната)
+	// Сброс в дефолтное состояние
 	void Reset()
 	{
-		lRoom = -1000;	// Слегка приглушенный эффект
-		lRoomHF = -100; // Небольшая потеря ВЧ
+		lRoom = -1000;
+		lRoomHF = -100;
 		flRoomRolloffFactor = 0.0f;
-		flDecayTime = 1.49f;	// Стандартное затухание
-		flDecayHFRatio = 0.83f; // Естественное поглощение стенами
+		flDecayTime = 1.49f;
+		flDecayHFRatio = 0.83f;
 		lReflections = -2602;
 		flReflectionsDelay = 0.007f;
 		lReverb = 200;
@@ -122,9 +122,7 @@ struct SEAXEnvironmentData
 		flEnvironmentSize = 7.5f;
 		flEnvironmentDiffusion = 1.0f;
 		flAirAbsorptionHF = -5.0f;
-		dwFlags = 0x3; // DECAY_TIMESCALE | REFLECTIONS_SCALE...
-		dwFrameStamp = 0;
-		bDataValid = false;
+		dwFlags = 0x00000001 | 0x00000002 | 0x00000004 | 0x00000008 | 0x00000010 | 0x00000020;
 	}
 
 	// Копирование данных (используется для двойной буферизации между потоками)

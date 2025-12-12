@@ -34,6 +34,12 @@ class CBlender_antialiasing : public IBlender
 			C.set_Sampler_point("s_image", r_RT_generic0);
 			C.end_Pass();
 			break;
+		case SE_PASS_FXAA:
+			C.begin_Pass("screen_quad", "postprocess_stage_antialiasing_pass_fxaa");
+			C.set_Sampler_point("s_image", r_RT_generic0);
+			gbuffer(C);
+			C.end_Pass();
+			break;
 		case SE_PASS_AA_DUMMY:
 			C.begin_Pass("screen_quad", "simple_image");
 			C.set_Sampler_point("s_image", r_RT_generic1);

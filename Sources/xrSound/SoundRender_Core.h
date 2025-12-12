@@ -153,7 +153,6 @@ class CSoundRender_Core : public CSound_manager_interface
 	virtual void update_listener(const Fvector& P, const Fvector& D, const Fvector& N, float dt);
 
 	void refresh_sources();
-	void InitializeEAX();
 	void UpdateEAX();
 	void commit_eax(SEAXEnvironmentData* EAXEnvData);
 

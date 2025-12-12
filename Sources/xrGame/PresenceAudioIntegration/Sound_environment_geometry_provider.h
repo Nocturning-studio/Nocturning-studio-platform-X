@@ -131,7 +131,6 @@ class XRayGeometryAdapter : public Presence::IGeometryProvider
 	// ---------------------------------------------------------------------------------------------
 	virtual Presence::RayHit CastRay(const Presence::float3& start, const Presence::float3& dir, float maxDist) override
 	{
-		// Ленивая инициализация кэша, если он еще не построен
 		if (!m_bCacheBuilt)
 			BuildMaterialCache();
 
@@ -139,63 +138,55 @@ class XRayGeometryAdapter : public Presence::IGeometryProvider
 		result.isHit = false;
 		result.distance = maxDist;
 
-		// Защита от вызова, когда уровень не загружен
+		// Защита от вызова до загрузки уровня
 		if (!g_pGameLevel)
 			return result;
 
-		// 1. Конвертация типов данных (Presence Vector -> X-Ray Vector)
 		Fvector xStart, xDir;
 		xStart.set(start.x, start.y, start.z);
 		xDir.set(dir.x, dir.y, dir.z);
 
+		// Если длина вектора не равна 1, дистанция будет рассчитана неверно.
+		xDir.normalize();
+
+		// Сдвигаем точку начала луча на 5 см вперед по направлению луча.
+		// Это предотвращает:
+		// 1. Попадание в геометрию "за спиной" или в самого себя (если камера внутри коллизии).
+		// 2. Ошибки точности, когда луч начинается прямо на поверхности треугольника.
+		const float K_BIAS = 0.05f;
+		xStart.mad(xDir, K_BIAS);
+
+		// Уменьшаем дистанцию трассировки на величину смещения, чтобы не стрелять сквозь стены на пределе дистанции
+		float traceDist = maxDist - K_BIAS;
+		if (traceDist <= 0.001f)
+			return result;
+
 		collide::rq_result rq;
 
-		// 2. Выполнение запроса к физическому движку (ObjectSpace)
-		// rqtStatic - нас интересует только статическая геометрия (стены, пол, террейн).
-		// Динамические объекты (ящики, бочки) обычно игнорируются для глобальной акустики.
-		// Также учитываем особенности хрея - для статики используется BVH, а для динамики нет
-		// поэтому запрос к ней будет дороже
-		BOOL hit = g_pGameLevel->ObjectSpace.RayPick(xStart, xDir, maxDist, collide::rqtStatic, rq, NULL);
+		// Выполняем трассировку по СТАТИКЕ
+		BOOL hit = g_pGameLevel->ObjectSpace.RayPick(xStart, xDir, traceDist, collide::rqtStatic, rq, NULL);
 
 		if (hit)
 		{
 			result.isHit = true;
-			result.distance = rq.range;
+			// Возвращаем реальную дистанцию (результат RayPick + наше смещение)
+			result.distance = rq.range + K_BIAS;
 
-			// 3. Получение информации о треугольнике
-			// rq.element - это индекс треугольника в глобальном массиве статики
+			// Обработка треугольника
 			CDB::TRI* tri = g_pGameLevel->ObjectSpace.GetStaticTris() + rq.element;
-
-			// 4. Расчет нормали поверхности
-			// Нормаль нужна для расчета отскоков звука (Reflection).
-			// Берем 3 вершины треугольника и считаем перпендикуляр.
 			Fvector* verts = g_pGameLevel->ObjectSpace.GetStaticVerts();
+
+			// Расчет нормали
 			Fvector xNorm;
 			xNorm.mknormal(verts[tri->verts[0]], verts[tri->verts[1]], verts[tri->verts[2]]);
-
-			// Конвертация обратно в Presence Vector
 			result.normal = Presence::float3(xNorm.x, xNorm.y, xNorm.z);
 
-			// 5. Определение материала
-			// tri->material хранит ID материала (u16).
+			// Определение материала
 			u16 mtl_idx = (u16)tri->material;
-
 			if (mtl_idx < m_MaterialCache.size())
-			{
-				// Быстрый поиск в кэше O(1)
 				result.material = m_MaterialCache[mtl_idx];
-			}
 			else
-			{
-				// Fallback (Запасной вариант): Если ID материала некорректен.
-				// Используем простую геометрическую эвристику:
-				// Если стена вертикальная (dot product с вектором взгляда) - скорее всего камень.
-				float cos_angle = _abs(xDir.dotproduct(xNorm));
-				if (rq.range < 2.0f && cos_angle > 0.6f)
-					result.material = Presence::MaterialType::Stone;
-				else
-					result.material = Presence::MaterialType::Stone;
-			}
+				result.material = Presence::MaterialType::Stone;
 		}
 
 		return result;

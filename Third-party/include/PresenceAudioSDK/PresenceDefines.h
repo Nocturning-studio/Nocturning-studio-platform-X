@@ -166,17 +166,18 @@ namespace Presence
 
         // —брос в "нейтральное" состо€ние (звук как в вакууме/тихой комнате)
         void Reset() {
-            lRoom = -10000;             // Silence
-            lRoomHF = -10000;           // Muffled
-            flDecayTime = 1.0f;
-            flDecayHFRatio = 1.0f;
-            lReflections = -10000;
-            flReflectionsDelay = 0.0f;
-            lReverb = -10000;
-            flReverbDelay = 0.0f;
-            flEnvironmentSize = 1.0f;
-            flEnvironmentDiffusion = 1.0f;
-            flAirAbsorptionHF = -5.0f;
+			lRoom = -1000;
+			lRoomHF = -100;
+			flRoomRolloffFactor = 0.0f;
+			flDecayTime = 1.49f;
+			flDecayHFRatio = 0.83f;
+			lReflections = -2602;
+			flReflectionsDelay = 0.007f;
+			lReverb = 200;
+			flReverbDelay = 0.011f;
+			flEnvironmentSize = 7.5f;
+			flEnvironmentDiffusion = 1.0f;
+			flAirAbsorptionHF = -5.0f;
             isValid = false;
             flRoomRolloffFactor = 0.0f;
             debugEnclosedness = 0.0f;

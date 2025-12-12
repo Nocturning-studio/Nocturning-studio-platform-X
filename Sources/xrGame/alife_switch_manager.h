@@ -22,6 +22,9 @@ class CALifeSwitchManager : public virtual CALifeSimulatorBase, CRandom
 	float m_online_distance;
 	float m_offline_distance;
 
+	u32 m_online_limit_per_update; // Лимит на кадр
+	u32 m_online_switched_current; // Текущий счетчик
+
   private:
 	OBJECT_VECTOR m_saved_chidren;
 
@@ -35,6 +38,11 @@ class CALifeSwitchManager : public virtual CALifeSimulatorBase, CRandom
 	void switch_offline(CSE_ALifeDynamicObject* object);
 	void remove_online(CSE_ALifeDynamicObject* object, bool update_registries = true);
 	void add_online(CSE_ALifeDynamicObject* object, bool update_registries = true);
+
+	void reset_online_counter()
+	{
+		m_online_switched_current = 0;
+	}
 
   public:
 	IC CALifeSwitchManager(xrServer* server, LPCSTR section);

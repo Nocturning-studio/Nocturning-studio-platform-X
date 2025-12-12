@@ -28,6 +28,8 @@ void CRender::combine_sun_shafts()
 	RenderBackend.set_Stencil(FALSE);
 
 	RenderBackend.set_Element(RenderTarget->s_combine->E[SE_COMBINE_VOLUMETRIC]);
+	float sun_shafts_intensity = g_pGamePersistent->Environment().CurrentEnv->m_fSunShaftsIntensity;
+	RenderBackend.set_Constant("sun_shafts_intensity", sun_shafts_intensity, 0, 0, 0);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Generic_1);
 }
 ///////////////////////////////////////////////////////////////////////////////////

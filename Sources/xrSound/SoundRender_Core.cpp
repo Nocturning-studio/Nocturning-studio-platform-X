@@ -10,7 +10,7 @@
 #include <xrLevel.h>
 #pragma warning(pop)
 
-int psSoundTargets = 16;
+int psSoundTargets = 64;
 Flags32 psSoundFlags = {NULL};
 float psSoundOcclusionScale = 0.5f;
 float psSoundCull = 0.01f;
@@ -23,7 +23,7 @@ float psSoundVMaster = 1.0f;
 float psSoundVMusic = 0.7f;
 float psSoundVWeaponShooting = 0.7f;
 float psSoundVAmbient = 1.0f;
-int psSoundCacheSizeMB = 16;
+int psSoundCacheSizeMB = 64;
 
 float psTimeFactor = 1.0f;
 
@@ -77,7 +77,11 @@ CSoundRender_Core::CSoundRender_Core()
 
 CSoundRender_Core::~CSoundRender_Core()
 {
+#ifdef _EDITOR
+	ETOOLS::destroy_model(geom_SOM);
+#else
 	xr_delete(geom_SOM);
+#endif
 }
 
 void CSoundRender_Core::_initialize(u64 window)
@@ -135,7 +139,7 @@ void CSoundRender_Core::_initialize(u64 window)
 	A_CHK(alListener3f(AL_VELOCITY, 0.f, 0.f, 0.f));
 	Fvector orient[2] = {{0.f, 0.f, 1.f}, {0.f, 1.f, 0.f}};
 	A_CHK(alListenerfv(AL_ORIENTATION, &orient[0].x));
-	A_CHK(alListenerf(AL_GAIN, 1.f));
+	A_CHK(alListenerf(AL_GAIN, 0.5f));
 
 	bEAX = true;
 	eaxSet = (EAXSet)alGetProcAddress((const ALchar*)"EAXSet");

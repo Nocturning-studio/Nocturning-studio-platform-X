@@ -16,6 +16,13 @@ IC CALifeSwitchManager::CALifeSwitchManager(xrServer* server, LPCSTR section) : 
 	m_switch_factor = pSettings->r_float(section, "switch_factor");
 	set_switch_distance(m_switch_distance);
 	seed(u32(CPU::QPC() & 0xffffffff));
+
+	 m_online_switched_current = 0;
+	// Попробуем прочитать из alife.ltx, если нет - ставим дефолт
+	if (pSettings->line_exist(section, "switch_online_limit"))
+		m_online_limit_per_update = pSettings->r_u32(section, "switch_online_limit");
+	else
+		m_online_limit_per_update = 15;
 }
 
 IC float CALifeSwitchManager::online_distance() const

@@ -15,7 +15,7 @@
 #endif
 
 // Увеличиваем лимит, чтобы плотность при равномерном распределении была достаточной
-static const int max_desired_items = 4000;
+static const int max_desired_items = 2500;
 
 // Оптимальный радиус для охвата периферийного зрения
 static const float source_radius = 20.0f;
@@ -252,6 +252,9 @@ void CEffect_Rain::Render()
 	FVF::LIT* start = verts;
 	const Fvector& vEye = Device.vCameraPosition;
 
+	// Для RayTrace
+	collide::rq_result RQ;
+
 	for (u32 I = 0; I < items.size(); I++)
 	{
 		// physics and time control
@@ -310,14 +313,26 @@ void CEffect_Rain::Render()
 		}
 		Device.Statistic->TEST1.End();
 
-		// IMPROVEMENT: Dynamic drop length and width variation
-		// Длина капли теперь зависит от скорости (Motion Blur effect)
-		// Чем быстрее летит, тем длиннее хвост.
+		// Проверяем, есть ли над каплей крыша.
+		// Пускаем луч от позиции капли вверх.
+		// RayPick довольно тяжелый, поэтому можно делать рандомно или оптимизировать,
+		// но для корректности проверяем здесь.
+
+		Fvector rain_drop_pos = one.P;
+		rain_drop_pos.y += 0.5f;	   // Чуть приподнимаем начало луча
+		float roof_check_dist = 20.0f; // Проверяем на 20 метров вверх
+
+		// Проверяем только статику (rqtStatic)
+		if (g_pGameLevel->ObjectSpace.RayPick(rain_drop_pos, Fvector().set(0, 1, 0), roof_check_dist,
+											  collide::rqtStatic, RQ, NULL))
+		{
+			// Если попали в статику - пропускаем отрисовку этой капли
+			continue;
+		}
+
 		float speed_factor = one.fSpeed / drop_speed_min;
 		float current_drop_length = 3.5f * speed_factor * factor_visual;
 
-		// Небольшая вариация ширины для естественности
-		// Используем указатель one.P как seed для псевдо-рандома, чтобы ширина не мерцала
 		float width_var = 1.0f + (0.2f * sin(one.P.x * 10.0f));
 
 		// Build line
@@ -372,11 +387,11 @@ void CEffect_Rain::Render()
 		RenderBackend.set_CullMode(D3DCULL_CCW);
 	}
 
-	// Particles code remains unchanged (it handles splashes on hit)
 	Particle* P = particle_active;
 	if (0 == P)
 		return;
 
+	if (0)
 	{
 		float dt = Device.fTimeDelta;
 		IndexStream& _IS = RenderBackend.Index;
@@ -387,8 +402,7 @@ void CEffect_Rain::Render()
 		u32 v_offset, i_offset;
 		u32 vCount_Lock = particles_cache * DM_Drop->number_vertices;
 		u32 iCount_Lock = particles_cache * DM_Drop->number_indices;
-		IRender_DetailModel::fvfVertexOut* v_ptr = (IRender_DetailModel::fvfVertexOut*)RenderBackend.Vertex.Lock(
-			vCount_Lock, hGeom_Drops->vb_stride, v_offset);
+		IRender_DetailModel::fvfVertexOut* v_ptr = (IRender_DetailModel::fvfVertexOut*)RenderBackend.Vertex.Lock(vCount_Lock, hGeom_Drops->vb_stride, v_offset);
 		u16* i_ptr = _IS.Lock(iCount_Lock, i_offset);
 		while (P)
 		{
@@ -450,9 +464,6 @@ void CEffect_Rain::Render()
 		}
 	}
 }
-
-// ... остальные методы Hit, p_create и т.д. оставляем как есть, они работают корректно.
-// (Они включены в полный код выше для удобства копирования)
 
 // startup _new_ particle system
 void CEffect_Rain::Hit(Fvector& pos)

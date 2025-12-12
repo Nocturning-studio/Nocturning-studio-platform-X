@@ -438,6 +438,14 @@ void CArtefact::OnStateSwitch(u32 S)
 	break;
 	case eIdle: {
 		PlayAnimIdle();
+
+		// Если артефакт перешел в Idle (лежит на земле) и у него нет родителя (не в инвентаре),
+		// нужно принудительно "пнуть" физику, иначе он может провалиться сквозь террейн при спавне.
+		if (!H_Parent() && m_pPhysicsShell)
+		{
+			m_pPhysicsShell->set_ApplyByGravity(TRUE);
+			m_pPhysicsShell->Enable();
+		}
 	}
 	break;
 	};

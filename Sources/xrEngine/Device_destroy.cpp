@@ -92,8 +92,8 @@ void CRenderDevice::Reset(bool precache)
 		g_pGamePersistent->Environment().bNeed_re_create_env = TRUE;
 	}
 	_SetupStates();
-	if (precache)
-		PreCache(20);
+	//if (precache)
+	//	PreCache(20);
 	u32 tm_end = TimerAsync();
 	Msg("*** RESET [%d ms]", tm_end - tm_start);
 
