@@ -13,16 +13,16 @@ void CRenderTarget::u_calc_tc_duality_ss(Fvector2& r0, Fvector2& r1, Fvector2& l
 	float tw = float(dwWidth);
 	float th = float(dwHeight);
 	if (dwHeight != Device.dwHeight)
-		param_blur = 1.f;
+		RenderImplementation.EffectorsManager->set_blur(1.f);
 	Fvector2 shift, p0, p1;
 	shift.set(.5f / tw, .5f / th);
-	shift.mul(param_blur);
+	shift.mul(RenderImplementation.EffectorsManager->get_blur());
 	p0.set(.5f / tw, .5f / th).add(shift);
 	p1.set((tw + .5f) / tw, (th + .5f) / th).add(shift);
 
 	// Calculate Duality TC
-	float shift_u = param_duality_h * .5f;
-	float shift_v = param_duality_v * .5f;
+	float shift_u = RenderImplementation.EffectorsManager->get_duality_h() * .5f;
+	float shift_v = RenderImplementation.EffectorsManager->get_duality_v() * .5f;
 
 	r0.set(p0.x, p0.y);
 	r1.set(p1.x - shift_u, p1.y - shift_v);
@@ -58,15 +58,15 @@ void CRender::render_effectors_pass_generate_radiation_noise()
 	float h = float(Device.dwHeight);
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_RADIATION]);
-	RenderBackend.set_Constant("noise_intesity", RenderTarget->param_radiation_intensity, 1);
+	RenderBackend.set_Constant("noise_intesity", RenderImplementation.EffectorsManager->get_radiation_intensity(), 1);
 	RenderBackend.RenderViewportSurface(RenderTarget->rt_Radiation_Noise0);
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_RADIATION]);
-	RenderBackend.set_Constant("noise_intesity", RenderTarget->param_radiation_intensity, 0.66f);
+	RenderBackend.set_Constant("noise_intesity", RenderImplementation.EffectorsManager->get_radiation_intensity(), 0.66f);
 	RenderBackend.RenderViewportSurface(w * 0.5f, h * 0.5f, RenderTarget->rt_Radiation_Noise1);
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_RADIATION]);
-	RenderBackend.set_Constant("noise_intesity", RenderTarget->param_radiation_intensity, 0.33f);
+	RenderBackend.set_Constant("noise_intesity", RenderImplementation.EffectorsManager->get_radiation_intensity(), 0.33f);
 	RenderBackend.RenderViewportSurface(w * 0.25f, h * 0.25f, RenderTarget->rt_Radiation_Noise2);
 }
 
@@ -152,11 +152,11 @@ void CRender::render_effectors_pass_combine()
 
 	RenderBackend.set_Element(RenderTarget->s_effectors->E[SE_PASS_COMBINE]);
 
-	int gblend = clampr(iFloor((1 - RenderTarget->param_gray) * 255.f), 0, 255);
-	int nblend = clampr(iFloor((1 - RenderTarget->param_noise) * 255.f), 0, 255);
-	u32 p_color = subst_alpha(RenderTarget->param_color_base, nblend);
-	u32 p_gray = subst_alpha(RenderTarget->param_color_gray, gblend);
-	u32 p_brightness = RenderTarget->param_color_add;
+	int gblend = clampr(iFloor((1 - RenderImplementation.EffectorsManager->get_gray()) * 255.f), 0, 255);
+	int nblend = clampr(iFloor((1 - RenderImplementation.EffectorsManager->get_noise()) * 255.f), 0, 255);
+	u32 p_color = subst_alpha(RenderImplementation.EffectorsManager->get_color_base(), nblend);
+	u32 p_gray = subst_alpha(RenderImplementation.EffectorsManager->get_color_gray(), gblend);
+	u32 p_brightness = RenderImplementation.EffectorsManager->get_color_add();
 
 	// Draw full-screen quad textured with our scene image
 	u32 Offset;
@@ -186,14 +186,14 @@ void CRender::render_effectors_pass_combine()
 
 	// Actual rendering
 	RenderBackend.set_Constant(	"c_colormap", 
-								RenderTarget->param_color_map_influence,
-								RenderTarget->param_color_map_interpolate );
+								RenderImplementation.EffectorsManager->get_cm_imfluence(),
+							    RenderImplementation.EffectorsManager->get_cm_interpolate());
 
 	RenderBackend.set_Constant(	"c_brightness", 
 								color_get_R(p_brightness) / 255.f, 
 								color_get_G(p_brightness) / 255.f, 
 								color_get_B(p_brightness) / 255.f, 
-								RenderTarget->param_noise);
+								RenderImplementation.EffectorsManager->get_noise());
 
 	RenderBackend.set_Constant("night_vision_enabled", NightVisionEnabled);
 

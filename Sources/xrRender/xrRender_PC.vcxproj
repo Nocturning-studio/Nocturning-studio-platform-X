@@ -963,6 +963,7 @@
     <ClInclude Include="Blender_multiple_usage.h" />
     <ClInclude Include="DetailManager.h" />
     <ClInclude Include="DetailModel.h" />
+    <ClInclude Include="EffectorsManager.h" />
     <ClInclude Include="FLOD.h" />
     <ClInclude Include="FProgressive.h" />
     <ClInclude Include="FSkinned.h" />
@@ -1073,6 +1074,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release_Demo|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Master Gold|x64'">Level2</WarningLevel>
     </ClCompile>
+    <ClCompile Include="EffectorsManager.cpp" />
     <ClCompile Include="FLOD.cpp" />
     <ClCompile Include="FProgressive.cpp" />
     <ClCompile Include="FSkinned.cpp" />

@@ -275,6 +275,8 @@ void CRender::create()
 	update_options();
 	RenderTarget = xr_new<CRenderTarget>();
 
+	EffectorsManager = xr_new<CEffectorsManager>();
+
 	Models = xr_new<CModelPool>();
 	PSLibrary.OnCreate();
 	HWOCC.occq_create(occq_size);
@@ -300,6 +302,7 @@ void CRender::destroy()
 	PSLibrary.OnDestroy();
 	Device.seqFrame.Remove(this);
 	r_dsgraph_destroy();
+	xr_delete(EffectorsManager);
 }
 
 void CRender::reset_begin()
@@ -569,6 +572,13 @@ IRender_Target* CRender::getTarget()
 	OPTICK_EVENT("CRender::getTarget");
 
 	return RenderTarget;
+}
+
+IEffectorsManager* CRender::getEffectorsManager()
+{
+	OPTICK_EVENT("CRender::getEffectorsManager");
+
+	return EffectorsManager;
 }
 
 IRender_Light* CRender::light_create()

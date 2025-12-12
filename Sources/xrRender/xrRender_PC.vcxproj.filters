@@ -157,6 +157,9 @@
     <Filter Include="Render pipeline\Core\Rendering\Core">
       <UniqueIdentifier>{e3e61797-6191-437a-90a7-5c9ecad40841}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Effectors">
+      <UniqueIdentifier>{7bf0db16-0f91-4a4d-92b7-4a9621cc3321}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl_intersect.h">
@@ -380,6 +383,9 @@
     </ClInclude>
     <ClInclude Include="r_render_pipeline.h">
       <Filter>Render pipeline\Core\Rendering\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectorsManager.h">
+      <Filter>Core\Effectors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -643,6 +649,9 @@
     </ClCompile>
     <ClCompile Include="r_render_pipeline.cpp">
       <Filter>Render pipeline\Core\Rendering\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectorsManager.cpp">
+      <Filter>Core\Effectors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -125,6 +125,14 @@ class ENGINE_API IRender_Sector
 class ENGINE_API IRender_Target
 {
   public:
+	virtual u32 get_width() = 0;
+	virtual u32 get_height() = 0;
+	virtual ~IRender_Target(){};
+};
+
+class ENGINE_API IEffectorsManager
+{
+  public:
 	virtual void set_blur(float f) = 0;
 	virtual void set_gray(float f) = 0;
 	virtual void set_duality_h(float f) = 0;
@@ -135,13 +143,10 @@ class ENGINE_API IRender_Target
 	virtual void set_color_base(u32 f) = 0;
 	virtual void set_color_gray(u32 f) = 0;
 	virtual void set_color_add(u32 f) = 0;
-	virtual u32 get_width() = 0;
-	virtual u32 get_height() = 0;
 	virtual void set_cm_imfluence(float f) = 0;
 	virtual void set_cm_interpolate(float f) = 0;
 	virtual void set_cm_textures(const shared_str& tex0, const shared_str& tex1) = 0;
 	virtual void set_radiation_intensity(float f) = 0;
-	virtual ~IRender_Target(){};
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -206,6 +211,7 @@ class ENGINE_API IRender_interface
 	virtual IRender_Visual* getVisual(int id) = 0;
 	virtual IRender_Sector* detectSector(const Fvector& P) = 0;
 	virtual IRender_Target* getTarget() = 0;
+	virtual IEffectorsManager* getEffectorsManager() = 0;
 
 	// Main
 	IC void set_Frustum(CFrustum* O)

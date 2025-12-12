@@ -26,6 +26,8 @@
 
 #include "SunOccluder.h" 
 
+#include "EffectorsManager.h"
+
 // definition
 class CRender : public R_dsgraph_structure
 {
@@ -104,6 +106,8 @@ class CRender : public R_dsgraph_structure
 	CWallmarksEngine* Wallmarks;
 
 	CRenderTarget* RenderTarget;
+
+	CEffectorsManager* EffectorsManager;
 
 	CLight_DB Lights;
 	CLight_Compute_XFORM_and_VIS LR;
@@ -240,6 +244,8 @@ class CRender : public R_dsgraph_structure
 	virtual IRender_Sector* detectSector(const Fvector& P);
 	virtual IRender_Target* getTarget();
 
+	virtual IEffectorsManager* getEffectorsManager();
+
 	// Main
 	virtual void flush();
 	virtual void set_Object(IRenderable* O);
@@ -329,20 +335,16 @@ class CRender : public R_dsgraph_structure
 	void render_antialiasing();
 	void create_distortion_mask();
 	void render_distortion();
-	void prepare_dof_mip_chain(float FocalPlane, float B, float C, float FocalLength);
 	void render_depth_of_field();
 	void motion_blur_pass_prepare_dilation_map();
 	void motion_blur_pass_blur();
 	void motion_blur_pass_save_depth();
 	void render_motion_blur();
-	void render_fog_scattering();
 	void render_effectors_pass_generate_radiation_noise();
-	void render_effectors_pass_night_vision();
 	void render_effectors_pass_color_blind_filter();
 	void render_effectors_pass_lut();
 	void render_effectors_pass_combine();
 	void render_effectors_pass_resolve_gamma();
-	void render_effectors();
 	void output_frame_to_screen();
 	bool need_render_sun();
 	void check_distort();
@@ -391,8 +393,6 @@ class CRender : public R_dsgraph_structure
 	{
 		render_phase = active_phase;
 	};
-
-	BOOL is_sun();
 
 	// Constructor/destructor/loader
 	CRender();

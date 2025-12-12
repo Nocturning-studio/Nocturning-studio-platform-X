@@ -114,10 +114,6 @@ class CRenderTarget : public IRender_Target
 	ref_rt rt_smap_depth;		   // 24(32) bit,	depth
 	IDirect3DSurface9* rt_smap_ZB; //
 
-	// Textures
-	//IDirect3DVolumeTexture9* t_material_surf;
-	//ref_texture t_material;
-
 	IDirect3DTexture9* t_noise_surf[TEX_jitter_count];
 	ref_texture t_noise[TEX_jitter_count];
 
@@ -187,24 +183,6 @@ class CRenderTarget : public IRender_Target
 	u32 im_noise_shift_w;
 	u32 im_noise_shift_h;
 
-	float param_blur;
-	float param_gray;
-	float param_duality_h;
-	float param_duality_v;
-	float param_noise;
-	float param_noise_scale;
-	float param_noise_fps;
-	u32 param_color_base;
-	u32 param_color_gray;
-	u32 param_color_add;
-
-	//	Color mapping
-	float param_color_map_influence;
-	float param_color_map_interpolate;
-	ColorMapManager color_map_manager;
-
-	float param_radiation_intensity;
-
 	//	Igor: used for volumetric lights
 	bool m_bHasActiveVolumetric;
 
@@ -216,7 +194,6 @@ class CRenderTarget : public IRender_Target
 	void create_blenders();
 	void delete_blenders();
 	void CompileShaders(); 
-	void initialize_postprocess_params();
 
 	void accum_point_geom_create();
 	void accum_point_geom_destroy();
@@ -227,47 +204,6 @@ class CRenderTarget : public IRender_Target
 
 	void u_calc_tc_duality_ss(Fvector2& r0, Fvector2& r1, Fvector2& l0, Fvector2& l1);
 
-	virtual void set_blur(float f)
-	{
-		param_blur = f;
-	}
-	virtual void set_gray(float f)
-	{
-		param_gray = f;
-	}
-	virtual void set_duality_h(float f)
-	{
-		param_duality_h = _abs(f);
-	}
-	virtual void set_duality_v(float f)
-	{
-		param_duality_v = _abs(f);
-	}
-	virtual void set_noise(float f)
-	{
-		param_noise = f;
-	}
-	virtual void set_noise_scale(float f)
-	{
-		param_noise_scale = f;
-	}
-	virtual void set_noise_fps(float f)
-	{
-		param_noise_fps = _abs(f) + EPS_S;
-	}
-	virtual void set_color_base(u32 f)
-	{
-		param_color_base = f;
-	}
-	virtual void set_color_gray(u32 f)
-	{
-		param_color_gray = f;
-	}
-	virtual void set_color_add(u32 f)
-	{
-		param_color_add = f;
-	}
-
 	virtual u32 get_width()
 	{
 		return dwWidth;
@@ -275,22 +211,5 @@ class CRenderTarget : public IRender_Target
 	virtual u32 get_height()
 	{
 		return dwHeight;
-	}
-
-	virtual void set_cm_imfluence(float f)
-	{
-		param_color_map_influence = f;
-	}
-	virtual void set_cm_interpolate(float f)
-	{
-		param_color_map_interpolate = f;
-	}
-	virtual void set_cm_textures(const shared_str& tex0, const shared_str& tex1)
-	{
-		color_map_manager.SetTextures(tex0, tex1);
-	}
-	virtual void set_radiation_intensity(float f)
-	{
-		param_radiation_intensity = f;
 	}
 };
