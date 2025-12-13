@@ -254,15 +254,6 @@ void CAI_Stalker::g_fireParams(const CHudItem* pHudItem, Fvector& P, Fvector& D)
 		{
 			suppress_fire = true;
 			aim_target_pos = mem_info->m_object_params.m_position;
-
-			// Логика разброса "Фантома"
-			// Если это контратака - разброс больше (палим веером)
-			float spread_x = m_is_counter_attacking ? 1.5f : 0.8f;
-			float spread_y = 0.6f;
-
-			// Добавляем шум к позиции цели
-			aim_target_pos.x += ::Random.randF(-spread_x, spread_x);
-			aim_target_pos.y += ::Random.randF(0.2f, spread_y); // Чуть выше ног, в тело/голову
 		}
 	}
 

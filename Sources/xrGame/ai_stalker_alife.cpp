@@ -190,8 +190,63 @@ void CAI_Stalker::choose_weapon(ALife::EWeaponPriorityType weapon_priority_type)
 
 void CAI_Stalker::choose_medikit()
 {
-	// stalker cannot change medikit due to the game design :-(((
-	return;
+	// [IMPROVEMENT] Smart Medkit Selection
+	CTradeItem* best_medikit = 0;
+	float best_value = -1.f;
+
+	// Получаем текущее здоровье (0.0 .. 1.0)
+	float current_health = conditions().health();
+	bool bleeding = false;//conditions().bleeding_speed() > 0.01f;
+
+	ai().ef_storage().non_alife().member() = this;
+
+	xr_vector<CTradeItem>::iterator I = m_temp_items.begin();
+	xr_vector<CTradeItem>::iterator E = m_temp_items.end();
+
+	for (; I != E; ++I)
+	{
+		if (m_total_money < (*I).m_item->Cost())
+			continue;
+
+		CInventoryItem* item = (*I).m_item;
+		CMedkit* medkit = smart_cast<CMedkit*>(item);
+		CEatableItem* eatable = smart_cast<CEatableItem*>(item);
+
+		// Если это не медицина - пропускаем
+		if (!medkit && !eatable)
+			continue;
+
+		// Оцениваем предмет
+		// (В оригинале использовался ef_pattern, мы упростим логику для эффективности)
+		float value = 0.f;
+
+		// Приоритет бинтам, если идет кровь
+		if (item->object().cNameSect() == "bandage")
+		{
+			value = bleeding ? 1000.f : 10.f;
+		}
+		// Приоритет аптечкам, если мало здоровья
+		else if (medkit)
+		{
+			// Научная > Армейская > Обычная
+			// Но если здоровья много, берем дешевую, чтобы не тратить дорогую
+			float item_weight_val = (float)item->Cost();
+
+			if (current_health < 0.3f)
+				value = item_weight_val; // При смерти берем самое дорогое/мощное
+			else
+				value = 10000.f - item_weight_val; // Иначе берем попроще
+		}
+
+		if (value > best_value)
+		{
+			best_value = value;
+			best_medikit = &*I;
+		}
+	}
+
+	if (best_medikit)
+		buy_item_virtual(*best_medikit);
 }
 
 void CAI_Stalker::choose_detector()

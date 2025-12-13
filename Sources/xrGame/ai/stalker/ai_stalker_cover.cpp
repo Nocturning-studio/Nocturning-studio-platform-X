@@ -66,18 +66,28 @@ const CCoverPoint* CAI_Stalker::find_best_cover(const Fvector& position_to_cover
 #endif
 	m_ce_best->setup(position_to_cover_from, 10.f, 170.f, 10.f);
 
-	// [IMPROVEMENT] Aggressive Cover: Если у нас дробовик и мы здоровы,
-	// ищем укрытия более агрессивно (в более широком радиусе или ближе к врагу, если бы писали свой эвалуатор)
-	// Здесь мы просто увеличиваем радиус поиска, если в руках дробовик, чтобы найти путь вперед
-	float search_radius = 30.f;
+	float search_radius = 10.f;
+	float min_enemy_dist = MIN_SUITABLE_ENEMY_DISTANCE;
+
+	// Получаем ранг (0..100)
+	int rank = Rank();
+
+	// 1. Агрессия с дробовиком
 	if (inventory().ActiveItem() && inventory().ActiveItem()->object().ef_weapon_type() >= 7)
-	{ // 7=shotgun generic
+	{
 		if (conditions().health() > 0.7f)
-		{
-			search_radius = 50.f; // Ищем укрытия дальше (возможно ближе к врагу)
-		}
+			search_radius = 40.f;
+	}
+	// 2. Ветераны и Мастера ищут укрытия в более широком радиусе (для флангования)
+	else if (rank >= 50)
+	{
+		search_radius = 30.f;
+		// Если здоровье полное, поджимаем врага (разрешаем укрытия ближе к врагу)
+		if (conditions().health() > 0.9f)
+			min_enemy_dist = 5.0f;
 	}
 
+	m_ce_best->setup(position_to_cover_from, min_enemy_dist, 170.f, min_enemy_dist);
 	point =
 		ai().cover_manager().best_cover(Position(), search_radius, *m_ce_best, CStalkerMovementRestrictor(this, true));
 	return (point);

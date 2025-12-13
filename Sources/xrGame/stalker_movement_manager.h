@@ -43,7 +43,8 @@ class CStalkerMovementManager : public CMovementManager
 	float m_danger_head_speed;
 
   private:
-	IC void setup_head_speed();
+	IC void predict_smooth_direction();
+	void setup_head_speed();
 	IC void add_velocity(int mask, float linear, float compute_angular, float angular);
 	IC void add_velocity(int mask, float linear, float compute_angular);
 	IC void setup_body_orientation();
@@ -53,6 +54,7 @@ class CStalkerMovementManager : public CMovementManager
 	void setup_velocities();
 	void parse_velocity_mask();
 	void check_for_bad_path();
+	void process_smart_turns();
 
   public:
 	CStalkerMovementManager(CAI_Stalker* object);
