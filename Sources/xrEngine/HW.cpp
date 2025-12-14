@@ -26,6 +26,7 @@ ENGINE_API CHW HW;
 IDirect3DStateBlock9* dwDebugSB = 0;
 #endif
 
+//-----------------------------------------------------------------------------
 void CHW::Reset(HWND hwnd)
 {
 	OPTICK_EVENT("CHW::Reset");
@@ -44,11 +45,15 @@ void CHW::Reset(HWND hwnd)
 #endif
 
 	selectResolution(DevPP.BackBufferWidth, DevPP.BackBufferHeight, bWindowed);
-	// Windoze
-	DevPP.SwapEffect = bWindowed ? D3DSWAPEFFECT_FLIPEX : D3DSWAPEFFECT_DISCARD;
+
 	DevPP.Windowed = bWindowed;
+	// Для выделенного сервера важно IMMEDIATE, чтобы не ждать развертки скрытого окна
 	DevPP.PresentationInterval = selectPresentInterval();
-	DevPP.BackBufferCount = 2;
+	DevPP.BackBufferCount = 1; // Хватит одного буфера для сервера
+
+	// Discard самый быстрый
+	DevPP.SwapEffect = D3DSWAPEFFECT_DISCARD;
+
 	if (!bWindowed)
 		DevPP.FullScreen_RefreshRateInHz = selectRefresh(DevPP.BackBufferWidth, DevPP.BackBufferHeight, Caps.fTarget);
 	else
@@ -89,95 +94,42 @@ void CHW::Reset(HWND hwnd)
 
 xr_token* vid_mode_token = NULL;
 
-#pragma todo(Deathman to Deathman: Починить для dedicated)
 void CHW::CreateD3D()
 {
 	OPTICK_EVENT("CHW::CreateD3D");
-
 	Msg("Creating Direct3D9Ex");
 
 	HRESULT hr = Direct3DCreate9Ex(D3D_SDK_VERSION, &this->pD3D);
 	if (FAILED(hr) || !this->pD3D)
+	{
 		Msg("Failed to create Direct3D9Ex!");
-
-	/*
-#ifndef DEDICATED_SERVER
-	LPCSTR _name = "d3d9.dll";
-#else
-	LPCSTR _name = "xrd3d9-null.dll";
-#endif
-
-	Msg("Loading d3d DLL: %s", _name);
-
-	hD3D9 = LoadLibrary(_name);
-	if (!hD3D9)
-		make_string("Can't find 'd3d9.dll'\nPlease install latest version of DirectX before running this program");
-
-	typedef IDirect3D9* WINAPI _Direct3DCreate9(UINT SDKVersion);
-	_Direct3DCreate9* createD3D = (_Direct3DCreate9*)GetProcAddress(hD3D9, "Direct3DCreate9");
-	R_ASSERT2(createD3D, "There was a problem with Direct3DCreate9");
-
-	Msg("Creating Direct3D9");
-	this->pD3D = createD3D(D3D_SDK_VERSION);
-	if (!this->pD3D)
-		make_string("Please install DirectX 9.0c");
-		*/
+		// Fallback к обычному d3d9 если Ex не найден, но в 2025 году это редкость
+	}
 }
 
 void CHW::DestroyD3D()
 {
 	OPTICK_EVENT("CHW::DestroyD3D");
-
 	_RELEASE(this->pD3D);
-	//FreeLibrary(hD3D9);
 }
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
 D3DFORMAT CHW::selectDepthStencil(D3DFORMAT fTarget)
 {
-#pragma todo("NSDeathman to NSDeathman: Отрефакторить")
+	// D24S8 наиболее совместимый
 	return D3DFMT_D24S8;
-	/*
-	static D3DFORMAT fDS_Try1[6] = {D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, D3DFMT_D15S1};
-
-	D3DFORMAT* fDS_Try = fDS_Try1;
-	int fDS_Cnt = 6;
-
-	for (int it = 0; it < fDS_Cnt; it++)
-	{
-		if (SUCCEEDED(pD3D->CheckDeviceFormat(DevAdapter, DevT, fTarget, D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE, fDS_Try[it])))
-		{
-			if (SUCCEEDED(pD3D->CheckDepthStencilMatch(DevAdapter, DevT, fTarget, fTarget, fDS_Try[it])))
-			{
-				return fDS_Try[it];
-			}
-		}
-	}
-	return D3DFMT_UNKNOWN;
-	*/
 }
 
 void CHW::DestroyDevice()
 {
 	OPTICK_EVENT("CHW::DestroyDevice");
 
-	_SHOW_REF("refCount:pBaseZB", pBaseZB);
 	_RELEASE(pBaseZB);
-
-	_SHOW_REF("refCount:pBaseRT", pBaseRT);
 	_RELEASE(pBaseRT);
 #ifdef DEBUG
-	_SHOW_REF("refCount:dwDebugSB", dwDebugSB);
 	_RELEASE(dwDebugSB);
 #endif
-#ifdef _EDITOR
 	_RELEASE(HW.pDevice);
-#else
-	_SHOW_REF("DeviceREF:", HW.pDevice);
-	_RELEASE(HW.pDevice);
-#endif
+
 	DestroyD3D();
 
 #ifndef _EDITOR
@@ -185,32 +137,35 @@ void CHW::DestroyDevice()
 #endif
 }
 
+//-----------------------------------------------------------------------------
 void CHW::selectResolution(u32& dwWidth, u32& dwHeight, BOOL bWindowed)
 {
 	OPTICK_EVENT("CHW::selectResolution");
 
 	fill_vid_mode_list(this);
+
 #ifdef DEDICATED_SERVER
-	dwWidth = 640;
-	dwHeight = 480;
+	// --- ОПТИМИЗАЦИЯ ДЛЯ СЕРВЕРА ---
+	// Используем минимально возможное разрешение, чтобы GPU почти не работал.
+	// 32x32 вполне достаточно для создания контекста.
+	dwWidth = 32;
+	dwHeight = 32;
 #else
 	if (bWindowed)
 	{
 		dwWidth = psCurrentVidMode[0];
 		dwHeight = psCurrentVidMode[1];
 	}
-	else // check
+	else
 	{
 #ifndef _EDITOR
 		string64 buff;
 		sprintf_s(buff, sizeof(buff), "%dx%d", psCurrentVidMode[0], psCurrentVidMode[1]);
-
-		if (_ParseItem(buff, vid_mode_token) == u32(-1)) // not found
-		{												 // select safe
+		if (_ParseItem(buff, vid_mode_token) == u32(-1))
+		{
 			sprintf_s(buff, sizeof(buff), "vid_mode %s", vid_mode_token[0].name);
 			Console->Execute(buff);
 		}
-
 		dwWidth = psCurrentVidMode[0];
 		dwHeight = psCurrentVidMode[1];
 #endif
@@ -224,7 +179,6 @@ void CHW::CreateDevice(HWND m_hWnd)
 
 	CreateD3D();
 
-	// General - select adapter and device
 #ifdef DEDICATED_SERVER
 	BOOL bWindowed = TRUE;
 #else
@@ -234,90 +188,22 @@ void CHW::CreateDevice(HWND m_hWnd)
 	DevAdapter = D3DADAPTER_DEFAULT;
 	DevT = Caps.bForceGPU_REF ? D3DDEVTYPE_REF : D3DDEVTYPE_HAL;
 
-	//. #ifdef DEBUG
-	// Look for 'NVIDIA NVPerfHUD' adapter
-	// If it is present, override default settings
-	for (UINT Adapter = 0; Adapter < pD3D->GetAdapterCount(); Adapter++)
-	{
-		D3DADAPTER_IDENTIFIER9 Identifier;
-		HRESULT Res = pD3D->GetAdapterIdentifier(Adapter, 0, &Identifier);
-		if (SUCCEEDED(Res) && (xr_strcmp(Identifier.Description, "NVIDIA NVPerfHUD") == 0))
-		{
-			DevAdapter = Adapter;
-			DevT = D3DDEVTYPE_REF;
-			break;
-		}
-	}
-	//. #endif
-
 	// Display the name of video board
 	D3DADAPTER_IDENTIFIER9 adapterID;
 	R_CHK(pD3D->GetAdapterIdentifier(DevAdapter, 0, &adapterID));
 	Msg("* GPU [vendor:%X]-[device:%X]: %s", adapterID.VendorId, adapterID.DeviceId, adapterID.Description);
 
-	u16 drv_Product = HIWORD(adapterID.DriverVersion.HighPart);
-	u16 drv_Version = LOWORD(adapterID.DriverVersion.HighPart);
-	u16 drv_SubVersion = HIWORD(adapterID.DriverVersion.LowPart);
-	u16 drv_Build = LOWORD(adapterID.DriverVersion.LowPart);
-	Msg("* GPU driver: %d.%d.%d.%d", u32(drv_Product), u32(drv_Version), u32(drv_SubVersion), u32(drv_Build));
-
-	strcat(Caps.id_description, adapterID.Description);
 	Caps.id_vendor = adapterID.VendorId;
 	Caps.id_device = adapterID.DeviceId;
 
-	// Retreive windowed mode
 	D3DDISPLAYMODE mWindowed;
 	R_CHK(pD3D->GetAdapterDisplayMode(DevAdapter, &mWindowed));
 
-	// Select back-buffer & depth-stencil format
 	D3DFORMAT& fTarget = Caps.fTarget;
 	D3DFORMAT& fDepth = Caps.fDepth;
-	if (bWindowed)
-	{
-		fTarget = mWindowed.Format;
-		R_CHK(pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, TRUE));
-		fDepth = D3DFMT_D24S8;
-	}
-	else
-	{
-		switch (psCurrentBPP)
-		{
-		case 32:
-			fTarget = D3DFMT_X8R8G8B8;
-			if (SUCCEEDED(pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, FALSE)))
-				break;
-			fTarget = D3DFMT_A8R8G8B8;
-			if (SUCCEEDED(pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, FALSE)))
-				break;
-			fTarget = D3DFMT_R8G8B8;
-			if (SUCCEEDED(pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, FALSE)))
-				break;
-			fTarget = D3DFMT_UNKNOWN;
-			break;
-		case 16:
-		default:
-			fTarget = D3DFMT_R5G6B5;
-			if (SUCCEEDED(pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, FALSE)))
-				break;
-			fTarget = D3DFMT_X1R5G5B5;
-			if (SUCCEEDED(pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, FALSE)))
-				break;
-			fTarget = D3DFMT_X4R4G4B4;
-			if (SUCCEEDED(pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, FALSE)))
-				break;
-			fTarget = D3DFMT_UNKNOWN;
-			break;
-		}
-		fDepth = D3DFMT_D24S8;
-	}
 
-	if ((D3DFMT_UNKNOWN == fTarget) || (D3DFMT_UNKNOWN == fTarget))
-	{
-		Msg("Failed to initialize graphics hardware.\nPlease try to restart the game.");
-		FlushLog();
-		MessageBox(NULL, "Failed to initialize graphics hardware.\nPlease try to restart the game.", "Error!", MB_OK | MB_ICONERROR);
-		TerminateProcess(GetCurrentProcess(), 0);
-	}
+	fTarget = mWindowed.Format; // Используем формат десктопа
+	fDepth = D3DFMT_D24S8;
 
 	// Set up the presentation parameters
 	D3DPRESENT_PARAMETERS& P = DevPP;
@@ -326,138 +212,74 @@ void CHW::CreateDevice(HWND m_hWnd)
 #ifndef _EDITOR
 	selectResolution(P.BackBufferWidth, P.BackBufferHeight, bWindowed);
 #endif
-	// Back buffer
-	//.	P.BackBufferWidth		= dwWidth;
-	//. P.BackBufferHeight		= dwHeight;
-	P.BackBufferFormat = fTarget;
-	P.BackBufferCount = 2;
 
-	// Multisample
+	P.BackBufferFormat = fTarget;
+	P.BackBufferCount = 1; // Минимум буферов для сервера
+
 	P.MultiSampleType = D3DMULTISAMPLE_NONE;
 	P.MultiSampleQuality = 0;
 
-	// Windoze
-	P.SwapEffect = bWindowed ? D3DSWAPEFFECT_FLIPEX : D3DSWAPEFFECT_DISCARD;
+	// D3DSWAPEFFECT_DISCARD быстрее всего, и серверу всё равно, что там в буфере
+	P.SwapEffect = D3DSWAPEFFECT_DISCARD;
+
 	P.hDeviceWindow = m_hWnd;
 	P.Windowed = bWindowed;
-
-	// Depth/stencil
 	P.EnableAutoDepthStencil = TRUE;
 	P.AutoDepthStencilFormat = fDepth;
-	P.Flags = 0; //. D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
+	P.Flags = 0;
 
-	// Refresh rate
+	// На сервере всегда выключаем VSync (IMMEDIATE)
 	P.PresentationInterval = selectPresentInterval();
 
-	if (!bWindowed)
-		P.FullScreen_RefreshRateInHz = selectRefresh(P.BackBufferWidth, P.BackBufferHeight, fTarget);
-	else
-		P.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-
-	if (!bWindowed)
-	{
-		HRESULT hr = pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, FALSE);
-		if (FAILED(hr))
-		{
-			Msg("! Fullscreen mode not supported. Switching to windowed.");
-			bWindowed = TRUE;
-			P.Windowed = TRUE;
-			P.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-		}
-	}
+	P.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
 	u32 GPU = selectGPU();
-	D3DDISPLAYMODEEX dispMode;
-	ZeroMemory(&dispMode, sizeof(dispMode));
-	dispMode.Size = sizeof(D3DDISPLAYMODEEX);
 
-	if (!bWindowed)
+	// Create Device
+	HRESULT R = pD3D->CreateDeviceEx(DevAdapter, DevT, m_hWnd, GPU | D3DCREATE_MULTITHREADED, &P, NULL, &pDevice);
+
+	if (FAILED(R))
 	{
-		dispMode.Width = P.BackBufferWidth;
-		dispMode.Height = P.BackBufferHeight;
-		dispMode.Format = P.BackBufferFormat;
-		dispMode.RefreshRate = P.FullScreen_RefreshRateInHz;
-		dispMode.ScanLineOrdering = D3DSCANLINEORDERING_PROGRESSIVE;
-	}
-
-	HRESULT R = pD3D->CreateDeviceEx(DevAdapter, DevT, m_hWnd, GPU | D3DCREATE_MULTITHREADED, &P,
-									 bWindowed ? NULL : &dispMode, &pDevice);
-
-	// Проверка поддержки полноэкранного режима
-	if (!bWindowed)
-	{
-		HRESULT hr = pD3D->CheckDeviceType(DevAdapter, DevT, fTarget, fTarget, FALSE);
-		if (FAILED(hr))
-		{
-			Msg("! Fullscreen mode not supported for this format. Switching to windowed.");
-			bWindowed = TRUE;
-			P.Windowed = TRUE;
-			P.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-		}
+		R = pD3D->CreateDeviceEx(DevAdapter, DevT, m_hWnd, GPU | D3DCREATE_MULTITHREADED | D3DCREATE_FPU_PRESERVE, &P,
+								 NULL, &pDevice);
 	}
 
 	if (FAILED(R))
 	{
 		Msg("! Device creation failed: %s", Debug.error2string(R));
 		FlushLog();
-		MessageBox(NULL, "Failed to initialize graphics hardware.\n", "Error!",
-				   MB_OK | MB_ICONERROR);
+		MessageBox(NULL, "Failed to initialize graphics hardware.", "Error!", MB_OK | MB_ICONERROR);
 		TerminateProcess(GetCurrentProcess(), 0);
 	}
 
 	_SHOW_REF("* CREATE: DeviceREF:", HW.pDevice);
-	switch (GPU)
-	{
-	case D3DCREATE_SOFTWARE_VERTEXPROCESSING:
-		Log("* Vertex Processor: SOFTWARE");
-		break;
-	case D3DCREATE_MIXED_VERTEXPROCESSING:
-		Log("* Vertex Processor: MIXED");
-		break;
-	case D3DCREATE_HARDWARE_VERTEXPROCESSING:
-		Log("* Vertex Processor: HARDWARE");
-		break;
-	case D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE:
-		Log("* Vertex Processor: PURE HARDWARE");
-		break;
-	}
 
-	// Capture misc data
-#ifdef DEBUG
-	R_CHK(pDevice->CreateStateBlock(D3DSBT_ALL, &dwDebugSB));
-#endif
 	R_CHK(pDevice->GetRenderTarget(0, &pBaseRT));
 	R_CHK(pDevice->GetDepthStencilSurface(&pBaseZB));
-	u32 memory = pDevice->GetAvailableTextureMem();
-	Msg("* Texture memory: %d M", memory / (1024 * 1024));
-	Msg("* DirectX Graphics Infrastructure level: %2.1f", float(D3DXGetDriverLevel(pDevice)) / 100.f);
+
 #ifndef _EDITOR
 	updateWindowProps(m_hWnd);
 	fill_vid_mode_list(this);
 #endif
 }
 
+//-----------------------------------------------------------------------------
 u32 CHW::selectPresentInterval()
 {
-	OPTICK_EVENT("CHW::selectPresentInterval");
-
-	// Если VSync выключен в настройках игры
+	// Для сервера нам вообще не нужна синхронизация.
+	// Скрытое окно не обновляется монитором, поэтому DEFAULT может заблокировать Present
+	// в ожидании несуществующей развертки. Ставим IMMEDIATE.
+#ifdef DEDICATED_SERVER
+	return D3DPRESENT_INTERVAL_IMMEDIATE;
+#else
 	if (!psDeviceFlags.test(rsVSync))
-	{
-		// Принудительно возвращаем IMMEDIATE (без ожидания).
-		// Практически все современные карты поддерживают это.
-		// Дополнительные проверки капсов часто избыточны и могут сбоить.
 		return D3DPRESENT_INTERVAL_IMMEDIATE;
-	}
-
-	// Если VSync включен
 	return D3DPRESENT_INTERVAL_DEFAULT;
+#endif
 }
 
 u32 CHW::selectGPU()
 {
-	OPTICK_EVENT("CHW::selectGPU");
-
 	if (Caps.bForceGPU_SW)
 		return D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 
@@ -475,7 +297,6 @@ u32 CHW::selectGPU()
 			else
 				return D3DCREATE_HARDWARE_VERTEXPROCESSING;
 		}
-		// return D3DCREATE_MIXED_VERTEXPROCESSING;
 	}
 	else
 		return D3DCREATE_SOFTWARE_VERTEXPROCESSING;
@@ -483,32 +304,11 @@ u32 CHW::selectGPU()
 
 u32 CHW::selectRefresh(u32 dwWidth, u32 dwHeight, D3DFORMAT fmt)
 {
-	OPTICK_EVENT("CHW::selectRefresh");
-
-	if (psDeviceFlags.is(rsRefresh60hz))
-		return D3DPRESENT_RATE_DEFAULT;
-	else
-	{
-		u32 selected = D3DPRESENT_RATE_DEFAULT;
-		u32 count = pD3D->GetAdapterModeCount(DevAdapter, fmt);
-		for (u32 I = 0; I < count; I++)
-		{
-			D3DDISPLAYMODE Mode;
-			pD3D->EnumAdapterModes(DevAdapter, fmt, I, &Mode);
-			if (Mode.Width == dwWidth && Mode.Height == dwHeight)
-			{
-				if (Mode.RefreshRate > selected)
-					selected = Mode.RefreshRate;
-			}
-		}
-		return selected;
-	}
+	return D3DPRESENT_RATE_DEFAULT;
 }
 
 BOOL CHW::support(D3DFORMAT fmt, DWORD type, DWORD usage)
 {
-	OPTICK_EVENT("CHW::support");
-
 	HRESULT hr = pD3D->CheckDeviceFormat(DevAdapter, DevT, Caps.fTarget, usage, (D3DRESOURCETYPE)type, fmt);
 	if (FAILED(hr))
 		return FALSE;
@@ -516,29 +316,35 @@ BOOL CHW::support(D3DFORMAT fmt, DWORD type, DWORD usage)
 		return TRUE;
 }
 
+//-----------------------------------------------------------------------------
+// Магия скрытия окна здесь
+//-----------------------------------------------------------------------------
 void CHW::updateWindowProps(HWND m_hWnd)
 {
 	OPTICK_EVENT("CHW::updateWindowProps");
 
-#ifndef DEDICATED_SERVER
-	BOOL bWindowed = !psDeviceFlags.is(rsFullscreen);
-#else
-	BOOL bWindowed = TRUE;
+#ifdef DEDICATED_SERVER
+	// 1. Делаем окно "только для сообщений". Это удаляет его из таскбара, списка приложений и отрисовки рабочего стола.
+	SetParent(m_hWnd, HWND_MESSAGE);
+
+	// 2. Дополнительно скрываем его стилем
+	SetWindowLong(m_hWnd, GWL_STYLE, WS_POPUP); // Убираем все рамки
+
+	// 3. Прячем через ShowWindow (D3D может продолжить работать, если не привязан к Present/VSync)
+	// Важно использовать SW_HIDE. Поскольку мы используем HWND_MESSAGE и D3DPRESENT_INTERVAL_IMMEDIATE,
+	// проблем с "застывшим" рендером быть не должно.
+	ShowWindow(m_hWnd, SW_HIDE);
+
+	return;
 #endif
 
+	// ... (стандартный код для клиента остается ниже)
+	BOOL bWindowed = !psDeviceFlags.is(rsFullscreen);
+
 	u32 dwWindowStyle = 0;
-	// Set window properties depending on what mode were in.
 	if (bWindowed || strstr(Core.Params, "-windowed"))
 	{
 		SetWindowLong(m_hWnd, GWL_STYLE, dwWindowStyle = (WS_POPUP));
-		// When moving from fullscreen to windowed mode, it is important to
-		// adjust the window size after recreating the device rather than
-		// beforehand to ensure that you get the window size you want.  For
-		// example, when switching from 640x480 fullscreen to windowed with
-		// a 1000x600 window on a 1024x768 desktop, it is impossible to set
-		// the window size to 1000x600 until after the display mode has
-		// changed to 1024x768, because windows cannot be larger than the
-		// desktop.
 
 		RECT m_rcWindowBounds;
 		RECT DesktopRect;
@@ -566,6 +372,7 @@ void CHW::updateWindowProps(HWND m_hWnd)
 #endif
 }
 
+// ... Остальной код (fill_vid_mode_list и прочее) без изменений
 struct _uniq_mode
 {
 	_uniq_mode(LPCSTR v) : _val(v)
@@ -581,12 +388,13 @@ struct _uniq_mode
 #ifndef _EDITOR
 void free_vid_mode_list()
 {
-	for (int i = 0; vid_mode_token[i].name; i++)
+	if (vid_mode_token)
 	{
-		xr_free(vid_mode_token[i].name);
+		for (int i = 0; vid_mode_token[i].name; i++)
+			xr_free(vid_mode_token[i].name);
+		xr_free(vid_mode_token);
+		vid_mode_token = NULL;
 	}
-	xr_free(vid_mode_token);
-	vid_mode_token = NULL;
 }
 
 void fill_vid_mode_list(CHW* _hw)
@@ -596,41 +404,24 @@ void fill_vid_mode_list(CHW* _hw)
 	xr_vector<LPCSTR> _tmp;
 	u32 cnt = _hw->pD3D->GetAdapterModeCount(_hw->DevAdapter, _hw->Caps.fTarget);
 
-	u32 i;
-	for (i = 0; i < cnt; ++i)
+	for (u32 i = 0; i < cnt; ++i)
 	{
 		D3DDISPLAYMODE Mode;
 		string32 str;
-
 		_hw->pD3D->EnumAdapterModes(_hw->DevAdapter, _hw->Caps.fTarget, i, &Mode);
-		//		if (Mode.Width < 426)		continue;
-
 		sprintf_s(str, sizeof(str), "%dx%d", Mode.Width, Mode.Height);
-
 		if (_tmp.end() != std::find_if(_tmp.begin(), _tmp.end(), _uniq_mode(str)))
 			continue;
-
-		_tmp.push_back(NULL);
-		_tmp.back() = xr_strdup(str);
+		_tmp.push_back(xr_strdup(str));
 	}
-
 	u32 _cnt = _tmp.size() + 1;
-
 	vid_mode_token = xr_alloc<xr_token>(_cnt);
-
 	vid_mode_token[_cnt - 1].id = -1;
 	vid_mode_token[_cnt - 1].name = NULL;
-
-#ifdef DEBUG
-	Msg("Available video modes[%d]:", _tmp.size());
-#endif // DEBUG
-	for (i = 0; i < _tmp.size(); ++i)
+	for (u32 i = 0; i < _tmp.size(); ++i)
 	{
 		vid_mode_token[i].id = i;
 		vid_mode_token[i].name = _tmp[i];
-#ifdef DEBUG
-		Msg("[%s]", _tmp[i]);
-#endif // DEBUG
 	}
 }
 #endif

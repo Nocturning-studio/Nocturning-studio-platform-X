@@ -18,7 +18,6 @@
 #include "tss.h"
 #include "blenders\blender.h"
 #include "blenders\blender_recorder.h"
-#include <Application.h>
 
 //--------------------------------------------------------------------------------------------------------------
 IBlender* CResourceManager::_GetBlender(LPCSTR Name)
@@ -284,23 +283,11 @@ void CResourceManager::DeferredUpload()
 	}
 
 	// 2. Грузим пачками по N штук
-	const size_t BATCH_SIZE = 16;
 	size_t total = textures_to_load.size();
 
-	for (size_t i = 0; i < total; i += BATCH_SIZE)
+	for (size_t i = 0; i < total; i++)
 	{
-		// Обновляем экран перед каждой пачкой
-		if (pApp)
-			pApp->LoadDraw();
-
-		size_t end = std::min(i + BATCH_SIZE, total);
-
-		// Загружаем пачку параллельно
-		//concurrency::parallel_for(i, end, [&](size_t k) { textures_to_load[k]->Load(); });
-		for (size_t k = i; k < end; k++)
-		{
-			textures_to_load[k]->Load(); 
-		}
+		textures_to_load[i]->Load();
 	}
 }
 

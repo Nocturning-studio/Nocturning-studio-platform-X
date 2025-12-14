@@ -10,6 +10,9 @@ void CRender::Render()
 {
 	OPTICK_EVENT("CRender::Render");
 
+	if (g_dedicated_server)
+		return;
+
 	Device.Statistic->RenderCALC.Begin();
 
 	bool b_need_render_menu = g_pGamePersistent ? g_pGamePersistent->OnRenderPPUI_query() : false;

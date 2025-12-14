@@ -27,7 +27,7 @@ class line_editor : public IInputReceiver
 
 	void on_frame();
 
-  protected:
+  public:
 	virtual void IR_OnKeyboardPress(int dik);
 	virtual void IR_OnKeyboardHold(int dik);
 	virtual void IR_OnKeyboardRelease(int dik);

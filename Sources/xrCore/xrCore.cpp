@@ -213,8 +213,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD ul_reason_for_call, LPVOID lpvRese
 		_control87(_RC_NEAR, MCW_RC);
 		_control87(_MCW_EM, MCW_EM);
 	}
-		//.		LogFile.reserve		(256);
-		if (strstr(GetCommandLine(), "-external_console_log"))
+		//if (strstr(GetCommandLine(), "-external_console_log"))
 		{
 			if (AllocConsole())
 			{

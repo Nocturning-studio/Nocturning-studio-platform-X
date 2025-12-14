@@ -122,7 +122,7 @@ void xrServer::Check_GameSpy_CDKey_Success(IClient* CL)
 	Check_BuildVersion_Success(CL);
 };
 
-BOOL g_SV_Disable_Auth_Check = FALSE;
+BOOL g_SV_Disable_Auth_Check = TRUE;
 
 bool xrServer::NeedToCheckClient_BuildVersion(IClient* CL)
 {
@@ -141,6 +141,7 @@ bool xrServer::NeedToCheckClient_BuildVersion(IClient* CL)
 	// #endif
 };
 
+#pragma todo(NSDeathman to NSDeathman: Переписать проверку версии при соединении)
 void xrServer::OnBuildVersionRespond(IClient* CL, NET_Packet& P)
 {
 	u16 Type;
@@ -153,11 +154,16 @@ void xrServer::OnBuildVersionRespond(IClient* CL, NET_Packet& P)
 	Msg("_him = %d", _him);
 #endif // DEBUG
 
+	// --- НАЧАЛО ИСПРАВЛЕНИЯ ---
+	// Мы намеренно ломаем проверку. Если версии разные - просто пишем в лог, но не кикаем.
 	if (_our != _him)
 	{
-		SendConnectResult(CL, 0, 0, "Data verification failed. Cheater? [3]");
+		Msg("! Version mismatch ignored for Dedicated Server: Server[%llu] != Client[%llu]", _our, _him);
+		// SendConnectResult(CL, 0, 0, "Data verification failed. Cheater? [3]"); <--- ЗАКОММЕНТИРОВАНО
 	}
-	else
+
+	// Убираем 'else', чтобы код успешного входа выполнялся ВСЕГДА, даже если версии не совпали
+	// else
 	{
 		bool bAccessUser = false;
 		string512 res_check;

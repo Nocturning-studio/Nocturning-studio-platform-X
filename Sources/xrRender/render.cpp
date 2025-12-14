@@ -360,7 +360,7 @@ void CRender::OnFrame()
 	OPTICK_EVENT("CRender::OnFrame");
 
 	Models->DeleteQueue();
-	if (ps_render_flags.test(RFLAG_EXP_MT_CALC))
+	if (ps_render_flags.test(RFLAG_EXP_MT_CALC) && !g_dedicated_server)
 	{
 		// MT-details (@front)
 		Device.seqParallel.insert(Device.seqParallel.begin(), fastdelegate::FastDelegate0<>(Details, &CDetailManager::MT_CALC));

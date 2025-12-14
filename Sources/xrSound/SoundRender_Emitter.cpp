@@ -21,7 +21,6 @@ void CSoundRender_Emitter::set_position(const Fvector& pos)
 
 CSoundRender_Emitter::CSoundRender_Emitter(void)
 {
-
 #ifdef DEBUG
 	static u32 incrementalID = 0;
 	dbg_ID = ++incrementalID;

@@ -91,7 +91,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -457,11 +457,12 @@
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|Win32'">
-    <OutDir>$(SolutionDir)..\binaries\</OutDir>
+    <OutDir>$(SolutionDir)..\binaries\dedicated\</OutDir>
     <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Third-party\lib\x86\;$(LibraryPath);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
+    <LibraryPath>$(SolutionDir)Third-party\lib\x86\;$(LibraryPath);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)..\Build\libraries\Release-$(Platform)\</LibraryPath>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|x64'">
     <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>

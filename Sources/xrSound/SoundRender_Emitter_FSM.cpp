@@ -10,8 +10,7 @@ XRSOUND_API extern float psSoundCull;
 inline u32 calc_cursor(const float& fTimeStarted, float& fTime, const float& fTimeTotal, const WAVEFORMATEX& wfx)
 {
 	if (fTime < fTimeStarted)
-		fTime = fTimeStarted; // Андрюха посоветовал, ассерт что ниже вылетел из за паузы как то хитро
-	// R_ASSERT((fTime - fTimeStarted) >= 0.0f);
+		fTime = fTimeStarted;
 
 	while ((fTime - fTimeStarted) > fTimeTotal) // looped
 		fTime -= fTimeTotal;

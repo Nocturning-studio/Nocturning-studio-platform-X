@@ -190,23 +190,6 @@ CRenderTarget::CRenderTarget()
 
 	Device.Resources->Evict();
 
-	static CTimer phase_timer;
-	phase_timer.Start();
-	create_textures();
-	Msg("- All textures successfully created");
-	phase_timer.Dump();
-
-	phase_timer.Start();
-	create_blenders();
-	Msg("- All blenders successfully created");
-	phase_timer.Dump();
-
-	// DIRECT (spot)
-	u32 size = RenderImplementation.o.smapsize;
-	rt_smap_depth.create(r_RT_smap_depth, size, size, D3DFMT_D24X8);
-	rt_smap_surf.create(r_RT_smap_surf, size, size, (D3DFORMAT)MAKEFOURCC('N', 'U', 'L', 'L'));
-	rt_smap_ZB = NULL;
-
 	// POINT
 	accum_point_geom_create();
 	g_accum_point.create(D3DFVF_XYZ, g_accum_point_vb, g_accum_point_ib);
@@ -222,13 +205,39 @@ CRenderTarget::CRenderTarget()
 
 	g_cuboid.create(FVF::F_L, RenderBackend.Vertex.Buffer(), RenderBackend.Index.Buffer());
 
+	if (g_dedicated_server)
+		return;
+
+	u32 size = RenderImplementation.o.smapsize;
+	rt_smap_depth.create(r_RT_smap_depth, size, size, D3DFMT_D24X8);
+	rt_smap_surf.create(r_RT_smap_surf, size, size, (D3DFORMAT)MAKEFOURCC('N', 'U', 'L', 'L'));
+	rt_smap_ZB = NULL;
+
+	static CTimer phase_timer;
+	phase_timer.Start();
+	create_textures();
+	Msg("- All textures successfully created");
+	phase_timer.Dump();
+
+	phase_timer.Start();
+	create_blenders();
+	Msg("- All blenders successfully created");
+	phase_timer.Dump();
+
 	s_menu_distortion.create("main_menu_distort");
 	s_menu_gamma.create("main_menu_gamma");
 }
 
 CRenderTarget::~CRenderTarget()
 {
-#ifdef DEBUG
+	accum_spot_geom_destroy();
+	accum_omnip_geom_destroy();
+	accum_point_geom_destroy();
+
+	if (g_dedicated_server)
+		return;
+
+	#ifdef DEBUG
 	_SHOW_REF("t_irradiance_map_0 - #small", t_irradiance_map_0->pSurface);
 	_SHOW_REF("t_irradiance_map_1 - #small", t_irradiance_map_1->pSurface);
 
@@ -251,11 +260,6 @@ CRenderTarget::~CRenderTarget()
 	_RELEASE(surf_screenshot_normal);
 	_RELEASE(surf_screenshot_gamesave);
 	_RELEASE(tex_screenshot_gamesave);
-
-	//
-	accum_spot_geom_destroy();
-	accum_omnip_geom_destroy();
-	accum_point_geom_destroy();
 
 	delete_blenders();
 }

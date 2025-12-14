@@ -355,6 +355,9 @@ void CApplication::OnFrame()
 	if (!g_dedicated_server)
 		DiscordAPI.Update();
 
+	if (g_dedicated_server)
+		Console->OnFrame();
+
 #ifdef ENABLE_PROFILING
 	OptickCapture.OnFrame();
 #endif

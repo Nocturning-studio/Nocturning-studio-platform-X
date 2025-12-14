@@ -33,7 +33,7 @@ void CRender::level_Load(IReader* fs)
 	R_ASSERT(0 != g_pGameLevel);
 	R_ASSERT(!b_loaded);
 
-	// Группа задач для Визуалов (то, что мы пытаемся ускорить)
+	// Группа задач для Визуалов
 	concurrency::task_group tg_visuals;
 	std::atomic<int> active_tasks = 0;
 
@@ -57,21 +57,34 @@ void CRender::level_Load(IReader* fs)
 	IReader mem_fs(level_data_ptr, level_size);
 
 	g_pGamePersistent->LoadTitle("st_loading_components");
-	Wallmarks = xr_new<CWallmarksEngine>();
-	Details = xr_new<CDetailManager>();
-	m_SunOccluder = xr_new<CSunOccluder>();
+
+	// --- ОПТИМИЗАЦИЯ СЕРВЕРА: Пропускаем создание визуальных эффектов ---
+	if (!g_dedicated_server)
+	{
+		Wallmarks = xr_new<CWallmarksEngine>();
+		Details = xr_new<CDetailManager>();
+		m_SunOccluder = xr_new<CSunOccluder>();
+	}
+	else
+	{
+		Wallmarks = nullptr;
+		Details = nullptr;
+		m_SunOccluder = nullptr;
+	}
+	// ---------------------------------------------------------------------
 
 	// =================================================================================
 	// 2. ШЕЙДЕРЫ (MAIN THREAD - СИНХРОННО)
 	// =================================================================================
-	// Мы вернули это в основной поток. Никакой многопоточности здесь.
-	// Это исключает любые гонки данных при создании ресурсов.
 	g_pGamePersistent->LoadTitle("st_loading_shaders");
 	{
-		// Компиляция RT шейдеров тоже в основном потоке, сразу же.
-		Msg("* Compiling RenderTarget shaders...");
-		if (RenderTarget)
-			RenderTarget->CompileShaders();
+		// RT шейдеры нужны только для картинки
+		if (!g_dedicated_server)
+		{
+			Msg("* Compiling RenderTarget shaders...");
+			if (RenderTarget)
+				RenderTarget->CompileShaders();
+		}
 
 		IReader* chunk = mem_fs.open_chunk(fsL_SHADERS);
 		if (chunk)
@@ -93,7 +106,6 @@ void CRender::level_Load(IReader* fs)
 				*delim = 0;
 				strcpy(n_tlist, delim + 1);
 
-				// Прямой вызов создания. Безопасно.
 				Shaders[i] = Device.Resources->Create(n_sh, n_tlist);
 			}
 			chunk->close();
@@ -101,8 +113,8 @@ void CRender::level_Load(IReader* fs)
 	}
 
 	// 3. Геометрия (Main Thread)
-	if (!g_dedicated_server)
 	{
+		// --- ВАЖНО: Геометрию загружаем всегда, иначе будет краш визуалов, как раньше.
 		g_pGamePersistent->LoadTitle("st_loading_geometry");
 
 		CStreamReader* geom = FS.rs_open("$level$", "level.geom");
@@ -126,28 +138,34 @@ void CRender::level_Load(IReader* fs)
 	// =================================================================================
 	// 4. ПАРАЛЛЕЛЬНАЯ ЗАГРУЗКА ОБЪЕКТОВ
 	// =================================================================================
-	// Так как шейдеры уже созданы (шаг 2), LoadVisuals должен работать стабильно,
-	// даже в отдельном потоке (он будет только ЧИТАТЬ готовые ресурсы).
 
-	// ЗАДАЧА A: Визуалы (Локальный IReader обязателен!)
-	run_task(tg_visuals, [this, level_data_ptr, level_size]() {
-
-	});
-
+	// ЗАДАЧА A: Визуалы
+	// Загружаем даже на сервере, так как они нужны для RayPick'ов и определения хитбоксов
+	// в некоторых старых реализациях, а также для предотвращения пустых ссылок.
 	IReader local_fs(level_data_ptr, level_size);
 	LoadVisuals(&local_fs);
 
-	// ЗАДАЧА B: Детейлы
-	run_task(tg_visuals, [this]() { Details->Load(); });
+	// --- ОПТИМИЗАЦИЯ СЕРВЕРА: Пропускаем загрузку тяжелых визуальных ресурсов ---
+	if (!g_dedicated_server)
+	{
+		// ЗАДАЧА B: Детейлы (Трава)
+		run_task(tg_visuals, [this]() { Details->Load(); });
 
-	// ЗАДАЧА C: HOM
-	run_task(tg_visuals, [this]() { HOM.Load(); });
+		// ЗАДАЧА C: HOM (Hierarchical Occlusion Culling) - только для рендеринга
+		run_task(tg_visuals, [this]() { HOM.Load(); });
 
-	// ЗАДАЧА D: Sun Occluder
-	run_task(tg_visuals, [this]() { m_SunOccluder->Load(); });
+		// ЗАДАЧА D: Sun Occluder
+		run_task(tg_visuals, [this]() { m_SunOccluder->Load(); });
+	}
+	else
+	{
+		// Для сервера просто инициализируем пустой HOM, чтобы не крашило при обращении
+		// хотя HOM.Load() грузит данные для рендера, структуры всё равно нужны валидные
+		// Но Load требует чтения файла, поэтому пропускаем, а если Unload вызовется - он должен быть безопасным
+	}
+	// ----------------------------------------------------------------------------
 
 	// === ACTIVE WAIT ===
-	// Ждем окончания загрузки объектов
 	while (active_tasks > 0)
 	{
 		pApp->LoadDraw();
@@ -158,17 +176,22 @@ void CRender::level_Load(IReader* fs)
 	// 5. Финализация (Main Thread)
 	g_pGamePersistent->LoadTitle("st_loading_sectors_portals");
 	{
-		IReader local_fs(level_data_ptr, level_size);
-		LoadSectors(&local_fs);
+		IReader local_fs_sectors(level_data_ptr, level_size);
+		LoadSectors(&local_fs_sectors);
 	}
 
 	pApp->LoadDraw();
 
+	// --- ОПТИМИЗАЦИЯ: Лампы на сервере часто не нужны, если AI не завязан на уровень освещенности движком рендера ---
 	g_pGamePersistent->LoadTitle("st_loading_lights");
 	{
-		IReader local_fs(level_data_ptr, level_size);
-		LoadLights(&local_fs);
+		if (!g_dedicated_server)
+		{
+			IReader local_fs_lights(level_data_ptr, level_size);
+			LoadLights(&local_fs_lights);
+		}
 	}
+	// ----------------------------------------------------------------------------
 
 	xr_free(level_data_ptr);
 
@@ -197,8 +220,9 @@ void CRender::level_Unload()
 
 	// HOM
 	g_pGamePersistent->LoadTitle("st_unloading_hom");
-	HOM.Unload();
+	HOM.Unload(); // HOM Unload безопасен даже если Load не вызывался, чистит вектора
 
+	// --- ОПТИМИЗАЦИЯ: Проверяем перед удалением ---
 	if (m_SunOccluder)
 	{
 		m_SunOccluder->Unload();
@@ -206,25 +230,26 @@ void CRender::level_Unload()
 	}
 
 	//*** Details
-	g_pGamePersistent->LoadTitle("st_unloading_details");
-	Details->Unload();
+	if (Details)
+	{
+		g_pGamePersistent->LoadTitle("st_unloading_details");
+		Details->Unload();
+		xr_delete(Details);
+	}
+	// ----------------------------------------------
 
 	//*** Sectors
-	// 1.
 	g_pGamePersistent->LoadTitle("st_unloading_sectors_portals");
 	xr_delete(rmPortals);
 	pLastSector = 0;
 	vLastCameraPos.set(0, 0, 0);
-	// 2.
 	for (I = 0; I < Sectors.size(); I++)
 		xr_delete(Sectors[I]);
 	Sectors.clear();
-	// 3.
 	Portals.clear();
 
 	//*** Lights
 	g_pGamePersistent->LoadTitle("st_unloading_lights");
-	// Glows.Unload			();
 	Lights.Unload();
 
 	//*** Visuals
@@ -255,8 +280,12 @@ void CRender::level_Unload()
 
 	//*** Components
 	g_pGamePersistent->LoadTitle("st_unloading_components");
-	xr_delete(Details);
-	xr_delete(Wallmarks);
+
+	// Details уже удален выше
+	if (Wallmarks)
+	{
+		xr_delete(Wallmarks);
+	}
 
 	//*** Shaders
 	g_pGamePersistent->LoadTitle("st_unloading_shaders");

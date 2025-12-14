@@ -1,6 +1,8 @@
 #pragma once
 #include "XR_IOConsole.h"
 #include "IGame_Level.h"
+#include <windows.h>
+#include <process.h> // для _beginthreadex
 
 class ENGINE_API CTextConsole : public CConsole
 {
@@ -8,32 +10,23 @@ class ENGINE_API CTextConsole : public CConsole
 	typedef CConsole inherited;
 
   private:
-	HWND* m_pMainWnd;
+	HANDLE m_hConsoleThread;
+	CRITICAL_SECTION m_csCmdQueue;
 
-	HWND m_hConsoleWnd;
-	void CreateConsoleWnd();
+	// Очередь команд от потока к движку
+	xr_vector<shared_str> m_cmd_queue;
 
-	HWND m_hLogWnd;
-	void CreateLogWnd();
+	HANDLE m_hStdOut;
+	u32 m_dwLastLogIndex;
 
-	bool m_bScrollLog;
-	u32 m_dwStartLine;
-	void DrawLog(HDC hDC, RECT* pRect);
+	volatile bool m_bConsoleRunning;
 
-  private:
-	HFONT m_hLogWndFont;
-	HFONT m_hPrevFont;
-	HBRUSH m_hBackGroundBrush;
+	void ProcessOutput();
+	WORD GetColorByTag(char tag);
 
-	HDC m_hDC_LogWnd;
-	HDC m_hDC_LogWnd_BackBuffer;
-	HBITMAP m_hBB_BM, m_hOld_BM;
-
-	bool m_bNeedUpdate;
-	u32 m_dwLastUpdateTime;
-
-	u32 m_last_time;
-	CServerInfo m_server_info;
+	// Статическая функция для потока
+	static unsigned __stdcall ConsoleThreadEntry(void* pArgs);
+	void ThreadLoop();
 
   public:
 	CTextConsole();
@@ -44,12 +37,8 @@ class ENGINE_API CTextConsole : public CConsole
 
 	virtual void OnRender();
 	virtual void OnFrame();
-
-	//	virtual void	IR_OnKeyboardPress		(int dik);
+	virtual void OnPaint();
 
 	void AddString(LPCSTR string);
-	void OnPaint();
 
 }; // class TextConsole
-
-// extern ENGINE_API CTextConsole* TextConsole;

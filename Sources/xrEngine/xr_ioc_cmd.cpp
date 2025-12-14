@@ -890,8 +890,8 @@ void CCC_Register()
 	CMD1(CCC_DumpOpenFiles, "dump_open_files");
 	// #endif
 
-	extern int g_svTextConsoleUpdateRate;
-	CMD4(CCC_Integer, "sv_console_update_rate", &g_svTextConsoleUpdateRate, 1, 100);
+	//extern int g_svTextConsoleUpdateRate;
+	//CMD4(CCC_Integer, "sv_console_update_rate", &g_svTextConsoleUpdateRate, 1, 100);
 
 	extern int g_svDedicateServerUpdateReate;
 	CMD4(CCC_Integer, "sv_dedicated_server_update_rate", &g_svDedicateServerUpdateReate, 1, 1000);

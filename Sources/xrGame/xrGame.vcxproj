@@ -343,7 +343,7 @@
     <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <ExtensionsToDeleteOnClean>*.idb%3b*.obj%3b*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)Third-party\include\</IncludePath>
@@ -363,7 +363,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(ProjectDir);$(IncludePath);$(SolutionDir)Third-party\include\</IncludePath>
@@ -473,7 +473,7 @@
     <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <ExtensionsToDeleteOnClean>*.idb%3b*.obj%3b*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(SolutionDir)Third-party\include\</IncludePath>
@@ -492,7 +492,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed_Priquel|Win32'">
     <OutDir>$(SolutionDir)..\binaries\</OutDir>
     <IntDir>$(SolutionDir)..\Build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(SolutionDir)Third-party\include\;$(SolutionDir)\Sources\xrLua\src\;$(SolutionDir)\Sources\xrCore\;$(SolutionDir)Third-party\include\DXSDK\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\;$(SolutionDir)Third-party\lib\x86\;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(SolutionDir)Third-party\include\</IncludePath>
@@ -534,7 +534,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <PreprocessorDefinitions>_ALLOW_RTCc_IN_STL;WIN32;DEBUG;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
@@ -565,8 +565,8 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 
- /bigobj %(AdditionalOptions)</AdditionalOptions>
-      <ShowProgress>NotSet</ShowProgress>
+ /bigobj %(AdditionalOptions) /OPT:REF,ICF /FILEALIGN:4096 /DEBUG:FASTLINK /Z7</AdditionalOptions>
+      <ShowProgress>LinkVerbose</ShowProgress>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>false</GenerateMapFile>
@@ -684,7 +684,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <Culture>0x0419</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions) /OPT:REF,ICF /FILEALIGN:4096 /DEBUG:FASTLINK /Z7</AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>false</GenerateMapFile>
@@ -693,6 +693,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
@@ -804,7 +805,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <Culture>0x0419</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions) /OPT:REF,ICF /FILEALIGN:4096 /DEBUG:FASTLINK /Z7</AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
@@ -817,6 +818,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
@@ -879,7 +881,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <Culture>0x0419</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386  %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386  %(AdditionalOptions) /OPT:REF,ICF /FILEALIGN:4096 /DEBUG:FASTLINK /Z7</AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
@@ -893,6 +895,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
@@ -955,7 +958,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <Culture>0x0419</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions) /OPT:REF,ICF /FILEALIGN:4096 /DEBUG:FASTLINK /Z7</AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
@@ -969,6 +972,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
@@ -1032,7 +1036,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <Culture>0x0419</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions) /OPT:REF,ICF /FILEALIGN:4096 /DEBUG:FASTLINK /Z7</AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
@@ -1046,6 +1050,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
@@ -1108,7 +1113,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <Culture>0x0419</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions) /OPT:REF,ICF /FILEALIGN:4096 /DEBUG:FASTLINK /Z7</AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
@@ -1122,6 +1127,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
@@ -1470,7 +1476,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <PreprocessorDefinitions>_ALLOW_RTCc_IN_STL;WIN32;DEBUG;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0;PRIQUEL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
@@ -1499,8 +1505,8 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 
- /bigobj %(AdditionalOptions)</AdditionalOptions>
-      <ShowProgress>NotSet</ShowProgress>
+ /bigobj %(AdditionalOptions) /OPT:REF,ICF /FILEALIGN:4096 /DEBUG:FASTLINK /Z7</AdditionalOptions>
+      <ShowProgress>LinkVerbose</ShowProgress>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>false</GenerateMapFile>
@@ -1617,7 +1623,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <Culture>0x0419</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions) /OPT:REF,ICF /FILEALIGN:4096 /DEBUG:FASTLINK /Z7</AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>false</GenerateMapFile>
@@ -1626,6 +1632,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"
@@ -1735,7 +1742,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <Culture>0x0419</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386  /bigobj %(AdditionalOptions) /OPT:REF,ICF /FILEALIGN:4096 /DEBUG:FASTLINK /Z7</AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
@@ -1748,6 +1755,7 @@ copy /Y "$(SolutionDir)\Third-party\bin\x86\PresenceAudioSDK.dll" "$(OutDir)Pres
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ImportLibrary>$(SolutionDir)..\Build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>ode.lib;xrCore.lib;xrNetServer.lib;xrCDB.lib;xrLUA.lib;xrEngine.lib;xrSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)\Third-party\bin\x86\discord_game_sdk.dll" "$(OutDir)discord_game_sdk.dll"

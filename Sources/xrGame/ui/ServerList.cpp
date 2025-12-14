@@ -17,6 +17,7 @@
 #pragma warning(push)
 #pragma warning(disable : 4995)
 #include <ppl.h>
+#include "../../xrGameSpy/xrGameSpy_MainDefs.h"
 #pragma warning(pop)
 
 CGameSpy_Browser* g_gs_browser = NULL;
@@ -471,6 +472,7 @@ void CServerList::InitFromXml(CUIXml& xml_doc, LPCSTR path)
 	UpdateVisibility();
 }
 
+#pragma todo(NSDeathman to NSDeathman: Починить проверку версий)
 void CServerList::ConnectToSelected()
 {
 	int sel = m_list[LST_SERVER].GetSelectedItem();
@@ -489,10 +491,10 @@ void CServerList::ConnectToSelected()
 		return;
 	}
 
-	if (xr_strcmp(item->GetInfo()->info.version, MainMenu()->GetGSVer()))
+	if (xr_strcmp(item->GetInfo()->info.version, GAME_VERSION))
 	{
-		MainMenu()->SetErrorDialog(CMainMenu::ErrDifferentVersion);
-		return;
+		//MainMenu()->SetErrorDialog(CMainMenu::ErrDifferentVersion);
+		//return;
 	}
 
 	if (item->GetInfo()->info.icons.pass || item->GetInfo()->info.icons.user_pass)

@@ -162,8 +162,11 @@ CLevel::CLevel()
 
 	Msg("%s", Core.Params);
 
-	g_SoundEnvironment = xr_new<CSoundEnvironment>();
-	g_SoundEnvironment->OnLevelLoad();
+	if (!g_dedicated_server)
+	{
+		g_SoundEnvironment = xr_new<CSoundEnvironment>();
+		g_SoundEnvironment->OnLevelLoad();
+	}
 }
 
 extern CAI_Space* g_ai_space;
@@ -172,8 +175,11 @@ CLevel::~CLevel()
 {
 	Msg("- Destroying level");
 
-	g_SoundEnvironment->OnLevelUnload();
-	xr_delete (g_SoundEnvironment);
+	if (!g_dedicated_server)
+	{
+		g_SoundEnvironment->OnLevelUnload();
+		xr_delete(g_SoundEnvironment);
+	}
 
 	Engine.Event.Handler_Detach(eEntitySpawn, this);
 

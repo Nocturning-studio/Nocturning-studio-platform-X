@@ -1,353 +1,257 @@
 #include "stdafx.h"
 #include "Text_Console.h"
-#include "line_editor.h"
+#include <stdio.h>
+#include <fcntl.h>
+#include <io.h>
+#include <iostream>
 
 extern char const* const ioc_prompt;
-extern char const* const ch_cursor;
-int g_svTextConsoleUpdateRate = 1;
+
+// Цвета
+#define C_DEFAULT (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED)
+#define C_WHITE (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY)
+#define C_RED (FOREGROUND_RED | FOREGROUND_INTENSITY)
+#define C_GREEN (FOREGROUND_GREEN | FOREGROUND_INTENSITY)
+#define C_YELLOW (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY)
+#define C_BLUE (FOREGROUND_BLUE | FOREGROUND_INTENSITY)
+#define C_GREY (FOREGROUND_INTENSITY)
 
 CTextConsole::CTextConsole()
 {
-	m_pMainWnd = NULL;
-	m_hConsoleWnd = NULL;
-	m_hLogWnd = NULL;
-	m_hLogWndFont = NULL;
+	m_hConsoleThread = NULL;
+	m_hStdOut = INVALID_HANDLE_VALUE;
+	m_dwLastLogIndex = 0;
+	m_bConsoleRunning = false;
 
-	m_bScrollLog = true;
-	m_dwStartLine = 0;
-
-	m_bNeedUpdate = false;
-	m_dwLastUpdateTime = Device.dwTimeGlobal;
-	m_last_time = Device.dwTimeGlobal;
+	InitializeCriticalSection(&m_csCmdQueue);
 }
 
 CTextConsole::~CTextConsole()
 {
-	m_pMainWnd = NULL;
-}
-
-//-------------------------------------------------------------------------------------------
-LRESULT CALLBACK TextConsole_WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-void CTextConsole::CreateConsoleWnd()
-{
-	HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(0);
-	//----------------------------------
-	RECT cRc;
-	GetClientRect(*m_pMainWnd, &cRc);
-	INT lX = cRc.left;
-	INT lY = cRc.top;
-	INT lWidth = cRc.right - cRc.left;
-	INT lHeight = cRc.bottom - cRc.top;
-	//----------------------------------
-	const char* wndclass = "TEXT_CONSOLE";
-
-	// Register the windows class
-	WNDCLASS wndClass = {0,
-						 TextConsole_WndProc,
-						 0,
-						 0,
-						 hInstance,
-						 NULL,
-						 LoadCursor(hInstance, IDC_ARROW),
-						 GetStockBrush(GRAY_BRUSH),
-						 NULL,
-						 wndclass};
-	RegisterClass(&wndClass);
-
-	// Set the window's initial style
-	u32 dwWindowStyle = WS_OVERLAPPED | WS_CHILD | WS_VISIBLE; // | WS_CLIPSIBLINGS;// | WS_CLIPCHILDREN;
-
-	// Set the window's initial width
-	RECT rc;
-	SetRect(&rc, lX, lY, lWidth, lHeight);
-	//	AdjustWindowRect( &rc, dwWindowStyle, FALSE );
-
-	// Create the render window
-	m_hConsoleWnd = CreateWindow(wndclass, "XRAY Text Console", dwWindowStyle, lX, lY, lWidth, lHeight, *m_pMainWnd, 0,
-								 hInstance, 0L);
-	//---------------------------------------------------------------------------
-	R_ASSERT2(m_hConsoleWnd, "Unable to Create TextConsole Window!");
-};
-//-------------------------------------------------------------------------------------------
-LRESULT CALLBACK TextConsole_LogWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-void CTextConsole::CreateLogWnd()
-{
-	HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(0);
-	//----------------------------------
-	RECT cRc;
-	GetClientRect(m_hConsoleWnd, &cRc);
-	INT lX = cRc.left;
-	INT lY = cRc.top;
-	INT lWidth = cRc.right - cRc.left;
-	INT lHeight = cRc.bottom - cRc.top;
-	//----------------------------------
-	const char* wndclass = "TEXT_CONSOLE_LOG_WND";
-
-	// Register the windows class
-	WNDCLASS wndClass = {0,
-						 TextConsole_LogWndProc,
-						 0,
-						 0,
-						 hInstance,
-						 NULL,
-						 LoadCursor(NULL, IDC_ARROW),
-						 GetStockBrush(BLACK_BRUSH),
-						 NULL,
-						 wndclass};
-	RegisterClass(&wndClass);
-
-	// Set the window's initial style
-	u32 dwWindowStyle = WS_OVERLAPPED | WS_CHILD | WS_VISIBLE; // | WS_CLIPSIBLINGS;
-	//	u32 dwWindowStyleEx = WS_EX_CLIENTEDGE;
-
-	// Set the window's initial width
-	RECT rc;
-	SetRect(&rc, lX, lY, lWidth, lHeight);
-	//	AdjustWindowRect( &rc, dwWindowStyle, FALSE );
-
-	// Create the render window
-	m_hLogWnd = CreateWindow(wndclass, "XRAY Text Console Log", dwWindowStyle, lX, lY, lWidth, lHeight, m_hConsoleWnd,
-							 0, hInstance, 0L);
-	//---------------------------------------------------------------------------
-	R_ASSERT2(m_hLogWnd, "Unable to Create TextConsole Window!");
-	//---------------------------------------------------------------------------
-	ShowWindow(m_hLogWnd, SW_SHOW);
-	UpdateWindow(m_hLogWnd);
-	//-----------------------------------------------
-	LOGFONT lf;
-	lf.lfHeight = -12;
-	lf.lfWidth = 0;
-	lf.lfEscapement = 0;
-	lf.lfOrientation = 0;
-	lf.lfWeight = FW_NORMAL;
-	lf.lfItalic = 0;
-	lf.lfUnderline = 0;
-	lf.lfStrikeOut = 0;
-	lf.lfCharSet = DEFAULT_CHARSET;
-	lf.lfOutPrecision = OUT_STRING_PRECIS;
-	lf.lfClipPrecision = CLIP_STROKE_PRECIS;
-	lf.lfQuality = DRAFT_QUALITY;
-	lf.lfPitchAndFamily = VARIABLE_PITCH | FF_SWISS;
-	sprintf_s(lf.lfFaceName, sizeof(lf.lfFaceName), "");
-
-	m_hLogWndFont = CreateFontIndirect(&lf);
-	R_ASSERT2(m_hLogWndFont, "Unable to Create Font for Log Window");
-	//------------------------------------------------
-	m_hDC_LogWnd = GetDC(m_hLogWnd);
-	R_ASSERT2(m_hDC_LogWnd, "Unable to Get DC for Log Window!");
-	//------------------------------------------------
-	m_hDC_LogWnd_BackBuffer = CreateCompatibleDC(m_hDC_LogWnd);
-	R_ASSERT2(m_hDC_LogWnd_BackBuffer, "Unable to Create Compatible DC for Log Window!");
-	//------------------------------------------------
-	GetClientRect(m_hLogWnd, &cRc);
-	lWidth = cRc.right - cRc.left;
-	lHeight = cRc.bottom - cRc.top;
-	//----------------------------------
-	m_hBB_BM = CreateCompatibleBitmap(m_hDC_LogWnd, lWidth, lHeight);
-	R_ASSERT2(m_hBB_BM, "Unable to Create Compatible Bitmap for Log Window!");
-	//------------------------------------------------
-	m_hOld_BM = (HBITMAP)SelectObject(m_hDC_LogWnd_BackBuffer, m_hBB_BM);
-	//------------------------------------------------
-	m_hPrevFont = (HFONT)SelectObject(m_hDC_LogWnd_BackBuffer, m_hLogWndFont);
-	//------------------------------------------------
-	SetTextColor(m_hDC_LogWnd_BackBuffer, RGB(255, 255, 255));
-	SetBkColor(m_hDC_LogWnd_BackBuffer, RGB(1, 1, 1));
-	//------------------------------------------------
-	m_hBackGroundBrush = GetStockBrush(BLACK_BRUSH);
+	DeleteCriticalSection(&m_csCmdQueue);
 }
 
 void CTextConsole::Initialize()
 {
 	inherited::Initialize();
 
-	m_pMainWnd = &Device.m_hWnd;
-	m_dwLastUpdateTime = Device.dwTimeGlobal;
-	m_last_time = Device.dwTimeGlobal;
+	// Привязка глобальной переменной
+	if (!Console)
+		Console = this;
 
-	CreateConsoleWnd();
-	CreateLogWnd();
+	bool bHasConsole = (GetConsoleWindow() != NULL);
+	if (!bHasConsole && AllocConsole())
+		bHasConsole = true;
 
-	ShowWindow(m_hConsoleWnd, SW_SHOW);
-	UpdateWindow(m_hConsoleWnd);
+	if (bHasConsole)
+	{
+		freopen("CONIN$", "r", stdin);
+		freopen("CONOUT$", "w", stdout);
+		freopen("CONOUT$", "w", stderr);
 
-	m_server_info.ResetData();
+		m_hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTitle("STALKER Dedicated Server Console");
+
+		COORD bufferSize = {120, 3000};
+		SetConsoleScreenBufferSize(m_hStdOut, bufferSize);
+
+		// Цветной приветственный текст
+		SetConsoleTextAttribute(m_hStdOut, C_GREEN);
+		printf("================================================================================\n");
+		printf(" STALKER DEDICATED SERVER CONSOLE READY\n");
+		printf("================================================================================\n");
+		SetConsoleTextAttribute(m_hStdOut, C_DEFAULT);
+
+		// Рисуем промпт сразу
+		printf("%s", ioc_prompt);
+	}
+
+	if (LogFile)
+		m_dwLastLogIndex = LogFile->size();
+
+	// --- ЗАПУСК ПОТОКА ВВОДА ---
+	m_bConsoleRunning = true;
+	unsigned threadID;
+	m_hConsoleThread = (HANDLE)_beginthreadex(NULL, 0, ConsoleThreadEntry, this, 0, &threadID);
+
+	// !!! САМОЕ ВАЖНОЕ ИСПРАВЛЕНИЕ !!!
+	// Принудительно регистрируем консоль в цикле обновлений движка.
+	// 2 = приоритет (чтобы срабатывало после ввода, но до рендера, хотя на сервере это не критично)
+	Device.seqFrame.Add(this, REG_PRIORITY_NORMAL);
 }
 
 void CTextConsole::Destroy()
 {
+	// !!! УДАЛЯЕМ ИЗ ЦИКЛА !!!
+	Device.seqFrame.Remove(this);
+
 	inherited::Destroy();
 
-	SelectObject(m_hDC_LogWnd_BackBuffer, m_hPrevFont);
-	SelectObject(m_hDC_LogWnd_BackBuffer, m_hOld_BM);
-
-	if (m_hBB_BM)
-		DeleteObject(m_hBB_BM);
-	if (m_hOld_BM)
-		DeleteObject(m_hOld_BM);
-	if (m_hLogWndFont)
-		DeleteObject(m_hLogWndFont);
-	if (m_hPrevFont)
-		DeleteObject(m_hPrevFont);
-	if (m_hBackGroundBrush)
-		DeleteObject(m_hBackGroundBrush);
-
-	ReleaseDC(m_hLogWnd, m_hDC_LogWnd_BackBuffer);
-	ReleaseDC(m_hLogWnd, m_hDC_LogWnd);
-
-	DestroyWindow(m_hLogWnd);
-	DestroyWindow(m_hConsoleWnd);
+	m_bConsoleRunning = false;
+	if (m_hConsoleThread)
+	{
+		TerminateThread(m_hConsoleThread, 0);
+		CloseHandle(m_hConsoleThread);
+	}
+	// FreeConsole(); // Можно оставить или убрать по вкусу
 }
 
 void CTextConsole::OnRender()
 {
-} // disable СConsole::OnRender()
-
+}
 void CTextConsole::OnPaint()
 {
-	RECT wRC;
-	PAINTSTRUCT ps;
-	BeginPaint(m_hLogWnd, &ps);
+}
+void CTextConsole::AddString(LPCSTR string)
+{
+}
 
-	if (/*m_bNeedUpdate*/ Device.dwFrame % 2)
+WORD CTextConsole::GetColorByTag(char tag)
+{
+	switch (tag)
 	{
-		//		m_dwLastUpdateTime = Device.dwTimeGlobal;
-		//		m_bNeedUpdate = false;
+	case '!':
+		return C_RED;
+	case '~':
+		return C_YELLOW;
+	case '*':
+		return C_GREY;
+	case '-':
+		return C_GREEN;
+	case '#':
+		return C_BLUE;
+	default:
+		return C_WHITE;
+	}
+}
 
-		GetClientRect(m_hLogWnd, &wRC);
-		DrawLog(m_hDC_LogWnd_BackBuffer, &wRC);
+// -----------------------------------------------------------
+// ПОТОК ВВОДА
+// -----------------------------------------------------------
+unsigned __stdcall CTextConsole::ConsoleThreadEntry(void* pArgs)
+{
+	CTextConsole* pThis = (CTextConsole*)pArgs;
+	pThis->ThreadLoop();
+	return 0;
+}
+
+void CTextConsole::ThreadLoop()
+{
+	char buffer[1024];
+
+	while (m_bConsoleRunning)
+	{
+		if (fgets(buffer, 1024, stdin))
+		{
+			// Чистим любые спецсимволы в конце строки
+			size_t len = strlen(buffer);
+			while (len > 0 && (unsigned char)buffer[len - 1] <= 32)
+			{
+				buffer[len - 1] = 0;
+				len--;
+			}
+
+			if (len > 0)
+			{
+				EnterCriticalSection(&m_csCmdQueue);
+				m_cmd_queue.push_back(buffer);
+				LeaveCriticalSection(&m_csCmdQueue);
+			}
+		}
+		Sleep(1);
+	}
+}
+
+// -----------------------------------------------------------
+// ГЛАВНЫЙ ПОТОК (ENGINE LOOP)
+// -----------------------------------------------------------
+void CTextConsole::ProcessOutput()
+{
+	if (!LogFile)
+		return;
+
+	u32 curSize = LogFile->size();
+	bool hasNewData = curSize > m_dwLastLogIndex;
+
+	if (hasNewData)
+	{
+		// Если пришли новые логи - нужно "перебить" текущую строку ввода
+		// Стандартный способ в консолях:
+		// 1. \r (в начало)
+		// 2. Стереть пробелами
+		// 3. Вывести лог
+		// 4. Напечатать промпт заново
+
+		DWORD written;
+		WriteConsole(m_hStdOut, "\r", 1, &written, NULL);
+		// Просто перезатираем текущую строку вывода логами
+
+		for (u32 i = m_dwLastLogIndex; i < curSize; ++i)
+		{
+			const shared_str& msg = (*LogFile)[i];
+			if (!msg.size())
+				continue;
+
+			LPCSTR str = msg.c_str();
+			WORD color = GetColorByTag(str[0]);
+			if (str[0] == ' ' && msg.size() > 1)
+				color = GetColorByTag(str[1]);
+
+			SetConsoleTextAttribute(m_hStdOut, color);
+			// Важно использовать printf/WriteConsole, синхронно с тем, что использует наш поток
+			WriteConsole(m_hStdOut, str, (DWORD)xr_strlen(str), &written, NULL);
+			WriteConsole(m_hStdOut, "\n", 1, &written, NULL);
+		}
+
+		SetConsoleTextAttribute(m_hStdOut, C_DEFAULT);
+		m_dwLastLogIndex = curSize;
+
+		// Восстанавливаем приглашение к вводу
+		WriteConsole(m_hStdOut, ioc_prompt, (DWORD)xr_strlen(ioc_prompt), &written, NULL);
+
+		// Нюанс: мы не можем восстановить то, что пользователь уже успел напечатать наполовину (до Enter),
+		// так как буфер лежит внутри fgets. Это компромисс системной консоли.
+		// Зато ввод гарантированно работает.
+	}
+}
+
+void CTextConsole::OnFrame()
+{
+	// inherited::OnFrame(); // НЕ вызываем родительский метод, там логика GUI нам не нужна
+
+	// 1. Выводим новые логи
+	ProcessOutput();
+
+	// 2. Обрабатываем очередь команд
+	// Используем обычный EnterCriticalSection, так как он очень быстрый (мьютекс в user-space)
+	EnterCriticalSection(&m_csCmdQueue);
+
+	if (!m_cmd_queue.empty())
+	{
+		// Быстро копируем очередь себе
+		xr_vector<shared_str> todo = m_cmd_queue;
+		m_cmd_queue.clear();
+		LeaveCriticalSection(&m_csCmdQueue);
+
+		// Выполняем команды
+		for (u32 i = 0; i < todo.size(); ++i)
+		{
+			LPCSTR cmd_str = todo[i].c_str();
+
+			// Логируем попытку выполнения, чтобы видеть, что движок принял команду
+			// Msg — это функция движка, она попадет в лог и на экран сама через ProcessOutput
+			Msg("sv_console_execute: %s", cmd_str);
+
+			// Выполняем команду
+			this->Execute(cmd_str);
+		}
+
+		// Рисуем промпт после выполнения всех команд
+		DWORD written;
+		WriteConsole(m_hStdOut, ioc_prompt, (DWORD)xr_strlen(ioc_prompt), &written, NULL);
 	}
 	else
 	{
-		wRC = ps.rcPaint;
+		LeaveCriticalSection(&m_csCmdQueue);
 	}
-
-	BitBlt(m_hDC_LogWnd, wRC.left, wRC.top, wRC.right - wRC.left, wRC.bottom - wRC.top, m_hDC_LogWnd_BackBuffer,
-		   wRC.left, wRC.top,
-		   SRCCOPY); //(FullUpdate) ? SRCCOPY : NOTSRCCOPY);
-	/*
-		Msg ("URect - %d:%d - %d:%d", ps.rcPaint.left, ps.rcPaint.top, ps.rcPaint.right, ps.rcPaint.bottom);
-	*/
-	EndPaint(m_hLogWnd, &ps);
-}
-
-void CTextConsole::DrawLog(HDC hDC, RECT* pRect)
-{
-	TEXTMETRIC tm;
-	GetTextMetrics(hDC, &tm);
-
-	RECT wRC = *pRect;
-	GetClientRect(m_hLogWnd, &wRC);
-	FillRect(hDC, &wRC, m_hBackGroundBrush);
-
-	int Width = wRC.right - wRC.left;
-	int Height = wRC.bottom - wRC.top;
-	wRC = *pRect;
-	int y_top_max = (int)(0.32f * Height);
-
-	//---------------------------------------------------------------------------------
-	LPCSTR s_edt = ec().str_edit();
-	LPCSTR s_cur = ec().str_before_cursor();
-
-	u32 cur_len = xr_strlen(s_cur) + xr_strlen(ch_cursor) + 1;
-	PSTR buf = (PSTR)_alloca(cur_len * sizeof(char));
-	strcpy_s(buf, cur_len, s_cur);
-	strcat_s(buf, cur_len, ch_cursor);
-	buf[cur_len - 1] = 0;
-
-	u32 cur0_len = xr_strlen(s_cur);
-
-	int xb = 25;
-
-	SetTextColor(hDC, RGB(255, 255, 255));
-	TextOut(hDC, xb, Height - tm.tmHeight - 1, buf, cur_len - 1);
-	buf[cur0_len] = 0;
-
-	SetTextColor(hDC, RGB(0, 0, 0));
-	TextOut(hDC, xb, Height - tm.tmHeight - 1, buf, cur0_len);
-
-	SetTextColor(hDC, RGB(255, 255, 255));
-	TextOut(hDC, 0, Height - tm.tmHeight - 3, ioc_prompt, xr_strlen(ioc_prompt)); // ">>> "
-
-	SetTextColor(hDC, (COLORREF)bgr2rgb(get_mark_color(mark11)));
-	TextOut(hDC, xb, Height - tm.tmHeight - 3, s_edt, xr_strlen(s_edt));
-
-	SetTextColor(hDC, RGB(205, 205, 225));
-	u32 log_line = LogFile->size() - 1;
-	string16 q, q2;
-	itoa(log_line, q, 10);
-	strcpy_s(q2, sizeof(q2), "[");
-	strcat_s(q2, sizeof(q2), q);
-	strcat_s(q2, sizeof(q2), "]");
-	u32 qn = xr_strlen(q2);
-
-	TextOut(hDC, Width - 8 * qn, Height - tm.tmHeight - tm.tmHeight, q2, qn);
-
-	int ypos = Height - tm.tmHeight - tm.tmHeight;
-	for (int i = LogFile->size() - 1 - scroll_delta; i >= 0; --i)
-	{
-		ypos -= tm.tmHeight;
-		if (ypos < y_top_max)
-		{
-			break;
-		}
-		LPCSTR ls = ((*LogFile)[i]).c_str();
-
-		if (!ls)
-		{
-			continue;
-		}
-		Console_mark cm = (Console_mark)ls[0];
-		COLORREF c2 = (COLORREF)bgr2rgb(get_mark_color(cm));
-		SetTextColor(hDC, c2);
-		u8 b = (is_mark(cm)) ? 2 : 0;
-		LPCSTR pOut = ls + b;
-
-		BOOL res = TextOut(hDC, 10, ypos, pOut, xr_strlen(pOut));
-		if (!res)
-		{
-			R_ASSERT2(0, "TextOut(..) return NULL");
-		}
-	}
-
-	if (g_pGameLevel && (Device.dwTimeGlobal - m_last_time > 500))
-	{
-		m_last_time = Device.dwTimeGlobal;
-
-		m_server_info.ResetData();
-		g_pGameLevel->GetLevelInfo(&m_server_info);
-	}
-
-	ypos = 5;
-	for (u32 i = 0; i < m_server_info.Size(); ++i)
-	{
-		SetTextColor(hDC, m_server_info[i].color);
-		TextOut(hDC, 10, ypos, m_server_info[i].name, xr_strlen(m_server_info[i].name));
-
-		ypos += tm.tmHeight;
-		if (ypos > y_top_max)
-		{
-			break;
-		}
-	}
-}
-/*
-void CTextConsole::IR_OnKeyboardPress( int dik ) !!!!!!!!!!!!!!!!!!!!!
-{
-	m_bNeedUpdate = true;
-	inherited::IR_OnKeyboardPress( dik );
-}
-*/
-void CTextConsole::OnFrame()
-{
-	OPTICK_EVENT("CTextConsole::OnFrame");
-
-	inherited::OnFrame();
-	/*	if ( !m_bNeedUpdate && m_dwLastUpdateTime + 1000/g_svTextConsoleUpdateRate > Device.dwTimeGlobal )
-		{
-			return;
-		}
-	*/
-	InvalidateRect(m_hConsoleWnd, NULL, FALSE);
-	SetCursor(LoadCursor(NULL, IDC_ARROW));
-	//	m_bNeedUpdate = true;
 }

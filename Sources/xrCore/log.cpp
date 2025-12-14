@@ -97,9 +97,7 @@ void Log(const char* s)
 	split[j] = 0;
 	AddOne(split);
 
-	// Output text to external console (THNKS VAX)
-	if ((LPCSTR)strstr(GetCommandLine(), "-external_console_log"))
-		printf("%s\n", s);
+	printf("%s\n", s);
 }
 
 void __cdecl Msg(const char* format, ...)
